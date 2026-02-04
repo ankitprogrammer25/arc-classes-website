@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ARC CLASSES</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root { --primary: #0f172a; --gold: #fbbf24; --light: #f8fafc; --red: #ef4444; --dark: #1e293b; --purple: #a855f7; --green: #22c55e; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--light); margin: 0; color: #333; display: flex; flex-direction: column; min-height: 100vh; }
@@ -17,6 +18,11 @@
         .section { display: none; padding: 20px; max-width: 1200px; margin: auto; flex: 1; }
         .section.active { display: block; animation: fadeIn 0.5s; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .hero { background: linear-gradient(135deg, var(--primary), var(--dark)); color: white; padding: 60px 20px; border-radius: 20px; text-align: center; margin-bottom: 30px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .hero h1 { font-size: 2.5rem; margin: 0; color: var(--gold); }
+        .cta-btn { padding: 12px 30px; font-size: 1.1rem; background: var(--gold); color: var(--primary); border: none; border-radius: 50px; font-weight: bold; cursor: pointer; transition: transform 0.2s; }
+        .cta-btn:hover { transform: scale(1.05); }
         
         .card { background: white; padding: 15px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: transform 0.2s; position: relative; display:flex; flex-direction:column; }
         .card:hover { transform: translateY(-5px); }
@@ -42,6 +48,12 @@
         .p-btn.visited { background: var(--purple); color: white; border-color: var(--purple); }
         .p-btn.active { border: 3px solid var(--primary); transform: scale(1.1); }
 
+        /* BLINKING & MODAL */
+        @keyframes blinker { 50% { opacity: 0.3; } }
+        .blink-anim { animation: blinker 1.5s linear infinite; }
+        .modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:2000; display:none; justify-content:center; align-items:center; }
+        .modal-box { background:white; padding:30px; border-radius:15px; max-width:500px; width:90%; text-align:center; position:relative; }
+
         footer { background: var(--primary); color: #94a3b8; text-align: center; padding: 20px; margin-top: auto; }
     </style>
 </head>
@@ -61,11 +73,18 @@
 </nav>
 
 <div id="home" class="section active">
+    <div style="margin-bottom: 20px;">
+        <input type="text" id="home-search" placeholder="🔍 Search Books & Notes..." onkeyup="filterNotes()" style="padding: 15px; font-size: 1.1rem; border: 2px solid var(--primary);">
+    </div>
+
     <div id="announce-bar" style="background:var(--gold); color:var(--primary); padding:10px; font-weight:bold; border-radius:5px; margin-bottom:20px;">📢 Loading Announcement...</div>
-    <div style="text-align:center; padding:50px 20px; background:linear-gradient(135deg, var(--primary), var(--dark)); color:white; border-radius:20px;">
-        <h1 style="color:var(--gold); font-size:2.5rem;">Master Chemistry with ARC</h1>
+    
+    <div id="blog-container" class="blink-anim grid" style="margin-bottom: 30px;"></div>
+
+    <div class="hero">
+        <h1>Master Chemistry with ARC</h1>
         <p>Premium Notes, GATE-Style Tests, and Expert Guidance.</p>
-        <button class="btn-gold" onclick="show('tests')">Start a Test Now</button>
+        <button class="cta-btn" onclick="show('tests')">Start a Test Now</button>
     </div>
 </div>
 
@@ -128,19 +147,32 @@
         <button onclick="showAdminTab('create-test')">Create Test</button>
         <button onclick="showAdminTab('upload-mat')">Upload Book/Note</button>
         <button onclick="showAdminTab('upload-res')">Upload Offline Result</button>
+        <button onclick="showAdminTab('create-blog')">Create Blog</button>
         <button onclick="showAdminTab('announce')">Announcement</button>
         <button onclick="showAdminTab('students')">Students</button>
         <button onclick="showAdminTab('online-res')">Online Results</button>
+        <button onclick="showAdminTab('manage')">Manage (Delete)</button>
     </div>
     
     <div id="adm-students" style="display:none"><h3>Students</h3><table id="student-table" style="width:100%; border-collapse:collapse;"></table></div>
     <div id="adm-online-res" style="display:none"><h3>Online Results</h3><table id="online-res-table" style="width:100%; border-collapse:collapse;"></table></div>
+    <div id="adm-manage" style="display:none"><h3>Delete Content</h3><div id="manage-list"></div></div>
     
     <div id="adm-announce" style="display:none">
+        <div class="form-box" style="margin:0"><h3>Update Announcement</h3><textarea id="ann-text"></textarea><button class="btn-gold" onclick="updateAnnouncement()">Update</button></div>
+    </div>
+
+    <div id="adm-create-blog" style="display:none">
         <div class="form-box" style="margin:0">
-            <h3>Update Announcement</h3>
-            <textarea id="ann-text" placeholder="Type new announcement..."></textarea>
-            <button class="btn-gold" onclick="updateAnnouncement()">Update Now</button>
+            <h3>Create Blinking Blog</h3>
+            <input id="b-title" placeholder="Blog Heading">
+            <textarea id="b-content" placeholder="Blog Content (Paragraph)" rows="5"></textarea>
+            <div style="display:flex; gap:10px; align-items:center; margin:10px 0;">
+                <label>Heading Color: <input type="color" id="b-h-color" value="#fbbf24"></label>
+                <label>Text Color: <input type="color" id="b-p-color" value="#ffffff"></label>
+            </div>
+            <p>Image:</p> <input type="file" id="b-img-file" accept="image/*">
+            <button class="btn-gold" onclick="createBlog()">Publish Blog</button>
         </div>
     </div>
 
@@ -175,7 +207,6 @@
             <h3>Create Online Test</h3>
             <input id="t-title" placeholder="Title"> <input type="number" id="t-dur" placeholder="Mins"> <input id="t-code" placeholder="Password">
             <textarea id="t-inst" placeholder="Instructions"></textarea>
-            
             <div style="background:#f0f9ff; padding:15px; margin:15px 0; border:1px solid #bae6fd; border-radius:8px;">
                 <h4>Add Question</h4>
                 <textarea id="q-text" placeholder="Question Text"></textarea>
@@ -196,16 +227,28 @@
     </div>
 </div>
 
+<div id="result-modal" class="modal-overlay">
+    <div class="modal-box">
+        <h2 style="color:var(--primary)">Test Submitted!</h2>
+        <div style="width:300px; height:300px; margin:auto;"><canvas id="resultChart"></canvas></div>
+        <h3 id="modal-score"></h3>
+        <div id="modal-feedback" class="blink-anim" style="background:var(--gold); color:var(--primary); padding:15px; border-radius:10px; margin-top:20px; font-weight:bold; font-size:1.1rem;"></div>
+        <button class="btn-primary" style="margin-top:20px; background:var(--primary); color:white; padding:10px 20px; border:none; border-radius:5px; cursor:pointer;" onclick="location.reload()">Close & Return Home</button>
+    </div>
+</div>
+
 <footer>&copy; [arcclasses2025] All Rights Reserved</footer>
 
 <script>
     // --- STATE ---
     let user = JSON.parse(localStorage.getItem('arc_user'));
-    let draftQs = []; let qImgBase64 = ""; let draftRecs = []; let mImgBase64 = "";
-    let currentTest = null; let studentAnswers = []; let visitedQs = []; let currentQIdx = 0; let examInterval;
+    let draftQs = [], qImgBase64 = "", draftRecs = [], mImgBase64 = "", bImgBase64 = "";
+    let currentTest = null, studentAnswers = [], visitedQs = [], currentQIdx = 0, examInterval;
+    let allMaterials = []; // For Search
 
     // --- INIT ---
     fetch('/api/announcement').then(r=>r.json()).then(d=>document.getElementById('announce-bar').innerText="📢 "+d.text);
+    loadBlogs(); // Load blogs on start
     if(user) {
         document.getElementById('login-nav').style.display = 'none'; document.getElementById('logout-btn').style.display = 'inline';
         if(user.email === 'admin@arc.com') document.getElementById('teacher-nav').style.display = 'inline';
@@ -216,12 +259,13 @@
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
         document.getElementById(id).classList.add('active');
         document.querySelector('nav').style.display = (id === 'exam-ui') ? 'none' : 'flex';
+        if(id === 'home') loadBlogs();
         if(id === 'notes') loadMaterials(); if(id === 'tests') loadTestsList(); if(id === 'results') loadResults();
     }
     function showAdminTab(id) {
-        ['students', 'online-res', 'create-test', 'upload-mat', 'upload-res', 'announce'].forEach(t => document.getElementById('adm-'+t).style.display = 'none');
+        ['students', 'online-res', 'create-test', 'upload-mat', 'upload-res', 'announce', 'create-blog', 'manage'].forEach(t => document.getElementById('adm-'+t).style.display = 'none');
         document.getElementById('adm-'+id).style.display = 'block';
-        if(id === 'students') loadStudents(); if(id === 'online-res') loadOnlineResults();
+        if(id === 'students') loadStudents(); if(id === 'online-res') loadOnlineResults(); if(id === 'manage') loadManageList();
     }
 
     // --- AUTH ---
@@ -253,10 +297,20 @@
     }
     async function loadOnlineResults() {
         const res = await fetch('/api/admin/results/online'); const data = await res.json();
-        document.getElementById('online-res-table').innerHTML = `<tr><th style="background:#eee">Date</th><th style="background:#eee">Test</th><th style="background:#eee">Student</th><th style="background:#eee">Score</th></tr>` + data.map(r => `<tr><td style="border:1px solid #ddd; padding:8px">${new Date(r.date).toLocaleDateString()}</td><td style="border:1px solid #ddd; padding:8px">${r.testTitle}</td><td style="border:1px solid #ddd; padding:8px">${r.studentName}</td><td style="border:1px solid #ddd; padding:8px">${r.score}/${r.totalMarks} (${r.percentage.toFixed(0)}%)</td></tr>`).join('');
+        document.getElementById('online-res-table').innerHTML = `<tr><th style="background:#eee">Date</th><th style="background:#eee">Test</th><th style="background:#eee">Student</th><th style="background:#eee">Score</th></tr>` + data.map(r => `<tr><td style="border:1px solid #ddd; padding:8px">${new Date(r.date).toLocaleDateString()}</td><td style="border:1px solid #ddd; padding:8px">${r.testTitle}</td><td style="border:1px solid #ddd; padding:8px">${r.studentName}<br><small>${r.studentEmail}</small></td><td style="border:1px solid #ddd; padding:8px">${r.score}/${r.totalMarks} (${r.percentage.toFixed(0)}%)</td></tr>`).join('');
     }
     
-    // Upload Material
+    // Blog Creator
+    document.getElementById('b-img-file').addEventListener('change', function() { const r = new FileReader(); r.onload = e => bImgBase64 = e.target.result; r.readAsDataURL(this.files[0]); });
+    async function createBlog() {
+        const title = document.getElementById('b-title').value; const content = document.getElementById('b-content').value;
+        const hColor = document.getElementById('b-h-color').value; const pColor = document.getElementById('b-p-color').value;
+        if(!title || !content) return alert("Title and Content needed");
+        await fetch('/api/admin/blog', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ title, content, image: bImgBase64, hColor, pColor }) });
+        alert("Blog Published!"); bImgBase64=""; document.getElementById('b-title').value=""; document.getElementById('b-content').value="";
+    }
+
+    // Uploads
     document.getElementById('m-img-file').addEventListener('change', function() { const r = new FileReader(); r.onload = e => mImgBase64 = e.target.result; r.readAsDataURL(this.files[0]); });
     async function uploadMaterial() {
         const title = document.getElementById('m-title').value; const desc = document.getElementById('m-desc').value; const link = document.getElementById('m-link').value; const code = document.getElementById('m-code').value;
@@ -264,8 +318,6 @@
         await fetch('/api/admin/material', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ title, description: desc, link, accessCode: code, image: mImgBase64, type:'Book' }) });
         alert("Uploaded!"); mImgBase64="";
     }
-
-    // Upload Offline Result
     function addResRecord() {
         const name = document.getElementById('res-name').value; const link = document.getElementById('res-link').value; const pass = document.getElementById('res-pass').value;
         if(!name || !link || !pass) return alert("Missing details");
@@ -279,7 +331,7 @@
         alert("Published!"); draftRecs=[];
     }
 
-    // Create Test
+    // Test Creator
     document.getElementById('q-img-file').addEventListener('change', function() { const r = new FileReader(); r.onload = e => { qImgBase64 = e.target.result; document.getElementById('q-img-preview').src = qImgBase64; document.getElementById('q-img-preview').style.display='block'; }; r.readAsDataURL(this.files[0]); });
     function addDraftQ() {
         const text = document.getElementById('q-text').value;
@@ -294,15 +346,45 @@
         alert("Published!"); draftQs=[]; location.reload();
     }
 
+    // Manage (Delete)
+    async function loadManageList() {
+        const [mRes, tRes, bRes] = await Promise.all([fetch('/api/materials'), fetch('/api/tests'), fetch('/api/blogs')]); const mats = await mRes.json(); const tests = await tRes.json(); const blogs = await bRes.json();
+        let html = `<h4>Tests</h4>` + tests.map(t => `<div style="display:flex; justify-content:space-between; padding:10px; border-bottom:1px solid #eee;"><span>${t.title}</span><button class="btn-red" style="padding:5px 10px;" onclick="deleteItem('test', '${t._id}')">Delete</button></div>`).join('');
+        html += `<h4>Books/Notes</h4>` + mats.map(m => `<div style="display:flex; justify-content:space-between; padding:10px; border-bottom:1px solid #eee;"><span>${m.title}</span><button class="btn-red" style="padding:5px 10px;" onclick="deleteItem('material', '${m._id}')">Delete</button></div>`).join('');
+        html += `<h4>Blogs</h4>` + blogs.map(b => `<div style="display:flex; justify-content:space-between; padding:10px; border-bottom:1px solid #eee;"><span>${b.title}</span><button class="btn-red" style="padding:5px 10px;" onclick="deleteItem('blog', '${b._id}')">Delete</button></div>`).join('');
+        document.getElementById('manage-list').innerHTML = html;
+    }
+    async function deleteItem(type, id) { if(!confirm("Are you sure?")) return; await fetch(`/api/admin/${type}/${id}`, { method: 'DELETE' }); loadManageList(); }
+
+
     // --- STUDENT CONTENT ---
+    async function loadBlogs() {
+        const res = await fetch('/api/blogs'); const data = await res.json();
+        document.getElementById('blog-container').innerHTML = data.map(b => `
+            <div class="card" style="background:var(--dark); border:1px solid var(--gold);">
+                ${b.image ? `<img src="${b.image}" style="width:100%; height:150px; object-fit:cover; border-radius:5px;">` : ''}
+                <h3 style="color:${b.hColor}">${b.title}</h3>
+                <p style="color:${b.pColor}">${b.content}</p>
+            </div>`).join('');
+    }
+
     async function loadMaterials() {
-        const res = await fetch('/api/materials'); const data = await res.json();
-        document.getElementById('mat-list').innerHTML = data.map(m => `
+        const res = await fetch('/api/materials'); allMaterials = await res.json();
+        renderMaterials(allMaterials);
+    }
+    function renderMaterials(list) {
+        document.getElementById('mat-list').innerHTML = list.map(m => `
             <div class="card" onclick="unlockMaterial('${m._id}')">
                 <img src="${m.image || 'https://via.placeholder.com/200?text=No+Cover'}" class="book-cover">
                 <h3>${m.title}</h3><p>${m.description||''}</p><button class="btn-gold" style="width:100%">Open</button>
             </div>`).join('');
     }
+    function filterNotes() {
+        const query = document.getElementById('home-search').value.toLowerCase();
+        const filtered = allMaterials.filter(m => m.title.toLowerCase().includes(query));
+        renderMaterials(filtered);
+    }
+
     async function unlockMaterial(id) {
         const code = prompt("Password:"); if(!code) return;
         const res = await fetch('/api/material/unlock', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id, code}) });
@@ -326,7 +408,7 @@
         const data = await res.json(); if(data.success) window.open(data.link, '_blank'); else alert("Incorrect Password");
     }
 
-    // --- EXAM ENGINE ---
+    // --- EXAM ENGINE & CHART ---
     async function loadTestsList() {
         const res = await fetch('/api/tests'); const data = await res.json();
         document.getElementById('test-list').innerHTML = data.map(t => `<div class="card"><h3>${t.title}</h3><p>${t.duration} Mins</p><button class="btn-gold" onclick="startExam('${t._id}')">Start</button></div>`).join('');
@@ -376,12 +458,37 @@
             return `<div class="p-btn ${c}" onclick="renderQ(${i})">${i+1}</div>`;
         }).join('');
     }
+
+    // NEW: Submit Exam with Pie Chart Modal
     async function submitExam(force=false) {
         if(!force && !confirm("Submit?")) return; clearInterval(examInterval);
         const res = await fetch('/api/test/submit', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ testId: currentTest._id, answers: studentAnswers, studentName: user.name, studentEmail: user.email }) });
         const r = await res.json();
-        alert(`Score: ${r.score}/${r.totalMarks} (${r.percentage}%)\nRank: #${r.rank}\n\n${r.feedback}`);
-        location.reload();
+
+        if(r.success) {
+            document.getElementById('exam-ui').style.display = 'none';
+            document.getElementById('result-modal').style.display = 'flex';
+            document.getElementById('modal-score').innerHTML = `Score: ${r.score}/${r.totalMarks} (${r.percentage}%) <br> Rank: #${r.rank}`;
+            document.getElementById('modal-feedback').innerText = "💡 Suggestion: " + r.feedback;
+
+            // Render Pie Chart
+            const ctx = document.getElementById('resultChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['Correct', 'Wrong', 'Skipped'],
+                    datasets: [{
+                        data: [r.stats.correct, r.stats.wrong, r.stats.skipped],
+                        backgroundColor: ['#22c55e', '#ef4444', '#a855f7'], // Green, Red, Purple
+                        borderWidth: 1
+                    }]
+                },
+                options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+            });
+        } else {
+            alert("Error submitting test. Please try again.");
+            location.reload();
+        }
     }
     setInterval(()=>fetch('/api/tests').catch(e=>{}), 2*60*1000);
 </script>
