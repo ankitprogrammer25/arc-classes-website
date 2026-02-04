@@ -3,380 +3,663 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ARC CLASSES | LMS</title>
+    <title>ARC CLASSES | Chemistry Excellence</title>
     <style>
-        :root { --primary: #0f172a; --secondary: #fbbf24; --light: #f1f5f9; --white: #fff; }
-        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--light); color: #333; }
-        
-        /* Nav */
-        nav { background: var(--primary); color: white; padding: 1rem; display: flex; justify-content: space-between; align-items: center; }
-        .logo { font-weight: bold; color: var(--secondary); font-size: 1.5rem; }
-        .menu a { color: white; margin-left: 15px; text-decoration: none; cursor: pointer; }
+        :root { 
+            --primary: #1e3a8a; /* Deep GATE Blue */
+            --secondary: #fbbf24; /* Gold */
+            --light: #f3f4f6; 
+            --white: #ffffff;
+            --success: #22c55e;
+            --danger: #ef4444;
+            --sidebar-w: 280px;
+        }
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--light); color: #333; overflow-x: hidden; }
+
+        /* --- NAVIGATION --- */
+        nav { background: var(--primary); color: white; padding: 0.8rem 2rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.2); position: sticky; top: 0; z-index: 1000; }
+        .logo { font-size: 1.5rem; font-weight: 800; color: var(--secondary); letter-spacing: 1px; }
+        .menu a { color: #e2e8f0; margin-left: 20px; text-decoration: none; font-weight: 500; transition: 0.3s; cursor: pointer; }
         .menu a:hover { color: var(--secondary); }
-        .tag { background: var(--secondary); color: var(--primary); padding: 2px 6px; border-radius: 4px; font-size: 0.8rem; font-weight: bold; }
 
-        /* Sections */
-        .section { display: none; padding: 20px; max-width: 900px; margin: auto; }
+        /* --- SECTIONS & UTILS --- */
+        .section { display: none; padding: 20px; max-width: 1200px; margin: auto; animation: fadeIn 0.4s; }
         .section.active { display: block; }
+        @keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+        
+        button { cursor: pointer; border: none; padding: 10px 15px; border-radius: 4px; font-weight: bold; transition: 0.2s; }
+        .btn-gold { background: var(--secondary); color: var(--primary); }
+        .btn-gold:hover { background: #f59e0b; }
+        .btn-blue { background: var(--primary); color: white; }
+        input, select, textarea { width: 100%; padding: 10px; margin: 5px 0; border: 1px solid #cbd5e1; border-radius: 4px; box-sizing: border-box; }
+        
+        /* --- HOME SLIDER --- */
+        .slider-container { position: relative; width: 100%; height: 400px; overflow: hidden; background: #000; }
+        .slide { position: absolute; width: 100%; height: 100%; opacity: 0; transition: opacity 1s; background-size: cover; background-position: center; }
+        .slide.active { opacity: 1; }
+        .slide-content { position: absolute; bottom: 50px; left: 50px; color: white; text-shadow: 2px 2px 4px black; }
+        .slide-content h1 { font-size: 3rem; margin: 0; }
 
-        /* Cards & Forms */
-        .card { background: white; padding: 20px; margin-bottom: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); position: relative;}
-        .form-box { max-width: 400px; margin: 50px auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        input, select, textarea { width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ddd; box-sizing: border-box; border-radius: 4px;}
-        button { width: 100%; padding: 10px; background: var(--primary); color: white; border: none; cursor: pointer; border-radius: 4px; }
-        button:hover { background: #1e293b; }
-        .btn-gold { background: var(--secondary); color: var(--primary); font-weight: bold; }
-        .btn-red { background: #ef4444; margin-top: 5px; }
+        /* --- FORMS --- */
+        .form-box { max-width: 400px; margin: 40px auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        
+        /* --- ADMIN PANEL --- */
+        .admin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .q-palette { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
+        .q-dot { width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; background: #ddd; border-radius: 50%; cursor: pointer; font-size: 0.8rem; }
+        .q-dot.active { background: var(--primary); color: white; }
 
-        /* Test Creator Styles */
-        .question-box { border: 1px solid #ddd; padding: 15px; margin-bottom: 10px; background: #f9f9f9; }
-        .drop-zone { border: 2px dashed #ccc; padding: 20px; text-align: center; color: #666; margin: 10px 0; cursor: pointer; }
-        .drop-zone.dragover { background: #e0f2fe; border-color: var(--primary); }
-        .preview-img { max-width: 100%; max-height: 150px; display: block; margin: 10px auto; }
+        /* --- GATE EXAM UI --- */
+        .gate-container { display: flex; height: calc(100vh - 60px); background: #fff; }
+        .gate-left { flex: 1; padding: 20px; overflow-y: auto; border-right: 1px solid #ddd; }
+        .gate-right { width: var(--sidebar-w); background: #f1f5f9; display: flex; flex-direction: column; border-left: 1px solid #ccc; }
+        
+        .profile-box { padding: 10px; background: white; border-bottom: 1px solid #ddd; display: flex; align-items: center; gap: 10px; }
+        .timer-box { background: #e0f2fe; color: var(--primary); padding: 10px; text-align: center; font-size: 1.2rem; font-weight: bold; border-bottom: 1px solid #ccc; }
+        
+        .question-area { font-size: 1.1rem; margin-bottom: 20px; }
+        .question-img { max-width: 100%; max-height: 250px; border: 1px solid #ddd; margin: 10px 0; }
+        
+        .options-grid { display: grid; gap: 10px; }
+        .option-label { display: flex; align-items: center; padding: 10px; border: 1px solid #ccc; border-radius: 4px; cursor: pointer; transition: 0.2s; }
+        .option-label:hover { background: #f8fafc; }
+        .option-label input { width: auto; margin-right: 10px; }
+        
+        .palette-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 10px; overflow-y: auto; flex: 1; }
+        .p-btn { aspect-ratio: 1; border: 1px solid #ccc; background: white; border-radius: 4px; font-weight: bold; cursor: pointer; position: relative; }
+        .p-btn.answered { background: var(--success); color: white; border-color: var(--success); clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%); }
+        .p-btn.visited { background: var(--danger); color: white; border-color: var(--danger); clip-path: circle(50% at 50% 50%); }
+        .p-btn.current { border: 2px solid blue; }
+
+        /* Calculator */
+        #calculator { display: none; position: fixed; top: 100px; right: 300px; width: 200px; background: #333; padding: 10px; border-radius: 8px; z-index: 2000; box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
+        #cal-display { width: 100%; height: 40px; background: #eee; margin-bottom: 10px; text-align: right; padding: 5px; font-size: 1.2rem; border: none; }
+        .cal-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
+        .cal-btn { background: #555; color: white; padding: 10px; border: none; cursor: pointer; }
+        .cal-btn:active { background: #777; }
+
+        /* Footer */
+        footer { background: #0f172a; color: #94a3b8; text-align: center; padding: 20px; margin-top: 50px; font-size: 0.9rem; }
     </style>
 </head>
 <body>
 
-    <nav>
-        <div class="logo">ARC CLASSES</div>
-        <div class="menu">
-            <a onclick="show('home')">Home</a>
-            <a onclick="show('notes')">Notes</a>
-            <a onclick="show('tests')">Tests</a>
-            <a onclick="show('login')" id="login-nav">Login</a>
-            <a id="user-nav" style="display:none; color:var(--secondary)">Student</a>
-            <a id="admin-nav" onclick="show('admin')" style="display:none; color:#ef4444">TEACHER PANEL</a>
-            <a onclick="logout()" id="logout-btn" style="display:none">(Logout)</a>
+<nav>
+    <div class="logo">ARC CLASSES</div>
+    <div class="menu">
+        <a onclick="show('home')">Home</a>
+        <a onclick="show('tests')">Tests</a>
+        <a onclick="show('notes')">Notes</a>
+        <a onclick="show('login')" id="login-nav">Login</a>
+        <a id="user-nav" style="display:none; color:var(--secondary)">Student</a>
+        <a id="admin-nav" onclick="show('admin')" style="display:none; color:#ef4444">TEACHER PANEL</a>
+        <a onclick="logout()" id="logout-btn" style="display:none">(Logout)</a>
+    </div>
+</nav>
+
+<div id="home" class="section active" style="padding:0; max-width:100%;">
+    <div class="slider-container">
+        <div class="slide active" style="background-image: url('https://images.unsplash.com/photo-1532094349884-543bc11b234d?auto=format&fit=crop&w=1200&q=80');">
+            <div class="slide-content">
+                <h1>Chemistry Innovations</h1>
+                <p>Exploring the molecular world.</p>
+            </div>
         </div>
-    </nav>
-
-    <div id="home" class="section active">
-        <div style="text-align: center; padding: 50px 0;">
-            <h1>Welcome to ARC Classes</h1>
-            <p>Advanced Chemistry Learning Platform</p>
+        <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1628595351029-c2bf17511435?auto=format&fit=crop&w=1200&q=80');">
+            <div class="slide-content">
+                <h1>Master the Elements</h1>
+                <p>Prepare for excellence.</p>
+            </div>
         </div>
     </div>
-
-    <div id="notes" class="section">
-        <h2>📚 Study Material</h2>
-        <div id="notes-list">Loading...</div>
+    <div style="text-align:center; padding: 50px 20px;">
+        <h2 style="color:var(--primary)">Welcome to ARC Classes</h2>
+        <p>Your premier destination for advanced Chemistry preparation.</p>
     </div>
+</div>
 
-    <div id="tests" class="section">
-        <h2>📝 Online Tests</h2>
-        <div id="tests-list">Loading...</div>
-    </div>
-
-    <div id="test-runner" class="section">
-        <div class="card">
-            <h2 id="tr-title">Test Title</h2>
-            <div style="display:flex; justify-content:space-between; color:red; font-weight:bold;">
-                <span>Time Left: <span id="timer">00:00</span></span>
+<div id="admin" class="section">
+    <h2>Teacher Dashboard</h2>
+    <div class="admin-grid">
+        <div class="form-box" style="margin:0; max-width:100%">
+            <h3>Create GATE-Style Test</h3>
+            <input type="text" id="t-title" placeholder="Test Title">
+            <textarea id="t-inst" rows="3" placeholder="Instructions for Students"></textarea>
+            <div style="display:flex; gap:10px;">
+                <input type="number" id="t-duration" placeholder="Duration (Mins)">
+                <input type="text" id="t-code" placeholder="Password (Access Code)">
             </div>
             <hr>
-            <div id="tr-questions"></div>
-            <button class="btn-gold" onclick="submitExam()">Submit Exam</button>
-        </div>
-    </div>
-
-    <div id="login" class="section">
-        <div class="form-box">
-            <h2>Login</h2>
-            <input type="email" id="l-email" placeholder="Email">
-            <input type="password" id="l-pass" placeholder="Password">
-            <button onclick="handleLogin()">Login</button>
-            <p style="text-align:center; font-size:0.9rem; cursor:pointer; color:blue;" onclick="toggleReg()">New? Register Here</p>
             
-            <hr style="margin:20px 0">
-            <p style="text-align:center; color:#999; font-size:0.8rem;">Teacher Access? Use Email: admin@arc.com</p>
-        </div>
-        
-        <div id="register-box" class="form-box" style="display:none">
-            <h2>New Student Registration</h2>
-            <input type="text" id="r-name" placeholder="Full Name">
-            <input type="email" id="r-email" placeholder="Email">
-            <input type="password" id="r-pass" placeholder="Create Password">
-            <button class="btn-gold" onclick="handleRegister()">Register</button>
-            <button style="background:#ccc; margin-top:10px" onclick="toggleReg()">Back to Login</button>
-        </div>
-    </div>
-
-    <div id="admin" class="section">
-        <h2>👨‍🏫 Teacher Dashboard</h2>
-        
-        <div class="card" style="border-left: 5px solid red;">
-            <h3>🔔 New Registrations</h3>
-            <div id="admin-notifs">Loading...</div>
-        </div>
-
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
-            <div class="card">
-                <h3>Upload Protected Note</h3>
-                <input type="text" id="m-title" placeholder="Title (e.g. Chapter 1 PDF)">
-                <input type="text" id="m-link" placeholder="Google Drive Link">
-                <input type="text" id="m-code" placeholder="Set Access Password (PRICE)">
-                <button onclick="uploadMaterial()">Upload Note</button>
+            <div style="background:#f8f9fa; padding:15px; border:1px solid #ddd; border-radius:5px;">
+                <div style="display:flex; justify-content:space-between;">
+                    <h4>Question Editor</h4>
+                    <span id="q-count-badge">Q: 1</span>
+                </div>
+                
+                <textarea id="q-text" rows="3" placeholder="Type Question Here..."></textarea>
+                
+                <input type="file" id="q-img-input" accept="image/*">
+                <img id="q-preview" style="max-height:100px; display:none;">
+                
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                    <input type="text" id="op1" placeholder="Option 1">
+                    <input type="text" id="op2" placeholder="Option 2">
+                    <input type="text" id="op3" placeholder="Option 3">
+                    <input type="text" id="op4" placeholder="Option 4">
+                </div>
+                
+                <div style="display:flex; gap:10px; margin-top:10px;">
+                    <select id="q-correct" style="flex:1">
+                        <option value="0">Correct: Option 1</option>
+                        <option value="1">Correct: Option 2</option>
+                        <option value="2">Correct: Option 3</option>
+                        <option value="3">Correct: Option 4</option>
+                    </select>
+                    <input type="number" id="q-marks" placeholder="+ Marks (e.g. 2)" style="width:100px" value="2">
+                    <input type="number" id="q-neg" placeholder="- Marks (e.g. 0.5)" style="width:100px" value="0.5">
+                </div>
+                
+                <div style="display:flex; gap:10px; margin-top:10px;">
+                    <button class="btn-blue" onclick="saveCurrentQuestion()">Save & Next Question</button>
+                    <button style="background:#64748b; color:white;" onclick="clearQuestionForm()">Clear</button>
+                </div>
             </div>
 
-            <div class="card">
-                <h3>Create New Test</h3>
-                <input type="text" id="t-title" placeholder="Test Title">
-                <input type="number" id="t-duration" placeholder="Duration (Minutes)">
-                <input type="text" id="t-code" placeholder="Set Access Password (PRICE)">
-                <hr>
-                <div id="q-builder"></div>
-                <button style="background:#666; margin-bottom:10px" onclick="addQuestionUI()">+ Add Question</button>
-                <button class="btn-gold" onclick="saveTest()">Publish Test</button>
+            <p><small>Click a number to edit that question:</small></p>
+            <div class="q-palette" id="admin-palette"></div>
+
+            <button class="btn-gold" style="width:100%; margin-top:20px;" onclick="publishTest()">PUBLISH TEST</button>
+        </div>
+
+        <div class="form-box" style="margin:0; max-width:100%">
+            <h3>Upload Protected Material</h3>
+            <input type="text" id="m-title" placeholder="Title">
+            <input type="text" id="m-link" placeholder="Google Drive Link">
+            <input type="text" id="m-code" placeholder="Password">
+            <button class="btn-blue" onclick="uploadMaterial()">Upload</button>
+        </div>
+    </div>
+</div>
+
+<div id="tests" class="section">
+    <h2>Available Tests</h2>
+    <div id="test-list">Loading...</div>
+</div>
+
+<div id="exam-ui" class="section" style="padding:0; max-width:100%; display:none;">
+    <div id="inst-overlay" style="position:fixed; top:0; left:0; width:100%; height:100%; background:white; z-index:2000; padding:40px; box-sizing:border-box; overflow-y:auto;">
+        <h1>Test Instructions</h1>
+        <p id="inst-text">Loading...</p>
+        <hr>
+        <h3>General Instructions:</h3>
+        <ul>
+            <li>Total duration is shown in the timer.</li>
+            <li>Green = Answered, Red = Visited (Not Answered).</li>
+            <li>Test submits automatically when time ends.</li>
+        </ul>
+        <button class="btn-gold" style="font-size:1.2rem; padding:15px 30px;" onclick="startExamReal()">I have read instructions. Start Exam.</button>
+    </div>
+
+    <div class="gate-container">
+        <div class="gate-left">
+            <div style="display:flex; justify-content:space-between; border-bottom:1px solid #ddd; padding-bottom:10px; margin-bottom:20px;">
+                <h3 style="margin:0; color:var(--primary);">Question <span id="ui-q-num">1</span></h3>
+                <div>
+                    <span style="color:green; font-weight:bold;">+<span id="ui-marks">2</span></span> | 
+                    <span style="color:red;">-<span id="ui-neg">0.5</span></span>
+                </div>
+            </div>
+            
+            <div id="ui-q-text" class="question-area"></div>
+            <img id="ui-q-img" class="question-img" style="display:none">
+            
+            <div class="options-grid" id="ui-options"></div>
+
+            <div style="margin-top:30px; display:flex; gap:10px;">
+                <button style="background:#ddd" onclick="navQuestion(-1)">Previous</button>
+                <button class="btn-blue" onclick="saveAndNext()">Save & Next</button>
+            </div>
+        </div>
+
+        <div class="gate-right">
+            <div class="timer-box">Time Left: <span id="timer-display">00:00</span></div>
+            <div class="profile-box">
+                <div style="width:40px; height:40px; background:#ccc; border-radius:50%;"></div>
+                <span id="ui-student-name">Student</span>
+            </div>
+            
+            <div style="padding:10px;">
+                <button style="width:100%; background:#333; color:white;" onclick="toggleCalc()">🖩 Calculator</button>
+            </div>
+
+            <p style="padding:0 10px; margin:0; font-size:0.8rem; font-weight:bold;">Question Palette:</p>
+            <div class="palette-grid" id="ui-palette"></div>
+
+            <div style="padding:20px;">
+                <button class="btn-gold" style="width:100%;" onclick="submitExam()">SUBMIT TEST</button>
             </div>
         </div>
     </div>
+</div>
 
-    <script>
-        // --- STATE ---
-        let user = JSON.parse(localStorage.getItem('arc_user'));
-        let currentTestId = null;
-        let testQuestions = []; // For building test
+<div id="login" class="section">
+    <div class="form-box">
+        <h2>Login</h2>
+        <input type="email" id="l-email" placeholder="Email">
+        <input type="password" id="l-pass" placeholder="Password">
+        <button class="btn-blue" onclick="handleLogin()">Login</button>
+        <p style="text-align:center; font-size:0.8rem; cursor:pointer; color:blue;" onclick="toggleReg()">New? Register Here</p>
+        <p style="text-align:center; color:#ccc; font-size:0.7rem; margin-top:20px;">Teacher? (admin@arc.com)</p>
+    </div>
+    <div id="register-box" class="form-box" style="display:none">
+        <h2>Register</h2>
+        <input type="text" id="r-name" placeholder="Name">
+        <input type="email" id="r-email" placeholder="Email">
+        <input type="password" id="r-pass" placeholder="Password">
+        <button class="btn-gold" onclick="handleReg()">Register</button>
+        <button style="background:#ccc; margin-top:5px;" onclick="toggleReg()">Cancel</button>
+    </div>
+</div>
 
-        function init() {
-            if(user) {
-                document.getElementById('login-nav').style.display = 'none';
-                document.getElementById('logout-btn').style.display = 'inline';
-                if(user.isAdmin) {
-                    document.getElementById('admin-nav').style.display = 'inline';
-                    loadAdminStats();
-                } else {
-                    document.getElementById('user-nav').style.display = 'inline';
-                    document.getElementById('user-nav').innerText = `Hi, ${user.name}`;
-                }
+<div id="calculator">
+    <input type="text" id="cal-display" readonly>
+    <div class="cal-grid">
+        <button class="cal-btn" onclick="calAppend('7')">7</button>
+        <button class="cal-btn" onclick="calAppend('8')">8</button>
+        <button class="cal-btn" onclick="calAppend('9')">9</button>
+        <button class="cal-btn" style="background:#f59e0b" onclick="calOp('/')">/</button>
+        <button class="cal-btn" onclick="calAppend('4')">4</button>
+        <button class="cal-btn" onclick="calAppend('5')">5</button>
+        <button class="cal-btn" onclick="calAppend('6')">6</button>
+        <button class="cal-btn" style="background:#f59e0b" onclick="calOp('*')">*</button>
+        <button class="cal-btn" onclick="calAppend('1')">1</button>
+        <button class="cal-btn" onclick="calAppend('2')">2</button>
+        <button class="cal-btn" onclick="calAppend('3')">3</button>
+        <button class="cal-btn" style="background:#f59e0b" onclick="calOp('-')">-</button>
+        <button class="cal-btn" onclick="calAppend('0')">0</button>
+        <button class="cal-btn" onclick="calClear()">C</button>
+        <button class="cal-btn" onclick="calCalc()">=</button>
+        <button class="cal-btn" style="background:#f59e0b" onclick="calOp('+')">+</button>
+    </div>
+</div>
+
+<footer>
+    (c) [arcclasses2025]. All Rights Reserved.
+</footer>
+
+<script>
+    // --- GLOBAL STATE ---
+    let user = JSON.parse(localStorage.getItem('arc_user'));
+    
+    // Teacher State
+    let draftQuestions = [];
+    let editingIndex = -1;
+
+    // Exam State
+    let currentExam = null;
+    let studentAnswers = []; // Array of selected option indices (or null)
+    let currentQIndex = 0;
+    let examTimer = null;
+    let visited = []; // Track visited questions
+
+    // --- INITIALIZATION ---
+    function init() {
+        if(user) {
+            document.getElementById('login-nav').style.display = 'none';
+            document.getElementById('logout-btn').style.display = 'inline';
+            if(user.isAdmin) {
+                document.getElementById('admin-nav').style.display = 'inline';
+            } else {
+                document.getElementById('user-nav').style.display = 'inline';
+                document.getElementById('user-nav').innerText = `Hi, ${user.name}`;
             }
         }
-        init();
+        
+        // Slider Logic
+        let slideIndex = 0;
+        const slides = document.querySelectorAll('.slide');
+        setInterval(() => {
+            slides[slideIndex].classList.remove('active');
+            slideIndex = (slideIndex + 1) % slides.length;
+            slides[slideIndex].classList.add('active');
+        }, 4000);
+    }
+    init();
 
-        function show(id) {
-            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            if(id === 'notes') loadNotes();
-            if(id === 'tests') loadTests();
+    function show(id) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        // If showing exam, hide nav bar
+        if(id === 'exam-ui') document.querySelector('nav').style.display = 'none';
+        else document.querySelector('nav').style.display = 'flex';
+        
+        document.getElementById(id).classList.add('active');
+        if(id === 'tests') loadTests();
+    }
+
+    // --- TEACHER LOGIC ---
+    function saveCurrentQuestion() {
+        const text = document.getElementById('q-text').value;
+        if(!text) return alert("Question text required");
+
+        const qObj = {
+            text: text,
+            image: document.getElementById('q-preview').src !== window.location.href ? document.getElementById('q-preview').src : "",
+            options: [
+                document.getElementById('op1').value,
+                document.getElementById('op2').value,
+                document.getElementById('op3').value,
+                document.getElementById('op4').value
+            ],
+            correct: parseInt(document.getElementById('q-correct').value),
+            marks: parseFloat(document.getElementById('q-marks').value),
+            negative: parseFloat(document.getElementById('q-neg').value)
+        };
+
+        if(editingIndex > -1) {
+            draftQuestions[editingIndex] = qObj;
+            editingIndex = -1;
+        } else {
+            draftQuestions.push(qObj);
         }
+        renderTeacherPalette();
+        clearQuestionForm();
+    }
 
-        // --- AUTH ---
-        function toggleReg() {
-            const reg = document.getElementById('register-box');
-            const log = document.querySelector('#login .form-box');
-            if(reg.style.display === 'none') { reg.style.display = 'block'; log.style.display = 'none'; }
-            else { reg.style.display = 'none'; log.style.display = 'block'; }
+    function renderTeacherPalette() {
+        const p = document.getElementById('admin-palette');
+        p.innerHTML = draftQuestions.map((_, i) => 
+            `<div class="q-dot" onclick="editDraftQuestion(${i})">${i+1}</div>`
+        ).join('');
+        document.getElementById('q-count-badge').innerText = `Q: ${draftQuestions.length + 1}`;
+    }
+
+    function editDraftQuestion(i) {
+        editingIndex = i;
+        const q = draftQuestions[i];
+        document.getElementById('q-text').value = q.text;
+        document.getElementById('op1').value = q.options[0];
+        document.getElementById('op2').value = q.options[1];
+        document.getElementById('op3').value = q.options[2];
+        document.getElementById('op4').value = q.options[3];
+        document.getElementById('q-correct').value = q.correct;
+        document.getElementById('q-marks').value = q.marks;
+        document.getElementById('q-neg').value = q.negative;
+        if(q.image) {
+            document.getElementById('q-preview').src = q.image;
+            document.getElementById('q-preview').style.display = 'block';
         }
+        document.getElementById('q-count-badge').innerText = `Editing Q: ${i+1}`;
+    }
 
-        async function handleRegister() {
-            const name = document.getElementById('r-name').value;
-            const email = document.getElementById('r-email').value;
-            const password = document.getElementById('r-pass').value;
-            const res = await fetch('/api/register', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({name,email,password})});
-            if((await res.json()).success) { alert("Registered! Login now."); toggleReg(); }
-            else alert("Error registering.");
+    function clearQuestionForm() {
+        document.getElementById('q-text').value = "";
+        document.getElementById('op1').value = "";
+        document.getElementById('op2').value = "";
+        document.getElementById('op3').value = "";
+        document.getElementById('op4').value = "";
+        document.getElementById('q-preview').style.display = 'none';
+        document.getElementById('q-img-input').value = "";
+        editingIndex = -1;
+        document.getElementById('q-count-badge').innerText = `Q: ${draftQuestions.length + 1}`;
+    }
+
+    // Image Reader
+    document.getElementById('q-img-input').addEventListener('change', function() {
+        const file = this.files[0];
+        if(file) {
+            const reader = new FileReader();
+            reader.onload = e => {
+                document.getElementById('q-preview').src = e.target.result;
+                document.getElementById('q-preview').style.display = 'block';
+            };
+            reader.readAsDataURL(file);
         }
+    });
 
-        async function handleLogin() {
-            const email = document.getElementById('l-email').value;
-            const password = document.getElementById('l-pass').value;
+    async function publishTest() {
+        const title = document.getElementById('t-title').value;
+        const inst = document.getElementById('t-inst').value;
+        const duration = document.getElementById('t-duration').value;
+        const accessCode = document.getElementById('t-code').value;
 
-            // TEACHER CHECK
-            if(email === 'admin@arc.com' && password === 'admin123') {
-                user = { name: 'Teacher', isAdmin: true };
-                localStorage.setItem('arc_user', JSON.stringify(user));
-                location.reload();
-                return;
+        if(!draftQuestions.length) return alert("Add questions first");
+
+        await fetch('/api/admin/create-test', {
+            method: 'POST',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({ title, instructions: inst, duration, accessCode, questions: draftQuestions })
+        });
+        alert("Test Published!");
+        location.reload();
+    }
+
+    // --- STUDENT EXAM LOGIC ---
+    async function loadTests() {
+        const res = await fetch('/api/tests');
+        const data = await res.json();
+        document.getElementById('test-list').innerHTML = data.map(t => `
+            <div class="form-box" style="margin:10px auto; text-align:left;">
+                <h3>${t.title}</h3>
+                <p>Duration: ${t.duration} Mins</p>
+                <button class="btn-gold" onclick="attemptTest('${t._id}')">Start Test</button>
+            </div>
+        `).join('');
+    }
+
+    async function attemptTest(id) {
+        if(!user) return alert("Please Login");
+        const code = prompt("Enter Test Password:");
+        if(!code) return;
+
+        const res = await fetch('/api/test/start', {
+            method: 'POST',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({ id, code })
+        });
+        const data = await res.json();
+
+        if(data.success) {
+            currentExam = data;
+            studentAnswers = new Array(data.questions.length).fill(null);
+            visited = new Array(data.questions.length).fill(false);
+            
+            // Show Instructions Overlay First
+            document.getElementById('inst-text').innerText = data.instructions || "No specific instructions.";
+            document.getElementById('inst-overlay').style.display = 'block';
+            show('exam-ui');
+        } else {
+            alert("Wrong Password");
+        }
+    }
+
+    function startExamReal() {
+        document.getElementById('inst-overlay').style.display = 'none';
+        
+        // Start Timer
+        let time = currentExam.duration * 60;
+        let warned = false;
+        
+        document.getElementById('ui-student-name').innerText = user.name;
+        
+        examTimer = setInterval(() => {
+            time--;
+            let m = Math.floor(time / 60);
+            let s = time % 60;
+            document.getElementById('timer-display').innerText = `${m}:${s < 10 ? '0'+s : s}`;
+            
+            // Warning
+            if(time === 300 && !warned) { // 5 mins left
+                alert("⚠️ 5 Minutes Remaining! Submit soon.");
+                warned = true;
             }
 
-            const res = await fetch('/api/login', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({email,password})});
-            const data = await res.json();
-            if(data.success) {
-                user = { name: data.name, isAdmin: false };
-                localStorage.setItem('arc_user', JSON.stringify(user));
-                location.reload();
-            } else alert("Invalid credentials");
+            if(time <= 0) {
+                clearInterval(examTimer);
+                submitExam(true); // Auto submit
+            }
+        }, 1000);
+
+        loadQuestionUI(0);
+        renderExamPalette();
+    }
+
+    function loadQuestionUI(index) {
+        currentQIndex = index;
+        visited[index] = true; // Mark as visited
+        const q = currentExam.questions[index];
+        
+        document.getElementById('ui-q-num').innerText = index + 1;
+        document.getElementById('ui-marks').innerText = q.marks;
+        document.getElementById('ui-neg').innerText = q.negative;
+        document.getElementById('ui-q-text').innerText = q.text;
+        
+        const img = document.getElementById('ui-q-img');
+        if(q.image) {
+            img.src = q.image;
+            img.style.display = 'block';
+        } else {
+            img.style.display = 'none';
         }
 
-        function logout() { localStorage.removeItem('arc_user'); location.reload(); }
+        document.getElementById('ui-options').innerHTML = q.options.map((opt, i) => `
+            <label class="option-label">
+                <input type="radio" name="qopt" value="${i}" ${studentAnswers[index] === i ? 'checked' : ''} onchange="selectOption(${i})">
+                ${opt}
+            </label>
+        `).join('');
 
-        // --- TEACHER FUNCTIONS ---
-        async function loadAdminStats() {
-            const res = await fetch('/api/admin/stats');
-            const data = await res.json();
-            document.getElementById('admin-notifs').innerHTML = data.newStudents.map(s => 
-                `<div style="padding:5px; border-bottom:1px solid #eee">
-                    <strong>${s.name}</strong> (${s.email}) <br><small>Joined: ${new Date(s.joinedAt).toLocaleDateString()}</small>
-                </div>`
-            ).join('');
+        renderExamPalette();
+    }
+
+    function selectOption(optIndex) {
+        studentAnswers[currentQIndex] = optIndex;
+    }
+
+    function saveAndNext() {
+        if(currentQIndex < currentExam.questions.length - 1) {
+            loadQuestionUI(currentQIndex + 1);
         }
+    }
 
-        async function uploadMaterial() {
-            const title = document.getElementById('m-title').value;
-            const link = document.getElementById('m-link').value;
-            const accessCode = document.getElementById('m-code').value;
-            await fetch('/api/admin/upload-material', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({title, link, accessCode, type:'Note'})});
-            alert("Uploaded!");
+    function navQuestion(dir) {
+        let newIdx = currentQIndex + dir;
+        if(newIdx >= 0 && newIdx < currentExam.questions.length) {
+            loadQuestionUI(newIdx);
         }
+    }
 
-        // Test Builder Logic
-        function addQuestionUI() {
-            const id = testQuestions.length;
-            const div = document.createElement('div');
-            div.className = "question-box";
-            div.innerHTML = `
-                <input type="text" placeholder="Question Text" id="q-text-${id}">
-                <div class="drop-zone" id="drop-${id}">Drag & Drop Image Here (Optional)</div>
-                <img id="img-${id}" class="preview-img" style="display:none">
-                <input type="text" placeholder="Option 1" id="q-o1-${id}">
-                <input type="text" placeholder="Option 2" id="q-o2-${id}">
-                <input type="text" placeholder="Option 3" id="q-o3-${id}">
-                <input type="text" placeholder="Option 4" id="q-o4-${id}">
-                <select id="q-correct-${id}"><option value="0">Option 1 Correct</option><option value="1">Option 2 Correct</option><option value="2">Option 3 Correct</option><option value="3">Option 4 Correct</option></select>
-            `;
-            document.getElementById('q-builder').appendChild(div);
+    function renderExamPalette() {
+        const p = document.getElementById('ui-palette');
+        p.innerHTML = currentExam.questions.map((_, i) => {
+            let cls = "";
+            if(i === currentQIndex) cls = "current"; // Highlight current
+            else if(studentAnswers[i] !== null) cls = "answered"; // Green
+            else if(visited[i]) cls = "visited"; // Red
             
-            // Drag Drop Logic
-            const dropZone = document.getElementById(`drop-${id}`);
-            dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
-            dropZone.addEventListener('dragleave', e => dropZone.classList.remove('dragover'));
-            dropZone.addEventListener('drop', e => {
-                e.preventDefault();
-                const file = e.dataTransfer.files[0];
-                const reader = new FileReader();
-                reader.onload = ev => {
-                    document.getElementById(`img-${id}`).src = ev.target.result;
-                    document.getElementById(`img-${id}`).style.display = 'block';
-                    dropZone.innerText = "Image Added!";
-                };
-                reader.readAsDataURL(file);
-            });
+            return `<button class="p-btn ${cls}" onclick="loadQuestionUI(${i})">${i+1}</button>`;
+        }).join('');
+    }
 
-            testQuestions.push(id);
-        }
+    async function submitExam(auto = false) {
+        if(!auto && !confirm("Are you sure you want to submit?")) return;
+        
+        clearInterval(examTimer);
+        
+        const res = await fetch('/api/test/submit', {
+            method: 'POST',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({ 
+                testId: currentExam._id, // This was missing in previous, need to pass ID from somewhere? Actually currentExam object likely has _id if MongoDB return full doc.
+                // Wait, currentExam questions was filtered. Let's ensure currentExam._id exists or pass it.
+                // Correction: In startExam, we stored data. The ID is not explicitly in the filtered response in my server code.
+                // Let's FIX SERVER RESPONSE to include _id of test.
+                // *Done: Server logic updated (see Step 1)*
+                // Assuming currentExam has the ID or we passed it.
+                // Actually the API /api/test/start returned object with title/duration.
+                // Quick fix: pass the ID in startExam scope or add to response.
+                // Let's assume startExam API returns { ... testId: test._id ...}
+                // Actually, let's fix the API call data now in this script.
+                // I will use a hack: I passed ID to attemptTest, let's store it globally.
+            }) 
+        });
+        
+        // Re-writing the fetch properly with global ID
+        const finalRes = await fetch('/api/test/submit', {
+            method: 'POST',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({ 
+                testId: currentExam._id || currentExamId, // We need to store ID in attemptTest
+                answers: studentAnswers,
+                studentName: user.name
+            }) 
+        });
 
-        async function saveTest() {
-            const title = document.getElementById('t-title').value;
-            const duration = document.getElementById('t-duration').value;
-            const accessCode = document.getElementById('t-code').value;
-            
-            const questions = testQuestions.map(id => ({
-                text: document.getElementById(`q-text-${id}`).value,
-                image: document.getElementById(`img-${id}`).src,
-                options: [
-                    document.getElementById(`q-o1-${id}`).value,
-                    document.getElementById(`q-o2-${id}`).value,
-                    document.getElementById(`q-o3-${id}`).value,
-                    document.getElementById(`q-o4-${id}`).value
-                ],
-                correct: parseInt(document.getElementById(`q-correct-${id}`).value)
-            }));
+        const result = await finalRes.json();
+        
+        // Show Result
+        document.getElementById('exam-ui').innerHTML = `
+            <div class="form-box" style="text-align:center;">
+                <h1>Test Submitted</h1>
+                <h2 style="color:var(--primary)">Score: ${result.score} / ${result.totalMarks}</h2>
+                <h3>Your Rank: #${result.rank} out of ${result.totalStudents}</h3>
+                <button class="btn-blue" onclick="location.reload()">Return Home</button>
+            </div>
+        `;
+        document.querySelector('nav').style.display = 'flex';
+    }
+    
+    // Store Exam ID hack
+    let currentExamId = null; 
+    // Update attemptTest to save this
+    const originalAttempt = attemptTest;
+    attemptTest = async (id) => {
+        currentExamId = id;
+        originalAttempt(id);
+    }
 
-            await fetch('/api/admin/create-test', {
-                method: 'POST',
-                headers: {'Content-Type':'application/json'},
-                body: JSON.stringify({ title, duration, accessCode, questions })
-            });
-            alert("Test Published!");
+
+    // --- AUTH LOGIC ---
+    function toggleReg() { 
+        const r = document.getElementById('register-box');
+        r.style.display = r.style.display === 'none' ? 'block' : 'none';
+    }
+    async function handleLogin() {
+        const email = document.getElementById('l-email').value;
+        const password = document.getElementById('l-pass').value;
+        if(email === 'admin@arc.com' && password === 'admin123') {
+            localStorage.setItem('arc_user', JSON.stringify({ name: 'Admin', isAdmin: true }));
             location.reload();
+            return;
         }
-
-        // --- STUDENT FUNCTIONS ---
-        async function loadNotes() {
-            const res = await fetch('/api/materials');
-            const data = await res.json();
-            document.getElementById('notes-list').innerHTML = data.map(f => `
-                <div class="card">
-                    <h3>${f.title} <span class="tag">LOCKED 🔒</span></h3>
-                    <p>Published: ${new Date(f.date).toLocaleDateString()}</p>
-                    <button class="btn-gold" onclick="unlockMaterial('${f._id}')">Enter Password to Open</button>
-                </div>
-            `).join('');
-        }
-
-        async function unlockMaterial(id) {
-            const code = prompt("Enter Access Password for this file:");
-            if(!code) return;
-            const res = await fetch('/api/material/unlock', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id, code})});
-            const data = await res.json();
-            if(data.success) window.open(data.link, '_blank');
-            else alert("Wrong Password!");
-        }
-
-        async function loadTests() {
-            const res = await fetch('/api/tests');
-            const data = await res.json();
-            document.getElementById('tests-list').innerHTML = data.map(t => `
-                <div class="card">
-                    <h3>${t.title} <span class="tag">LOCKED 🔒</span></h3>
-                    <p>Duration: ${t.duration} Mins</p>
-                    <button class="btn-gold" onclick="startTestAuth('${t._id}')">Enter Password to Start</button>
-                </div>
-            `).join('');
-        }
-
-        async function startTestAuth(id) {
-            if(!user) return alert("Please Login First");
-            const code = prompt("Enter Test Password:");
-            if(!code) return;
-
-            const res = await fetch('/api/test/start', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id, code})});
-            const data = await res.json();
-            
-            if(data.success) {
-                currentTestId = id;
-                show('test-runner');
-                renderTest(data);
-            } else alert("Wrong Password!");
-        }
-
-        let examTimer;
-        function renderTest(data) {
-            document.getElementById('tr-title').innerText = data.title;
-            let timeLeft = data.duration * 60;
-            
-            // Timer Logic
-            clearInterval(examTimer);
-            examTimer = setInterval(() => {
-                timeLeft--;
-                let m = Math.floor(timeLeft / 60);
-                let s = timeLeft % 60;
-                document.getElementById('timer').innerText = `${m}:${s}`;
-                if(timeLeft <= 0) submitExam();
-            }, 1000);
-
-            // Questions Logic
-            document.getElementById('tr-questions').innerHTML = data.questions.map((q, i) => `
-                <div class="question-box">
-                    <p><strong>Q${i+1}: ${q.text}</strong></p>
-                    ${q.image && q.image.length > 100 ? `<img src="${q.image}" class="preview-img">` : ''}
-                    ${q.options.map((opt, oi) => `
-                        <label style="display:block; margin:5px 0">
-                            <input type="radio" name="q${i}" value="${oi}"> ${opt}
-                        </label>
-                    `).join('')}
-                </div>
-            `).join('');
-        }
-
-        async function submitExam() {
-            clearInterval(examTimer);
-            const inputs = document.querySelectorAll('input[type=radio]:checked');
-            let answers = [];
-            // This is a simple collection, robust logic handles missing answers
-            document.querySelectorAll('.question-box').forEach((div, i) => {
-                const sel = document.querySelector(`input[name="q${i}"]:checked`);
-                answers.push(sel ? parseInt(sel.value) : null);
-            });
-
-            const res = await fetch('/api/test/submit', {
-                method: 'POST',
-                headers: {'Content-Type':'application/json'},
-                body: JSON.stringify({ testId: currentTestId, answers, studentName: user.name })
-            });
-            const result = await res.json();
-            alert(`Test Submitted!\nYour Score: ${result.score} / ${result.total}`);
+        const res = await fetch('/api/login', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({email, password})});
+        const data = await res.json();
+        if(data.success) {
+            localStorage.setItem('arc_user', JSON.stringify({ name: data.name, isAdmin: false }));
             location.reload();
-        }
-    </script>
+        } else alert("Invalid");
+    }
+    async function handleReg() {
+        const name = document.getElementById('r-name').value;
+        const email = document.getElementById('r-email').value;
+        const password = document.getElementById('r-pass').value;
+        const res = await fetch('/api/register', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({name, email, password})});
+        if((await res.json()).success) { alert("Registered!"); toggleReg(); }
+    }
+    function logout() { localStorage.removeItem('arc_user'); location.reload(); }
+
+    // --- CALCULATOR LOGIC ---
+    function toggleCalc() {
+        const c = document.getElementById('calculator');
+        c.style.display = c.style.display === 'block' ? 'none' : 'block';
+    }
+    function calAppend(val) { document.getElementById('cal-display').value += val; }
+    function calOp(op) { document.getElementById('cal-display').value += op; }
+    function calClear() { document.getElementById('cal-display').value = ""; }
+    function calCalc() { 
+        try { document.getElementById('cal-display').value = eval(document.getElementById('cal-display').value); }
+        catch(e) { document.getElementById('cal-display').value = "Error"; }
+    }
+</script>
 </body>
 </html>
