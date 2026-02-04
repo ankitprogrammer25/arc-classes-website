@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARC Classes - Connected</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --primary: #5a4bda; --secondary: #0f172a; }
+        * { box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { margin: 0; background: #fff; }
+
+        /* NAV */
+        nav { display: flex; justify-content: space-between; padding: 15px 5%; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .logo { font-size: 24px; font-weight: 800; color: var(--secondary); }
+        .btn { padding: 8px 15px; border-radius: 6px; border: none; cursor: pointer; background: var(--primary); color: white; }
+        
+        /* SECTIONS */
+        .section { display: none; padding: 40px 10%; }
+        .active { display: block; }
+        
+        /* DASHBOARD */
+        .upload-card { border: 2px dashed #ccc; padding: 20px; text-align: center; margin: 20px 0; background: #f9f9f9; }
+        .file-item { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #eee; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">ARC CLASSES</div>
+        <div>
+            <button class="btn" onclick="showSection('home')">Home</button>
+            <button class="btn" onclick="showSection('teacher')">Teacher</button>
+            <button class="btn" onclick="showSection('student')">Student</button>
+        </div>
+    </nav>
+
+    <div id="home" class="section active">
+        <h1>Welcome to ARC Classes</h1>
+        <p>Backend Status: <span style="color: green; font-weight: bold;">CONNECTED ✅</span></p>
+    </div>
+
+    <div id="teacher" class="section">
+        <h2>Teacher Upload Panel</h2>
+        <div class="upload-card">
+            <input type="text" id="file-name" placeholder="File Name (e.g. Physics Notes)" style="padding: 10px; width: 60%;">
+            <select id="file-type" style="padding: 10px;"><option>Notes</option><option>Result</option></select>
+            <button class="btn" onclick="uploadFile()">Upload to Database</button>
+        </div>
+        <h3>Database Records:</h3>
+        <div id="teacher-list"></div>
+    </div>
+
+    <div id="student" class="section">
+        <h2>Student Study Material</h2>
+        <p>These files are coming from your MongoDB Database:</p>
+        <div id="student-list">Loading...</div>
+    </div>
+
+    <script>
+        // NAVIGATION
+        function showSection(id) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+
+        // --- BACKEND CONNECTION CODE ---
+
+        // 1. UPLOAD (Send to Server)
+        async function uploadFile() {
+    const title = document.getElementById('file-name').value;
+    const type = document.getElementById('file-type').value;
+    
+    if(!title) return alert("Please enter a file name");
+
+    // Send data to backend
+    const response = await fetch('/api/upload', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, type })
+    });
+
+    const result = await response.json();
+    
+    if(result.success) {
+        alert("✅ " + result.message);
+        renderFiles(); // Refresh the list
+    } else {
+        alert("❌ Error: " + result.error);
+    }
+}
+
+        // 2. LOAD (Get from Server)
+        async function renderFiles() {
+    // Get data from backend
+    const response = await fetch('/api/materials');
+    const files = await response.json();
+
+    const tList = document.getElementById('teacher-file-list');
+    const sList = document.getElementById('student-file-list');
+    let html = '';
+    
+    files.forEach(file => {
+        html += `
+        <div class="file-item">
+            <div>
+                <strong>${file.title}</strong> 
+                <span style="font-size: 12px; color: gray;">(${file.type})</span>
+            </div>
+            <button class="btn btn-primary" style="padding: 5px 10px; font-size: 12px;">Download</button>
+        </div>`;
+    });
+
+    tList.innerHTML = html;
+    sList.innerHTML = html;
+}
+
+// Load files immediately when page opens
+window.onload = renderFiles;
+
+    </script>
+</body>
+</html>
