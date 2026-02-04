@@ -121,34 +121,43 @@ app.post('/api/test/start', async (req, res) => {
     } else res.json({ success: false, message: "Wrong Password" });
 });
 
+// --- FIX: UPDATED SUBMIT ROUTE (Copy this into index.js) ---
 app.post('/api/test/submit', async (req, res) => {
-    const { testId, answers, studentName, studentEmail } = req.body;
-    const test = await Test.findById(testId);
-    let score = 0, total = 0, correctCount = 0, wrongCount = 0, skippedCount = 0;
-
-    test.questions.forEach((q, i) => {
-        total += q.marks;
-        if (answers[i] === null || answers[i] === undefined) {
-            skippedCount++;
-        } else if (answers[i] === q.correct) {
-            score += q.marks; correctCount++;
-        } else {
-            score -= q.negative; wrongCount++;
-        }
-    });
-
-    const percentage = total > 0 ? (score / total) * 100 : 0;
-    let feedback = percentage < 40 ? "Focus on concepts and try again." : (percentage < 80 ? "Good job! Keep revising." : "Outstanding performance!");
-    
-    // Save result specifically so teacher can see it
     try {
-        await new Result({ studentName, studentEmail, testTitle: test.title, score, totalMarks: total, percentage, feedback }).save();
+        const { testId, answers, studentName, studentEmail } = req.body;
+        const test = await Test.findById(testId);
+        
+        let score = 0, total = 0, correct = 0, wrong = 0, skipped = 0;
+        test.questions.forEach((q, i) => {
+            total += q.marks;
+            if (answers[i] === null || answers[i] === undefined) {
+                skipped++;
+            } else if (answers[i] === q.correct) {
+                score += q.marks; correct++;
+            } else {
+                score -= q.negative; wrong++;
+            }
+        });
+
+        const percentage = total > 0 ? (score / total) * 100 : 0;
+        let feedback = percentage < 40 ? "Focus on concepts and try again." : (percentage < 80 ? "Good job! Keep revising." : "Outstanding performance!");
+
+        // SAVE TO DATABASE (Critical for Teacher Panel)
+        const newResult = new Result({
+            studentName, studentEmail, testTitle: test.title, 
+            score, totalMarks: total, percentage, rank: 0, feedback 
+        });
+        await newResult.save();
+
+        // Calculate Rank
         const rank = (await Result.countDocuments({ testTitle: test.title, score: { $gt: score } })) + 1;
-        // Send back detailed stats for pie chart
-        res.json({ success: true, score, totalMarks: total, rank, percentage: percentage.toFixed(1), feedback, stats: { correct: correctCount, wrong: wrongCount, skipped: skippedCount } });
-    } catch(e) {
-        console.error("Error saving result:", e);
-        res.json({ success: false, message: "Failed to save result" });
+        newResult.rank = rank;
+        await newResult.save();
+        
+        res.json({ success: true, score, totalMarks: total, rank, percentage: percentage.toFixed(1), feedback, stats: { correct, wrong, skipped } });
+    } catch (e) {
+        console.log("Submit Error:", e);
+        res.json({ success: false, message: "Error saving result" });
     }
 });
 

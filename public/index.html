@@ -55,6 +55,15 @@
         .modal-box { background:white; padding:30px; border-radius:15px; max-width:500px; width:90%; text-align:center; position:relative; }
 
         footer { background: var(--primary); color: #94a3b8; text-align: center; padding: 20px; margin-top: auto; }
+
+        /* --- ADD THIS TO YOUR STYLE SECTION --- */
+.search-bar-container { display: flex; gap: 10px; margin-bottom: 20px; }
+.search-input { flex: 1; padding: 15px; font-size: 1.1rem; border: 2px solid var(--primary); border-radius: 5px; }
+.blog-card { background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 20px; border-left: 5px solid var(--gold); }
+.blog-content { padding: 20px; }
+.blog-text { max-height: 80px; overflow: hidden; transition: max-height 0.5s ease; }
+.blog-text.expanded { max-height: 1000px; }
+.read-more-btn { background: none; border: none; color: blue; cursor: pointer; padding: 0; margin-top: 10px; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -73,15 +82,17 @@
 </nav>
 
 <div id="home" class="section active">
-    <div style="margin-bottom: 20px;">
-        <input type="text" id="home-search" placeholder="🔍 Search Books & Notes..." onkeyup="filterNotes()" style="padding: 15px; font-size: 1.1rem; border: 2px solid var(--primary);">
+    <div class="search-bar-container">
+        <input type="text" id="home-search" class="search-input" placeholder="🔍 Search Books & Notes..." onkeyup="filterNotes()">
+        <button class="btn-gold" onclick="filterNotes()">Search</button>
     </div>
 
-    <div id="announce-bar" style="background:var(--gold); color:var(--primary); padding:10px; font-weight:bold; border-radius:5px; margin-bottom:20px;">📢 Loading Announcement...</div>
+    <div id="announce-bar" class="marquee">📢 Loading Announcement...</div>
     
-    <div id="blog-container" class="blink-anim grid" style="margin-bottom: 30px;"></div>
+    <h3 style="color:var(--primary); margin-top:30px;">Latest Updates & Blogs</h3>
+    <div id="blog-container" class="grid"></div>
 
-    <div class="hero">
+    <div class="hero" style="margin-top:40px;">
         <h1>Master Chemistry with ARC</h1>
         <p>Premium Notes, GATE-Style Tests, and Expert Guidance.</p>
         <button class="cta-btn" onclick="show('tests')">Start a Test Now</button>
@@ -144,23 +155,81 @@
 <div id="admin" class="section">
     <h2>👨‍🏫 Teacher Dashboard</h2>
     <div style="display:flex; gap:10px; margin-bottom:20px; flex-wrap:wrap;">
-        <button onclick="showAdminTab('create-test')">Create Test</button>
-        <button onclick="showAdminTab('upload-mat')">Upload Book/Note</button>
-        <button onclick="showAdminTab('upload-res')">Upload Offline Result</button>
-        <button onclick="showAdminTab('create-blog')">Create Blog</button>
-        <button onclick="showAdminTab('announce')">Announcement</button>
-        <button onclick="showAdminTab('students')">Students</button>
-        <button onclick="showAdminTab('online-res')">Online Results</button>
-        <button onclick="showAdminTab('manage')">Manage (Delete)</button>
+        <button class="btn-gold" onclick="showAdminTab('create-test')">Create Test</button>
+        <button class="btn-gold" onclick="showAdminTab('upload-mat')">Upload Material</button>
+        <button class="btn-gold" onclick="showAdminTab('upload-res')">Offline Results</button>
+        <button class="btn-gold" onclick="showAdminTab('create-blog')">Post Blog</button>
+        <button class="btn-gold" onclick="showAdminTab('online-res')">Online Reports</button>
+        <button class="btn-red" onclick="showAdminTab('manage')">Manage (Delete)</button>
     </div>
     
-    <div id="adm-students" style="display:none"><h3>Students</h3><table id="student-table" style="width:100%; border-collapse:collapse;"></table></div>
-    <div id="adm-online-res" style="display:none"><h3>Online Results</h3><table id="online-res-table" style="width:100%; border-collapse:collapse;"></table></div>
-    <div id="adm-manage" style="display:none"><h3>Delete Content</h3><div id="manage-list"></div></div>
+    <div id="adm-students" style="display:none"><h3>Students</h3><table id="student-table" style="width:100%"></table></div>
     
-    <div id="adm-announce" style="display:none">
-        <div class="form-box" style="margin:0"><h3>Update Announcement</h3><textarea id="ann-text"></textarea><button class="btn-gold" onclick="updateAnnouncement()">Update</button></div>
+    <div id="adm-online-res" style="display:none"><h3>Online Test Reports</h3><table id="online-res-table" style="width:100%"></table></div>
+    
+    <div id="adm-upload-mat" style="display:none">
+        <div class="form-box" style="margin:0">
+            <h3>Upload Book/Note</h3>
+            <input id="m-title" placeholder="Title"> <input id="m-desc" placeholder="Description">
+            <input id="m-link" placeholder="Google Drive Link"> <input id="m-code" placeholder="Set Password (Required)">
+            <p>Cover Image:</p> <input type="file" id="m-img-file" accept="image/*">
+            <button class="btn-gold" onclick="uploadMaterial()">Upload Protected File</button>
+        </div>
     </div>
+
+    <div id="adm-upload-res" style="display:none">
+        <div class="form-box" style="margin:0">
+            <h3>Upload Offline Result</h3>
+            <input id="off-title" placeholder="Test Name (e.g. Weekly Test 1)">
+            <div style="background:#fff7ed; padding:15px; margin:10px 0; border:1px solid orange;">
+                <h4>Add Student Record</h4>
+                <input id="res-name" placeholder="Student Name"> 
+                <div style="display:flex; gap:10px"><input type="number" id="res-marks" placeholder="Marks"><input type="number" id="res-rank" placeholder="Rank"></div>
+                <input id="res-link" placeholder="Checked Copy Drive Link"> <input id="res-pass" placeholder="Set Student Password">
+                <button class="btn-gold" onclick="addResRecord()">+ Add Record to List</button>
+                <p id="res-count">Records Pending: 0</p>
+            </div>
+            <button class="btn-gold" onclick="publishOfflineResult()">Publish All Records</button>
+        </div>
+    </div>
+
+    <div id="adm-create-blog" style="display:none">
+        <div class="form-box" style="margin:0">
+            <h3>Create Blog Post</h3>
+            <input id="b-title" placeholder="Blog Title">
+            <textarea id="b-content" placeholder="Write content..." rows="5"></textarea>
+            <p>Image:</p><input type="file" id="b-img-file" accept="image/*">
+            <div style="margin:10px 0;">
+                <label>Title Color: <input type="color" id="b-h-color" value="#000000"></label>
+                <label>Text Color: <input type="color" id="b-p-color" value="#333333"></label>
+            </div>
+            <button class="btn-gold" onclick="createBlog()">Publish Blog</button>
+        </div>
+    </div>
+    
+    <div id="adm-manage" style="display:none"><div id="manage-list"></div></div>
+
+    <div id="adm-create-test" style="display:none">
+        <div class="form-box" style="margin:0; max-width:100%">
+            <h3>Create Online Test</h3>
+            <input id="t-title" placeholder="Title"> <input type="number" id="t-dur" placeholder="Mins"> <input id="t-code" placeholder="Password">
+            <textarea id="t-inst" placeholder="Instructions"></textarea>
+            <div style="background:#f0f9ff; padding:15px; margin:15px 0;">
+                <h4>Add Question</h4>
+                <textarea id="q-text" placeholder="Question Text"></textarea>
+                <p>Image:</p> <input type="file" id="q-img-file" accept="image/*">
+                <img id="q-img-preview" style="height:50px; display:none">
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:5px">
+                    <input id="op0" placeholder="Opt 1"><input id="op1" placeholder="Opt 2"><input id="op2" placeholder="Opt 3"><input id="op3" placeholder="Opt 4">
+                </div>
+                <select id="q-corr"><option value="0">Correct: Opt 1</option><option value="1">Correct: Opt 2</option><option value="2">Correct: Opt 3</option><option value="3">Correct: Opt 4</option></select>
+                <button class="btn-gold" onclick="addDraftQ()">+ Add Question</button>
+                <p id="q-count">Questions: 0</p>
+            </div>
+            <button class="btn-gold" onclick="publishTest()">PUBLISH TEST</button>
+        </div>
+    </div>
+</div>
 
     <div id="adm-create-blog" style="display:none">
         <div class="form-box" style="margin:0">
@@ -491,6 +560,60 @@
         }
     }
     setInterval(()=>fetch('/api/tests').catch(e=>{}), 2*60*1000);
+
+// --- PASTE THIS INSIDE YOUR SCRIPT TAG ---
+
+// 1. Updated Blog Loader (With "See More")
+async function loadBlogs() {
+    const res = await fetch('/api/blogs');
+    const data = await res.json();
+    document.getElementById('blog-container').innerHTML = data.map((b, index) => `
+        <div class="blog-card" style="border-top: 5px solid ${b.hColor || 'gold'}">
+            ${b.image ? `<img src="${b.image}" style="width:100%; height:180px; object-fit:cover;">` : ''}
+            <div class="blog-content">
+                <h3 style="color:${b.hColor || '#333'}">${b.title}</h3>
+                <div id="blog-txt-${index}" class="blog-text" style="color:${b.pColor || '#555'}">
+                    ${b.content}
+                </div>
+                <button class="read-more-btn" onclick="toggleBlog('${index}')">See More</button>
+            </div>
+        </div>
+    `).join('');
+}
+
+function toggleBlog(index) {
+    const txt = document.getElementById(`blog-txt-${index}`);
+    txt.classList.toggle('expanded');
+}
+
+// 2. Updated Online Results Loader (For Teacher)
+async function loadOnlineResults() {
+    const res = await fetch('/api/admin/results/online');
+    const data = await res.json();
+    let html = `<tr><th>Date</th><th>Test</th><th>Student</th><th>Score</th><th>Action</th></tr>`;
+    html += data.map(r => `
+        <tr>
+            <td>${new Date(r.date).toLocaleDateString()}</td>
+            <td>${r.testTitle}</td>
+            <td>${r.studentName}<br><small>${r.studentEmail}</small></td>
+            <td style="font-weight:bold; color:${r.percentage >= 40 ? 'green' : 'red'}">${r.score}/${r.totalMarks} (${r.percentage.toFixed(0)}%)</td>
+            <td>#${r.rank}</td>
+        </tr>
+    `).join('');
+    document.getElementById('online-res-table').innerHTML = html;
+}
+
+// 3. Updated Search Logic
+function filterNotes() {
+    const query = document.getElementById('home-search').value.toLowerCase();
+    const filtered = allMaterials.filter(m => m.title.toLowerCase().includes(query));
+    document.getElementById('mat-list').innerHTML = filtered.map(m => `
+        <div class="card" onclick="unlockMaterial('${m._id}')">
+            <img src="${m.image || 'https://via.placeholder.com/200'}" class="book-cover">
+            <h3>${m.title}</h3><p>${m.description||''}</p><button class="btn-gold">Open</button>
+        </div>`).join('');
+}
+
 </script>
 </body>
-</html>
+</html> 
