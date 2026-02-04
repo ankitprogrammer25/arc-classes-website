@@ -661,5 +661,16 @@
         catch(e) { document.getElementById('cal-display').value = "Error"; }
     }
 </script>
+<script>
+    setInterval(async () => {
+        try {
+            // Secretly ping the server every 2 minutes
+            await fetch('/api/tests'); 
+            console.log("💓 Heartbeat sent (2 mins) - Server is awake");
+        } catch (e) {
+            console.log("Heartbeat failed - Check internet connection");
+        }
+    }, 2 * 60 * 1000); // 2 Minutes
+</script>
 </body>
 </html>
