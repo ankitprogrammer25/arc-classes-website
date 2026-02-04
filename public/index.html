@@ -3,121 +3,415 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ARC Classes - Connected</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>ARC CLASSES | Excellence in Chemistry</title>
     <style>
-        :root { --primary: #5a4bda; --secondary: #0f172a; }
-        * { box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-        body { margin: 0; background: #fff; }
+        /* --- 1. NEW THEME: Professional Blue & Gold --- */
+        :root {
+            --primary: #0f172a;   /* Dark Navy Blue */
+            --secondary: #fbbf24; /* Academic Gold */
+            --light: #f1f5f9;     /* Light Grey */
+            --text: #334155;      /* Dark Grey Text */
+            --white: #ffffff;
+        }
 
-        /* NAV */
-        nav { display: flex; justify-content: space-between; padding: 15px 5%; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .logo { font-size: 24px; font-weight: 800; color: var(--secondary); }
-        .btn { padding: 8px 15px; border-radius: 6px; border: none; cursor: pointer; background: var(--primary); color: white; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--light);
+            color: var(--text);
+        }
+
+        /* --- 2. NAVIGATION BAR --- */
+        nav {
+            background-color: var(--primary);
+            color: var(--white);
+            padding: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .menu {
+            display: flex;
+            gap: 20px;
+        }
+
+        .menu a {
+            color: var(--white);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            cursor: pointer;
+        }
+
+        .menu a:hover, .menu a.active {
+            color: var(--secondary);
+            border-bottom: 2px solid var(--secondary);
+        }
+
+        /* Mobile Menu Button */
+        .menu-toggle { display: none; cursor: pointer; font-size: 1.5rem; }
+
+        /* --- 3. SECTIONS --- */
+        .section {
+            display: none; /* Hidden by default */
+            padding: 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+            animation: fadeIn 0.5s;
+        }
+
+        .section.active {
+            display: block; /* Show active section */
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Hero Section (Home) */
+        .hero {
+            text-align: center;
+            padding: 4rem 1rem;
+            background: linear-gradient(135deg, var(--primary), #1e293b);
+            color: var(--white);
+            border-radius: 0 0 20px 20px;
+            margin-bottom: 2rem;
+        }
+        .hero h1 { margin: 0; font-size: 2.5rem; color: var(--secondary); }
+        .hero p { font-size: 1.2rem; margin-top: 10px; opacity: 0.9; }
+
+        /* Cards for Notes/Books */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--white);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            border-left: 5px solid var(--primary);
+            transition: transform 0.2s;
+        }
         
-        /* SECTIONS */
-        .section { display: none; padding: 40px 10%; }
-        .active { display: block; }
+        .card:hover { transform: translateY(-5px); }
+        .card h3 { margin-top: 0; color: var(--primary); }
+        .card small { color: #64748b; }
+
+        /* Forms (Login/Upload) */
+        .form-box {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            max-width: 400px;
+            margin: 0 auto;
+        }
         
-        /* DASHBOARD */
-        .upload-card { border: 2px dashed #ccc; padding: 20px; text-align: center; margin: 20px 0; background: #f9f9f9; }
-        .file-item { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #eee; }
+        input, select, button {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: 1px solid #cbd5e1;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: var(--primary);
+            color: var(--white);
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover { background-color: #1e293b; }
+        
+        .btn-gold { background-color: var(--secondary); color: var(--primary); }
+        .btn-gold:hover { background-color: #eab308; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .menu { display: none; flex-direction: column; width: 100%; background: var(--primary); position: absolute; top: 60px; left: 0; padding: 10px; }
+            .menu.show { display: flex; }
+            .menu-toggle { display: block; }
+        }
     </style>
 </head>
 <body>
 
     <nav>
         <div class="logo">ARC CLASSES</div>
-        <div>
-            <button class="btn" onclick="showSection('home')">Home</button>
-            <button class="btn" onclick="showSection('teacher')">Teacher</button>
-            <button class="btn" onclick="showSection('student')">Student</button>
+        <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+        <div class="menu" id="mainMenu">
+            <a onclick="showSection('home')" class="active">Home</a>
+            <a onclick="showSection('about')">About Us</a>
+            <a onclick="showSection('notes')">Notes</a>
+            <a onclick="showSection('books')">Books</a>
+            <a onclick="showSection('test')">Test</a>
+            <a onclick="showSection('results')">Results</a>
+            <a onclick="showSection('login')" style="color: var(--secondary);">Login</a>
         </div>
     </nav>
 
     <div id="home" class="section active">
-        <h1>Welcome to ARC Classes</h1>
-        <p>Backend Status: <span style="color: green; font-weight: bold;">CONNECTED ✅</span></p>
-    </div>
-
-    <div id="teacher" class="section">
-        <h2>Teacher Upload Panel</h2>
-        <div class="upload-card">
-            <input type="text" id="file-name" placeholder="File Name (e.g. Physics Notes)" style="padding: 10px; width: 60%;">
-            <select id="file-type" style="padding: 10px;"><option>Notes</option><option>Result</option></select>
-            <button class="btn" onclick="uploadFile()">Upload to Database</button>
+        <div class="hero">
+            <h1>Welcome to ARC Classes</h1>
+            <p>Empowering Students in Chemistry & Science</p>
+            <br>
+            <button class="btn-gold" style="width: 200px;" onclick="showSection('notes')">View Latest Notes</button>
         </div>
-        <h3>Database Records:</h3>
-        <div id="teacher-list"></div>
+        <div style="text-align: center;">
+            <h2>Why Choose Us?</h2>
+            <div class="grid-container">
+                <div class="card">
+                    <h3>📚 Quality Material</h3>
+                    <p>Curated notes and books for best preparation.</p>
+                </div>
+                <div class="card">
+                    <h3>🧪 Expert Faculty</h3>
+                    <p>Learn from experienced mentors.</p>
+                </div>
+                <div class="card">
+                    <h3>📊 Regular Tests</h3>
+                    <p>Track your progress with MCQ tests.</p>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div id="student" class="section">
-        <h2>Student Study Material</h2>
-        <p>These files are coming from your MongoDB Database:</p>
-        <div id="student-list">Loading...</div>
+    <div id="about" class="section">
+        <h2>About ARC Classes</h2>
+        <p>ARC Classes is dedicated to providing top-tier education in Chemistry. Located in Uttarakhand, we strive to bridge the gap between students and success.</p>
+        
+        <hr style="margin: 40px 0; border: 0; border-top: 1px solid #ddd;">
+        
+        <div style="background: #fff; padding: 20px; border: 1px dashed #ccc;">
+            <h3 style="color: #999;">Teacher Admin Panel (Internal Use)</h3>
+            <input type="text" id="fileTitle" placeholder="Title (e.g. Physics Chapter 1)">
+            <select id="fileType">
+                <option value="Notes">Notes</option>
+                <option value="Book">Book</option>
+                <option value="Result">Result</option>
+            </select>
+            <button onclick="uploadFile()">Upload to Database</button>
+        </div>
+    </div>
+
+    <div id="notes" class="section">
+        <h2>📝 Study Notes</h2>
+        <p>Download latest class notes here.</p>
+        <div id="notes-list" class="grid-container">
+            <p>Loading...</p>
+        </div>
+    </div>
+
+    <div id="books" class="section">
+        <h2>📖 Recommended Books</h2>
+        <div id="books-list" class="grid-container">
+            <p>Loading books...</p>
+        </div>
+    </div>
+
+    <div id="test" class="section">
+        <h2>📝 Live MCQ Test</h2>
+        <div class="form-box">
+            <div id="quiz-container">
+                <p>Click below to start today's test.</p>
+                <button class="btn-gold" onclick="startTest()">Start Test</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="results" class="section">
+        <h2>🏆 Exam Results</h2>
+        <p>Check your latest performance.</p>
+        <div id="results-list" class="card">
+            <p>No results published yet.</p>
+        </div>
+    </div>
+
+    <div id="login" class="section">
+        <div class="form-box">
+            <h2 style="text-align: center;">Student Login</h2>
+            <input type="email" placeholder="Email Address">
+            <input type="password" placeholder="Password">
+            <button>Login</button>
+            <p style="text-align: center; margin-top: 10px;">
+                <a href="#" style="color: var(--primary);">Register New Student</a>
+            </p>
+        </div>
     </div>
 
     <script>
-        // NAVIGATION
+        // --- Navigation Logic ---
         function showSection(id) {
-            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+            document.querySelectorAll('.menu a').forEach(link => link.classList.remove('active'));
+            
+            // Show selected section
             document.getElementById(id).classList.add('active');
+            
+            // Close mobile menu if open
+            document.getElementById('mainMenu').classList.remove('show');
+
+            // Load data if needed
+            if(id === 'notes' || id === 'books') loadMaterials(id);
         }
 
-        // --- BACKEND CONNECTION CODE ---
+        function toggleMenu() {
+            document.getElementById('mainMenu').classList.toggle('show');
+        }
 
-        // 1. UPLOAD (Send to Server)
+        // --- 1. Load Data (Notes/Books) ---
+        async function loadMaterials(type) {
+            const listId = type === 'notes' ? 'notes-list' : 'books-list';
+            const list = document.getElementById(listId);
+            list.innerHTML = "<p>Loading...</p>";
+
+            try {
+                const res = await fetch('/api/materials');
+                const data = await res.json();
+                
+                list.innerHTML = ""; // Clear loader
+
+                // Filter based on section (Notes vs Books)
+                // Note: If you saved everything as "Notes" before, they will appear in Notes.
+                const filteredData = data.filter(item => {
+                    if (type === 'notes') return item.type === 'Notes';
+                    if (type === 'books') return item.type === 'Book';
+                    return true;
+                });
+
+                if (filteredData.length === 0) {
+                    list.innerHTML = `<p>No ${type} uploaded yet.</p>`;
+                    return;
+                }
+
+                filteredData.forEach(file => {
+                    const div = document.createElement('div');
+                    div.className = "card";
+                    const dateStr = new Date(file.date).toLocaleDateString();
+                    
+                    // Check if title is a link
+                    let content = `<h3>${file.title}</h3>`;
+                    if (file.title.includes("http")) {
+                        const parts = file.title.split("http");
+                        content = `<h3><a href="http${parts[1]}" target="_blank" style="color:var(--primary)">${parts[0]} 🔗</a></h3>`;
+                    }
+
+                    div.innerHTML = `
+                        ${content}
+                        <p><small>Uploaded: ${dateStr}</small></p>
+                    `;
+                    list.appendChild(div);
+                });
+
+            } catch (err) {
+                console.error(err);
+                list.innerHTML = "<p style='color:red'>Failed to load data.</p>";
+            }
+        }
+
+        // --- 2. Upload Logic (Teacher) ---
         async function uploadFile() {
-    const title = document.getElementById('file-name').value;
-    const type = document.getElementById('file-type').value;
-    
-    if(!title) return alert("Please enter a file name");
+            const title = document.getElementById('fileTitle').value;
+            const type = document.getElementById('fileType').value;
 
-    // Send data to backend
-    const response = await fetch('/api/upload', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title, type })
-    });
+            if (!title) return alert("Please enter a title");
 
-    const result = await response.json();
-    
-    if(result.success) {
-        alert("✅ " + result.message);
-        renderFiles(); // Refresh the list
-    } else {
-        alert("❌ Error: " + result.error);
-    }
-}
+            try {
+                const res = await fetch('/api/upload', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ title, type })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    alert("Uploaded Successfully!");
+                    document.getElementById('fileTitle').value = "";
+                } else {
+                    alert("Error: " + data.error);
+                }
+            } catch (err) {
+                alert("Upload failed");
+            }
+        }
 
-        // 2. LOAD (Get from Server)
-        async function renderFiles() {
-    // Get data from backend
-    const response = await fetch('/api/materials');
-    const files = await response.json();
+        // --- 3. Test Logic (Simple Version) ---
+        async function startTest() {
+            const container = document.getElementById('quiz-container');
+            container.innerHTML = "<p>Loading Questions...</p>";
 
-    const tList = document.getElementById('teacher-file-list');
-    const sList = document.getElementById('student-file-list');
-    let html = '';
-    
-    files.forEach(file => {
-        html += `
-        <div class="file-item">
-            <div>
-                <strong>${file.title}</strong> 
-                <span style="font-size: 12px; color: gray;">(${file.type})</span>
-            </div>
-            <button class="btn btn-primary" style="padding: 5px 10px; font-size: 12px;">Download</button>
-        </div>`;
-    });
+            try {
+                const res = await fetch('/api/test');
+                const questions = await res.json();
+                
+                let html = "";
+                questions.forEach((q, index) => {
+                    html += `<div style="margin-bottom:20px; text-align:left;">
+                        <p><strong>Q${index+1}: ${q.text}</strong></p>
+                        ${q.options.map((opt, i) => 
+                            `<label style="display:block; padding:5px; background:#f8f9fa; margin:5px 0; border:1px solid #ddd; border-radius:5px;">
+                                <input type="radio" name="q${index}" value="${i}"> ${opt}
+                             </label>`
+                        ).join('')}
+                    </div>`;
+                });
+                html += `<button onclick="submitTest(${questions.length})">Submit Answers</button>`;
+                container.innerHTML = html;
+            } catch (err) {
+                container.innerHTML = "Error loading test.";
+            }
+        }
 
-    tList.innerHTML = html;
-    sList.innerHTML = html;
-}
+        async function submitTest(totalQ) {
+            // Collect answers
+            let answers = [];
+            for(let i=0; i<totalQ; i++) {
+                const selected = document.querySelector(`input[name="q${i}"]:checked`);
+                answers.push(selected ? parseInt(selected.value) : null);
+            }
 
-// Load files immediately when page opens
-window.onload = renderFiles;
+            // Send to server
+            const res = await fetch('/api/submit-test', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ answers })
+            });
+            const result = await res.json();
+            
+            document.getElementById('quiz-container').innerHTML = `
+                <div style="text-align:center">
+                    <h2 style="color: var(--primary)">Test Completed!</h2>
+                    <h1 style="color: var(--secondary)">Score: ${result.score}</h1>
+                    <p>Your Rank: #${result.rank} in class</p>
+                    <button onclick="startTest()">Try Again</button>
+                </div>
+            `;
+        }
 
+        // Initial Load
+        loadMaterials('notes');
     </script>
 </body>
 </html>
