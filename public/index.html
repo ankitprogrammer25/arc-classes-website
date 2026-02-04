@@ -8,34 +8,27 @@
         :root { --primary: #0f172a; --gold: #fbbf24; --light: #f8fafc; --red: #ef4444; --dark: #1e293b; --purple: #a855f7; --green: #22c55e; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--light); margin: 0; color: #333; display: flex; flex-direction: column; min-height: 100vh; }
         
-        /* LOGO & NAV */
         @keyframes rainbow { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         .logo { font-size: 1.8rem; font-weight: 900; letter-spacing: 2px; background: linear-gradient(270deg, #ff0000, #fbbf24, #00ff00, #0000ff, #ff00ff); background-size: 400% 400%; -webkit-background-clip: text; color: transparent; animation: rainbow 6s ease infinite; }
         nav { background: var(--primary); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
         .menu a { color: white; margin-left: 20px; text-decoration: none; font-weight: 500; cursor: pointer; transition: 0.3s; }
         .menu a:hover { color: var(--gold); }
         
-        /* LAYOUT */
         .section { display: none; padding: 20px; max-width: 1200px; margin: auto; flex: 1; }
         .section.active { display: block; animation: fadeIn 0.5s; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
-        /* HOME PAGE STYLES */
-        .hero { background: linear-gradient(135deg, var(--primary), var(--dark)); color: white; padding: 60px 20px; border-radius: 20px; text-align: center; margin-bottom: 30px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
-        .hero h1 { font-size: 2.5rem; margin: 0; color: var(--gold); }
-        .cta-btn { padding: 12px 30px; font-size: 1.1rem; background: var(--gold); color: var(--primary); border: none; border-radius: 50px; font-weight: bold; cursor: pointer; transition: transform 0.2s; }
-        .cta-btn:hover { transform: scale(1.05); }
-        
-        /* COMPONENTS */
-        .card { background: white; padding: 15px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: transform 0.2s; position: relative; }
+        .card { background: white; padding: 15px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: transform 0.2s; position: relative; display:flex; flex-direction:column; }
         .card:hover { transform: translateY(-5px); }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        .book-cover { width: 100%; height: 200px; object-fit: cover; border-radius: 5px; margin-bottom: 10px; background: #eee; border:1px solid #ddd; }
+        
         .btn-gold { background: var(--gold); color: var(--primary); padding: 10px 20px; border:none; border-radius:5px; cursor:pointer; font-weight:bold; }
         .btn-red { background: var(--red); color: white; padding: 10px 20px; border:none; border-radius:5px; cursor:pointer; font-weight:bold; }
         .form-box { max-width: 500px; margin: 30px auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         input, select, textarea { width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
-        
-        /* EXAM UI SPECIFIC */
+
+        /* EXAM UI */
         .exam-container { display: flex; height: 85vh; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
         .exam-left { flex: 3; padding: 30px; overflow-y: auto; border-right: 1px solid #eee; }
         .exam-right { flex: 1; background: #f8fafc; padding: 20px; display: flex; flex-direction: column; border-left: 1px solid #eee; }
@@ -43,12 +36,10 @@
         .option-label { display: flex; align-items: center; padding: 15px; border: 2px solid #eee; margin: 10px 0; cursor: pointer; border-radius: 8px; transition: 0.2s; }
         .option-label:hover { background: #f1f5f9; border-color: var(--primary); }
         .option-label input { margin-right: 15px; width: 20px; height: 20px; }
-        
         .palette-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 20px; }
         .p-btn { width: 40px; height: 40px; border-radius: 50%; border: 2px solid #ddd; cursor: pointer; font-weight: bold; display: flex; align-items: center; justify-content: center; background: white; font-size: 0.9rem; }
-        /* COLORS FOR PALETTE */
         .p-btn.answered { background: var(--green); color: white; border-color: var(--green); }
-        .p-btn.visited { background: var(--purple); color: white; border-color: var(--purple); } /* Purple for visited but not answered */
+        .p-btn.visited { background: var(--purple); color: white; border-color: var(--purple); }
         .p-btn.active { border: 3px solid var(--primary); transform: scale(1.1); }
 
         footer { background: var(--primary); color: #94a3b8; text-align: center; padding: 20px; margin-top: auto; }
@@ -60,8 +51,8 @@
     <div class="logo">ARC CLASSES</div>
     <div class="menu">
         <a onclick="show('home')">Home</a>
-        <a onclick="show('notes')">Books/Notes</a>
-        <a onclick="show('tests')">Online Tests</a>
+        <a onclick="show('notes')">Library</a>
+        <a onclick="show('tests')">Tests</a>
         <a onclick="show('results')">Results</a>
         <a onclick="show('login')" id="login-nav">Login</a>
         <a id="teacher-nav" onclick="show('admin')" style="display:none; color:var(--red)">TEACHER PANEL</a>
@@ -70,12 +61,11 @@
 </nav>
 
 <div id="home" class="section active">
-    <div style="background:var(--gold); color:var(--primary); padding:10px; font-weight:bold; border-radius:5px; margin-bottom:20px;">📢 IMPORTANT: Check Results section for latest updates!</div>
-    
-    <div class="hero">
-        <h1>Master Chemistry with ARC</h1>
+    <div id="announce-bar" style="background:var(--gold); color:var(--primary); padding:10px; font-weight:bold; border-radius:5px; margin-bottom:20px;">📢 Loading Announcement...</div>
+    <div style="text-align:center; padding:50px 20px; background:linear-gradient(135deg, var(--primary), var(--dark)); color:white; border-radius:20px;">
+        <h1 style="color:var(--gold); font-size:2.5rem;">Master Chemistry with ARC</h1>
         <p>Premium Notes, GATE-Style Tests, and Expert Guidance.</p>
-        <button class="cta-btn" onclick="show('tests')">Start a Test Now</button>
+        <button class="btn-gold" onclick="show('tests')">Start a Test Now</button>
     </div>
 </div>
 
@@ -94,7 +84,7 @@
             <img id="q-image-display" class="q-image" style="display:none;">
             <div id="q-options"></div>
             <div style="margin-top:30px; display:flex; gap:10px;">
-                <button class="btn-gold" style="background:transparent; border:1px solid #333; color:#333;" onclick="navQ(-1)">← Previous</button>
+                <button class="btn-gold" style="background:white; border:1px solid #333; color:#333;" onclick="navQ(-1)">← Prev</button>
                 <button class="btn-red" style="background:white; color:var(--red); border:1px solid var(--red);" onclick="clearResponse()">Clear Response</button>
                 <button class="btn-gold" style="flex:1" onclick="saveAndNext()">Save & Next →</button>
             </div>
@@ -103,10 +93,7 @@
             <div style="background:var(--primary); color:var(--gold); padding:15px; text-align:center; font-size:1.5rem; font-weight:bold; border-radius:8px; margin-bottom:20px;" id="timer">00:00</div>
             <div><strong>Candidate: </strong><span id="student-name-display">Student</span></div>
             <div style="flex:1; overflow-y:auto;">
-                <p><strong>Question Palette:</strong></p>
-                <div style="font-size:0.8rem; margin-bottom:10px;">
-                    <span style="color:var(--green)">● Answered</span> | <span style="color:var(--purple)">● Visited</span> | <span style="color:#999">○ Not Visited</span>
-                </div>
+                <p><strong>Palette:</strong> <span style="color:var(--green)">● Done</span> <span style="color:var(--purple)">● Visited</span></p>
                 <div class="palette-grid" id="palette"></div>
             </div>
             <button class="btn-red" style="width:100%; padding:15px;" onclick="submitExam()">SUBMIT TEST</button>
@@ -122,12 +109,12 @@
         <input type="email" id="l-email" placeholder="Email">
         <input type="password" id="l-pass" placeholder="Password">
         <button class="btn-gold" style="width:100%" onclick="handleLogin()">Login</button>
-        <p style="text-align:center; color:blue; cursor:pointer" onclick="toggleReg()">New Student? Register</p>
+        <p style="text-align:center; color:blue; cursor:pointer" onclick="toggleReg()">New? Register</p>
         <p style="text-align:center; font-size:0.8rem; color:#999">Teacher? (admin@arc.com)</p>
     </div>
     <div id="reg-box" class="form-box" style="display:none">
         <h2>Register</h2>
-        <p style="color:red; font-size:0.9rem">⚠️ Email & Password are not restorable.</p>
+        <p style="color:red; font-size:0.9rem">⚠️ Email & Password cannot be reset.</p>
         <input id="r-name" placeholder="Name">
         <div style="display:flex; align-items:center; gap:5px"><input id="r-prefix" placeholder="username" style="text-align:right"><span>@arcstudent.com</span></div>
         <input type="password" id="r-pass" placeholder="Password">
@@ -138,15 +125,52 @@
 <div id="admin" class="section">
     <h2>👨‍🏫 Teacher Dashboard</h2>
     <div style="display:flex; gap:10px; margin-bottom:20px; flex-wrap:wrap;">
+        <button onclick="showAdminTab('create-test')">Create Test</button>
+        <button onclick="showAdminTab('upload-mat')">Upload Book/Note</button>
+        <button onclick="showAdminTab('upload-res')">Upload Offline Result</button>
+        <button onclick="showAdminTab('announce')">Announcement</button>
         <button onclick="showAdminTab('students')">Students</button>
         <button onclick="showAdminTab('online-res')">Online Results</button>
-        <button onclick="showAdminTab('create')">Create New</button>
     </div>
     
     <div id="adm-students" style="display:none"><h3>Students</h3><table id="student-table" style="width:100%; border-collapse:collapse;"></table></div>
     <div id="adm-online-res" style="display:none"><h3>Online Results</h3><table id="online-res-table" style="width:100%; border-collapse:collapse;"></table></div>
     
-    <div id="adm-create" style="display:none">
+    <div id="adm-announce" style="display:none">
+        <div class="form-box" style="margin:0">
+            <h3>Update Announcement</h3>
+            <textarea id="ann-text" placeholder="Type new announcement..."></textarea>
+            <button class="btn-gold" onclick="updateAnnouncement()">Update Now</button>
+        </div>
+    </div>
+
+    <div id="adm-upload-mat" style="display:none">
+        <div class="form-box" style="margin:0">
+            <h3>Upload Book/Note</h3>
+            <input id="m-title" placeholder="Title"> <input id="m-desc" placeholder="Description">
+            <input id="m-link" placeholder="Drive Link"> <input id="m-code" placeholder="Password">
+            <p>Cover Image:</p> <input type="file" id="m-img-file" accept="image/*">
+            <button class="btn-gold" onclick="uploadMaterial()">Upload</button>
+        </div>
+    </div>
+
+    <div id="adm-upload-res" style="display:none">
+        <div class="form-box" style="margin:0">
+            <h3>Upload Offline Result</h3>
+            <input id="off-title" placeholder="Test Name">
+            <div style="background:#fff7ed; padding:15px; margin:10px 0; border:1px solid orange;">
+                <h4>Add Student Record</h4>
+                <input id="res-name" placeholder="Student Name"> 
+                <div style="display:flex; gap:10px"><input type="number" id="res-marks" placeholder="Marks"><input type="number" id="res-rank" placeholder="Rank"></div>
+                <input id="res-link" placeholder="Checked Copy Link (Drive)"> <input id="res-pass" placeholder="Unique Password">
+                <button class="btn-gold" onclick="addResRecord()">+ Add Record</button>
+                <p id="res-count">Records: 0</p>
+            </div>
+            <button class="btn-gold" onclick="publishOfflineResult()">Publish</button>
+        </div>
+    </div>
+    
+    <div id="adm-create-test" style="display:none">
         <div class="form-box" style="margin:0; max-width:100%">
             <h3>Create Online Test</h3>
             <input id="t-title" placeholder="Title"> <input type="number" id="t-dur" placeholder="Mins"> <input id="t-code" placeholder="Password">
@@ -177,10 +201,11 @@
 <script>
     // --- STATE ---
     let user = JSON.parse(localStorage.getItem('arc_user'));
-    let draftQs = []; let qImgBase64 = "";
+    let draftQs = []; let qImgBase64 = ""; let draftRecs = []; let mImgBase64 = "";
     let currentTest = null; let studentAnswers = []; let visitedQs = []; let currentQIdx = 0; let examInterval;
 
     // --- INIT ---
+    fetch('/api/announcement').then(r=>r.json()).then(d=>document.getElementById('announce-bar').innerText="📢 "+d.text);
     if(user) {
         document.getElementById('login-nav').style.display = 'none'; document.getElementById('logout-btn').style.display = 'inline';
         if(user.email === 'admin@arc.com') document.getElementById('teacher-nav').style.display = 'inline';
@@ -194,7 +219,7 @@
         if(id === 'notes') loadMaterials(); if(id === 'tests') loadTestsList(); if(id === 'results') loadResults();
     }
     function showAdminTab(id) {
-        ['students', 'online-res', 'create'].forEach(t => document.getElementById('adm-'+t).style.display = 'none');
+        ['students', 'online-res', 'create-test', 'upload-mat', 'upload-res', 'announce'].forEach(t => document.getElementById('adm-'+t).style.display = 'none');
         document.getElementById('adm-'+id).style.display = 'block';
         if(id === 'students') loadStudents(); if(id === 'online-res') loadOnlineResults();
     }
@@ -217,6 +242,11 @@
     function logout() { localStorage.removeItem('arc_user'); location.reload(); }
 
     // --- TEACHER ---
+    async function updateAnnouncement() {
+        const text = document.getElementById('ann-text').value;
+        await fetch('/api/admin/announcement', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ text }) });
+        alert("Updated!"); location.reload();
+    }
     async function loadStudents() {
         const res = await fetch('/api/admin/students'); const data = await res.json();
         document.getElementById('student-table').innerHTML = `<tr><th style="background:#eee">Name</th><th style="background:#eee">Email</th><th style="background:#eee">Password</th></tr>` + data.map(s => `<tr><td style="border:1px solid #ddd; padding:8px">${s.name}</td><td style="border:1px solid #ddd; padding:8px">${s.email}</td><td style="border:1px solid #ddd; padding:8px">${s.password}</td></tr>`).join('');
@@ -226,6 +256,29 @@
         document.getElementById('online-res-table').innerHTML = `<tr><th style="background:#eee">Date</th><th style="background:#eee">Test</th><th style="background:#eee">Student</th><th style="background:#eee">Score</th></tr>` + data.map(r => `<tr><td style="border:1px solid #ddd; padding:8px">${new Date(r.date).toLocaleDateString()}</td><td style="border:1px solid #ddd; padding:8px">${r.testTitle}</td><td style="border:1px solid #ddd; padding:8px">${r.studentName}</td><td style="border:1px solid #ddd; padding:8px">${r.score}/${r.totalMarks} (${r.percentage.toFixed(0)}%)</td></tr>`).join('');
     }
     
+    // Upload Material
+    document.getElementById('m-img-file').addEventListener('change', function() { const r = new FileReader(); r.onload = e => mImgBase64 = e.target.result; r.readAsDataURL(this.files[0]); });
+    async function uploadMaterial() {
+        const title = document.getElementById('m-title').value; const desc = document.getElementById('m-desc').value; const link = document.getElementById('m-link').value; const code = document.getElementById('m-code').value;
+        if(!title || !link || !code) return alert("Missing fields");
+        await fetch('/api/admin/material', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ title, description: desc, link, accessCode: code, image: mImgBase64, type:'Book' }) });
+        alert("Uploaded!"); mImgBase64="";
+    }
+
+    // Upload Offline Result
+    function addResRecord() {
+        const name = document.getElementById('res-name').value; const link = document.getElementById('res-link').value; const pass = document.getElementById('res-pass').value;
+        if(!name || !link || !pass) return alert("Missing details");
+        draftRecs.push({ studentName: name, marks: document.getElementById('res-marks').value, rank: document.getElementById('res-rank').value, copyLink: link, accessCode: pass });
+        document.getElementById('res-count').innerText = `Records: ${draftRecs.length}`;
+        ['res-name','res-marks','res-rank','res-link','res-pass'].forEach(id => document.getElementById(id).value = "");
+    }
+    async function publishOfflineResult() {
+        const title = document.getElementById('off-title').value; if(!title || draftRecs.length===0) return alert("Missing Title/Records");
+        await fetch('/api/admin/offline-result', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ title, records: draftRecs }) });
+        alert("Published!"); draftRecs=[];
+    }
+
     // Create Test
     document.getElementById('q-img-file').addEventListener('change', function() { const r = new FileReader(); r.onload = e => { qImgBase64 = e.target.result; document.getElementById('q-img-preview').src = qImgBase64; document.getElementById('q-img-preview').style.display='block'; }; r.readAsDataURL(this.files[0]); });
     function addDraftQ() {
@@ -244,7 +297,11 @@
     // --- STUDENT CONTENT ---
     async function loadMaterials() {
         const res = await fetch('/api/materials'); const data = await res.json();
-        document.getElementById('mat-list').innerHTML = data.map(m => `<div class="card" onclick="unlockMaterial('${m._id}')"><h3>${m.title}</h3><p>${m.description||''}</p><button class="btn-gold" style="width:100%">Open</button></div>`).join('');
+        document.getElementById('mat-list').innerHTML = data.map(m => `
+            <div class="card" onclick="unlockMaterial('${m._id}')">
+                <img src="${m.image || 'https://via.placeholder.com/200?text=No+Cover'}" class="book-cover">
+                <h3>${m.title}</h3><p>${m.description||''}</p><button class="btn-gold" style="width:100%">Open</button>
+            </div>`).join('');
     }
     async function unlockMaterial(id) {
         const code = prompt("Password:"); if(!code) return;
@@ -253,7 +310,20 @@
     }
     async function loadResults() {
         const res = await fetch('/api/results/offline'); const data = await res.json();
-        document.getElementById('offline-results-list').innerHTML = data.map(r => `<div class="card"><h3>${r.title}</h3><p>${r.date}</p></div>`).join('');
+        document.getElementById('offline-results-list').innerHTML = data.map(r => `
+            <div class="card" style="margin-bottom:20px;">
+                <h3 style="color:var(--primary)">${r.title} <small>(${new Date(r.date).toLocaleDateString()})</small></h3>
+                <table><tr><th>Rank</th><th>Name</th><th>Marks</th><th>Action</th></tr>
+                ${r.records.sort((a,b)=>a.rank-b.rank).map(rec => `
+                    <tr><td>#${rec.rank}</td><td>${rec.studentName}</td><td>${rec.marks}</td>
+                    <td><button class="btn-gold" style="padding:5px 10px; font-size:0.9rem" onclick="viewCopy('${r._id}', '${rec._id}')">View Copy</button></td></tr>`).join('')}
+                </table>
+            </div>`).join('');
+    }
+    async function viewCopy(resId, recId) {
+        const pwd = prompt("Enter YOUR unique password:"); if(!pwd) return;
+        const res = await fetch('/api/results/unlock-copy', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ resultId: resId, recordId: recId, password: pwd }) });
+        const data = await res.json(); if(data.success) window.open(data.link, '_blank'); else alert("Incorrect Password");
     }
 
     // --- EXAM ENGINE ---
@@ -301,7 +371,6 @@
     function navQ(dir) { const n = currentQIdx+dir; if(n>=0 && n<currentTest.questions.length) renderQ(n); }
     function renderPalette() {
         document.getElementById('palette').innerHTML = studentAnswers.map((a,i) => {
-            // Logic: Answered takes priority (Green). If not answered but visited, Purple. Else nothing.
             let c = a!==null ? 'answered' : (visitedQs[i] ? 'visited' : '');
             if(i===currentQIdx) c += ' active';
             return `<div class="p-btn ${c}" onclick="renderQ(${i})">${i+1}</div>`;
