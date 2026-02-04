@@ -12,7 +12,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // --- 1. PERMANENT DATABASE CONNECTION ---
 // This link connects to your MongoDB Cloud (Free Forever)
 // It works on Render even if it fails on your Laptop WiFi!
-const dbLink = "mongodb://ankitprogrammer25:vh3HL8Fxvp2Zpixi@cluster0-shard-00-00.0dhqpzv.mongodb.net:27017,cluster0-shard-00-01.0dhqpzv.mongodb.net:27017,cluster0-shard-00-02.0dhqpzv.mongodb.net:27017/?ssl=true&replicaSet=atlas-0dhqpzv-shard-0&authSource=admin&retryWrites=true&w=majority";
+const dbLink = "mongodb://ankitprogrammer25:a32x05sYvukG178G@cluster0-shard-00-00.0dhqpzv.mongodb.net:27017,cluster0-shard-00-01.0dhqpzv.mongodb.net:27017,cluster0-shard-00-02.0dhqpzv.mongodb.net:27017/?ssl=true&replicaSet=atlas-0dhqpzv-shard-0&authSource=admin&retryWrites=true&w=majority";
 
 mongoose.connect(dbLink)
     .then(() => console.log('✅ Connected to MongoDB Cloud (Data is Safe!)'))
