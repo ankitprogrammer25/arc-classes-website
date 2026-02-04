@@ -57,6 +57,19 @@
         /* QUOTE SLIDER */
         .quote-box { background: var(--primary); color: white; padding: 40px; text-align: center; border-radius: 10px; margin-bottom: 30px; }
         .quote-text { font-size: 1.5rem; font-style: italic; }
+
+        /* --- GATE EXAM UI (New Addition) --- */
+        .exam-container { display: flex; height: 80vh; background: white; border: 1px solid #ddd; }
+        .exam-left { flex: 3; padding: 20px; overflow-y: auto; border-right: 1px solid #ddd; }
+        .exam-right { flex: 1; background: #f1f5f9; padding: 10px; display: flex; flex-direction: column; }
+        .palette-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-top: 10px; }
+        .p-btn { width: 35px; height: 35px; border-radius: 4px; border: 1px solid #ccc; cursor: pointer; font-weight: bold; }
+        .p-btn.answered { background: #22c55e; color: white; }
+        .p-btn.visited { background: #ef4444; color: white; }
+        .p-btn.active { border: 2px solid blue; }
+        .timer-box { background: #e0f2fe; padding: 10px; text-align: center; font-size: 1.2rem; font-weight: bold; color: var(--primary); margin-bottom: 10px; }
+        .option-label { display: block; padding: 10px; border: 1px solid #eee; margin: 5px 0; cursor: pointer; }
+        .option-label:hover { background: #f8fafc; }
     </style>
 </head>
 <body>
@@ -76,11 +89,9 @@
 
 <div id="home" class="section active">
     <div class="marquee" id="announce-bar">📢 IMPORTANT: Check the Results section for the latest Offline Test Marks!</div>
-
     <div class="quote-box">
         <p class="quote-text" id="quote-display">"Chemistry is the melody you can play on vibrating strings."</p>
     </div>
-
     <div style="text-align:center;">
         <h2 style="color:var(--primary)">Welcome to Excellence</h2>
         <p>Your gateway to mastering Chemistry.</p>
@@ -97,6 +108,34 @@
     <div id="test-list" class="grid">Loading...</div>
 </div>
 
+<div id="exam-ui" class="section" style="max-width: 100%; padding: 0;">
+    <div class="exam-container">
+        <div class="exam-left">
+            <div style="display:flex; justify-content:space-between; margin-bottom:20px; border-bottom:1px solid #eee; padding-bottom:10px;">
+                <h3 style="margin:0">Question <span id="q-num">1</span></h3>
+                <span style="color:green; font-weight:bold;">+<span id="q-marks">0</span> / -<span id="q-neg">0</span></span>
+            </div>
+            <p id="q-text" style="font-size:1.1rem; margin-bottom:20px;"></p>
+            <div id="q-options"></div>
+            <div style="margin-top:30px; display:flex; gap:10px;">
+                <button style="background:#ddd; color:#333; width:auto" onclick="navQ(-1)">Previous</button>
+                <button class="btn-gold" style="width:auto" onclick="navQ(1)">Save & Next</button>
+            </div>
+        </div>
+        <div class="exam-right">
+            <div class="timer-box" id="timer">00:00</div>
+            <div style="text-align:center; margin-bottom:10px;">
+                <strong><span id="student-name-display">Student</span></strong>
+            </div>
+            <div style="flex:1; overflow-y:auto;">
+                <small>Question Palette:</small>
+                <div class="palette-grid" id="palette"></div>
+            </div>
+            <button class="btn-red" onclick="submitExam()">SUBMIT TEST</button>
+        </div>
+    </div>
+</div>
+
 <div id="results" class="section">
     <h2>🏆 Results Board</h2>
     <div id="offline-results-list"></div>
@@ -111,7 +150,6 @@
         <p style="text-align:center; color:blue; cursor:pointer" onclick="toggleReg()">New Student? Register</p>
         <p style="text-align:center; font-size:0.8rem; color:#999">Teacher? (admin@arc.com)</p>
     </div>
-    
     <div id="reg-box" class="form-box" style="display:none">
         <h2>Student Registration</h2>
         <p style="color:red; font-size:0.9rem;">⚠️ Please remember your email and password. It is NOT restorable.</p>
@@ -128,24 +166,20 @@
 
 <div id="admin" class="section">
     <h2>👨‍🏫 Teacher Dashboard</h2>
-    
     <div style="display:flex; gap:10px; margin-bottom:20px;">
         <button onclick="showAdminTab('students')">Students</button>
         <button onclick="showAdminTab('manage')">Manage Content</button>
         <button onclick="showAdminTab('create')">Create New</button>
         <button onclick="showAdminTab('off-res')">Upload Results</button>
     </div>
-
     <div id="adm-students" style="display:none">
         <h3>Registered Students</h3>
         <table id="student-table"></table>
     </div>
-
     <div id="adm-manage" style="display:none">
         <h3>Delete Tests or Notes</h3>
         <div id="manage-list"></div>
     </div>
-
     <div id="adm-create" style="display:none">
         <div class="form-box" style="margin:0; max-width:100%">
             <h3>1. Upload Book/Note</h3>
@@ -162,7 +196,6 @@
             <input type="number" id="t-dur" placeholder="Duration (Mins)">
             <input type="text" id="t-code" placeholder="Password">
             <textarea id="t-inst" placeholder="Instructions..."></textarea>
-            
             <div id="q-builder" style="background:#f0f9ff; padding:10px; margin:10px 0;">
                 <h4>Add Question</h4>
                 <textarea id="q-text" placeholder="Question Text"></textarea>
@@ -183,12 +216,10 @@
             <button onclick="publishTest()">PUBLISH TEST</button>
         </div>
     </div>
-
     <div id="adm-off-res" style="display:none">
         <div class="form-box" style="margin:0; max-width:100%">
             <h3>Upload Offline Test Result</h3>
             <input type="text" id="off-title" placeholder="Test Name (e.g. Physics Midterm)">
-            
             <div id="res-builder" style="background:#fff7ed; padding:10px;">
                 <h4>Add Student Record</h4>
                 <input id="res-name" placeholder="Student Name">
@@ -210,6 +241,12 @@
     let draftQs = [];
     let draftRecs = [];
     let coverImgBase64 = "";
+
+    // Exam Runtime State
+    let currentTest = null;
+    let studentAnswers = [];
+    let currentQIdx = 0;
+    let examInterval;
 
     // --- QUOTES ---
     const quotes = [
@@ -235,8 +272,11 @@
     function show(id) {
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
         document.getElementById(id).classList.add('active');
+        // Hide nav during exam
+        document.querySelector('nav').style.display = (id === 'exam-ui') ? 'none' : 'flex';
+
         if(id === 'notes') loadMaterials();
-        if(id === 'tests') loadTests();
+        if(id === 'tests') loadTestsList();
         if(id === 'results') loadResults();
     }
     
@@ -296,7 +336,6 @@
     }
 
     // --- TEACHER: CREATE CONTENT ---
-    // Image Reader
     document.getElementById('m-img-file').addEventListener('change', function() {
         const r = new FileReader();
         r.onload = e => coverImgBase64 = e.target.result;
@@ -317,7 +356,6 @@
         alert("Uploaded!");
     }
 
-    // Test Creator with Validation
     function addDraftQ() {
         const text = document.getElementById('q-text').value;
         if(!text) return alert("Question text needed");
@@ -348,7 +386,6 @@
         draftQs = [];
     }
 
-    // Offline Result Creator
     function addResRecord() {
         const name = document.getElementById('res-name').value;
         const link = document.getElementById('res-link').value;
@@ -462,22 +499,101 @@
         else alert("Incorrect Password");
     }
 
-    // --- STUDENT: ONLINE TEST (SIMPLE LIST) ---
-    async function loadTests() {
+    // --- STUDENT: ONLINE TEST (GATE ENGINE) ---
+    async function loadTestsList() {
         const res = await fetch('/api/tests');
         const data = await res.json();
         document.getElementById('test-list').innerHTML = data.map(t => `
             <div class="card">
                 <h3>${t.title}</h3>
                 <p>Duration: ${t.duration} Mins</p>
-                <button onclick="startTest('${t._id}')">Start Test</button>
+                <button onclick="startExam('${t._id}')">Start Test</button>
             </div>
         `).join('');
     }
-    // (Note: The startTest logic from previous version connects here)
-    function startTest(id) {
-        // Reuse logic from previous complex version or keep simple alert for now
-        alert("Please login to the Full Exam Portal to take this test.");
+
+    async function startExam(id) {
+        if(!user) return alert("Please Login First!");
+        const code = prompt("Enter Test Password:");
+        if(!code) return;
+
+        const res = await fetch('/api/test/start', {
+            method: 'POST', headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({ id, code })
+        });
+        const data = await res.json();
+        if(data.success) {
+            currentTest = data.test;
+            studentAnswers = new Array(currentTest.questions.length).fill(null);
+            document.getElementById('student-name-display').innerText = user.name || "Student";
+            show('exam-ui');
+            runTimer(currentTest.duration * 60);
+            renderQ(0);
+        } else {
+            alert("Wrong Password");
+        }
+    }
+
+    function runTimer(seconds) {
+        clearInterval(examInterval);
+        examInterval = setInterval(() => {
+            seconds--;
+            let m = Math.floor(seconds / 60);
+            let s = seconds % 60;
+            document.getElementById('timer').innerText = `${m}:${s<10?'0'+s:s}`;
+            if(seconds === 300) alert("⚠️ 5 Minutes Left!");
+            if(seconds <= 0) {
+                clearInterval(examInterval);
+                submitExam(true);
+            }
+        }, 1000);
+    }
+
+    function renderQ(idx) {
+        currentQIdx = idx;
+        const q = currentTest.questions[idx];
+        document.getElementById('q-num').innerText = idx + 1;
+        document.getElementById('q-text').innerText = q.text;
+        document.getElementById('q-marks').innerText = q.marks;
+        document.getElementById('q-neg').innerText = q.negative;
+        
+        document.getElementById('q-options').innerHTML = q.options.map((opt, i) => `
+            <label class="option-label">
+                <input type="radio" name="opt" value="${i}" ${studentAnswers[idx] === i ? 'checked' : ''} onchange="saveAns(${i})">
+                ${opt}
+            </label>
+        `).join('');
+        
+        renderPalette();
+    }
+
+    function saveAns(optIdx) {
+        studentAnswers[currentQIdx] = optIdx;
+        renderPalette();
+    }
+
+    function navQ(dir) {
+        const next = currentQIdx + dir;
+        if(next >= 0 && next < currentTest.questions.length) renderQ(next);
+    }
+
+    function renderPalette() {
+        document.getElementById('palette').innerHTML = studentAnswers.map((ans, i) => `
+            <button class="p-btn ${i===currentQIdx?'active':''} ${ans!==null?'answered':'visited'}" onclick="renderQ(${i})">${i+1}</button>
+        `).join('');
+    }
+
+    async function submitExam(force=false) {
+        if(!force && !confirm("Submit Test?")) return;
+        clearInterval(examInterval);
+        
+        const res = await fetch('/api/test/submit', {
+            method: 'POST', headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({ testId: currentTest._id, answers: studentAnswers, studentName: user.name })
+        });
+        const result = await res.json();
+        alert(`Test Submitted!\nScore: ${result.score}/${result.totalMarks}\nRank: #${result.rank}`);
+        location.reload();
     }
     
     // Heartbeat
