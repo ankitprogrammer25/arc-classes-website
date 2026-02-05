@@ -9,8 +9,8 @@
         :root { --primary: #0f172a; --gold: #fbbf24; --light: #f8fafc; --red: #ef4444; --dark: #1e293b; --purple: #a855f7; --green: #22c55e; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--light); margin: 0; color: #333; min-width: 1200px; display: flex; flex-direction: column; min-height: 100vh; }
         
-        @keyframes rainbow { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         .logo { font-size: 2rem; font-weight: 900; letter-spacing: 2px; background: linear-gradient(270deg, #ff0000, #fbbf24, #00ff00, #0000ff, #ff00ff); background-size: 400% 400%; -webkit-background-clip: text; color: transparent; animation: rainbow 6s ease infinite; }
+        @keyframes rainbow { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         
         nav { background: var(--primary); padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
         .menu a { color: white; margin-left: 25px; text-decoration: none; font-weight: 600; font-size: 1.1rem; cursor: pointer; transition: 0.3s; }
@@ -19,11 +19,6 @@
         .section { display: none; padding: 40px; max-width: 1100px; margin: auto; flex: 1; }
         .section.active { display: block; animation: fadeIn 0.5s; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        
-        .hero { background: linear-gradient(135deg, var(--primary), var(--dark)); color: white; padding: 80px 40px; border-radius: 20px; text-align: center; margin-bottom: 40px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
-        .hero h1 { font-size: 3rem; margin: 0; color: var(--gold); }
-        .cta-btn { padding: 15px 40px; font-size: 1.2rem; background: var(--gold); color: var(--primary); border: none; border-radius: 50px; font-weight: bold; cursor: pointer; transition: transform 0.2s; }
-        .cta-btn:hover { transform: scale(1.05); }
         
         .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.05); transition: transform 0.2s; position: relative; display:flex; flex-direction:column; }
         .card:hover { transform: translateY(-5px); }
@@ -35,9 +30,14 @@
         .form-box { max-width: 600px; margin: 40px auto; background: white; padding: 40px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
         input, select, textarea { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 1rem; }
         
-        /* BLINKING & ANIM */
-        @keyframes blinker { 50% { opacity: 0.7; } }
-        .blink-anim { animation: blinker 2s linear infinite; }
+        /* SLIDING ANNOUNCEMENT */
+        .marquee-container { background: var(--gold); color: var(--primary); padding: 12px; font-weight: bold; border-radius: 8px; margin-bottom: 30px; font-size: 1.1rem; overflow: hidden; white-space: nowrap; position: relative; }
+        .marquee-content { display: inline-block; padding-left: 100%; animation: scroll-left 20s linear infinite; }
+        @keyframes scroll-left { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
+
+        /* BLOGS */
+        .blog-text { max-height: 80px; overflow: hidden; transition: max-height 0.3s; }
+        .blog-text.expanded { max-height: 1000px; }
         
         /* EXAM UI */
         .exam-container { display: flex; height: 80vh; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 5px 20px rgba(0,0,0,0.15); border: 1px solid #ddd; }
@@ -47,13 +47,18 @@
         .option-label { display: flex; align-items: center; padding: 15px; border: 2px solid #eee; margin: 10px 0; cursor: pointer; border-radius: 8px; transition: 0.2s; font-size: 1.1rem; }
         .option-label:hover { background: #f1f5f9; border-color: var(--primary); }
         .option-label input { margin-right: 15px; transform: scale(1.5); }
+        
+        /* TEST CREATOR PALETTE */
+        .draft-palette { display:flex; flex-wrap:wrap; gap:10px; margin-top:15px; }
+        .draft-btn { width:35px; height:35px; background:#eee; border:1px solid #ccc; cursor:pointer; display:flex; align-items:center; justify-content:center; font-weight:bold; }
+        .draft-btn.active { background:var(--primary); color:white; }
+
         .palette-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 20px; }
         .p-btn { width: 45px; height: 45px; border-radius: 50%; border: 2px solid #ddd; cursor: pointer; font-weight: bold; display: flex; align-items: center; justify-content: center; background: white; font-size: 1rem; }
         .p-btn.answered { background: var(--green); color: white; border-color: var(--green); }
         .p-btn.visited { background: var(--purple); color: white; border-color: var(--purple); }
         .p-btn.active { border: 3px solid var(--primary); transform: scale(1.1); }
 
-        /* MODALS */
         .modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:2000; display:none; justify-content:center; align-items:center; }
         .modal-box { background:white; padding:40px; border-radius:20px; width:700px; max-height:90vh; overflow-y:auto; text-align:center; position:relative; }
         
@@ -62,7 +67,6 @@
         table { width: 100%; border-collapse: collapse; margin-top: 15px; }
         th, td { padding: 12px; border: 1px solid #ddd; text-align: left; }
         th { background: var(--primary); color: white; }
-        
         .review-q { text-align:left; border:1px solid #ddd; padding:15px; margin-bottom:10px; border-radius:8px; }
         .review-opt { padding:8px; margin:5px 0; border-radius:5px; border:1px solid #eee; }
 
@@ -91,17 +95,17 @@
         <input id="home-search" value="" placeholder="🔍 Search Books & Notes (3+ letters)..." style="flex:1; padding:15px; font-size:1.1rem; border:2px solid var(--primary);" onkeyup="filterNotes()">
     </div>
     
-    <div style="background:var(--gold); color:var(--primary); padding:10px; font-weight:bold; border-radius:8px; margin-bottom:30px; font-size:1.1rem; overflow:hidden; white-space:nowrap;">
-        <marquee id="announce-marquee" behavior="scroll" direction="left" scrollamount="10">Loading...</marquee>
+    <div class="marquee-container">
+        <div id="announce-marquee" class="marquee-content">Loading...</div>
     </div>
     
     <h3 style="color:var(--primary)">Latest Blogs</h3>
-    <div id="blog-container" class="grid blink-anim" style="margin-bottom:40px;"></div>
+    <div id="blog-container" class="grid" style="margin-bottom:40px;"></div>
 
-    <div class="hero">
-        <h1>Master Chemistry with ARC</h1>
+    <div style="text-align:center; padding:80px 40px; background:linear-gradient(135deg, var(--primary), var(--dark)); color:white; border-radius:20px;">
+        <h1 style="color:var(--gold); font-size:3rem;">Master Chemistry with ARC</h1>
         <p>Premium Notes, GATE-Style Tests, and Expert Guidance.</p>
-        <button class="cta-btn" onclick="show('tests')">Start a Test Now</button>
+        <button class="btn-gold" style="font-size:1.2rem; padding:15px 40px;" onclick="show('tests')">Start a Test Now</button>
     </div>
 </div>
 
@@ -171,7 +175,11 @@
     
     <div id="adm-students" style="display:none"><h3>Students</h3><table id="student-table"></table></div>
     <div id="adm-online-res" style="display:none"><h3>Online Results</h3><table id="online-res-table"></table></div>
-    <div id="adm-manage" style="display:none"><h3>Delete Content</h3><div id="manage-list"></div></div>
+    
+    <div id="adm-manage" style="display:none">
+        <h3>Delete Content</h3>
+        <div id="manage-list"></div>
+    </div>
     
     <div id="adm-announce" style="display:none">
         <div class="form-box" style="margin:0">
@@ -186,9 +194,37 @@
 
     <div id="adm-upload-mat" style="display:none"><div class="form-box" style="margin:0"><h3>Upload Note</h3><input id="m-title" placeholder="Title"><input id="m-desc" placeholder="Desc"><input id="m-link" placeholder="Drive Link"><input id="m-code" placeholder="Password"><p>Cover:</p><input type="file" id="m-img-file" accept="image/*"><button class="btn-gold" onclick="uploadMaterial()">Upload</button></div></div>
 
-    <div id="adm-upload-res" style="display:none"><div class="form-box" style="margin:0"><h3>Offline Result</h3><input id="off-title" placeholder="Test Name"><div style="background:#fff7ed; padding:20px; margin:15px 0; border:2px solid orange;"><h4>Student Record</h4><input id="res-name" placeholder="Name"><div style="display:flex; gap:10px"><input type="number" id="res-marks" placeholder="Marks"><input type="number" id="res-rank" placeholder="Rank"></div><input id="res-link" placeholder="Copy Link"><input id="res-pass" placeholder="Password"><button class="btn-gold" onclick="addResRecord()">+ Add Record</button><p id="res-count">Records: 0</p></div><button class="btn-gold" onclick="publishOfflineResult()">Publish All</button></div></div>
+    <div id="adm-upload-res" style="display:none">
+        <div class="form-box" style="margin:0">
+            <h3>Offline Result</h3>
+            <input id="off-title" placeholder="Test Name">
+            <div style="background:#fff7ed; padding:20px; margin:15px 0; border:2px solid orange;">
+                <h4>Student Record</h4><input id="res-name" placeholder="Name"><div style="display:flex; gap:10px"><input type="number" id="res-marks" placeholder="Marks"><input type="number" id="res-rank" placeholder="Rank"></div><input id="res-link" placeholder="Copy Link"><input id="res-pass" placeholder="Password"><button class="btn-gold" onclick="addResRecord()">+ Add Record</button><p id="res-count">Records: 0</p>
+            </div>
+            <button class="btn-gold" onclick="publishOfflineResult()">Publish All</button>
+        </div>
+    </div>
     
-    <div id="adm-create-test" style="display:none"><div class="form-box" style="margin:0; max-width:100%"><h3>Create Test</h3><input id="t-title" placeholder="Title"><input type="number" id="t-dur" placeholder="Mins"><input id="t-code" placeholder="Password (Leave empty for Open Test)"><textarea id="t-inst" placeholder="Instructions"></textarea><div style="background:#f0f9ff; padding:20px; margin:20px 0; border:2px solid #bae6fd;"><h4>Add Question</h4><textarea id="q-text" placeholder="Text"></textarea><p>Image:</p><input type="file" id="q-img-file" accept="image/*"><img id="q-img-preview" style="height:80px; display:none"><div style="display:grid; grid-template-columns:1fr 1fr; gap:10px"><input id="op0" placeholder="A"><input id="op1" placeholder="B"><input id="op2" placeholder="C"><input id="op3" placeholder="D"></div><input id="q-topic" placeholder="Topic"><div style="display:flex; gap:10px; margin-top:10px"><select id="q-corr"><option value="0">Correct: A</option><option value="1">Correct: B</option><option value="2">Correct: C</option><option value="3">Correct: D</option></select><input type="number" id="q-mark" value="2" placeholder="+"><input type="number" id="q-neg" value="0.5" placeholder="-"></div><button class="btn-gold" style="margin-top:10px" onclick="addDraftQ()">+ Add Question</button><p id="q-count">Questions: 0</p></div><button class="btn-gold" style="width:100%" onclick="publishTest()">PUBLISH TEST</button></div></div>
+    <div id="adm-create-test" style="display:none">
+        <div class="form-box" style="margin:0; max-width:100%">
+            <h3>Create Test</h3>
+            <input id="t-title" placeholder="Title"><input type="number" id="t-dur" placeholder="Mins"><input id="t-code" placeholder="Password (Empty for Open)"><textarea id="t-inst" placeholder="Instructions"></textarea>
+            
+            <div style="background:#f0f9ff; padding:20px; margin:20px 0; border:2px solid #bae6fd;">
+                <h4 id="q-header">Add Question 1</h4>
+                <textarea id="q-text" placeholder="Text"></textarea>
+                <p>Image:</p><input type="file" id="q-img-file" accept="image/*"><img id="q-img-preview" style="height:80px; display:none">
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px"><input id="op0" placeholder="A"><input id="op1" placeholder="B"><input id="op2" placeholder="C"><input id="op3" placeholder="D"></div>
+                <input id="q-topic" placeholder="Topic">
+                <div style="display:flex; gap:10px; margin-top:10px"><select id="q-corr"><option value="0">Correct: A</option><option value="1">Correct: B</option><option value="2">Correct: C</option><option value="3">Correct: D</option></select><input type="number" id="q-mark" value="2"><input type="number" id="q-neg" value="0.5"></div>
+                <button class="btn-gold" style="margin-top:10px" onclick="saveDraftQuestion()">Save Question</button>
+                
+                <p style="margin-top:10px; font-weight:bold;">Questions Added:</p>
+                <div id="draft-palette" class="draft-palette"></div>
+            </div>
+            <button class="btn-gold" style="width:100%" onclick="publishTest()">PUBLISH TEST</button>
+        </div>
+    </div>
 </div>
 
 <div id="blog-modal" class="modal-overlay">
@@ -205,7 +241,7 @@
         <h2 style="color:var(--primary)">Test Submitted!</h2>
         <div style="width:300px; height:300px; margin:auto;"><canvas id="resultChart"></canvas></div>
         <h3 id="modal-score" style="margin:20px 0;"></h3>
-        <div id="modal-feedback" class="blink-anim" style="background:var(--gold); color:var(--primary); padding:15px; border-radius:10px; font-weight:bold; font-size:1.1rem;"></div>
+        <div id="modal-feedback" style="background:var(--gold); color:var(--primary); padding:15px; border-radius:10px; font-weight:bold;"></div>
         <button class="btn-gold" style="margin-top:20px;" onclick="location.reload()">Close</button>
     </div>
 </div>
@@ -221,22 +257,19 @@
 <footer>&copy; [arcclasses2025] All Rights Reserved</footer>
 
 <script>
-    // --- STATE ---
     let user = JSON.parse(localStorage.getItem('arc_user'));
-    let draftQs=[], qImgBase64="", draftRecs=[], mImgBase64="", bImgBase64="", allMats=[];
-    let currentTest=null, studentAnswers=[], visitedQs=[], currentQIdx=0, examInterval;
-    let announceList = [];
+    let draftQs=[], qImgBase64="", draftRecs=[], mImgBase64="", bImgBase64="", allMats=[], announceList=[];
+    let currentTest=null, studentAnswers=[], visitedQs=[], currentQIdx=0, examInterval, editingQIdx=-1;
 
-    // --- INIT ---
-    loadAnnouncements();
-    loadBlogs();
+    // INIT
+    loadAnnouncements(); loadBlogs();
     if(user) {
         document.getElementById('login-nav').style.display='none'; document.getElementById('logout-btn').style.display='inline';
         if(user.email==='admin@arc.com') document.getElementById('teacher-nav').style.display='inline';
     }
 
-    // --- NAV ---
     function show(id) {
+        if(id === 'results' && !user) { alert("Login first to view results"); return show('login'); }
         document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
         document.getElementById(id).classList.add('active');
         document.querySelector('nav').style.display = (id==='exam-ui')?'none':'flex';
@@ -248,25 +281,17 @@
         if(id==='students') loadStudents(); if(id==='online-res') loadOnlineResults(); if(id==='manage') loadManageList(); if(id==='announce') loadAnnouncements();
     }
 
-    // --- ANNOUNCEMENTS ---
+    // --- ANNOUNCEMENT LOGIC ---
     async function loadAnnouncements() {
         const d = await (await fetch('/api/announcement')).json();
         announceList = d.list || [];
-        // Update Marquee
         document.getElementById('announce-marquee').innerHTML = announceList.join(' &nbsp;&nbsp; | &nbsp;&nbsp; ');
-        
-        // Update Admin List
         if(user && user.email==='admin@arc.com') {
             document.getElementById('ann-list-manage').innerHTML = announceList.map(t => `<div style="padding:10px; border-bottom:1px solid #ddd; display:flex; justify-content:space-between;">${t} <button class="btn-red" style="padding:5px;" onclick="deleteAnnounce('${t}')">X</button></div>`).join('');
         }
     }
-    async function addAnnouncement() {
-        await fetch('/api/admin/announcement/add',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:document.getElementById('ann-text').value})});
-        document.getElementById('ann-text').value=""; loadAnnouncements();
-    }
-    async function deleteAnnounce(t) {
-        if(confirm("Delete?")) { await fetch('/api/admin/announcement/delete',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:t})}); loadAnnouncements(); }
-    }
+    async function addAnnouncement() { await fetch('/api/admin/announcement/add',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:document.getElementById('ann-text').value})}); document.getElementById('ann-text').value=""; loadAnnouncements(); }
+    async function deleteAnnounce(t) { if(confirm("Delete?")) { await fetch('/api/admin/announcement/delete',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:t})}); loadAnnouncements(); } }
 
     // --- AUTH ---
     function toggleReg(){ const b=document.getElementById('reg-box'); b.style.display=b.style.display==='none'?'block':'none'; }
@@ -291,37 +316,24 @@
     async function loadOnlineResults(){ 
         const d=await (await fetch('/api/admin/results/online')).json(); 
         document.getElementById('online-res-table').innerHTML=`<tr><th>Date</th><th>Test</th><th>Student</th><th>Score</th><th>Action</th></tr>`+d.map(r=>`
-            <tr>
-                <td>${new Date(r.date).toLocaleDateString()}</td><td>${r.testTitle}</td><td>${r.studentName}<br>${r.studentEmail}</td><td>${r.score}/${r.totalMarks} (${r.percentage}%)</td>
-                <td><button class="btn-gold" style="font-size:0.8rem; padding:5px" onclick="viewSubmission('${r._id}')">View</button> <button class="btn-red" style="font-size:0.8rem; padding:5px" onclick="deleteResult('${r._id}')">Del</button></td>
-            </tr>`).join(''); 
+            <tr><td>${new Date(r.date).toLocaleDateString()}</td><td>${r.testTitle}</td><td>${r.studentName}<br>${r.studentEmail}</td><td>${r.score}/${r.totalMarks}</td>
+            <td><button class="btn-gold" style="padding:5px" onclick="viewSubmission('${r._id}')">View</button> <button class="btn-red" style="padding:5px" onclick="deleteResult('${r._id}')">Del</button></td></tr>`).join(''); 
     }
     async function viewSubmission(rid){
         const res = await fetch('/api/admin/result-details', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ resultId:rid }) });
         const data = await res.json();
         if(!data.success) return alert("Error");
-        const { result, test } = data;
-        let html = `<h3>${result.studentName} - ${result.testTitle}</h3>`;
-        test.questions.forEach((q, i) => {
-            const studentAns = result.answers[i];
+        let html = `<h3>${data.result.studentName}</h3>`;
+        data.test.questions.forEach((q, i) => {
+            const studentAns = data.result.answers[i];
             const isCorrect = studentAns === q.correct;
-            const status = studentAns === null ? "Skipped" : (isCorrect ? "Correct" : "Wrong");
-            const color = studentAns === null ? "gray" : (isCorrect ? "green" : "red");
-            html += `<div class="review-q">
-                <p><strong>Q${i+1}: ${q.text}</strong> <span style="color:${color}; float:right;">${status}</span></p>
-                ${q.image ? `<img src="${q.image}" style="height:100px;">` : ''}
-                ${q.options.map((opt, oi) => {
-                    let style = "";
-                    if(oi === q.correct) style = "background:#dcfce7; border:2px solid green;"; 
-                    else if(oi === studentAns && !isCorrect) style = "background:#fee2e2; border:2px solid red;";
-                    return `<div class="review-opt" style="${style}">${opt}</div>`;
-                }).join('')}
-            </div>`;
+            const style = studentAns===null?"gray":(isCorrect?"green":"red");
+            html += `<div class="review-q"><p><strong>Q${i+1}: ${q.text}</strong> <span style="color:${style}; float:right;">${isCorrect?"Correct":"Wrong"}</span></p>${q.options.map((o,oi)=>`<div class="review-opt" style="${oi===q.correct?'background:#dcfce7':(oi===studentAns?'background:#fee2e2':'')}">${o}</div>`).join('')}</div>`;
         });
         document.getElementById('review-content').innerHTML = html;
         document.getElementById('review-modal').style.display = 'flex';
     }
-    async function deleteResult(id){ if(confirm("Delete?")) await fetch(`/api/admin/result/online/${id}`,{method:'DELETE'}); loadOnlineResults(); }
+    async function deleteResult(id){ if(confirm("Delete Result?")) await fetch(`/api/admin/result/online/${id}`,{method:'DELETE'}); loadOnlineResults(); }
 
     document.getElementById('m-img-file').addEventListener('change',function(){ const r=new FileReader(); r.onload=e=>mImgBase64=e.target.result; r.readAsDataURL(this.files[0]); });
     document.getElementById('b-img-file').addEventListener('change',function(){ const r=new FileReader(); r.onload=e=>bImgBase64=e.target.result; r.readAsDataURL(this.files[0]); });
@@ -331,19 +343,46 @@
     async function createBlog(){ await fetch('/api/admin/blog',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({title:document.getElementById('b-title').value, content:document.getElementById('b-content').value, image:bImgBase64, hColor:document.getElementById('b-h-color').value, pColor:document.getElementById('b-p-color').value})}); alert("Published!"); bImgBase64=""; }
     function addResRecord(){ draftRecs.push({studentName:document.getElementById('res-name').value, marks:document.getElementById('res-marks').value, rank:document.getElementById('res-rank').value, copyLink:document.getElementById('res-link').value, accessCode:document.getElementById('res-pass').value}); document.getElementById('res-count').innerText=`Records: ${draftRecs.length}`; }
     async function publishOfflineResult(){ await fetch('/api/admin/offline-result',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({title:document.getElementById('off-title').value, records:draftRecs})}); alert("Published!"); draftRecs=[]; }
-    function addDraftQ(){ draftQs.push({text:document.getElementById('q-text').value, image:qImgBase64, options:[0,1,2,3].map(i=>document.getElementById('op'+i).value), correct:parseInt(document.getElementById('q-corr').value), marks:parseFloat(document.getElementById('q-mark').value), negative:parseFloat(document.getElementById('q-neg').value), topic:document.getElementById('q-topic').value}); document.getElementById('q-count').innerText=`Questions: ${draftQs.length}`; document.getElementById('q-text').value=""; qImgBase64=""; document.getElementById('q-img-preview').style.display='none'; }
+    
+    // TEST CREATOR LOGIC (Palette & Edit)
+    function saveDraftQuestion() {
+        const qObj = {
+            text:document.getElementById('q-text').value, image:qImgBase64, options:[0,1,2,3].map(i=>document.getElementById('op'+i).value), 
+            correct:parseInt(document.getElementById('q-corr').value), marks:parseFloat(document.getElementById('q-mark').value), 
+            negative:parseFloat(document.getElementById('q-neg').value), topic:document.getElementById('q-topic').value
+        };
+        if(editingQIdx > -1) draftQs[editingQIdx] = qObj; else draftQs.push(qObj);
+        renderDraftPalette(); clearQForm();
+    }
+    function renderDraftPalette() {
+        document.getElementById('draft-palette').innerHTML = draftQs.map((_, i) => `<div class="draft-btn" onclick="editDraftQ(${i})">${i+1}</div>`).join('');
+    }
+    function editDraftQ(i) {
+        editingQIdx = i; const q = draftQs[i];
+        document.getElementById('q-header').innerText = `Editing Question ${i+1}`;
+        document.getElementById('q-text').value = q.text;
+        [0,1,2,3].forEach(idx => document.getElementById('op'+idx).value = q.options[idx]);
+        document.getElementById('q-mark').value = q.marks;
+        document.getElementById('q-neg').value = q.negative;
+        if(q.image) { document.getElementById('q-img-preview').src = q.image; document.getElementById('q-img-preview').style.display='block'; qImgBase64 = q.image; }
+    }
+    function clearQForm() {
+        editingQIdx = -1; document.getElementById('q-header').innerText = `Add Question ${draftQs.length+1}`;
+        document.getElementById('q-text').value=""; qImgBase64=""; document.getElementById('q-img-preview').style.display='none';
+        [0,1,2,3].forEach(i=>document.getElementById('op'+i).value="");
+    }
     async function publishTest(){ await fetch('/api/admin/test',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({title:document.getElementById('t-title').value, duration:document.getElementById('t-dur').value, accessCode:document.getElementById('t-code').value, instructions:document.getElementById('t-inst').value, questions:draftQs})}); alert("Published!"); draftQs=[]; location.reload(); }
     
+    // Manage
     async function loadManageList(){
-        const [m,t,b] = await Promise.all([fetch('/api/materials'),fetch('/api/tests'),fetch('/api/blogs')]);
-        const mats=await m.json(); const tests=await t.json(); const blogs=await b.json();
+        const [m,t,b,o] = await Promise.all([fetch('/api/materials'),fetch('/api/tests'),fetch('/api/blogs'),fetch('/api/results/offline')]);
+        const mats=await m.json(); const tests=await t.json(); const blogs=await b.json(); const off=await o.json();
         let h=`<h4>Tests</h4>`+tests.map(x=>`<div>${x.title} <button class="btn-red" onclick="del('test','${x._id}')">X</button></div>`).join('');
-        h+=`<h4>Books</h4>`+mats.map(x=>`<div>${x.title} <button class="btn-red" onclick="del('material','${x._id}')">X</button></div>`).join('');
-        h+=`<h4>Blogs</h4>`+blogs.map(x=>`<div>${x.title} <button class="btn-gold" onclick="editBlog('${x._id}')">Edit</button> <button class="btn-red" onclick="del('blog','${x._id}')">X</button></div>`).join('');
+        h+=`<h4>Offline Results</h4>`+off.map(x=>`<div>${x.title} <button class="btn-red" onclick="del('offline-result','${x._id}')">X</button></div>`).join('');
+        h+=`<h4>Blogs</h4>`+blogs.map(x=>`<div>${x.title} <button class="btn-red" onclick="del('blog','${x._id}')">X</button></div>`).join('');
         document.getElementById('manage-list').innerHTML=h;
     }
     async function del(type,id){ if(confirm("Delete?")) await fetch(`/api/admin/${type}/${id}`,{method:'DELETE'}); loadManageList(); }
-    async function editBlog(id){ const t=prompt("New Title:"); const c=prompt("New Content:"); if(t&&c) await fetch(`/api/admin/blog/${id}`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({title:t, content:c})}); loadManageList(); }
 
     // --- STUDENT ---
     async function loadBlogs(){ 
@@ -392,14 +431,9 @@
     }
     async function startExam(id){
         if(!user) return alert("Login first"); 
-        
-        // Find selected test to check if it has a code
         const selectedTest = (await (await fetch('/api/tests')).json()).find(t => t._id === id);
         let code = "";
-        if(selectedTest.accessCode) {
-            code = prompt("Enter Test Password:"); 
-            if(!code) return;
-        }
+        if(selectedTest.accessCode) { code = prompt("Enter Test Password:"); if(!code) return; }
 
         try {
             const r=await fetch('/api/test/start',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id,code,studentEmail:user.email})});
