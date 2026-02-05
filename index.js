@@ -5,17 +5,17 @@ const cors = require('cors');
 const path = require('path');
 
 const app = express();
-app.use(express.json({ limit: '50mb' })); // Allows big images
+app.use(express.json({ limit: '50mb' }));
 app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// --- DATABASE CONNECTION ---
+// --- DB CONNECTION ---
 const dbLink = "mongodb+srv://ankitprogrammer25:a32x05sYvukG178G@cluster0.0dhqpzv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 mongoose.connect(dbLink)
     .then(() => console.log('✅ Connected to MongoDB'))
     .catch(err => console.log('❌ DB Error:', err));
 
-// --- MODELS ---
+// --- UPDATED SCHEMAS ---
 const StudentSchema = new mongoose.Schema({
     name: String, email: { type: String, unique: true }, password: String, joinedAt: { type: Date, default: Date.now },
     testAttempts: { type: Map, of: Number, default: {} }
@@ -27,8 +27,10 @@ const MaterialSchema = new mongoose.Schema({
 });
 const Material = mongoose.model('Material', MaterialSchema);
 
+// Updated Question: Includes 'topic'
 const QuestionSchema = new mongoose.Schema({
-    text: String, image: String, options: [String], correct: Number, marks: Number, negative: Number
+    text: String, image: String, options: [String], correct: Number, marks: Number, negative: Number,
+    topic: { type: String, default: "General" } 
 });
 
 const TestSchema = new mongoose.Schema({
@@ -42,8 +44,11 @@ const OfflineResultSchema = new mongoose.Schema({
 });
 const OfflineResult = mongoose.model('OfflineResult', OfflineResultSchema);
 
+// Updated Result: Includes 'topicAnalytics'
 const ResultSchema = new mongoose.Schema({
-    studentName: String, studentEmail: String, testTitle: String, score: Number, totalMarks: Number, percentage: Number, rank: Number, feedback: String, date: { type: Date, default: Date.now }
+    studentName: String, studentEmail: String, testTitle: String, score: Number, totalMarks: Number, percentage: Number, rank: Number, feedback: String,
+    topicAnalytics: Object, // Stores performance per topic
+    date: { type: Date, default: Date.now }
 });
 const Result = mongoose.model('Result', ResultSchema);
 
@@ -57,13 +62,13 @@ const Config = mongoose.model('Config', ConfigSchema);
 
 // --- ROUTES ---
 
-// Auth
+// 1. AUTH
 app.post('/api/register', async (req, res) => {
     try {
         const { name, emailPart, password } = req.body; const fullEmail = emailPart + "@arcstudent.com";
-        if(await Student.findOne({ email: fullEmail })) return res.json({ success: false, message: "Username taken" });
+        if(await Student.findOne({ email: fullEmail })) return res.json({ success: false, message: "Taken" });
         await new Student({ name, email: fullEmail, password }).save(); res.json({ success: true });
-    } catch (e) { res.json({ success: false, message: "Error" }); }
+    } catch (e) { res.json({ success: false }); }
 });
 app.post('/api/login', async (req, res) => {
     const { email, password } = req.body; const student = await Student.findOne({ email });
@@ -71,22 +76,33 @@ app.post('/api/login', async (req, res) => {
     res.json({ success: true, name: student.name, email: student.email });
 });
 
-// Admin Data
+// 2. ADMIN DATA
 app.get('/api/admin/students', async (req, res) => res.json(await Student.find().sort({ joinedAt: -1 })));
 app.get('/api/admin/results/online', async (req, res) => res.json(await Result.find().sort({ date: -1 })));
 
-// Admin Actions
+// 3. ADMIN ACTIONS (Create/Delete/Edit)
 app.post('/api/admin/material', async (req, res) => { await new Material(req.body).save(); res.json({ success: true }); });
 app.delete('/api/admin/material/:id', async (req, res) => { await Material.findByIdAndDelete(req.params.id); res.json({ success: true }); });
+
 app.post('/api/admin/test', async (req, res) => { await new Test(req.body).save(); res.json({ success: true }); });
 app.delete('/api/admin/test/:id', async (req, res) => { await Test.findByIdAndDelete(req.params.id); res.json({ success: true }); });
+
 app.post('/api/admin/offline-result', async (req, res) => { await new OfflineResult(req.body).save(); res.json({ success: true }); });
+
+// Delete Online Result
+app.delete('/api/admin/result/online/:id', async (req, res) => { await Result.findByIdAndDelete(req.params.id); res.json({ success: true }); });
+
+// Blog Actions
 app.post('/api/admin/blog', async (req, res) => { await new Blog(req.body).save(); res.json({ success: true }); });
 app.delete('/api/admin/blog/:id', async (req, res) => { await Blog.findByIdAndDelete(req.params.id); res.json({ success: true }); });
-app.post('/api/admin/announcement', async (req, res) => { await Config.findOneAndUpdate({ type: 'announcement' }, { type: 'announcement', content: req.body.text }, { upsert: true }); res.json({ success: true }); });
+// Edit Blog
+app.put('/api/admin/blog/:id', async (req, res) => { await Blog.findByIdAndUpdate(req.params.id, req.body); res.json({ success: true }); });
 
-// Public Content
+// Announcement
+app.post('/api/admin/announcement', async (req, res) => { await Config.findOneAndUpdate({ type: 'announcement' }, { type: 'announcement', content: req.body.text }, { upsert: true }); res.json({ success: true }); });
 app.get('/api/announcement', async (req, res) => { const a = await Config.findOne({ type: 'announcement' }); res.json({ text: a ? a.content : "Welcome!" }); });
+
+// 4. STUDENT CONTENT
 app.get('/api/blogs', async (req, res) => res.json(await Blog.find().sort({ date: -1 })));
 app.get('/api/materials', async (req, res) => res.json(await Material.find({}, 'title description type image date')));
 app.post('/api/material/unlock', async (req, res) => {
@@ -102,8 +118,9 @@ app.post('/api/results/unlock-copy', async (req, res) => {
     if(rec && rec.accessCode === password) res.json({ success: true, link: rec.copyLink }); else res.json({ success: false });
 });
 
-// Exam Engine
+// 5. EXAM ENGINE
 app.get('/api/tests', async (req, res) => res.json(await Test.find({}, 'title duration date')));
+
 app.post('/api/test/start', async (req, res) => {
     const { id, code, studentEmail } = req.body; const s = await Student.findOne({ email: studentEmail });
     if(!s) return res.json({ success: false, message: "Login first." });
@@ -120,16 +137,31 @@ app.post('/api/test/submit', async (req, res) => {
     try {
         const { testId, answers, studentName, studentEmail } = req.body; const t = await Test.findById(testId);
         let score = 0, total = 0, correct = 0, wrong = 0, skipped = 0;
+        let topicStats = {}; // { "TopicName": { total: 10, obtained: 5 } }
+
         t.questions.forEach((q, i) => {
+            const topic = q.topic || "General";
+            if(!topicStats[topic]) topicStats[topic] = { total: 0, obtained: 0 };
+            
+            topicStats[topic].total += q.marks;
             total += q.marks;
-            if (answers[i] === null || answers[i] === undefined) skipped++;
-            else if (answers[i] === q.correct) { score += q.marks; correct++; }
-            else { score -= q.negative; wrong++; }
+
+            if (answers[i] === q.correct) { score += q.marks; topicStats[topic].obtained += q.marks; correct++; }
+            else if (answers[i] !== null && answers[i] !== undefined) { score -= q.negative; topicStats[topic].obtained -= q.negative; wrong++; }
+            else skipped++;
         });
+
+        // Calculate Topic Weakness
+        let topicAnalytics = {};
+        for(let topic in topicStats) {
+            let p = (topicStats[topic].obtained / topicStats[topic].total) * 100;
+            topicAnalytics[topic] = p.toFixed(1) + "%";
+        }
+
         const pct = total > 0 ? (score / total) * 100 : 0;
-        let fb = pct < 40 ? "Focus on concepts and try again." : (pct < 80 ? "Good effort! Revise weak areas." : "Outstanding performance! You have so much scope.");
+        let fb = pct < 40 ? "Focus on concepts." : (pct < 80 ? "Good effort!" : "Outstanding!");
         
-        const r = new Result({ studentName, studentEmail, testTitle: t.title, score, totalMarks: total, percentage: pct, rank: 0, feedback: fb });
+        const r = new Result({ studentName, studentEmail, testTitle: t.title, score, totalMarks: total, percentage: pct, rank: 0, feedback: fb, topicAnalytics });
         await r.save();
         const rank = (await Result.countDocuments({ testTitle: t.title, score: { $gt: score } })) + 1;
         r.rank = rank; await r.save();
