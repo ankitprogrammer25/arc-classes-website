@@ -23,7 +23,8 @@ const StudentSchema = new mongoose.Schema({
 const Student = mongoose.model('Student', StudentSchema);
 
 const MaterialSchema = new mongoose.Schema({
-    title: String, description: String, link: String, type: String, image: String, accessCode: String, date: { type: Date, default: Date.now }
+    title: String, description: String, link: String, type: String, category: String, // Added Category
+    image: String, accessCode: String, date: { type: Date, default: Date.now }
 });
 const Material = mongoose.model('Material', MaterialSchema);
 
@@ -32,7 +33,8 @@ const QuestionSchema = new mongoose.Schema({
 });
 
 const TestSchema = new mongoose.Schema({
-    title: String, instructions: String, duration: Number, accessCode: String, questions: [QuestionSchema], date: { type: Date, default: Date.now }
+    title: String, instructions: String, duration: Number, accessCode: String, category: String, // Added Category
+    questions: [QuestionSchema], date: { type: Date, default: Date.now }
 });
 const Test = mongoose.model('Test', TestSchema);
 
@@ -50,7 +52,7 @@ const ResultSchema = new mongoose.Schema({
 const Result = mongoose.model('Result', ResultSchema);
 
 const BlogSchema = new mongoose.Schema({
-    title: String, content: String, image: String, hColor: String, pColor: String, date: { type: Date, default: Date.now }
+    title: String, content: String, image: String, date: { type: Date, default: Date.now }
 });
 const Blog = mongoose.model('Blog', BlogSchema);
 
@@ -84,16 +86,23 @@ app.post('/api/admin/result-details', async (req, res) => {
     } catch(e) { res.json({ success: false }); }
 });
 
-// Admin Actions
+// Admin Actions (Create/Edit/Delete)
 app.post('/api/admin/material', async (req, res) => { await new Material(req.body).save(); res.json({ success: true }); });
 app.delete('/api/admin/material/:id', async (req, res) => { await Material.findByIdAndDelete(req.params.id); res.json({ success: true }); });
+
+// TEST ACTIONS (CREATE + EDIT)
 app.post('/api/admin/test', async (req, res) => { await new Test(req.body).save(); res.json({ success: true }); });
+app.put('/api/admin/test/:id', async (req, res) => { await Test.findByIdAndUpdate(req.params.id, req.body); res.json({ success: true }); });
 app.delete('/api/admin/test/:id', async (req, res) => { await Test.findByIdAndDelete(req.params.id); res.json({ success: true }); });
+// Get Single Test for Editing
+app.get('/api/admin/test/:id', async (req, res) => { res.json(await Test.findById(req.params.id)); });
+
 app.post('/api/admin/offline-result', async (req, res) => { await new OfflineResult(req.body).save(); res.json({ success: true }); });
-// NEW: Delete Offline Result
-app.delete('/api/admin/offline-result/:id', async (req, res) => { await OfflineResult.findByIdAndDelete(req.params.id); res.json({ success: true }); });
+app.delete('/api/admin/offline-result/:id', async (req, res) => { await OfflineResult.findByIdAndDelete(req.params.id); res.json({ success: true }); }); // Added Delete for Offline Results
 
 app.delete('/api/admin/result/online/:id', async (req, res) => { await Result.findByIdAndDelete(req.params.id); res.json({ success: true }); });
+
+// Blog Actions
 app.post('/api/admin/blog', async (req, res) => { await new Blog(req.body).save(); res.json({ success: true }); });
 app.delete('/api/admin/blog/:id', async (req, res) => { await Blog.findByIdAndDelete(req.params.id); res.json({ success: true }); });
 app.put('/api/admin/blog/:id', async (req, res) => { await Blog.findByIdAndUpdate(req.params.id, req.body); res.json({ success: true }); });
@@ -114,7 +123,7 @@ app.post('/api/admin/announcement/delete', async (req, res) => {
 });
 
 // Student Access
-app.get('/api/materials', async (req, res) => res.json(await Material.find({}, 'title description type image date')));
+app.get('/api/materials', async (req, res) => res.json(await Material.find({}, 'title description category type image accessCode date'))); // accessCode included to check lock status
 app.post('/api/material/unlock', async (req, res) => {
     const f = await Material.findById(req.body.id);
     if(f && f.accessCode === req.body.code) res.json({ success: true, link: f.link }); else res.json({ success: false });
@@ -130,7 +139,7 @@ app.post('/api/results/unlock-copy', async (req, res) => {
 app.get('/api/blogs', async (req, res) => res.json(await Blog.find().sort({ date: -1 })));
 
 // Exam Engine
-app.get('/api/tests', async (req, res) => res.json(await Test.find({}, 'title duration date accessCode')));
+app.get('/api/tests', async (req, res) => res.json(await Test.find({}, 'title duration date category accessCode')));
 
 app.post('/api/test/start', async (req, res) => {
     const { id, code, studentEmail } = req.body; const s = await Student.findOne({ email: studentEmail });
