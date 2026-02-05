@@ -65,6 +65,7 @@
         <a onclick="show('home')">Home</a>
         <a onclick="show('notes')">Library</a>
         <a onclick="show('tests')">Tests</a>
+        <a onclick="show('live-tests')">Live Test</a>
         <a onclick="show('results')">Results</a>
         <a onclick="show('login')" id="login-nav">Login</a>
         <a id="teacher-nav" onclick="show('admin')" style="display:none; color:var(--red)">TEACHER PANEL</a>
@@ -88,20 +89,9 @@
     </div>
 </div>
 
-<div id="notes" class="section">
-    <h2>📚 Library</h2><button id="lib-back-btn" class="btn-gold" style="display:none; margin-bottom:15px;" onclick="loadMaterials()">← Back to Categories</button>
-    <div id="mat-list" class="grid">Loading...</div>
-</div>
-
-<div id="tests" class="section">
-    <h2>📝 Practice Tests</h2><button id="test-back-btn" class="btn-gold" style="display:none; margin-bottom:15px;" onclick="loadTestsList()">← Back to Categories</button>
-    <div id="test-list" class="grid">Loading...</div>
-</div>
-
-<div id="live-tests" class="section">
-    <h2>🔴 Live Test Centre</h2>
-    <div id="live-test-list" class="grid">Loading...</div>
-</div>
+<div id="notes" class="section"><h2>📚 Library</h2><button id="lib-back-btn" class="btn-gold" style="display:none; margin-bottom:15px;" onclick="loadMaterials()">← Back to Categories</button><div id="mat-list" class="grid">Loading...</div></div>
+<div id="tests" class="section"><h2>📝 Practice Tests</h2><button id="test-back-btn" class="btn-gold" style="display:none; margin-bottom:15px;" onclick="loadTestsList()">← Back to Categories</button><div id="test-list" class="grid">Loading...</div></div>
+<div id="live-tests" class="section"><h2>🔴 Live Test Centre</h2><div id="live-test-list" class="grid">Loading...</div></div>
 
 <div id="exam-ui" class="section" style="max-width:100%; padding:0;">
     <div class="exam-container">
@@ -122,10 +112,7 @@
         <div class="exam-right">
             <div style="background:var(--primary); color:var(--gold); padding:20px; text-align:center; font-size:1.8rem; font-weight:800; border-radius:10px; margin-bottom:20px;" id="timer">00:00</div>
             <div style="font-size:1.1rem; margin-bottom:20px;"><strong>Student: </strong><span id="student-name-display">...</span></div>
-            <div style="flex:1; overflow-y:auto;">
-                <p><strong>Palette:</strong> <span style="color:var(--green)">● Done</span> <span style="color:var(--purple)">● Visited</span></p>
-                <div class="palette-grid" id="palette"></div>
-            </div>
+            <div style="flex:1; overflow-y:auto;"><p><strong>Palette:</strong> <span style="color:var(--green)">● Done</span> <span style="color:var(--purple)">● Visited</span></p><div class="palette-grid" id="palette"></div></div>
             <button class="btn-red" style="width:100%; padding:20px; font-size:1.2rem;" onclick="submitExam()">SUBMIT TEST</button>
         </div>
     </div>
@@ -138,9 +125,7 @@
         <button class="btn-gold" onclick="switchResultTab('live')">Live Test Results</button>
         <button class="btn-gold" onclick="switchResultTab('offline')">Offline Results</button>
     </div>
-    <hr>
-    <h3 id="res-tab-title" style="color:var(--primary)">Results</h3>
-    <table id="result-table" style="width:100%">Loading...</table>
+    <hr><h3 id="res-tab-title" style="color:var(--primary)">Results</h3><table id="result-table" style="width:100%">Loading...</table>
 </div>
 
 <div id="login" class="section">
@@ -275,7 +260,6 @@
         if(!data.success) return alert("Error"); 
         const { result, test, rank } = data; 
         
-        // Show Review Modal
         document.getElementById('review-chart-box').style.display = 'block';
         document.getElementById('review-rank-info').innerHTML = `<span style="color:var(--primary)">Rank: #${rank}</span> | Score: ${result.score}/${result.totalMarks}`;
         
@@ -386,7 +370,7 @@
         if(type === 'offline') {
             const d = await (await fetch('/api/results/offline')).json();
             document.getElementById('res-tab-title').innerText = "Offline Results";
-            document.getElementById('result-table').innerHTML = d.map(r=>`<tr><td>${r.title}</td><td><button class="btn-gold" onclick="viewCopy('${r._id}','${rec._id}')">View</button></td></tr>`).join(''); // Fix loop
+            document.getElementById('result-table').innerHTML = d.map(r=>`<tr><td>${r.title}</td><td><button class="btn-gold" onclick="viewCopy('${r._id}','${rec._id}')">View</button></td></tr>`).join('');
         } else {
             if(!user) return;
             const res = await fetch('/api/student/results/online', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({email:user.email})});

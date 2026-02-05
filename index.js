@@ -47,12 +47,9 @@ const OfflineResult = mongoose.model('OfflineResult', OfflineResultSchema);
 
 const ResultSchema = new mongoose.Schema({
     studentName: String, studentEmail: String, testTitle: String, testId: String, testType: String,
-    score: Number, totalMarks: Number, percentage: Number, feedback: String,
+    score: Number, totalMarks: Number, percentage: Number, rank: Number, feedback: String,
     answers: [Number], topicAnalytics: Object, date: { type: Date, default: Date.now }
 });
-// Indexing for speed
-ResultSchema.index({ testId: 1, score: -1 }); 
-ResultSchema.index({ studentEmail: 1 });
 const Result = mongoose.model('Result', ResultSchema);
 
 const BlogSchema = new mongoose.Schema({
@@ -83,12 +80,12 @@ app.post('/api/login', async (req, res) => {
 app.get('/api/admin/students', async (req, res) => res.json(await Student.find().sort({ joinedAt: -1 })));
 app.get('/api/admin/results/online', async (req, res) => res.json(await Result.find().sort({ date: -1 })));
 
-// Result Details & DYNAMIC RANKING
+// CRITICAL: Result Details for View Copy
 app.post('/api/result-details', async (req, res) => {
     try {
         const result = await Result.findById(req.body.resultId);
         const test = await Test.findById(result.testId);
-        // Calculate Rank Dynamically: Count how many people have a higher score in this test
+        // Recalculate Rank on the fly
         const rank = (await Result.countDocuments({ testId: result.testId, score: { $gt: result.score } })) + 1;
         res.json({ success: true, result, test, rank });
     } catch(e) { res.json({ success: false }); }
@@ -108,7 +105,7 @@ app.post('/api/admin/blog', async (req, res) => { await new Blog(req.body).save(
 app.delete('/api/admin/blog/:id', async (req, res) => { await Blog.findByIdAndDelete(req.params.id); res.json({ success: true }); });
 app.put('/api/admin/blog/:id', async (req, res) => { await Blog.findByIdAndUpdate(req.params.id, req.body); res.json({ success: true }); });
 
-// Announcement
+// Announcements
 app.get('/api/announcement', async (req, res) => { 
     const c = await Config.findOne({ type: 'announce_list' });
     res.json({ list: c ? c.list : ["Welcome to ARC Classes!"] });
@@ -133,19 +130,19 @@ app.get('/api/results/offline', async (req, res) => {
     const r = await OfflineResult.find();
     res.json(r.map(x => ({ _id: x._id, title: x.title, date: x.date, records: x.records.map(rec => ({ studentName: rec.studentName, marks: rec.marks, rank: rec.rank, _id: rec._id })) })));
 });
+// Get Student's Online History
+app.post('/api/student/results/online', async (req, res) => {
+    try {
+        const results = await Result.find({ studentEmail: req.body.email }).sort({ date: -1 });
+        res.json({ success: true, results });
+    } catch(e) { res.json({ success: false }); }
+});
+
 app.post('/api/results/unlock-copy', async (req, res) => {
     const { resultId, recordId, password } = req.body; const r = await OfflineResult.findById(resultId); const rec = r.records.id(recordId);
     if(rec && rec.accessCode === password) res.json({ success: true, link: rec.copyLink }); else res.json({ success: false });
 });
 app.get('/api/blogs', async (req, res) => res.json(await Blog.find().sort({ date: -1 })));
-
-// Student History
-app.post('/api/student/results/online', async (req, res) => {
-    try {
-        const results = await Result.find({ studentEmail: req.body.email }).lean();
-        res.json({ success: true, results });
-    } catch(e) { res.json({ success: false }); }
-});
 
 // Exam Engine
 app.get('/api/tests', async (req, res) => res.json(await Test.find({}, 'title duration category date accessCode isLive startTime endTime')));
@@ -155,6 +152,8 @@ app.post('/api/test/start', async (req, res) => {
     if(!s) return res.json({ success: false, message: "Login first." });
     
     const t = await Test.findById(id);
+    
+    // LIVE TEST CHECK
     if(t.isLive) {
         const now = new Date();
         if(now < new Date(t.startTime)) return res.json({ success: false, message: "Test has not started yet." });
@@ -189,12 +188,10 @@ app.post('/api/test/submit', async (req, res) => {
         let fb = pct < 40 ? "Focus on concepts." : (pct < 80 ? "Good effort!" : "Outstanding!");
         const type = t.isLive ? 'live' : 'practice';
         
-        const r = new Result({ studentName, studentEmail, testTitle: t.title, testId: t._id, testType: type, score, totalMarks: total, percentage: pct, feedback: fb, answers, topicAnalytics });
+        const r = new Result({ studentName, studentEmail, testTitle: t.title, testId: t._id, testType: type, score, totalMarks: total, percentage: pct, rank: 0, feedback: fb, answers, topicAnalytics });
         await r.save();
-        
-        // Immediate Rank Calculation
         const rank = (await Result.countDocuments({ testId: t._id, score: { $gt: score } })) + 1;
-        
+        r.rank = rank; await r.save();
         res.json({ success: true, score, totalMarks: total, rank, percentage: pct.toFixed(1), feedback: fb, stats: { correct, wrong, skipped }, resultId: r._id });
     } catch(e) { res.json({ success: false }); }
 });
