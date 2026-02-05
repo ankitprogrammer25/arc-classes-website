@@ -20,13 +20,11 @@
         .section.active { display: block; animation: fadeIn 0.5s; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
-        /* CARDS & CATEGORIES */
+        /* CARDS */
         .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.05); transition: transform 0.2s; position: relative; display:flex; flex-direction:column; border: 1px solid #eee; }
         .card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
-        
         .cat-card { background: var(--primary); color: white; padding: 30px; border-radius: 12px; text-align: center; cursor: pointer; font-size: 1.2rem; font-weight: bold; border-bottom: 5px solid var(--gold); transition: 0.2s; }
         .cat-card:hover { transform: scale(1.05); }
-
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; }
         .book-cover { width: 100%; height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 15px; border:1px solid #eee; }
         
@@ -35,19 +33,21 @@
         .form-box { max-width: 800px; margin: 40px auto; background: white; padding: 40px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
         input, select, textarea { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 1rem; }
         
-        /* SLIDING ANNOUNCEMENT */
+        /* SLIDER */
         .marquee-container { background: var(--gold); color: var(--primary); padding: 12px; font-weight: bold; border-radius: 8px; margin-bottom: 30px; font-size: 1.1rem; overflow: hidden; white-space: nowrap; position: relative; }
         .marquee-content { display: inline-block; padding-left: 100%; animation: scroll-left 20s linear infinite; }
         @keyframes scroll-left { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
 
-        /* BLOGS (WHITE BACKGROUND) */
+        /* BLOG & EDITOR */
         .blog-card { background: white !important; color: #333 !important; border: 1px solid #ddd; }
         .blog-text { max-height: 80px; overflow: hidden; transition: max-height 0.3s; color: #555; }
         
-        /* RICH TEXT EDITOR */
-        .editor-toolbar { background: #eee; padding: 10px; border-radius: 5px 5px 0 0; display: flex; gap: 10px; }
-        .editor-btn { background: white; border: 1px solid #ccc; padding: 5px 10px; cursor: pointer; font-weight: bold; }
-        .editor-area { min-height: 300px; border: 1px solid #ccc; padding: 15px; border-radius: 0 0 5px 5px; outline: none; background: white; }
+        /* PRO EDITOR TOOLBAR */
+        .toolbar { background: #f3f4f6; padding: 10px; border: 1px solid #ccc; border-radius: 8px 8px 0 0; display: flex; flex-wrap: wrap; gap: 5px; }
+        .tool-btn { background: white; border: 1px solid #ccc; padding: 5px 10px; cursor: pointer; font-weight: bold; border-radius: 4px; }
+        .tool-btn:hover { background: #e5e7eb; }
+        .editor-area { min-height: 200px; border: 1px solid #ccc; padding: 15px; border-radius: 0 0 8px 8px; outline: none; background: white; font-size: 1.1rem; }
+        .editor-area:focus { border-color: var(--primary); }
 
         /* EXAM UI */
         .exam-container { display: flex; height: 80vh; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 5px 20px rgba(0,0,0,0.15); border: 1px solid #ddd; }
@@ -97,20 +97,15 @@
 
 <div id="home" class="section active">
     <div style="display:flex; gap:10px; margin-bottom:20px;">
-        <input id="home-search" value="" placeholder="🔍 Search Books & Notes (3+ letters)..." style="flex:1; padding:15px; font-size:1.1rem; border:2px solid var(--primary);" onkeyup="filterNotes()">
+        <input id="home-search" value="" placeholder="🔍 Search Books & Notes" style="flex:1; padding:15px; font-size:1.1rem; border:2px solid var(--primary);" onkeyup="filterNotes()">
     </div>
-    
-    <div class="marquee-container">
-        <div id="announce-marquee" class="marquee-content">Loading...</div>
-    </div>
-    
+    <div class="marquee-container"><div id="announce-marquee" class="marquee-content">Loading...</div></div>
     <h3 style="color:var(--primary)">Latest Blogs</h3>
     <div id="blog-container" class="grid" style="margin-bottom:40px;"></div>
-
     <div style="text-align:center; padding:80px 40px; background:linear-gradient(135deg, var(--primary), var(--dark)); color:white; border-radius:20px;">
         <h1 style="color:var(--gold); font-size:3rem;">Master Chemistry with ARC Classes</h1>
-        <h2 style="color:var(--gold); font-size:3rem;">5 Years+ Teaching Experience + NET/JRF/GATE Qualified Teacher </h2>
-        <p>Premium Notes, Chapter wise Tests, and Expert Guidance.</p>
+        <h3 style="color:var(--gold); font-size:3rem;">5 Years+ teaching experience + NET/JRF/GATE Qualified Teacher</h3>
+        <p>Premium Notes, Practice tests, and Expert Guidance.</p>
         <button class="btn-gold" style="font-size:1.2rem; padding:15px 40px;" onclick="show('tests')">Start a Test Now</button>
     </div>
 </div>
@@ -122,7 +117,7 @@
 </div>
 
 <div id="tests" class="section">
-    <h2>📝 Online Tests (Max 3 Attempts allowed per test)</h2>
+    <h2>📝 Online Tests (Max 3 Attempts)</h2>
     <button id="test-back-btn" class="btn-gold" style="display:none; margin-bottom:15px;" onclick="loadTestsList()">← Back to Categories</button>
     <div id="test-list" class="grid">Loading...</div>
 </div>
@@ -134,7 +129,7 @@
                 <h3 style="margin:0; color:var(--primary)">Question <span id="q-num">1</span></h3>
                 <span style="font-weight:bold; font-size:1.2rem;"><span style="color:var(--green)">+<span id="q-marks">0</span></span> / <span style="color:var(--red)">-<span id="q-neg">0</span></span></span>
             </div>
-            <p id="q-text" style="font-size:1.3rem; line-height:1.6;"></p>
+            <div id="q-text" style="font-size:1.3rem; line-height:1.6; margin-bottom:20px;"></div>
             <img id="q-image-display" class="q-image" style="display:none;">
             <div id="q-options"></div>
             <div style="margin-top:40px; display:flex; gap:15px;">
@@ -162,7 +157,7 @@
         <h2>Login</h2>
         <input id="l-email" placeholder="Email"><input id="l-pass" type="password" placeholder="Password">
         <button class="btn-gold" style="width:100%" onclick="handleLogin()">Login</button>
-        <p style="text-align:center; cursor:pointer; color:blue" onclick="toggleReg()">New? Register</p>
+        <p style="text-align:center; cursor:pointer; color:blue" onclick="toggleReg()">New Student? Register Here</p>
         <p style="text-align:center; font-size:0.9rem; color:#999">Teacher? (admin@arc.com)</p>
     </div>
     <div id="reg-box" class="form-box" style="display:none">
@@ -189,62 +184,57 @@
     
     <div id="adm-students" style="display:none"><h3>Students</h3><table id="student-table"></table></div>
     <div id="adm-online-res" style="display:none"><h3>Online Results</h3><table id="online-res-table"></table></div>
-    
-    <div id="adm-manage" style="display:none">
-        <h3>Manage Content</h3>
-        <div id="manage-list"></div>
-    </div>
-    
-    <div id="adm-announce" style="display:none">
-        <div class="form-box" style="margin:0"><h3>Announcements</h3><textarea id="ann-text" placeholder="New update..."></textarea><button class="btn-gold" onclick="addAnnouncement()">Add to Slider</button><div id="ann-list-manage" style="margin-top:20px; text-align:left;"></div></div>
-    </div>
+    <div id="adm-manage" style="display:none"><h3>Manage Content</h3><div id="manage-list"></div></div>
+    <div id="adm-announce" style="display:none"><div class="form-box" style="margin:0"><h3>Announcements</h3><textarea id="ann-text" placeholder="New update..."></textarea><button class="btn-gold" onclick="addAnnouncement()">Add to Slider</button><div id="ann-list-manage" style="margin-top:20px; text-align:left;"></div></div></div>
 
     <div id="adm-create-blog" style="display:none">
         <div class="form-box" style="margin:0; max-width:100%">
-            <h3>Post Blog (Rich Text)</h3>
+            <h3>Post Blog</h3>
             <input id="b-title" placeholder="Blog Title">
             <p>Content:</p>
-            <div class="editor-toolbar">
-                <button class="editor-btn" onclick="formatDoc('bold')"><b>B</b></button>
-                <button class="editor-btn" onclick="formatDoc('underline')"><u>U</u></button>
-                <button class="editor-btn" onclick="formatDoc('italic')"><i>I</i></button>
-                <button class="editor-btn" onclick="formatDoc('foreColor', prompt('Color (red, blue, hex):'))">Color</button>
+            <div class="toolbar">
+                <button class="tool-btn" onclick="fmt('bold')">B</button><button class="tool-btn" onclick="fmt('italic')">I</button><button class="tool-btn" onclick="fmt('underline')">U</button>
+                <button class="tool-btn" onclick="fmt('subscript')">X₂</button><button class="tool-btn" onclick="fmt('superscript')">X²</button>
+                <button class="tool-btn" onclick="fmt('foreColor', prompt('Color (red, blue, hex):'))">Color</button>
+                <button class="tool-btn" onclick="window.open('https://translate.google.com','_blank')">🌐 Translate</button>
             </div>
             <div id="b-content" class="editor-area" contenteditable="true"></div>
-            
             <p style="margin-top:10px;">Image:</p><input type="file" id="b-img-file" accept="image/*">
             <button class="btn-gold" style="margin-top:20px;" onclick="createBlog()">Publish Blog</button>
         </div>
     </div>
 
     <div id="adm-upload-mat" style="display:none">
-        <div class="form-box" style="margin:0">
-            <h3>Upload Note</h3>
-            <input id="m-title" placeholder="Title"><input id="m-desc" placeholder="Desc"><input id="m-link" placeholder="Drive Link"><input id="m-code" placeholder="Password (Optional)">
-            <p>Category:</p>
-            <select id="m-cat">
-                <option>11th Books</option><option>12th Books</option><option>Organic Chemistry Books</option><option>Physical Chemistry Books</option><option>Inorganic Chemistry Books</option><option>Handmade Notes</option><option>Coaching Notes</option><option>Practice Test Series</option>
-            </select>
-            <p>Cover:</p><input type="file" id="m-img-file" accept="image/*"><button class="btn-gold" onclick="uploadMaterial()">Upload</button>
-        </div>
+        <div class="form-box" style="margin:0"><h3>Upload Note</h3><input id="m-title" placeholder="Title"><input id="m-desc" placeholder="Desc"><input id="m-link" placeholder="Drive Link"><input id="m-code" placeholder="Password (Optional)">
+        <p>Category:</p><select id="m-cat"><option>11th Class Books</option><option>12th Class Books</option><option>Organic Chemistry Books</option><option>Physical Chemistry Books</option><option>Inorganic Chemsitry Books</option><option>Coaching Notes</option><option>Practice Test Series</option></select>
+        <p>Cover:</p><input type="file" id="m-img-file" accept="image/*"><button class="btn-gold" onclick="uploadMaterial()">Upload</button></div>
     </div>
 
-    <div id="adm-upload-res" style="display:none">
-        <div class="form-box" style="margin:0"><h3>Offline Result</h3><input id="off-title" placeholder="Test Name"><div style="background:#fff7ed; padding:20px; margin:15px 0; border:2px solid orange;"><h4>Student Record</h4><input id="res-name" placeholder="Name"><div style="display:flex; gap:10px"><input type="number" id="res-marks" placeholder="Marks"><input type="number" id="res-rank" placeholder="Rank"></div><input id="res-link" placeholder="Copy Link"><input id="res-pass" placeholder="Password"><button class="btn-gold" onclick="addResRecord()">+ Add Record</button><p id="res-count">Records: 0</p></div><button class="btn-gold" onclick="publishOfflineResult()">Publish All</button></div>
-    </div>
+    <div id="adm-upload-res" style="display:none"><div class="form-box" style="margin:0"><h3>Offline Result</h3><input id="off-title" placeholder="Test Name"><div style="background:#fff7ed; padding:20px; margin:15px 0; border:2px solid orange;"><h4>Student Record</h4><input id="res-name" placeholder="Name"><div style="display:flex; gap:10px"><input type="number" id="res-marks" placeholder="Marks"><input type="number" id="res-rank" placeholder="Rank"></div><input id="res-link" placeholder="Copy Link"><input id="res-pass" placeholder="Password"><button class="btn-gold" onclick="addResRecord()">+ Add Record</button><p id="res-count">Records: 0</p></div><button class="btn-gold" onclick="publishOfflineResult()">Publish All</button></div></div>
     
     <div id="adm-create-test" style="display:none">
         <div class="form-box" style="margin:0; max-width:100%">
             <h3 id="test-form-title">Create Test</h3>
             <input id="t-title" placeholder="Title"><input type="number" id="t-dur" placeholder="Mins"><input id="t-code" placeholder="Password (Empty for Open)"><textarea id="t-inst" placeholder="Instructions"></textarea>
-            <p>Category:</p> <select id="t-cat"><option>Class 11th Test</option><option>Class 12th Test</option><option>Organic Test</option><option>Physical Test</option><option>Inorganic Test</option><option>Full Syllabus</option></select>
+            <p>Category:</p> <select id="t-cat"><option>Class 11th Test</option><option>Class 12th Test</option><option>Organic Chemistry Test</option><option>Physical Chemsitry Test</option><option>Inorganic Chemistry Test</option><option>Full Syllabus Test</option></select>
             
             <div style="background:#f0f9ff; padding:20px; margin:20px 0; border:2px solid #bae6fd;">
                 <h4 id="q-header">Add Question 1</h4>
-                <textarea id="q-text" placeholder="Text"></textarea>
+                
+                <div class="toolbar">
+                    <button class="tool-btn" onclick="fmtQ('bold')">B</button><button class="tool-btn" onclick="fmtQ('italic')">I</button><button class="tool-btn" onclick="fmtQ('subscript')">X₂</button><button class="tool-btn" onclick="fmtQ('superscript')">X²</button>
+                </div>
+                <div id="q-text-rich" class="editor-area" contenteditable="true" style="min-height:100px;"></div>
+
                 <p>Image:</p><input type="file" id="q-img-file" accept="image/*"><img id="q-img-preview" style="height:80px; display:none">
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px"><input id="op0" placeholder="A"><input id="op1" placeholder="B"><input id="op2" placeholder="C"><input id="op3" placeholder="D"></div>
-                <input id="q-topic" placeholder="Topic">
+                
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px;">
+                    <div id="op0" contenteditable="true" style="border:1px solid #ccc; padding:10px; background:white;" placeholder="Option A"></div>
+                    <div id="op1" contenteditable="true" style="border:1px solid #ccc; padding:10px; background:white;" placeholder="Option B"></div>
+                    <div id="op2" contenteditable="true" style="border:1px solid #ccc; padding:10px; background:white;" placeholder="Option C"></div>
+                    <div id="op3" contenteditable="true" style="border:1px solid #ccc; padding:10px; background:white;" placeholder="Option D"></div>
+                </div>
+                <input id="q-topic" placeholder="Topic" style="margin-top:10px">
                 <div style="display:flex; gap:10px; margin-top:10px"><select id="q-corr"><option value="0">Correct: A</option><option value="1">Correct: B</option><option value="2">Correct: C</option><option value="3">Correct: D</option></select><input type="number" id="q-mark" value="2"><input type="number" id="q-neg" value="0.5"></div>
                 <button class="btn-gold" style="margin-top:10px" onclick="saveDraftQuestion()">Save Question</button>
                 <p style="margin-top:10px; font-weight:bold;">Questions:</p><div id="draft-palette" class="draft-palette"></div>
@@ -254,20 +244,11 @@
     </div>
 </div>
 
-<div id="blog-modal" class="modal-overlay">
-    <div class="modal-box" style="text-align:left; width:900px; height:90vh;">
-        <h2 id="bm-title" style="margin-top:0"></h2>
-        <img id="bm-img" style="width:100%; max-height:400px; object-fit:cover; border-radius:10px; display:none; margin-bottom:20px;">
-        <div id="bm-content" style="white-space:pre-wrap; line-height:1.8; font-size:1.2rem; color:#333;"></div>
-        <button class="btn-red" style="margin-top:20px; width:100%" onclick="document.getElementById('blog-modal').style.display='none'">Close</button>
-    </div>
-</div>
-
+<div id="blog-modal" class="modal-overlay"><div class="modal-box" style="text-align:left; width:900px; height:90vh;"><h2 id="bm-title" style="margin-top:0"></h2><img id="bm-img" style="width:100%; max-height:400px; object-fit:cover; border-radius:10px; display:none; margin-bottom:20px;"><div id="bm-content" style="white-space:pre-wrap; line-height:1.8; font-size:1.2rem; color:#333;"></div><button class="btn-red" style="margin-top:20px; width:100%" onclick="document.getElementById('blog-modal').style.display='none'">Close</button></div></div>
 <div id="result-modal" class="modal-overlay"><div class="modal-box"><h2 style="color:var(--primary)">Test Submitted!</h2><div style="width:300px; height:300px; margin:auto;"><canvas id="resultChart"></canvas></div><h3 id="modal-score" style="margin:20px 0;"></h3><div id="modal-feedback" class="blink-anim" style="background:var(--gold); color:var(--primary); padding:15px; border-radius:10px; font-weight:bold; font-size:1.1rem;"></div><button class="btn-gold" style="margin-top:20px;" onclick="location.reload()">Close</button></div></div>
-
 <div id="review-modal" class="modal-overlay"><div class="modal-box" style="width:800px; text-align:left;"><h2 style="text-align:center;">Test Review</h2><div id="review-content" style="max-height:600px; overflow-y:auto;"></div><button class="btn-red" style="width:100%; margin-top:20px;" onclick="document.getElementById('review-modal').style.display='none'">Close Review</button></div></div>
 
-<footer>&copy; [arcclasses2025]. All Rights Reserved</footer>
+<footer>&copy; [ARCclasses2026].All Rights Reserved</footer>
 
 <script>
     let user = JSON.parse(localStorage.getItem('arc_user'));
@@ -281,7 +262,6 @@
         if(user.email==='admin@arc.com') document.getElementById('teacher-nav').style.display='inline';
     }
 
-    // NAV
     function show(id) {
         if(id === 'results' && !user) { alert("Login first to view results"); return show('login'); }
         document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
@@ -295,16 +275,15 @@
         if(id==='students') loadStudents(); if(id==='online-res') loadOnlineResults(); if(id==='manage') loadManageList(); if(id==='announce') loadAnnouncements();
     }
 
-    // --- RICH TEXT ---
-    function formatDoc(cmd, value=null) { document.execCommand(cmd, false, value); }
+    // --- RICH TEXT HELPERS ---
+    function fmt(cmd, val=null) { document.execCommand(cmd, false, val); }
+    function fmtQ(cmd, val=null) { document.execCommand(cmd, false, val); }
 
-    // --- ANNOUNCEMENTS ---
+    // --- ANNOUNCEMENT ---
     async function loadAnnouncements() {
         const d = await (await fetch('/api/announcement')).json(); announceList = d.list || [];
         document.getElementById('announce-marquee').innerHTML = announceList.join(' &nbsp;&nbsp; | &nbsp;&nbsp; ');
-        if(user && user.email==='admin@arc.com') {
-            document.getElementById('ann-list-manage').innerHTML = announceList.map(t => `<div style="padding:10px; border-bottom:1px solid #ddd; display:flex; justify-content:space-between;">${t} <button class="btn-red" style="padding:5px;" onclick="deleteAnnounce('${t}')">X</button></div>`).join('');
-        }
+        if(user && user.email==='admin@arc.com') document.getElementById('ann-list-manage').innerHTML = announceList.map(t => `<div style="padding:10px; border-bottom:1px solid #ddd; display:flex; justify-content:space-between;">${t} <button class="btn-red" style="padding:5px;" onclick="deleteAnnounce('${t}')">X</button></div>`).join('');
     }
     async function addAnnouncement() { await fetch('/api/admin/announcement/add',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:document.getElementById('ann-text').value})}); document.getElementById('ann-text').value=""; loadAnnouncements(); }
     async function deleteAnnounce(t) { if(confirm("Delete?")) { await fetch('/api/admin/announcement/delete',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:t})}); loadAnnouncements(); } }
@@ -317,7 +296,7 @@
 
     // --- TEACHER ---
     async function loadStudents(){ const d=await (await fetch('/api/admin/students')).json(); document.getElementById('student-table').innerHTML=`<tr><th>Name</th><th>Email</th><th>Password</th></tr>`+d.map(s=>`<tr><td>${s.name}</td><td>${s.email}</td><td>${s.password}</td></tr>`).join(''); }
-    async function loadOnlineResults(){ const d=await (await fetch('/api/admin/results/online')).json(); document.getElementById('online-res-table').innerHTML=`<tr><th>Date</th><th>Test</th><th>Student</th><th>Score</th><th>Action</th></tr>`+d.map(r=>`<tr><td>${new Date(r.date).toLocaleDateString()}</td><td>${r.testTitle}</td><td>${r.studentName}</td><td>${r.score}/${r.totalMarks}</td><td><button class="btn-gold" onclick="viewSubmission('${r._id}')">View</button> <button class="btn-red" onclick="deleteResult('${r._id}')">Del</button></td></tr>`).join(''); }
+    async function loadOnlineResults(){ const d=await (await fetch('/api/admin/results/online')).json(); document.getElementById('online-res-table').innerHTML=`<tr><th>Date</th><th>Test</th><th>Student</th><th>Score</th><th>Action</th></tr>`+d.map(r=>`<tr><td>${new Date(r.date).toLocaleDateString()}</td><td>${r.testTitle}</td><td>${r.studentName}<br>${r.studentEmail}</td><td>${r.score}/${r.totalMarks}</td><td><button class="btn-gold" onclick="viewSubmission('${r._id}')">View</button> <button class="btn-red" onclick="deleteResult('${r._id}')">Del</button></td></tr>`).join(''); }
     async function viewSubmission(rid){ const res = await fetch('/api/admin/result-details', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ resultId:rid }) }); const data = await res.json(); if(!data.success) return alert("Error"); const { result, test } = data; let html = `<h3>${result.studentName}</h3>`; test.questions.forEach((q, i) => { const studentAns = result.answers[i]; const isCorrect = studentAns === q.correct; const style = studentAns===null?"gray":(isCorrect?"green":"red"); html += `<div class="review-q"><p>Q${i+1}: ${q.text} <span style="color:${style}; float:right;">${isCorrect?"Correct":"Wrong"}</span></p>${q.options.map((o,oi)=>`<div class="review-opt" style="${oi===q.correct?'background:#dcfce7':(oi===studentAns?'background:#fee2e2':'')}">${o}</div>`).join('')}</div>`; }); document.getElementById('review-content').innerHTML = html; document.getElementById('review-modal').style.display = 'flex'; }
     async function deleteResult(id){ if(confirm("Delete Result?")) await fetch(`/api/admin/result/online/${id}`,{method:'DELETE'}); loadOnlineResults(); }
 
@@ -330,15 +309,20 @@
     function addResRecord(){ draftRecs.push({studentName:document.getElementById('res-name').value, marks:document.getElementById('res-marks').value, rank:document.getElementById('res-rank').value, copyLink:document.getElementById('res-link').value, accessCode:document.getElementById('res-pass').value}); document.getElementById('res-count').innerText=`Records: ${draftRecs.length}`; }
     async function publishOfflineResult(){ await fetch('/api/admin/offline-result',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({title:document.getElementById('off-title').value, records:draftRecs})}); alert("Published!"); draftRecs=[]; }
     
-    // TEST CREATOR (CREATE + EDIT)
+    // TEST CREATOR (AUTO-CLEAR FIX)
     function saveDraftQuestion() {
-        const qObj = { text:document.getElementById('q-text').value, image:qImgBase64, options:[0,1,2,3].map(i=>document.getElementById('op'+i).value), correct:parseInt(document.getElementById('q-corr').value), marks:parseFloat(document.getElementById('q-mark').value), negative:parseFloat(document.getElementById('q-neg').value), topic:document.getElementById('q-topic').value };
+        const qObj = { text:document.getElementById('q-text-rich').innerHTML, image:qImgBase64, options:[0,1,2,3].map(i=>document.getElementById('op'+i).innerHTML), correct:parseInt(document.getElementById('q-corr').value), marks:parseFloat(document.getElementById('q-mark').value), negative:parseFloat(document.getElementById('q-neg').value), topic:document.getElementById('q-topic').value };
         if(editingQIdx > -1) draftQs[editingQIdx] = qObj; else draftQs.push(qObj);
         renderDraftPalette(); clearQForm();
     }
     function renderDraftPalette() { document.getElementById('draft-palette').innerHTML = draftQs.map((_, i) => `<div class="p-btn" style="width:30px; height:30px; display:inline-flex; margin:2px; background:#ddd;" onclick="editDraftQ(${i})">${i+1}</div>`).join(''); }
-    function editDraftQ(i) { editingQIdx = i; const q = draftQs[i]; document.getElementById('q-header').innerText = `Edit Q${i+1}`; document.getElementById('q-text').value = q.text; [0,1,2,3].forEach(idx => document.getElementById('op'+idx).value = q.options[idx]); if(q.image) { document.getElementById('q-img-preview').src = q.image; document.getElementById('q-img-preview').style.display='block'; qImgBase64 = q.image; } }
-    function clearQForm() { editingQIdx = -1; document.getElementById('q-header').innerText = `Add Question ${draftQs.length+1}`; document.getElementById('q-text').value=""; qImgBase64=""; document.getElementById('q-img-preview').style.display='none'; }
+    function editDraftQ(i) { editingQIdx = i; const q = draftQs[i]; document.getElementById('q-header').innerText = `Edit Q${i+1}`; document.getElementById('q-text-rich').innerHTML = q.text; [0,1,2,3].forEach(idx => document.getElementById('op'+idx).innerHTML = q.options[idx]); if(q.image) { document.getElementById('q-img-preview').src = q.image; document.getElementById('q-img-preview').style.display='block'; qImgBase64 = q.image; } }
+    function clearQForm() { 
+        editingQIdx = -1; document.getElementById('q-header').innerText = `Add Question ${draftQs.length+1}`; 
+        document.getElementById('q-text-rich').innerHTML=""; qImgBase64=""; document.getElementById('q-img-preview').style.display='none';
+        [0,1,2,3].forEach(i=>document.getElementById('op'+i).innerHTML="");
+        document.getElementById('q-topic').value="";
+    }
     async function publishTest(){ 
         const body = JSON.stringify({title:document.getElementById('t-title').value, duration:document.getElementById('t-dur').value, accessCode:document.getElementById('t-code').value, instructions:document.getElementById('t-inst').value, category:document.getElementById('t-cat').value, questions:draftQs});
         if(editingTestId) { await fetch(`/api/admin/test/${editingTestId}`,{method:'PUT',headers:{'Content-Type':'application/json'},body}); alert("Updated!"); editingTestId=null; }
@@ -346,7 +330,6 @@
         draftQs=[]; location.reload(); 
     }
 
-    // MANAGE (Edit Test, Delete Items)
     async function loadManageList(){
         const [m,t,b,o] = await Promise.all([fetch('/api/materials'),fetch('/api/tests'),fetch('/api/blogs'),fetch('/api/results/offline')]);
         const mats=await m.json(); const tests=await t.json(); const blogs=await b.json(); const off=await o.json();
@@ -384,17 +367,15 @@
         document.getElementById('blog-modal').style.display = 'flex';
     }
 
-    // Categories Logic
     async function loadMaterials(){ allMats=await (await fetch('/api/materials')).json(); renderCategories(allMats, 'mat-list', 'lib-back-btn', renderMat); }
     async function loadTestsList(){ allTests=await (await fetch('/api/tests')).json(); renderCategories(allTests, 'test-list', 'test-back-btn', renderTest); }
 
-    function renderCategories(data, listId, backBtnId, renderItemFn) {
+    function renderCategories(data, listId, backBtnId, renderFn) {
         const cats = [...new Set(data.map(i => i.category || 'Uncategorized'))];
         document.getElementById(listId).innerHTML = cats.map(c => `<div class="cat-card" onclick="openCategory('${c}', '${listId}', '${backBtnId}', render${listId === 'mat-list' ? 'Mat' : 'Test'})">${c}</div>`).join('');
         document.getElementById(backBtnId).style.display = 'none';
     }
     
-    // Global render helper needs to be accessible string
     window.renderMat = function(l) { document.getElementById('mat-list').innerHTML=l.map(m=>`<div class="card" onclick="unlockMat('${m._id}')"><img src="${m.image||'https://via.placeholder.com/200'}" class="book-cover"><h3>${m.title} ${m.accessCode?'🔒':''}</h3><p>${m.description||''}</p><button class="btn-gold" style="width:100%">Open</button></div>`).join(''); }
     window.renderTest = function(l) { document.getElementById('test-list').innerHTML=l.map(t=>`<div class="card"><h3>${t.title} ${t.accessCode?'🔒':''}</h3><p>${t.duration} Mins</p><button class="btn-gold" onclick="startExam('${t._id}')">Start</button></div>`).join(''); }
 
@@ -417,7 +398,6 @@
     async function loadResults(){ const d=await (await fetch('/api/results/offline')).json(); document.getElementById('offline-results-list').innerHTML=d.map(r=>`<div class="card"><h3>${r.title}</h3><table><tr><th>Rank</th><th>Name</th><th>Marks</th><th>Action</th></tr>${r.records.sort((a,b)=>a.rank-b.rank).map(rec=>`<tr><td>#${rec.rank}</td><td>${rec.studentName}</td><td>${rec.marks}</td><td><button class="btn-gold" style="padding:5px" onclick="viewCopy('${r._id}','${rec._id}')">View</button></td></tr>`).join('')}</table></div>`).join(''); }
     async function viewCopy(rid,recid){ const p=prompt("Your Password:"); if(!p)return; const r=await fetch('/api/results/unlock-copy',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({resultId:rid,recordId:recid,password:p})}); const d=await r.json(); if(d.success)window.open(d.link); else alert("Incorrect Password"); }
 
-    // --- EXAM ENGINE ---
     async function startExam(id){
         if(!user) return alert("Login first"); 
         const selectedTest = allTests.find(t => t._id === id);
@@ -430,7 +410,12 @@
         } catch(e) { alert("Connection Error"); }
     }
     function runTimer(s){ clearInterval(examInterval); examInterval=setInterval(()=>{ s--; document.getElementById('timer').innerText=`${Math.floor(s/60)}:${s%60}`; if(s<=0){clearInterval(examInterval); submitExam(true);} },1000); }
-    function renderQ(i){ currentQIdx=i; visitedQs[i]=true; const q=currentTest.questions[i]; document.getElementById('q-num').innerText=i+1; document.getElementById('q-text').innerText=q.text; document.getElementById('q-marks').innerText=q.marks; document.getElementById('q-neg').innerText=q.negative; const img=document.getElementById('q-image-display'); if(q.image){img.src=q.image; img.style.display='block';}else{img.style.display='none';} document.getElementById('q-options').innerHTML=q.options.map((o,idx)=>`<label class="option-label"><input type="radio" name="opt" value="${idx}" ${studentAnswers[i]===idx?'checked':''}> ${o}</label>`).join(''); renderPalette(); }
+    function renderQ(i){ 
+        currentQIdx=i; visitedQs[i]=true; const q=currentTest.questions[i]; document.getElementById('q-num').innerText=i+1; 
+        document.getElementById('q-text').innerHTML=q.text; // InnerHTML for Rich Text
+        const img=document.getElementById('q-image-display'); if(q.image){img.src=q.image; img.style.display='block';}else{img.style.display='none';} 
+        document.getElementById('q-options').innerHTML=q.options.map((o,idx)=>`<label class="option-label"><input type="radio" name="opt" value="${idx}" ${studentAnswers[i]===idx?'checked':''}> ${o}</label>`).join(''); renderPalette(); 
+    }
     function saveAndNext(){ const s=document.querySelector('input[name="opt"]:checked'); studentAnswers[currentQIdx]=s?parseInt(s.value):null; renderPalette(); navQ(1); }
     function clearResponse(){ const s=document.querySelector('input[name="opt"]:checked'); if(s)s.checked=false; studentAnswers[currentQIdx]=null; renderPalette(); }
     function navQ(d){ const n=currentQIdx+d; if(n>=0 && n<currentTest.questions.length) renderQ(n); }
