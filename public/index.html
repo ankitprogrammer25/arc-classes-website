@@ -2,68 +2,67 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=1200">
     <title>ARC CLASSES</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root { --primary: #0f172a; --gold: #fbbf24; --light: #f8fafc; --red: #ef4444; --dark: #1e293b; --purple: #a855f7; --green: #22c55e; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--light); margin: 0; color: #333; display: flex; flex-direction: column; min-height: 100vh; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--light); margin: 0; color: #333; min-width: 1200px; }
         
         @keyframes rainbow { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-        .logo { font-size: 1.8rem; font-weight: 900; letter-spacing: 2px; background: linear-gradient(270deg, #ff0000, #fbbf24, #00ff00, #0000ff, #ff00ff); background-size: 400% 400%; -webkit-background-clip: text; color: transparent; animation: rainbow 6s ease infinite; }
-        nav { background: var(--primary); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
-        .menu a { color: white; margin-left: 20px; text-decoration: none; font-weight: 500; cursor: pointer; transition: 0.3s; }
+        .logo { font-size: 2rem; font-weight: 900; letter-spacing: 2px; background: linear-gradient(270deg, #ff0000, #fbbf24, #00ff00, #0000ff, #ff00ff); background-size: 400% 400%; -webkit-background-clip: text; color: transparent; animation: rainbow 6s ease infinite; }
+        
+        nav { background: var(--primary); padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
+        .menu a { color: white; margin-left: 25px; text-decoration: none; font-weight: 600; font-size: 1.1rem; cursor: pointer; transition: 0.3s; }
         .menu a:hover { color: var(--gold); }
         
-        .section { display: none; padding: 20px; max-width: 1200px; margin: auto; flex: 1; }
+        .section { display: none; padding: 40px; max-width: 1100px; margin: auto; }
         .section.active { display: block; animation: fadeIn 0.5s; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
-        .hero { background: linear-gradient(135deg, var(--primary), var(--dark)); color: white; padding: 60px 20px; border-radius: 20px; text-align: center; margin-bottom: 30px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
-        .hero h1 { font-size: 2.5rem; margin: 0; color: var(--gold); }
-        .cta-btn { padding: 12px 30px; font-size: 1.1rem; background: var(--gold); color: var(--primary); border: none; border-radius: 50px; font-weight: bold; cursor: pointer; transition: transform 0.2s; }
+        /* COMPONENTS */
+        .hero { background: linear-gradient(135deg, var(--primary), var(--dark)); color: white; padding: 80px 40px; border-radius: 20px; text-align: center; margin-bottom: 40px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .hero h1 { font-size: 3rem; margin: 0; color: var(--gold); }
+        .cta-btn { padding: 15px 40px; font-size: 1.2rem; background: var(--gold); color: var(--primary); border: none; border-radius: 50px; font-weight: bold; cursor: pointer; transition: transform 0.2s; }
         .cta-btn:hover { transform: scale(1.05); }
         
-        .card { background: white; padding: 15px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: transform 0.2s; position: relative; display:flex; flex-direction:column; }
+        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.05); transition: transform 0.2s; position: relative; display:flex; flex-direction:column; }
         .card:hover { transform: translateY(-5px); }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
-        .book-cover { width: 100%; height: 200px; object-fit: cover; border-radius: 5px; margin-bottom: 10px; background: #eee; border:1px solid #ddd; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; }
+        .book-cover { width: 100%; height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 15px; border:1px solid #eee; }
         
-        .btn-gold { background: var(--gold); color: var(--primary); padding: 10px 20px; border:none; border-radius:5px; cursor:pointer; font-weight:bold; }
-        .btn-red { background: var(--red); color: white; padding: 10px 20px; border:none; border-radius:5px; cursor:pointer; font-weight:bold; }
-        .form-box { max-width: 500px; margin: 30px auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        input, select, textarea { width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
-
+        .btn-gold { background: var(--gold); color: var(--primary); padding: 12px 20px; border:none; border-radius:6px; cursor:pointer; font-weight:bold; }
+        .btn-red { background: var(--red); color: white; padding: 12px 20px; border:none; border-radius:6px; cursor:pointer; font-weight:bold; }
+        .form-box { max-width: 600px; margin: 40px auto; background: white; padding: 40px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
+        input, select, textarea { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 1rem; }
+        
+        /* BLINKING BLOGS */
+        @keyframes blinker { 50% { opacity: 0.7; } }
+        .blink-anim { animation: blinker 2s linear infinite; }
+        .blog-text { max-height: 80px; overflow: hidden; transition: max-height 0.3s; }
+        .blog-text.expanded { max-height: 1000px; }
+        
         /* EXAM UI */
-        .exam-container { display: flex; height: 85vh; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-        .exam-left { flex: 3; padding: 30px; overflow-y: auto; border-right: 1px solid #eee; }
+        .exam-container { display: flex; height: 80vh; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 5px 20px rgba(0,0,0,0.15); border: 1px solid #ddd; }
+        .exam-left { flex: 3; padding: 40px; overflow-y: auto; border-right: 1px solid #eee; }
         .exam-right { flex: 1; background: #f8fafc; padding: 20px; display: flex; flex-direction: column; border-left: 1px solid #eee; }
-        .q-image { max-width: 100%; max-height: 250px; display: block; margin: 15px 0; border: 1px solid #eee; border-radius: 5px; }
-        .option-label { display: flex; align-items: center; padding: 15px; border: 2px solid #eee; margin: 10px 0; cursor: pointer; border-radius: 8px; transition: 0.2s; }
+        .q-image { max-width: 100%; max-height: 300px; display: block; margin: 20px 0; border: 1px solid #ddd; border-radius: 5px; }
+        .option-label { display: flex; align-items: center; padding: 15px; border: 2px solid #eee; margin: 10px 0; cursor: pointer; border-radius: 8px; transition: 0.2s; font-size: 1.1rem; }
         .option-label:hover { background: #f1f5f9; border-color: var(--primary); }
-        .option-label input { margin-right: 15px; width: 20px; height: 20px; }
+        .option-label input { margin-right: 15px; transform: scale(1.5); }
         .palette-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 20px; }
-        .p-btn { width: 40px; height: 40px; border-radius: 50%; border: 2px solid #ddd; cursor: pointer; font-weight: bold; display: flex; align-items: center; justify-content: center; background: white; font-size: 0.9rem; }
+        .p-btn { width: 45px; height: 45px; border-radius: 50%; border: 2px solid #ddd; cursor: pointer; font-weight: bold; display: flex; align-items: center; justify-content: center; background: white; font-size: 1rem; }
         .p-btn.answered { background: var(--green); color: white; border-color: var(--green); }
         .p-btn.visited { background: var(--purple); color: white; border-color: var(--purple); }
         .p-btn.active { border: 3px solid var(--primary); transform: scale(1.1); }
 
-        /* BLINKING & MODAL */
-        @keyframes blinker { 50% { opacity: 0.3; } }
-        .blink-anim { animation: blinker 1.5s linear infinite; }
+        /* MODAL */
         .modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:2000; display:none; justify-content:center; align-items:center; }
-        .modal-box { background:white; padding:30px; border-radius:15px; max-width:500px; width:90%; text-align:center; position:relative; }
+        .modal-box { background:white; padding:40px; border-radius:20px; width:500px; text-align:center; }
 
-        footer { background: var(--primary); color: #94a3b8; text-align: center; padding: 20px; margin-top: auto; }
-
-        /* --- ADD THIS TO YOUR STYLE SECTION --- */
-.search-bar-container { display: flex; gap: 10px; margin-bottom: 20px; }
-.search-input { flex: 1; padding: 15px; font-size: 1.1rem; border: 2px solid var(--primary); border-radius: 5px; }
-.blog-card { background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 20px; border-left: 5px solid var(--gold); }
-.blog-content { padding: 20px; }
-.blog-text { max-height: 80px; overflow: hidden; transition: max-height 0.5s ease; }
-.blog-text.expanded { max-height: 1000px; }
-.read-more-btn { background: none; border: none; color: blue; cursor: pointer; padding: 0; margin-top: 10px; font-weight: bold; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { padding: 12px; border: 1px solid #ddd; text-align: left; }
+        th { background: var(--primary); color: white; }
     </style>
 </head>
 <body>
@@ -82,17 +81,16 @@
 </nav>
 
 <div id="home" class="section active">
-    <div class="search-bar-container">
-        <input type="text" id="home-search" class="search-input" placeholder="🔍 Search Books & Notes..." onkeyup="filterNotes()">
+    <div style="display:flex; gap:10px; margin-bottom:20px;">
+        <input id="home-search" placeholder="🔍 Search Books & Notes..." style="flex:1; padding:15px; font-size:1.1rem; border:2px solid var(--primary);" onkeyup="filterNotes()">
         <button class="btn-gold" onclick="filterNotes()">Search</button>
     </div>
-
-    <div id="announce-bar" class="marquee">📢 Loading Announcement...</div>
+    <div id="announce-bar" style="background:var(--gold); color:var(--primary); padding:15px; font-weight:bold; border-radius:8px; margin-bottom:30px; font-size:1.1rem;">📢 Loading...</div>
     
-    <h3 style="color:var(--primary); margin-top:30px;">Latest Updates & Blogs</h3>
-    <div id="blog-container" class="grid"></div>
+    <h3 style="color:var(--primary)">Latest Blogs</h3>
+    <div id="blog-container" class="grid blink-anim" style="margin-bottom:40px;"></div>
 
-    <div class="hero" style="margin-top:40px;">
+    <div class="hero">
         <h1>Master Chemistry with ARC</h1>
         <p>Premium Notes, GATE-Style Tests, and Expert Guidance.</p>
         <button class="cta-btn" onclick="show('tests')">Start a Test Now</button>
@@ -103,30 +101,30 @@
 
 <div id="tests" class="section"><h2>📝 Online Tests (Max 3 Attempts)</h2><div id="test-list" class="grid">Loading...</div></div>
 
-<div id="exam-ui" class="section" style="max-width: 100%; padding: 0;">
+<div id="exam-ui" class="section" style="max-width:100%; padding:0;">
     <div class="exam-container">
         <div class="exam-left">
             <div style="display:flex; justify-content:space-between; border-bottom:2px solid #eee; padding-bottom:15px; margin-bottom:20px;">
                 <h3 style="margin:0; color:var(--primary)">Question <span id="q-num">1</span></h3>
-                <span style="font-weight:bold;"><span style="color:var(--green)">+<span id="q-marks">0</span></span> / <span style="color:var(--red)">-<span id="q-neg">0</span></span></span>
+                <span style="font-weight:bold; font-size:1.2rem;"><span style="color:var(--green)">+<span id="q-marks">0</span></span> / <span style="color:var(--red)">-<span id="q-neg">0</span></span></span>
             </div>
-            <p id="q-text" style="font-size:1.2rem; line-height:1.6;"></p>
+            <p id="q-text" style="font-size:1.3rem; line-height:1.6;"></p>
             <img id="q-image-display" class="q-image" style="display:none;">
             <div id="q-options"></div>
-            <div style="margin-top:30px; display:flex; gap:10px;">
-                <button class="btn-gold" style="background:white; border:1px solid #333; color:#333;" onclick="navQ(-1)">← Prev</button>
-                <button class="btn-red" style="background:white; color:var(--red); border:1px solid var(--red);" onclick="clearResponse()">Clear Response</button>
+            <div style="margin-top:40px; display:flex; gap:15px;">
+                <button class="btn-gold" style="background:white; border:2px solid #333; color:#333;" onclick="navQ(-1)">← Previous</button>
+                <button class="btn-red" style="background:white; color:var(--red); border:2px solid var(--red);" onclick="clearResponse()">Clear Response</button>
                 <button class="btn-gold" style="flex:1" onclick="saveAndNext()">Save & Next →</button>
             </div>
         </div>
         <div class="exam-right">
-            <div style="background:var(--primary); color:var(--gold); padding:15px; text-align:center; font-size:1.5rem; font-weight:bold; border-radius:8px; margin-bottom:20px;" id="timer">00:00</div>
-            <div><strong>Candidate: </strong><span id="student-name-display">Student</span></div>
+            <div style="background:var(--primary); color:var(--gold); padding:20px; text-align:center; font-size:1.8rem; font-weight:800; border-radius:10px; margin-bottom:20px;" id="timer">00:00</div>
+            <div style="font-size:1.1rem; margin-bottom:20px;"><strong>Student: </strong><span id="student-name-display">...</span></div>
             <div style="flex:1; overflow-y:auto;">
                 <p><strong>Palette:</strong> <span style="color:var(--green)">● Done</span> <span style="color:var(--purple)">● Visited</span></p>
                 <div class="palette-grid" id="palette"></div>
             </div>
-            <button class="btn-red" style="width:100%; padding:15px;" onclick="submitExam()">SUBMIT TEST</button>
+            <button class="btn-red" style="width:100%; padding:20px; font-size:1.2rem;" onclick="submitExam()">SUBMIT TEST</button>
         </div>
     </div>
 </div>
@@ -136,173 +134,55 @@
 <div id="login" class="section">
     <div class="form-box">
         <h2>Login</h2>
-        <input type="email" id="l-email" placeholder="Email">
-        <input type="password" id="l-pass" placeholder="Password">
+        <input id="l-email" placeholder="Email"><input id="l-pass" type="password" placeholder="Password">
         <button class="btn-gold" style="width:100%" onclick="handleLogin()">Login</button>
-        <p style="text-align:center; color:blue; cursor:pointer" onclick="toggleReg()">New? Register</p>
-        <p style="text-align:center; font-size:0.8rem; color:#999">Teacher? (admin@arc.com)</p>
+        <p style="text-align:center; cursor:pointer; color:blue" onclick="toggleReg()">New? Register</p>
+        <p style="text-align:center; font-size:0.9rem; color:#999">Teacher? (admin@arc.com)</p>
     </div>
     <div id="reg-box" class="form-box" style="display:none">
-        <h2>Register</h2>
-        <p style="color:red; font-size:0.9rem">⚠️ Email & Password cannot be reset.</p>
+        <h2>Register</h2><p style="color:red">⚠️ Remember your details.</p>
         <input id="r-name" placeholder="Name">
-        <div style="display:flex; align-items:center; gap:5px"><input id="r-prefix" placeholder="username" style="text-align:right"><span>@arcstudent.com</span></div>
-        <input type="password" id="r-pass" placeholder="Password">
+        <div style="display:flex; align-items:center; gap:10px"><input id="r-prefix" placeholder="username" style="text-align:right"><span>@arcstudent.com</span></div>
+        <input id="r-pass" type="password" placeholder="Password">
         <button class="btn-gold" style="width:100%" onclick="handleReg()">Register Now</button>
     </div>
 </div>
 
 <div id="admin" class="section">
     <h2>👨‍🏫 Teacher Dashboard</h2>
-    <div style="display:flex; gap:10px; margin-bottom:20px; flex-wrap:wrap;">
+    <div style="display:flex; gap:15px; margin-bottom:30px; flex-wrap:wrap;">
         <button class="btn-gold" onclick="showAdminTab('create-test')">Create Test</button>
         <button class="btn-gold" onclick="showAdminTab('upload-mat')">Upload Material</button>
-        <button class="btn-gold" onclick="showAdminTab('upload-res')">Offline Results</button>
+        <button class="btn-gold" onclick="showAdminTab('upload-res')">Offline Result</button>
         <button class="btn-gold" onclick="showAdminTab('create-blog')">Post Blog</button>
+        <button class="btn-gold" onclick="showAdminTab('announce')">Announcement</button>
         <button class="btn-gold" onclick="showAdminTab('online-res')">Online Reports</button>
-        <button class="btn-red" onclick="showAdminTab('manage')">Manage (Delete)</button>
+        <button class="btn-gold" onclick="showAdminTab('students')">Students</button>
+        <button class="btn-red" onclick="showAdminTab('manage')">Delete Items</button>
     </div>
     
-    <div id="adm-students" style="display:none"><h3>Students</h3><table id="student-table" style="width:100%"></table></div>
+    <div id="adm-students" style="display:none"><h3>Students</h3><table id="student-table"></table></div>
+    <div id="adm-online-res" style="display:none"><h3>Online Results</h3><table id="online-res-table"></table></div>
+    <div id="adm-manage" style="display:none"><h3>Delete Content</h3><div id="manage-list"></div></div>
     
-    <div id="adm-online-res" style="display:none"><h3>Online Test Reports</h3><table id="online-res-table" style="width:100%"></table></div>
+    <div id="adm-announce" style="display:none"><div class="form-box" style="margin:0"><h3>Announcement</h3><textarea id="ann-text"></textarea><button class="btn-gold" onclick="updateAnnouncement()">Update</button></div></div>
+
+    <div id="adm-create-blog" style="display:none"><div class="form-box" style="margin:0"><h3>Post Blog</h3><input id="b-title" placeholder="Title"><textarea id="b-content" rows="5" placeholder="Content"></textarea><p>Image:</p><input type="file" id="b-img-file" accept="image/*"><div style="margin:10px 0"><label>Title Color: <input type="color" id="b-h-color"></label> <label>Text Color: <input type="color" id="b-p-color" value="#ffffff"></label></div><button class="btn-gold" onclick="createBlog()">Publish</button></div></div>
+
+    <div id="adm-upload-mat" style="display:none"><div class="form-box" style="margin:0"><h3>Upload Note</h3><input id="m-title" placeholder="Title"><input id="m-desc" placeholder="Desc"><input id="m-link" placeholder="Drive Link"><input id="m-code" placeholder="Password"><p>Cover:</p><input type="file" id="m-img-file" accept="image/*"><button class="btn-gold" onclick="uploadMaterial()">Upload</button></div></div>
+
+    <div id="adm-upload-res" style="display:none"><div class="form-box" style="margin:0"><h3>Offline Result</h3><input id="off-title" placeholder="Test Name"><div style="background:#fff7ed; padding:20px; margin:15px 0; border:2px solid orange;"><h4>Student Record</h4><input id="res-name" placeholder="Name"><div style="display:flex; gap:10px"><input type="number" id="res-marks" placeholder="Marks"><input type="number" id="res-rank" placeholder="Rank"></div><input id="res-link" placeholder="Copy Link"><input id="res-pass" placeholder="Password"><button class="btn-gold" onclick="addResRecord()">+ Add Record</button><p id="res-count">Records: 0</p></div><button class="btn-gold" onclick="publishOfflineResult()">Publish All</button></div></div>
     
-    <div id="adm-upload-mat" style="display:none">
-        <div class="form-box" style="margin:0">
-            <h3>Upload Book/Note</h3>
-            <input id="m-title" placeholder="Title"> <input id="m-desc" placeholder="Description">
-            <input id="m-link" placeholder="Google Drive Link"> <input id="m-code" placeholder="Set Password (Required)">
-            <p>Cover Image:</p> <input type="file" id="m-img-file" accept="image/*">
-            <button class="btn-gold" onclick="uploadMaterial()">Upload Protected File</button>
-        </div>
-    </div>
-
-    <div id="adm-upload-res" style="display:none">
-        <div class="form-box" style="margin:0">
-            <h3>Upload Offline Result</h3>
-            <input id="off-title" placeholder="Test Name (e.g. Weekly Test 1)">
-            <div style="background:#fff7ed; padding:15px; margin:10px 0; border:1px solid orange;">
-                <h4>Add Student Record</h4>
-                <input id="res-name" placeholder="Student Name"> 
-                <div style="display:flex; gap:10px"><input type="number" id="res-marks" placeholder="Marks"><input type="number" id="res-rank" placeholder="Rank"></div>
-                <input id="res-link" placeholder="Checked Copy Drive Link"> <input id="res-pass" placeholder="Set Student Password">
-                <button class="btn-gold" onclick="addResRecord()">+ Add Record to List</button>
-                <p id="res-count">Records Pending: 0</p>
-            </div>
-            <button class="btn-gold" onclick="publishOfflineResult()">Publish All Records</button>
-        </div>
-    </div>
-
-    <div id="adm-create-blog" style="display:none">
-        <div class="form-box" style="margin:0">
-            <h3>Create Blog Post</h3>
-            <input id="b-title" placeholder="Blog Title">
-            <textarea id="b-content" placeholder="Write content..." rows="5"></textarea>
-            <p>Image:</p><input type="file" id="b-img-file" accept="image/*">
-            <div style="margin:10px 0;">
-                <label>Title Color: <input type="color" id="b-h-color" value="#000000"></label>
-                <label>Text Color: <input type="color" id="b-p-color" value="#333333"></label>
-            </div>
-            <button class="btn-gold" onclick="createBlog()">Publish Blog</button>
-        </div>
-    </div>
-    
-    <div id="adm-manage" style="display:none"><div id="manage-list"></div></div>
-
-    <div id="adm-create-test" style="display:none">
-        <div class="form-box" style="margin:0; max-width:100%">
-            <h3>Create Online Test</h3>
-            <input id="t-title" placeholder="Title"> <input type="number" id="t-dur" placeholder="Mins"> <input id="t-code" placeholder="Password">
-            <textarea id="t-inst" placeholder="Instructions"></textarea>
-            <div style="background:#f0f9ff; padding:15px; margin:15px 0;">
-                <h4>Add Question</h4>
-                <textarea id="q-text" placeholder="Question Text"></textarea>
-                <p>Image:</p> <input type="file" id="q-img-file" accept="image/*">
-                <img id="q-img-preview" style="height:50px; display:none">
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:5px">
-                    <input id="op0" placeholder="Opt 1"><input id="op1" placeholder="Opt 2"><input id="op2" placeholder="Opt 3"><input id="op3" placeholder="Opt 4">
-                </div>
-                <select id="q-corr"><option value="0">Correct: Opt 1</option><option value="1">Correct: Opt 2</option><option value="2">Correct: Opt 3</option><option value="3">Correct: Opt 4</option></select>
-                <button class="btn-gold" onclick="addDraftQ()">+ Add Question</button>
-                <p id="q-count">Questions: 0</p>
-            </div>
-            <button class="btn-gold" onclick="publishTest()">PUBLISH TEST</button>
-        </div>
-    </div>
-</div>
-
-    <div id="adm-create-blog" style="display:none">
-        <div class="form-box" style="margin:0">
-            <h3>Create Blinking Blog</h3>
-            <input id="b-title" placeholder="Blog Heading">
-            <textarea id="b-content" placeholder="Blog Content (Paragraph)" rows="5"></textarea>
-            <div style="display:flex; gap:10px; align-items:center; margin:10px 0;">
-                <label>Heading Color: <input type="color" id="b-h-color" value="#fbbf24"></label>
-                <label>Text Color: <input type="color" id="b-p-color" value="#ffffff"></label>
-            </div>
-            <p>Image:</p> <input type="file" id="b-img-file" accept="image/*">
-            <button class="btn-gold" onclick="createBlog()">Publish Blog</button>
-        </div>
-    </div>
-
-    <div id="adm-upload-mat" style="display:none">
-        <div class="form-box" style="margin:0">
-            <h3>Upload Book/Note</h3>
-            <input id="m-title" placeholder="Title"> <input id="m-desc" placeholder="Description">
-            <input id="m-link" placeholder="Drive Link"> <input id="m-code" placeholder="Password">
-            <p>Cover Image:</p> <input type="file" id="m-img-file" accept="image/*">
-            <button class="btn-gold" onclick="uploadMaterial()">Upload</button>
-        </div>
-    </div>
-
-    <div id="adm-upload-res" style="display:none">
-        <div class="form-box" style="margin:0">
-            <h3>Upload Offline Result</h3>
-            <input id="off-title" placeholder="Test Name">
-            <div style="background:#fff7ed; padding:15px; margin:10px 0; border:1px solid orange;">
-                <h4>Add Student Record</h4>
-                <input id="res-name" placeholder="Student Name"> 
-                <div style="display:flex; gap:10px"><input type="number" id="res-marks" placeholder="Marks"><input type="number" id="res-rank" placeholder="Rank"></div>
-                <input id="res-link" placeholder="Checked Copy Link (Drive)"> <input id="res-pass" placeholder="Unique Password">
-                <button class="btn-gold" onclick="addResRecord()">+ Add Record</button>
-                <p id="res-count">Records: 0</p>
-            </div>
-            <button class="btn-gold" onclick="publishOfflineResult()">Publish</button>
-        </div>
-    </div>
-    
-    <div id="adm-create-test" style="display:none">
-        <div class="form-box" style="margin:0; max-width:100%">
-            <h3>Create Online Test</h3>
-            <input id="t-title" placeholder="Title"> <input type="number" id="t-dur" placeholder="Mins"> <input id="t-code" placeholder="Password">
-            <textarea id="t-inst" placeholder="Instructions"></textarea>
-            <div style="background:#f0f9ff; padding:15px; margin:15px 0; border:1px solid #bae6fd; border-radius:8px;">
-                <h4>Add Question</h4>
-                <textarea id="q-text" placeholder="Question Text"></textarea>
-                <p style="margin:5px 0">Image (Optional):</p> <input type="file" id="q-img-file" accept="image/*">
-                <img id="q-img-preview" style="max-height:100px; display:none; margin:10px 0;">
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:5px">
-                    <input id="op0" placeholder="Opt 1"><input id="op1" placeholder="Opt 2"><input id="op2" placeholder="Opt 3"><input id="op3" placeholder="Opt 4">
-                </div>
-                <div style="display:flex; gap:5px; margin-top:5px">
-                    <select id="q-corr"><option value="0">Correct: Opt 1</option><option value="1">Correct: Opt 2</option><option value="2">Correct: Opt 3</option><option value="3">Correct: Opt 4</option></select>
-                    <input type="number" id="q-mark" value="2" placeholder="+"> <input type="number" id="q-neg" value="0.5" placeholder="-">
-                </div>
-                <button class="btn-gold" style="margin-top:10px" onclick="addDraftQ()">+ Add Question</button>
-                <p id="q-count" style="text-align:right">Questions: 0</p>
-            </div>
-            <button class="btn-gold" style="width:100%" onclick="publishTest()">PUBLISH TEST</button>
-        </div>
-    </div>
+    <div id="adm-create-test" style="display:none"><div class="form-box" style="margin:0; max-width:100%"><h3>Create Test</h3><input id="t-title" placeholder="Title"><input type="number" id="t-dur" placeholder="Mins"><input id="t-code" placeholder="Password"><textarea id="t-inst" placeholder="Instructions"></textarea><div style="background:#f0f9ff; padding:20px; margin:20px 0; border:2px solid #bae6fd;"><h4>Add Question</h4><textarea id="q-text" placeholder="Text"></textarea><p>Image:</p><input type="file" id="q-img-file" accept="image/*"><img id="q-img-preview" style="height:80px; display:none"><div style="display:grid; grid-template-columns:1fr 1fr; gap:10px"><input id="op0" placeholder="A"><input id="op1" placeholder="B"><input id="op2" placeholder="C"><input id="op3" placeholder="D"></div><div style="display:flex; gap:10px; margin-top:10px"><select id="q-corr"><option value="0">Correct: A</option><option value="1">Correct: B</option><option value="2">Correct: C</option><option value="3">Correct: D</option></select><input type="number" id="q-mark" value="2" placeholder="+"><input type="number" id="q-neg" value="0.5" placeholder="-"></div><button class="btn-gold" style="margin-top:10px" onclick="addDraftQ()">+ Add Question</button><p id="q-count">Questions: 0</p></div><button class="btn-gold" style="width:100%" onclick="publishTest()">PUBLISH TEST</button></div></div>
 </div>
 
 <div id="result-modal" class="modal-overlay">
     <div class="modal-box">
         <h2 style="color:var(--primary)">Test Submitted!</h2>
         <div style="width:300px; height:300px; margin:auto;"><canvas id="resultChart"></canvas></div>
-        <h3 id="modal-score"></h3>
-        <div id="modal-feedback" class="blink-anim" style="background:var(--gold); color:var(--primary); padding:15px; border-radius:10px; margin-top:20px; font-weight:bold; font-size:1.1rem;"></div>
-        <button class="btn-primary" style="margin-top:20px; background:var(--primary); color:white; padding:10px 20px; border:none; border-radius:5px; cursor:pointer;" onclick="location.reload()">Close & Return Home</button>
+        <h3 id="modal-score" style="margin:20px 0;"></h3>
+        <div id="modal-feedback" class="blink-anim" style="background:var(--gold); color:var(--primary); padding:15px; border-radius:10px; font-weight:bold; font-size:1.1rem;"></div>
+        <button class="btn-gold" style="margin-top:20px;" onclick="location.reload()">Close</button>
     </div>
 </div>
 
@@ -311,309 +191,126 @@
 <script>
     // --- STATE ---
     let user = JSON.parse(localStorage.getItem('arc_user'));
-    let draftQs = [], qImgBase64 = "", draftRecs = [], mImgBase64 = "", bImgBase64 = "";
-    let currentTest = null, studentAnswers = [], visitedQs = [], currentQIdx = 0, examInterval;
-    let allMaterials = []; // For Search
+    let draftQs=[], qImgBase64="", draftRecs=[], mImgBase64="", bImgBase64="", allMats=[];
+    let currentTest=null, studentAnswers=[], visitedQs=[], currentQIdx=0, examInterval;
 
     // --- INIT ---
     fetch('/api/announcement').then(r=>r.json()).then(d=>document.getElementById('announce-bar').innerText="📢 "+d.text);
-    loadBlogs(); // Load blogs on start
+    loadBlogs();
     if(user) {
-        document.getElementById('login-nav').style.display = 'none'; document.getElementById('logout-btn').style.display = 'inline';
-        if(user.email === 'admin@arc.com') document.getElementById('teacher-nav').style.display = 'inline';
+        document.getElementById('login-nav').style.display='none'; document.getElementById('logout-btn').style.display='inline';
+        if(user.email==='admin@arc.com') document.getElementById('teacher-nav').style.display='inline';
     }
 
     // --- NAV ---
     function show(id) {
-        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
         document.getElementById(id).classList.add('active');
-        document.querySelector('nav').style.display = (id === 'exam-ui') ? 'none' : 'flex';
-        if(id === 'home') loadBlogs();
-        if(id === 'notes') loadMaterials(); if(id === 'tests') loadTestsList(); if(id === 'results') loadResults();
+        document.querySelector('nav').style.display = (id==='exam-ui')?'none':'flex';
+        if(id==='notes') loadMaterials(); if(id==='tests') loadTestsList(); if(id==='results') loadResults();
     }
     function showAdminTab(id) {
-        ['students', 'online-res', 'create-test', 'upload-mat', 'upload-res', 'announce', 'create-blog', 'manage'].forEach(t => document.getElementById('adm-'+t).style.display = 'none');
-        document.getElementById('adm-'+id).style.display = 'block';
-        if(id === 'students') loadStudents(); if(id === 'online-res') loadOnlineResults(); if(id === 'manage') loadManageList();
+        ['students','online-res','create-test','upload-mat','upload-res','announce','create-blog','manage'].forEach(t=>document.getElementById('adm-'+t).style.display='none');
+        document.getElementById('adm-'+id).style.display='block';
+        if(id==='students') loadStudents(); if(id==='online-res') loadOnlineResults(); if(id==='manage') loadManageList();
     }
 
     // --- AUTH ---
-    function toggleReg() { const b = document.getElementById('reg-box'); b.style.display = b.style.display==='none'?'block':'none'; }
-    async function handleReg() {
-        const name = document.getElementById('r-name').value; const prefix = document.getElementById('r-prefix').value; const pass = document.getElementById('r-pass').value;
+    function toggleReg(){ const b=document.getElementById('reg-box'); b.style.display=b.style.display==='none'?'block':'none'; }
+    async function handleReg(){
+        const name=document.getElementById('r-name').value; const prefix=document.getElementById('r-prefix').value; const pass=document.getElementById('r-pass').value;
         if(!prefix) return alert("Prefix needed");
-        const res = await fetch('/api/register', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ name, emailPart: prefix, password: pass }) });
-        if((await res.json()).success) { alert("Registered!"); toggleReg(); } else alert("Taken");
+        const res=await fetch('/api/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,emailPart:prefix,password:pass})});
+        if((await res.json()).success){ alert("Registered!"); toggleReg(); } else alert("Taken");
     }
-    async function handleLogin() {
-        const email = document.getElementById('l-email').value; const pass = document.getElementById('l-pass').value;
-        if(email==='admin@arc.com' && pass==='admin123') { localStorage.setItem('arc_user', JSON.stringify({ email, isAdmin: true })); location.reload(); return; }
-        const res = await fetch('/api/login', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ email, password: pass }) });
-        const data = await res.json();
-        if(data.success) { localStorage.setItem('arc_user', JSON.stringify({ email: data.email, name: data.name })); location.reload(); } else alert("Invalid");
+    async function handleLogin(){
+        const email=document.getElementById('l-email').value; const pass=document.getElementById('l-pass').value;
+        if(email==='admin@arc.com' && pass==='admin123'){ localStorage.setItem('arc_user',JSON.stringify({email,isAdmin:true})); location.reload(); return; }
+        const res=await fetch('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password:pass})});
+        const data=await res.json();
+        if(data.success){ localStorage.setItem('arc_user',JSON.stringify({email:data.email,name:data.name})); location.reload(); } else alert("Invalid");
     }
-    function logout() { localStorage.removeItem('arc_user'); location.reload(); }
+    function logout(){ localStorage.removeItem('arc_user'); location.reload(); }
 
     // --- TEACHER ---
-    async function updateAnnouncement() {
-        const text = document.getElementById('ann-text').value;
-        await fetch('/api/admin/announcement', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ text }) });
-        alert("Updated!"); location.reload();
+    async function updateAnnouncement(){ await fetch('/api/admin/announcement',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:document.getElementById('ann-text').value})}); alert("Updated!"); location.reload(); }
+    async function loadStudents(){ const d=await (await fetch('/api/admin/students')).json(); document.getElementById('student-table').innerHTML=`<tr><th>Name</th><th>Email</th><th>Password</th></tr>`+d.map(s=>`<tr><td>${s.name}</td><td>${s.email}</td><td>${s.password}</td></tr>`).join(''); }
+    async function loadOnlineResults(){ const d=await (await fetch('/api/admin/results/online')).json(); document.getElementById('online-res-table').innerHTML=`<tr><th>Date</th><th>Test</th><th>Student</th><th>Score</th></tr>`+d.map(r=>`<tr><td>${new Date(r.date).toLocaleDateString()}</td><td>${r.testTitle}</td><td>${r.studentName}<br>${r.studentEmail}</td><td>${r.score}/${r.totalMarks} (${r.percentage}%)</td></tr>`).join(''); }
+    
+    // File Readers
+    document.getElementById('m-img-file').addEventListener('change',function(){ const r=new FileReader(); r.onload=e=>mImgBase64=e.target.result; r.readAsDataURL(this.files[0]); });
+    document.getElementById('b-img-file').addEventListener('change',function(){ const r=new FileReader(); r.onload=e=>bImgBase64=e.target.result; r.readAsDataURL(this.files[0]); });
+    document.getElementById('q-img-file').addEventListener('change',function(){ const r=new FileReader(); r.onload=e=>{qImgBase64=e.target.result; document.getElementById('q-img-preview').src=qImgBase64; document.getElementById('q-img-preview').style.display='block';}; r.readAsDataURL(this.files[0]); });
+
+    // Creators
+    async function uploadMaterial(){ await fetch('/api/admin/material',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({title:document.getElementById('m-title').value, description:document.getElementById('m-desc').value, link:document.getElementById('m-link').value, accessCode:document.getElementById('m-code').value, image:mImgBase64, type:'Book'})}); alert("Uploaded!"); mImgBase64=""; }
+    async function createBlog(){ await fetch('/api/admin/blog',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({title:document.getElementById('b-title').value, content:document.getElementById('b-content').value, image:bImgBase64, hColor:document.getElementById('b-h-color').value, pColor:document.getElementById('b-p-color').value})}); alert("Published!"); bImgBase64=""; }
+    function addResRecord(){ draftRecs.push({studentName:document.getElementById('res-name').value, marks:document.getElementById('res-marks').value, rank:document.getElementById('res-rank').value, copyLink:document.getElementById('res-link').value, accessCode:document.getElementById('res-pass').value}); document.getElementById('res-count').innerText=`Records: ${draftRecs.length}`; }
+    async function publishOfflineResult(){ await fetch('/api/admin/offline-result',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({title:document.getElementById('off-title').value, records:draftRecs})}); alert("Published!"); draftRecs=[]; }
+    function addDraftQ(){ draftQs.push({text:document.getElementById('q-text').value, image:qImgBase64, options:[0,1,2,3].map(i=>document.getElementById('op'+i).value), correct:parseInt(document.getElementById('q-corr').value), marks:parseFloat(document.getElementById('q-mark').value), negative:parseFloat(document.getElementById('q-neg').value)}); document.getElementById('q-count').innerText=`Questions: ${draftQs.length}`; document.getElementById('q-text').value=""; qImgBase64=""; document.getElementById('q-img-preview').style.display='none'; }
+    async function publishTest(){ await fetch('/api/admin/test',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({title:document.getElementById('t-title').value, duration:document.getElementById('t-dur').value, accessCode:document.getElementById('t-code').value, instructions:document.getElementById('t-inst').value, questions:draftQs})}); alert("Published!"); draftQs=[]; location.reload(); }
+    
+    // Manage
+    async function loadManageList(){
+        const [m,t,b] = await Promise.all([fetch('/api/materials'),fetch('/api/tests'),fetch('/api/blogs')]);
+        const mats=await m.json(); const tests=await t.json(); const blogs=await b.json();
+        let h=`<h4>Tests</h4>`+tests.map(x=>`<div>${x.title} <button class="btn-red" onclick="del('test','${x._id}')">X</button></div>`).join('');
+        h+=`<h4>Books</h4>`+mats.map(x=>`<div>${x.title} <button class="btn-red" onclick="del('material','${x._id}')">X</button></div>`).join('');
+        h+=`<h4>Blogs</h4>`+blogs.map(x=>`<div>${x.title} <button class="btn-red" onclick="del('blog','${x._id}')">X</button></div>`).join('');
+        document.getElementById('manage-list').innerHTML=h;
     }
-    async function loadStudents() {
-        const res = await fetch('/api/admin/students'); const data = await res.json();
-        document.getElementById('student-table').innerHTML = `<tr><th style="background:#eee">Name</th><th style="background:#eee">Email</th><th style="background:#eee">Password</th></tr>` + data.map(s => `<tr><td style="border:1px solid #ddd; padding:8px">${s.name}</td><td style="border:1px solid #ddd; padding:8px">${s.email}</td><td style="border:1px solid #ddd; padding:8px">${s.password}</td></tr>`).join('');
+    async function del(type,id){ if(confirm("Delete?")) await fetch(`/api/admin/${type}/${id}`,{method:'DELETE'}); loadManageList(); }
+
+    // --- STUDENT ---
+    async function loadBlogs(){ 
+        const d=await (await fetch('/api/blogs')).json(); 
+        document.getElementById('blog-container').innerHTML=d.map((b,i)=>`
+            <div class="card" style="border-top:5px solid ${b.hColor}; background:#1e293b;">
+                ${b.image ? `<img src="${b.image}" style="width:100%; height:150px; object-fit:cover;">`:''}
+                <h3 style="color:${b.hColor}">${b.title}</h3>
+                <div id="btxt-${i}" class="blog-text" style="color:${b.pColor}">${b.content}</div>
+                <button style="color:${b.hColor}; background:none; border:none; margin-top:10px; cursor:pointer;" onclick="document.getElementById('btxt-${i}').classList.toggle('expanded')">Read More</button>
+            </div>`).join('');
     }
-    async function loadOnlineResults() {
-        const res = await fetch('/api/admin/results/online'); const data = await res.json();
-        document.getElementById('online-res-table').innerHTML = `<tr><th style="background:#eee">Date</th><th style="background:#eee">Test</th><th style="background:#eee">Student</th><th style="background:#eee">Score</th></tr>` + data.map(r => `<tr><td style="border:1px solid #ddd; padding:8px">${new Date(r.date).toLocaleDateString()}</td><td style="border:1px solid #ddd; padding:8px">${r.testTitle}</td><td style="border:1px solid #ddd; padding:8px">${r.studentName}<br><small>${r.studentEmail}</small></td><td style="border:1px solid #ddd; padding:8px">${r.score}/${r.totalMarks} (${r.percentage.toFixed(0)}%)</td></tr>`).join('');
+    async function loadMaterials(){ allMats=await (await fetch('/api/materials')).json(); renderMat(allMats); }
+    function renderMat(l){ document.getElementById('mat-list').innerHTML=l.map(m=>`<div class="card" onclick="unlockMat('${m._id}')"><img src="${m.image||'https://via.placeholder.com/200'}" class="book-cover"><h3>${m.title}</h3><p>${m.description||''}</p><button class="btn-gold" style="width:100%">Open</button></div>`).join(''); }
+    function filterNotes(){ const q=document.getElementById('home-search').value.toLowerCase(); renderMat(allMats.filter(m=>m.title.toLowerCase().includes(q))); }
+    async function unlockMat(id){ const c=prompt("Password:"); if(!c)return; const r=await fetch('/api/material/unlock',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id,code:c})}); const d=await r.json(); if(d.success)window.open(d.link); else alert("Wrong"); }
+    
+    async function loadResults(){ const d=await (await fetch('/api/results/offline')).json(); document.getElementById('offline-results-list').innerHTML=d.map(r=>`<div class="card"><h3>${r.title}</h3><table><tr><th>Rank</th><th>Name</th><th>Marks</th><th>Action</th></tr>${r.records.sort((a,b)=>a.rank-b.rank).map(rec=>`<tr><td>#${rec.rank}</td><td>${rec.studentName}</td><td>${rec.marks}</td><td><button class="btn-gold" style="padding:5px" onclick="viewCopy('${r._id}','${rec._id}')">View</button></td></tr>`).join('')}</table></div>`).join(''); }
+    async function viewCopy(rid,recid){ const p=prompt("Your Password:"); if(!p)return; const r=await fetch('/api/results/unlock-copy',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({resultId:rid,recordId:recid,password:p})}); const d=await r.json(); if(d.success)window.open(d.link); else alert("Wrong"); }
+
+    // --- EXAM ENGINE ---
+    async function loadTestsList(){ const d=await (await fetch('/api/tests')).json(); document.getElementById('test-list').innerHTML=d.map(t=>`<div class="card"><h3>${t.title}</h3><p>${t.duration} Mins</p><button class="btn-gold" onclick="startExam('${t._id}')">Start</button></div>`).join(''); }
+    async function startExam(id){
+        if(!user) return alert("Login first"); const c=prompt("Test Password:"); if(!c)return;
+        try {
+            const r=await fetch('/api/test/start',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id,code:c,studentEmail:user.email})});
+            const d=await r.json();
+            if(d.success){ currentTest=d.test; studentAnswers=new Array(currentTest.questions.length).fill(null); visitedQs=new Array(currentTest.questions.length).fill(false); document.getElementById('student-name-display').innerText=user.name; show('exam-ui'); runTimer(currentTest.duration*60); renderQ(0); } else alert(d.message);
+        } catch(e) { alert("Connection Error (Check MongoDB IP)"); }
+    }
+    function runTimer(s){ clearInterval(examInterval); examInterval=setInterval(()=>{ s--; document.getElementById('timer').innerText=`${Math.floor(s/60)}:${s%60}`; if(s<=0){clearInterval(examInterval); submitExam(true);} },1000); }
+    function renderQ(i){ currentQIdx=i; visitedQs[i]=true; const q=currentTest.questions[i]; document.getElementById('q-num').innerText=i+1; document.getElementById('q-text').innerText=q.text; document.getElementById('q-marks').innerText=q.marks; document.getElementById('q-neg').innerText=q.negative; const img=document.getElementById('q-image-display'); if(q.image){img.src=q.image; img.style.display='block';}else{img.style.display='none';} document.getElementById('q-options').innerHTML=q.options.map((o,idx)=>`<label class="option-label"><input type="radio" name="opt" value="${idx}" ${studentAnswers[i]===idx?'checked':''}> ${o}</label>`).join(''); renderPalette(); }
+    function saveAndNext(){ const s=document.querySelector('input[name="opt"]:checked'); studentAnswers[currentQIdx]=s?parseInt(s.value):null; renderPalette(); navQ(1); }
+    function clearResponse(){ const s=document.querySelector('input[name="opt"]:checked'); if(s)s.checked=false; studentAnswers[currentQIdx]=null; renderPalette(); }
+    function navQ(d){ const n=currentQIdx+d; if(n>=0 && n<currentTest.questions.length) renderQ(n); }
+    function renderPalette(){ document.getElementById('palette').innerHTML=studentAnswers.map((a,i)=>{ let c=a!==null?'answered':(visitedQs[i]?'visited':''); if(i===currentQIdx)c+=' active'; return `<div class="p-btn ${c}" onclick="renderQ(${i})">${i+1}</div>`; }).join(''); }
+    
+    async function submitExam(force=false){
+        if(!force && !confirm("Submit?")) return; clearInterval(examInterval);
+        const res=await fetch('/api/test/submit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({testId:currentTest._id,answers:studentAnswers,studentName:user.name,studentEmail:user.email})});
+        const r=await res.json();
+        if(r.success){
+            document.getElementById('exam-ui').style.display='none'; document.getElementById('result-modal').style.display='flex';
+            document.getElementById('modal-score').innerHTML=`Score: ${r.score}/${r.totalMarks} (${r.percentage}%) <br> Rank: #${r.rank}`;
+            document.getElementById('modal-feedback').innerText=r.feedback;
+            new Chart(document.getElementById('resultChart'),{type:'pie',data:{labels:['Correct','Wrong','Skipped'],datasets:[{data:[r.stats.correct,r.stats.wrong,r.stats.skipped],backgroundColor:['#22c55e','#ef4444','#a855f7']}]}});
+        } else alert("Error submitting");
     }
     
-    // Blog Creator
-    document.getElementById('b-img-file').addEventListener('change', function() { const r = new FileReader(); r.onload = e => bImgBase64 = e.target.result; r.readAsDataURL(this.files[0]); });
-    async function createBlog() {
-        const title = document.getElementById('b-title').value; const content = document.getElementById('b-content').value;
-        const hColor = document.getElementById('b-h-color').value; const pColor = document.getElementById('b-p-color').value;
-        if(!title || !content) return alert("Title and Content needed");
-        await fetch('/api/admin/blog', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ title, content, image: bImgBase64, hColor, pColor }) });
-        alert("Blog Published!"); bImgBase64=""; document.getElementById('b-title').value=""; document.getElementById('b-content').value="";
-    }
-
-    // Uploads
-    document.getElementById('m-img-file').addEventListener('change', function() { const r = new FileReader(); r.onload = e => mImgBase64 = e.target.result; r.readAsDataURL(this.files[0]); });
-    async function uploadMaterial() {
-        const title = document.getElementById('m-title').value; const desc = document.getElementById('m-desc').value; const link = document.getElementById('m-link').value; const code = document.getElementById('m-code').value;
-        if(!title || !link || !code) return alert("Missing fields");
-        await fetch('/api/admin/material', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ title, description: desc, link, accessCode: code, image: mImgBase64, type:'Book' }) });
-        alert("Uploaded!"); mImgBase64="";
-    }
-    function addResRecord() {
-        const name = document.getElementById('res-name').value; const link = document.getElementById('res-link').value; const pass = document.getElementById('res-pass').value;
-        if(!name || !link || !pass) return alert("Missing details");
-        draftRecs.push({ studentName: name, marks: document.getElementById('res-marks').value, rank: document.getElementById('res-rank').value, copyLink: link, accessCode: pass });
-        document.getElementById('res-count').innerText = `Records: ${draftRecs.length}`;
-        ['res-name','res-marks','res-rank','res-link','res-pass'].forEach(id => document.getElementById(id).value = "");
-    }
-    async function publishOfflineResult() {
-        const title = document.getElementById('off-title').value; if(!title || draftRecs.length===0) return alert("Missing Title/Records");
-        await fetch('/api/admin/offline-result', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ title, records: draftRecs }) });
-        alert("Published!"); draftRecs=[];
-    }
-
-    // Test Creator
-    document.getElementById('q-img-file').addEventListener('change', function() { const r = new FileReader(); r.onload = e => { qImgBase64 = e.target.result; document.getElementById('q-img-preview').src = qImgBase64; document.getElementById('q-img-preview').style.display='block'; }; r.readAsDataURL(this.files[0]); });
-    function addDraftQ() {
-        const text = document.getElementById('q-text').value;
-        draftQs.push({ text, image: qImgBase64, options: [0,1,2,3].map(i=>document.getElementById('op'+i).value), correct: parseInt(document.getElementById('q-corr').value), marks: parseFloat(document.getElementById('q-mark').value), negative: parseFloat(document.getElementById('q-neg').value) });
-        document.getElementById('q-count').innerText = `Questions: ${draftQs.length}`;
-        document.getElementById('q-text').value=""; qImgBase64=""; document.getElementById('q-img-preview').style.display='none';
-    }
-    async function publishTest() {
-        const title = document.getElementById('t-title').value; const dur = document.getElementById('t-dur').value; const code = document.getElementById('t-code').value;
-        if(!title || !dur || !code || draftQs.length===0) return alert("Missing info");
-        await fetch('/api/admin/test', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ title, duration: dur, accessCode: code, instructions: document.getElementById('t-inst').value, questions: draftQs }) });
-        alert("Published!"); draftQs=[]; location.reload();
-    }
-
-    // Manage (Delete)
-    async function loadManageList() {
-        const [mRes, tRes, bRes] = await Promise.all([fetch('/api/materials'), fetch('/api/tests'), fetch('/api/blogs')]); const mats = await mRes.json(); const tests = await tRes.json(); const blogs = await bRes.json();
-        let html = `<h4>Tests</h4>` + tests.map(t => `<div style="display:flex; justify-content:space-between; padding:10px; border-bottom:1px solid #eee;"><span>${t.title}</span><button class="btn-red" style="padding:5px 10px;" onclick="deleteItem('test', '${t._id}')">Delete</button></div>`).join('');
-        html += `<h4>Books/Notes</h4>` + mats.map(m => `<div style="display:flex; justify-content:space-between; padding:10px; border-bottom:1px solid #eee;"><span>${m.title}</span><button class="btn-red" style="padding:5px 10px;" onclick="deleteItem('material', '${m._id}')">Delete</button></div>`).join('');
-        html += `<h4>Blogs</h4>` + blogs.map(b => `<div style="display:flex; justify-content:space-between; padding:10px; border-bottom:1px solid #eee;"><span>${b.title}</span><button class="btn-red" style="padding:5px 10px;" onclick="deleteItem('blog', '${b._id}')">Delete</button></div>`).join('');
-        document.getElementById('manage-list').innerHTML = html;
-    }
-    async function deleteItem(type, id) { if(!confirm("Are you sure?")) return; await fetch(`/api/admin/${type}/${id}`, { method: 'DELETE' }); loadManageList(); }
-
-
-    // --- STUDENT CONTENT ---
-    async function loadBlogs() {
-        const res = await fetch('/api/blogs'); const data = await res.json();
-        document.getElementById('blog-container').innerHTML = data.map(b => `
-            <div class="card" style="background:var(--dark); border:1px solid var(--gold);">
-                ${b.image ? `<img src="${b.image}" style="width:100%; height:150px; object-fit:cover; border-radius:5px;">` : ''}
-                <h3 style="color:${b.hColor}">${b.title}</h3>
-                <p style="color:${b.pColor}">${b.content}</p>
-            </div>`).join('');
-    }
-
-    async function loadMaterials() {
-        const res = await fetch('/api/materials'); allMaterials = await res.json();
-        renderMaterials(allMaterials);
-    }
-    function renderMaterials(list) {
-        document.getElementById('mat-list').innerHTML = list.map(m => `
-            <div class="card" onclick="unlockMaterial('${m._id}')">
-                <img src="${m.image || 'https://via.placeholder.com/200?text=No+Cover'}" class="book-cover">
-                <h3>${m.title}</h3><p>${m.description||''}</p><button class="btn-gold" style="width:100%">Open</button>
-            </div>`).join('');
-    }
-    function filterNotes() {
-        const query = document.getElementById('home-search').value.toLowerCase();
-        const filtered = allMaterials.filter(m => m.title.toLowerCase().includes(query));
-        renderMaterials(filtered);
-    }
-
-    async function unlockMaterial(id) {
-        const code = prompt("Password:"); if(!code) return;
-        const res = await fetch('/api/material/unlock', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id, code}) });
-        const d = await res.json(); if(d.success) window.open(d.link); else alert("Wrong");
-    }
-    async function loadResults() {
-        const res = await fetch('/api/results/offline'); const data = await res.json();
-        document.getElementById('offline-results-list').innerHTML = data.map(r => `
-            <div class="card" style="margin-bottom:20px;">
-                <h3 style="color:var(--primary)">${r.title} <small>(${new Date(r.date).toLocaleDateString()})</small></h3>
-                <table><tr><th>Rank</th><th>Name</th><th>Marks</th><th>Action</th></tr>
-                ${r.records.sort((a,b)=>a.rank-b.rank).map(rec => `
-                    <tr><td>#${rec.rank}</td><td>${rec.studentName}</td><td>${rec.marks}</td>
-                    <td><button class="btn-gold" style="padding:5px 10px; font-size:0.9rem" onclick="viewCopy('${r._id}', '${rec._id}')">View Copy</button></td></tr>`).join('')}
-                </table>
-            </div>`).join('');
-    }
-    async function viewCopy(resId, recId) {
-        const pwd = prompt("Enter YOUR unique password:"); if(!pwd) return;
-        const res = await fetch('/api/results/unlock-copy', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ resultId: resId, recordId: recId, password: pwd }) });
-        const data = await res.json(); if(data.success) window.open(data.link, '_blank'); else alert("Incorrect Password");
-    }
-
-    // --- EXAM ENGINE & CHART ---
-    async function loadTestsList() {
-        const res = await fetch('/api/tests'); const data = await res.json();
-        document.getElementById('test-list').innerHTML = data.map(t => `<div class="card"><h3>${t.title}</h3><p>${t.duration} Mins</p><button class="btn-gold" onclick="startExam('${t._id}')">Start</button></div>`).join('');
-    }
-    async function startExam(id) {
-        if(!user) return alert("Login first");
-        const code = prompt("Test Password:"); if(!code) return;
-        const res = await fetch('/api/test/start', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ id, code, studentEmail: user.email }) });
-        const data = await res.json();
-        if(data.success) {
-            currentTest = data.test; studentAnswers = new Array(currentTest.questions.length).fill(null); visitedQs = new Array(currentTest.questions.length).fill(false);
-            document.getElementById('student-name-display').innerText = user.name; show('exam-ui');
-            runTimer(currentTest.duration * 60); renderQ(0);
-        } else alert(data.message);
-    }
-    function runTimer(seconds) {
-        clearInterval(examInterval);
-        examInterval = setInterval(() => {
-            seconds--; const m=Math.floor(seconds/60); const s=seconds%60;
-            document.getElementById('timer').innerText = `${m}:${s<10?'0'+s:s}`;
-            if(seconds<=0) { clearInterval(examInterval); submitExam(true); }
-        }, 1000);
-    }
-    function renderQ(idx) {
-        currentQIdx = idx; visitedQs[idx] = true; const q = currentTest.questions[idx];
-        document.getElementById('q-num').innerText = idx+1; document.getElementById('q-text').innerText = q.text;
-        document.getElementById('q-marks').innerText = q.marks; document.getElementById('q-neg').innerText = q.negative;
-        const img = document.getElementById('q-image-display');
-        if(q.image) { img.src = q.image; img.style.display = 'block'; } else { img.style.display = 'none'; }
-        document.getElementById('q-options').innerHTML = q.options.map((o,i) => `<label class="option-label"><input type="radio" name="opt" value="${i}" ${studentAnswers[idx]===i?'checked':''}>${o}</label>`).join('');
-        renderPalette();
-    }
-    function saveAndNext() {
-        const s = document.querySelector('input[name="opt"]:checked');
-        studentAnswers[currentQIdx] = s ? parseInt(s.value) : null;
-        renderPalette(); navQ(1);
-    }
-    function clearResponse() {
-        const s = document.querySelector('input[name="opt"]:checked'); if(s) s.checked=false;
-        studentAnswers[currentQIdx] = null; renderPalette();
-    }
-    function navQ(dir) { const n = currentQIdx+dir; if(n>=0 && n<currentTest.questions.length) renderQ(n); }
-    function renderPalette() {
-        document.getElementById('palette').innerHTML = studentAnswers.map((a,i) => {
-            let c = a!==null ? 'answered' : (visitedQs[i] ? 'visited' : '');
-            if(i===currentQIdx) c += ' active';
-            return `<div class="p-btn ${c}" onclick="renderQ(${i})">${i+1}</div>`;
-        }).join('');
-    }
-
-    // NEW: Submit Exam with Pie Chart Modal
-    async function submitExam(force=false) {
-        if(!force && !confirm("Submit?")) return; clearInterval(examInterval);
-        const res = await fetch('/api/test/submit', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ testId: currentTest._id, answers: studentAnswers, studentName: user.name, studentEmail: user.email }) });
-        const r = await res.json();
-
-        if(r.success) {
-            document.getElementById('exam-ui').style.display = 'none';
-            document.getElementById('result-modal').style.display = 'flex';
-            document.getElementById('modal-score').innerHTML = `Score: ${r.score}/${r.totalMarks} (${r.percentage}%) <br> Rank: #${r.rank}`;
-            document.getElementById('modal-feedback').innerText = "💡 Suggestion: " + r.feedback;
-
-            // Render Pie Chart
-            const ctx = document.getElementById('resultChart').getContext('2d');
-            new Chart(ctx, {
-                type: 'pie',
-                data: {
-                    labels: ['Correct', 'Wrong', 'Skipped'],
-                    datasets: [{
-                        data: [r.stats.correct, r.stats.wrong, r.stats.skipped],
-                        backgroundColor: ['#22c55e', '#ef4444', '#a855f7'], // Green, Red, Purple
-                        borderWidth: 1
-                    }]
-                },
-                options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
-            });
-        } else {
-            alert("Error submitting test. Please try again.");
-            location.reload();
-        }
-    }
+    // Heartbeat
     setInterval(()=>fetch('/api/tests').catch(e=>{}), 2*60*1000);
-
-// --- PASTE THIS INSIDE YOUR SCRIPT TAG ---
-
-// 1. Updated Blog Loader (With "See More")
-async function loadBlogs() {
-    const res = await fetch('/api/blogs');
-    const data = await res.json();
-    document.getElementById('blog-container').innerHTML = data.map((b, index) => `
-        <div class="blog-card" style="border-top: 5px solid ${b.hColor || 'gold'}">
-            ${b.image ? `<img src="${b.image}" style="width:100%; height:180px; object-fit:cover;">` : ''}
-            <div class="blog-content">
-                <h3 style="color:${b.hColor || '#333'}">${b.title}</h3>
-                <div id="blog-txt-${index}" class="blog-text" style="color:${b.pColor || '#555'}">
-                    ${b.content}
-                </div>
-                <button class="read-more-btn" onclick="toggleBlog('${index}')">See More</button>
-            </div>
-        </div>
-    `).join('');
-}
-
-function toggleBlog(index) {
-    const txt = document.getElementById(`blog-txt-${index}`);
-    txt.classList.toggle('expanded');
-}
-
-// 2. Updated Online Results Loader (For Teacher)
-async function loadOnlineResults() {
-    const res = await fetch('/api/admin/results/online');
-    const data = await res.json();
-    let html = `<tr><th>Date</th><th>Test</th><th>Student</th><th>Score</th><th>Action</th></tr>`;
-    html += data.map(r => `
-        <tr>
-            <td>${new Date(r.date).toLocaleDateString()}</td>
-            <td>${r.testTitle}</td>
-            <td>${r.studentName}<br><small>${r.studentEmail}</small></td>
-            <td style="font-weight:bold; color:${r.percentage >= 40 ? 'green' : 'red'}">${r.score}/${r.totalMarks} (${r.percentage.toFixed(0)}%)</td>
-            <td>#${r.rank}</td>
-        </tr>
-    `).join('');
-    document.getElementById('online-res-table').innerHTML = html;
-}
-
-// 3. Updated Search Logic
-function filterNotes() {
-    const query = document.getElementById('home-search').value.toLowerCase();
-    const filtered = allMaterials.filter(m => m.title.toLowerCase().includes(query));
-    document.getElementById('mat-list').innerHTML = filtered.map(m => `
-        <div class="card" onclick="unlockMaterial('${m._id}')">
-            <img src="${m.image || 'https://via.placeholder.com/200'}" class="book-cover">
-            <h3>${m.title}</h3><p>${m.description||''}</p><button class="btn-gold">Open</button>
-        </div>`).join('');
-}
-
 </script>
 </body>
-</html> 
+</html>
