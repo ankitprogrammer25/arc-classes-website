@@ -11,6 +11,7 @@
         
         @keyframes rainbow { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         .logo { font-size: 2rem; font-weight: 900; letter-spacing: 2px; background: linear-gradient(270deg, #ff0000, #fbbf24, #00ff00, #0000ff, #ff00ff); background-size: 400% 400%; -webkit-background-clip: text; color: transparent; animation: rainbow 6s ease infinite; }
+        
         nav { background: var(--primary); padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
         .menu a { color: white; margin-left: 25px; text-decoration: none; font-weight: 600; font-size: 1.1rem; cursor: pointer; transition: 0.3s; }
         .menu a:hover { color: var(--gold); }
@@ -19,7 +20,6 @@
         .section.active { display: block; animation: fadeIn 0.5s; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
-        /* COMPONENTS */
         .hero { background: linear-gradient(135deg, var(--primary), var(--dark)); color: white; padding: 80px 40px; border-radius: 20px; text-align: center; margin-bottom: 40px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
         .hero h1 { font-size: 3rem; margin: 0; color: var(--gold); }
         .cta-btn { padding: 15px 40px; font-size: 1.2rem; background: var(--gold); color: var(--primary); border: none; border-radius: 50px; font-weight: bold; cursor: pointer; transition: transform 0.2s; }
@@ -30,16 +30,14 @@
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; }
         .book-cover { width: 100%; height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 15px; border:1px solid #eee; }
         
-        .btn-gold { background: var(--gold); color: var(--primary); padding: 8px 15px; border:none; border-radius:6px; cursor:pointer; font-weight:bold; }
-        .btn-red { background: var(--red); color: white; padding: 8px 15px; border:none; border-radius:6px; cursor:pointer; font-weight:bold; }
+        .btn-gold { background: var(--gold); color: var(--primary); padding: 10px 20px; border:none; border-radius:6px; cursor:pointer; font-weight:bold; }
+        .btn-red { background: var(--red); color: white; padding: 10px 20px; border:none; border-radius:6px; cursor:pointer; font-weight:bold; }
         .form-box { max-width: 600px; margin: 40px auto; background: white; padding: 40px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
         input, select, textarea { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 1rem; }
         
-        /* BLINKING BLOGS */
+        /* BLINKING & ANIM */
         @keyframes blinker { 50% { opacity: 0.7; } }
         .blink-anim { animation: blinker 2s linear infinite; }
-        .blog-text { max-height: 80px; overflow: hidden; transition: max-height 0.3s; }
-        .blog-text.expanded { max-height: 1000px; }
         
         /* EXAM UI */
         .exam-container { display: flex; height: 80vh; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 5px 20px rgba(0,0,0,0.15); border: 1px solid #ddd; }
@@ -55,21 +53,18 @@
         .p-btn.visited { background: var(--purple); color: white; border-color: var(--purple); }
         .p-btn.active { border: 3px solid var(--primary); transform: scale(1.1); }
 
-        /* MODALS & POPUPS */
+        /* MODALS */
         .modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:2000; display:none; justify-content:center; align-items:center; }
-        .modal-box { background:white; padding:40px; border-radius:20px; width:600px; max-height:90vh; overflow-y:auto; text-align:center; position: relative; }
+        .modal-box { background:white; padding:40px; border-radius:20px; width:700px; max-height:90vh; overflow-y:auto; text-align:center; position:relative; }
         
         .no-result-popup { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: black; color: white; padding: 20px 40px; font-weight: bold; font-size: 1.5rem; border-radius: 10px; display: none; z-index: 3000; }
 
-        /* Tables & Review */
         table { width: 100%; border-collapse: collapse; margin-top: 15px; }
         th, td { padding: 12px; border: 1px solid #ddd; text-align: left; }
         th { background: var(--primary); color: white; }
         
         .review-q { text-align:left; border:1px solid #ddd; padding:15px; margin-bottom:10px; border-radius:8px; }
         .review-opt { padding:8px; margin:5px 0; border-radius:5px; border:1px solid #eee; }
-        .correct { background:#dcfce7; border-color:green; }
-        .wrong { background:#fee2e2; border-color:red; }
 
         footer { background: #1e3a8a; color: white; padding: 20px; text-align: center; margin-top: auto; font-size: 1rem; border-top: 5px solid var(--gold); }
     </style>
@@ -93,9 +88,12 @@
 
 <div id="home" class="section active">
     <div style="display:flex; gap:10px; margin-bottom:20px;">
-        <input id="home-search" placeholder="🔍 Search Books & Notes (3+ letters)..." style="flex:1; padding:15px; font-size:1.1rem; border:2px solid var(--primary);" onkeyup="filterNotes()">
+        <input id="home-search" value="" placeholder="🔍 Search Books & Notes (3+ letters)..." style="flex:1; padding:15px; font-size:1.1rem; border:2px solid var(--primary);" onkeyup="filterNotes()">
     </div>
-    <div id="announce-bar" style="background:var(--gold); color:var(--primary); padding:15px; font-weight:bold; border-radius:8px; margin-bottom:30px; font-size:1.1rem;">📢 Loading...</div>
+    
+    <div style="background:var(--gold); color:var(--primary); padding:10px; font-weight:bold; border-radius:8px; margin-bottom:30px; font-size:1.1rem; overflow:hidden; white-space:nowrap;">
+        <marquee id="announce-marquee" behavior="scroll" direction="left" scrollamount="10">Loading...</marquee>
+    </div>
     
     <h3 style="color:var(--primary)">Latest Blogs</h3>
     <div id="blog-container" class="grid blink-anim" style="margin-bottom:40px;"></div>
@@ -175,7 +173,14 @@
     <div id="adm-online-res" style="display:none"><h3>Online Results</h3><table id="online-res-table"></table></div>
     <div id="adm-manage" style="display:none"><h3>Delete Content</h3><div id="manage-list"></div></div>
     
-    <div id="adm-announce" style="display:none"><div class="form-box" style="margin:0"><h3>Announcement</h3><textarea id="ann-text"></textarea><button class="btn-gold" onclick="updateAnnouncement()">Update</button></div></div>
+    <div id="adm-announce" style="display:none">
+        <div class="form-box" style="margin:0">
+            <h3>Announcements</h3>
+            <textarea id="ann-text" placeholder="New update..."></textarea>
+            <button class="btn-gold" onclick="addAnnouncement()">Add to Slider</button>
+            <div id="ann-list-manage" style="margin-top:20px; text-align:left;"></div>
+        </div>
+    </div>
 
     <div id="adm-create-blog" style="display:none"><div class="form-box" style="margin:0"><h3>Post Blog</h3><input id="b-title" placeholder="Title"><textarea id="b-content" rows="5" placeholder="Content"></textarea><p>Image:</p><input type="file" id="b-img-file" accept="image/*"><div style="margin:10px 0"><label>Title Color: <input type="color" id="b-h-color"></label> <label>Text Color: <input type="color" id="b-p-color" value="#ffffff"></label></div><button class="btn-gold" onclick="createBlog()">Publish</button></div></div>
 
@@ -183,7 +188,16 @@
 
     <div id="adm-upload-res" style="display:none"><div class="form-box" style="margin:0"><h3>Offline Result</h3><input id="off-title" placeholder="Test Name"><div style="background:#fff7ed; padding:20px; margin:15px 0; border:2px solid orange;"><h4>Student Record</h4><input id="res-name" placeholder="Name"><div style="display:flex; gap:10px"><input type="number" id="res-marks" placeholder="Marks"><input type="number" id="res-rank" placeholder="Rank"></div><input id="res-link" placeholder="Copy Link"><input id="res-pass" placeholder="Password"><button class="btn-gold" onclick="addResRecord()">+ Add Record</button><p id="res-count">Records: 0</p></div><button class="btn-gold" onclick="publishOfflineResult()">Publish All</button></div></div>
     
-    <div id="adm-create-test" style="display:none"><div class="form-box" style="margin:0; max-width:100%"><h3>Create Test</h3><input id="t-title" placeholder="Title"><input type="number" id="t-dur" placeholder="Mins"><input id="t-code" placeholder="Password"><textarea id="t-inst" placeholder="Instructions"></textarea><div style="background:#f0f9ff; padding:20px; margin:20px 0; border:2px solid #bae6fd;"><h4>Add Question</h4><textarea id="q-text" placeholder="Text"></textarea><p>Image:</p><input type="file" id="q-img-file" accept="image/*"><img id="q-img-preview" style="height:80px; display:none"><div style="display:grid; grid-template-columns:1fr 1fr; gap:10px"><input id="op0" placeholder="A"><input id="op1" placeholder="B"><input id="op2" placeholder="C"><input id="op3" placeholder="D"></div><input id="q-topic" placeholder="Topic (e.g. Organic)" style="margin-top:10px"><div style="display:flex; gap:10px; margin-top:10px"><select id="q-corr"><option value="0">Correct: A</option><option value="1">Correct: B</option><option value="2">Correct: C</option><option value="3">Correct: D</option></select><input type="number" id="q-mark" value="2" placeholder="+"><input type="number" id="q-neg" value="0.5" placeholder="-"></div><button class="btn-gold" style="margin-top:10px" onclick="addDraftQ()">+ Add Question</button><p id="q-count">Questions: 0</p></div><button class="btn-gold" style="width:100%" onclick="publishTest()">PUBLISH TEST</button></div></div>
+    <div id="adm-create-test" style="display:none"><div class="form-box" style="margin:0; max-width:100%"><h3>Create Test</h3><input id="t-title" placeholder="Title"><input type="number" id="t-dur" placeholder="Mins"><input id="t-code" placeholder="Password (Leave empty for Open Test)"><textarea id="t-inst" placeholder="Instructions"></textarea><div style="background:#f0f9ff; padding:20px; margin:20px 0; border:2px solid #bae6fd;"><h4>Add Question</h4><textarea id="q-text" placeholder="Text"></textarea><p>Image:</p><input type="file" id="q-img-file" accept="image/*"><img id="q-img-preview" style="height:80px; display:none"><div style="display:grid; grid-template-columns:1fr 1fr; gap:10px"><input id="op0" placeholder="A"><input id="op1" placeholder="B"><input id="op2" placeholder="C"><input id="op3" placeholder="D"></div><input id="q-topic" placeholder="Topic"><div style="display:flex; gap:10px; margin-top:10px"><select id="q-corr"><option value="0">Correct: A</option><option value="1">Correct: B</option><option value="2">Correct: C</option><option value="3">Correct: D</option></select><input type="number" id="q-mark" value="2" placeholder="+"><input type="number" id="q-neg" value="0.5" placeholder="-"></div><button class="btn-gold" style="margin-top:10px" onclick="addDraftQ()">+ Add Question</button><p id="q-count">Questions: 0</p></div><button class="btn-gold" style="width:100%" onclick="publishTest()">PUBLISH TEST</button></div></div>
+</div>
+
+<div id="blog-modal" class="modal-overlay">
+    <div class="modal-box" style="text-align:left; width:800px;">
+        <h2 id="bm-title" style="margin-top:0"></h2>
+        <img id="bm-img" style="width:100%; max-height:300px; object-fit:cover; border-radius:10px; display:none; margin-bottom:20px;">
+        <div id="bm-content" style="white-space:pre-wrap; line-height:1.6; font-size:1.1rem; color:#444;"></div>
+        <button class="btn-red" style="margin-top:20px; width:100%" onclick="document.getElementById('blog-modal').style.display='none'">Close</button>
+    </div>
 </div>
 
 <div id="result-modal" class="modal-overlay">
@@ -211,9 +225,10 @@
     let user = JSON.parse(localStorage.getItem('arc_user'));
     let draftQs=[], qImgBase64="", draftRecs=[], mImgBase64="", bImgBase64="", allMats=[];
     let currentTest=null, studentAnswers=[], visitedQs=[], currentQIdx=0, examInterval;
+    let announceList = [];
 
     // --- INIT ---
-    fetch('/api/announcement').then(r=>r.json()).then(d=>document.getElementById('announce-bar').innerText="📢 "+d.text);
+    loadAnnouncements();
     loadBlogs();
     if(user) {
         document.getElementById('login-nav').style.display='none'; document.getElementById('logout-btn').style.display='inline';
@@ -230,7 +245,27 @@
     function showAdminTab(id) {
         ['students','online-res','create-test','upload-mat','upload-res','announce','create-blog','manage'].forEach(t=>document.getElementById('adm-'+t).style.display='none');
         document.getElementById('adm-'+id).style.display='block';
-        if(id==='students') loadStudents(); if(id==='online-res') loadOnlineResults(); if(id==='manage') loadManageList();
+        if(id==='students') loadStudents(); if(id==='online-res') loadOnlineResults(); if(id==='manage') loadManageList(); if(id==='announce') loadAnnouncements();
+    }
+
+    // --- ANNOUNCEMENTS ---
+    async function loadAnnouncements() {
+        const d = await (await fetch('/api/announcement')).json();
+        announceList = d.list || [];
+        // Update Marquee
+        document.getElementById('announce-marquee').innerHTML = announceList.join(' &nbsp;&nbsp; | &nbsp;&nbsp; ');
+        
+        // Update Admin List
+        if(user && user.email==='admin@arc.com') {
+            document.getElementById('ann-list-manage').innerHTML = announceList.map(t => `<div style="padding:10px; border-bottom:1px solid #ddd; display:flex; justify-content:space-between;">${t} <button class="btn-red" style="padding:5px;" onclick="deleteAnnounce('${t}')">X</button></div>`).join('');
+        }
+    }
+    async function addAnnouncement() {
+        await fetch('/api/admin/announcement/add',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:document.getElementById('ann-text').value})});
+        document.getElementById('ann-text').value=""; loadAnnouncements();
+    }
+    async function deleteAnnounce(t) {
+        if(confirm("Delete?")) { await fetch('/api/admin/announcement/delete',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:t})}); loadAnnouncements(); }
     }
 
     // --- AUTH ---
@@ -251,62 +286,47 @@
     function logout(){ localStorage.removeItem('arc_user'); location.reload(); }
 
     // --- TEACHER ---
-    async function updateAnnouncement(){ await fetch('/api/admin/announcement',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:document.getElementById('ann-text').value})}); alert("Updated!"); location.reload(); }
     async function loadStudents(){ const d=await (await fetch('/api/admin/students')).json(); document.getElementById('student-table').innerHTML=`<tr><th>Name</th><th>Email</th><th>Password</th></tr>`+d.map(s=>`<tr><td>${s.name}</td><td>${s.email}</td><td>${s.password}</td></tr>`).join(''); }
     
-    // Online Results with VIEW SUBMISSION
     async function loadOnlineResults(){ 
         const d=await (await fetch('/api/admin/results/online')).json(); 
         document.getElementById('online-res-table').innerHTML=`<tr><th>Date</th><th>Test</th><th>Student</th><th>Score</th><th>Action</th></tr>`+d.map(r=>`
             <tr>
-                <td>${new Date(r.date).toLocaleDateString()}</td>
-                <td>${r.testTitle}</td>
-                <td>${r.studentName}<br>${r.studentEmail}</td>
-                <td>${r.score}/${r.totalMarks} (${r.percentage}%)</td>
-                <td>
-                    <button class="btn-gold" style="font-size:0.8rem; padding:5px" onclick="viewSubmission('${r._id}')">View Answer Sheet</button>
-                    <button class="btn-red" style="font-size:0.8rem; padding:5px" onclick="deleteResult('${r._id}')">Delete</button>
-                </td>
+                <td>${new Date(r.date).toLocaleDateString()}</td><td>${r.testTitle}</td><td>${r.studentName}<br>${r.studentEmail}</td><td>${r.score}/${r.totalMarks} (${r.percentage}%)</td>
+                <td><button class="btn-gold" style="font-size:0.8rem; padding:5px" onclick="viewSubmission('${r._id}')">View</button> <button class="btn-red" style="font-size:0.8rem; padding:5px" onclick="deleteResult('${r._id}')">Del</button></td>
             </tr>`).join(''); 
     }
     async function viewSubmission(rid){
         const res = await fetch('/api/admin/result-details', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ resultId:rid }) });
         const data = await res.json();
-        if(!data.success) return alert("Error fetching details");
-        
+        if(!data.success) return alert("Error");
         const { result, test } = data;
         let html = `<h3>${result.studentName} - ${result.testTitle}</h3>`;
-        
         test.questions.forEach((q, i) => {
             const studentAns = result.answers[i];
             const isCorrect = studentAns === q.correct;
             const status = studentAns === null ? "Skipped" : (isCorrect ? "Correct" : "Wrong");
             const color = studentAns === null ? "gray" : (isCorrect ? "green" : "red");
-            
             html += `<div class="review-q">
                 <p><strong>Q${i+1}: ${q.text}</strong> <span style="color:${color}; float:right;">${status}</span></p>
                 ${q.image ? `<img src="${q.image}" style="height:100px;">` : ''}
                 ${q.options.map((opt, oi) => {
                     let style = "";
-                    if(oi === q.correct) style = "background:#dcfce7; border:2px solid green;"; // Correct Answer
-                    else if(oi === studentAns && !isCorrect) style = "background:#fee2e2; border:2px solid red;"; // Wrong Selection
-                    else if(oi === studentAns && isCorrect) style = "background:#dcfce7; border:2px solid green;"; // Correct Selection
+                    if(oi === q.correct) style = "background:#dcfce7; border:2px solid green;"; 
+                    else if(oi === studentAns && !isCorrect) style = "background:#fee2e2; border:2px solid red;";
                     return `<div class="review-opt" style="${style}">${opt}</div>`;
                 }).join('')}
             </div>`;
         });
-        
         document.getElementById('review-content').innerHTML = html;
         document.getElementById('review-modal').style.display = 'flex';
     }
-    async function deleteResult(id){ if(confirm("Delete Result?")) await fetch(`/api/admin/result/online/${id}`,{method:'DELETE'}); loadOnlineResults(); }
+    async function deleteResult(id){ if(confirm("Delete?")) await fetch(`/api/admin/result/online/${id}`,{method:'DELETE'}); loadOnlineResults(); }
 
-    // File Readers
     document.getElementById('m-img-file').addEventListener('change',function(){ const r=new FileReader(); r.onload=e=>mImgBase64=e.target.result; r.readAsDataURL(this.files[0]); });
     document.getElementById('b-img-file').addEventListener('change',function(){ const r=new FileReader(); r.onload=e=>bImgBase64=e.target.result; r.readAsDataURL(this.files[0]); });
     document.getElementById('q-img-file').addEventListener('change',function(){ const r=new FileReader(); r.onload=e=>{qImgBase64=e.target.result; document.getElementById('q-img-preview').src=qImgBase64; document.getElementById('q-img-preview').style.display='block';}; r.readAsDataURL(this.files[0]); });
 
-    // Creators
     async function uploadMaterial(){ await fetch('/api/admin/material',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({title:document.getElementById('m-title').value, description:document.getElementById('m-desc').value, link:document.getElementById('m-link').value, accessCode:document.getElementById('m-code').value, image:mImgBase64, type:'Book'})}); alert("Uploaded!"); mImgBase64=""; }
     async function createBlog(){ await fetch('/api/admin/blog',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({title:document.getElementById('b-title').value, content:document.getElementById('b-content').value, image:bImgBase64, hColor:document.getElementById('b-h-color').value, pColor:document.getElementById('b-p-color').value})}); alert("Published!"); bImgBase64=""; }
     function addResRecord(){ draftRecs.push({studentName:document.getElementById('res-name').value, marks:document.getElementById('res-marks').value, rank:document.getElementById('res-rank').value, copyLink:document.getElementById('res-link').value, accessCode:document.getElementById('res-pass').value}); document.getElementById('res-count').innerText=`Records: ${draftRecs.length}`; }
@@ -314,7 +334,6 @@
     function addDraftQ(){ draftQs.push({text:document.getElementById('q-text').value, image:qImgBase64, options:[0,1,2,3].map(i=>document.getElementById('op'+i).value), correct:parseInt(document.getElementById('q-corr').value), marks:parseFloat(document.getElementById('q-mark').value), negative:parseFloat(document.getElementById('q-neg').value), topic:document.getElementById('q-topic').value}); document.getElementById('q-count').innerText=`Questions: ${draftQs.length}`; document.getElementById('q-text').value=""; qImgBase64=""; document.getElementById('q-img-preview').style.display='none'; }
     async function publishTest(){ await fetch('/api/admin/test',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({title:document.getElementById('t-title').value, duration:document.getElementById('t-dur').value, accessCode:document.getElementById('t-code').value, instructions:document.getElementById('t-inst').value, questions:draftQs})}); alert("Published!"); draftQs=[]; location.reload(); }
     
-    // Manage
     async function loadManageList(){
         const [m,t,b] = await Promise.all([fetch('/api/materials'),fetch('/api/tests'),fetch('/api/blogs')]);
         const mats=await m.json(); const tests=await t.json(); const blogs=await b.json();
@@ -328,15 +347,25 @@
 
     // --- STUDENT ---
     async function loadBlogs(){ 
-        const d=await (await fetch('/api/blogs')).json(); 
+        const d=await (await fetch('/api/blogs')).json(); allBlogs = d;
         document.getElementById('blog-container').innerHTML=d.map((b,i)=>`
             <div class="card" style="border-top:5px solid ${b.hColor}; background:#1e293b;">
                 ${b.image ? `<img src="${b.image}" style="width:100%; height:150px; object-fit:cover;">`:''}
                 <h3 style="color:${b.hColor}">${b.title}</h3>
-                <div id="btxt-${i}" class="blog-text" style="color:${b.pColor}">${b.content}</div>
-                <button style="color:${b.hColor}; background:none; border:none; margin-top:10px; cursor:pointer;" onclick="document.getElementById('btxt-${i}').classList.toggle('expanded')">Read More</button>
+                <p style="color:${b.pColor}; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden;">${b.content}</p>
+                <button style="color:${b.hColor}; background:none; border:none; margin-top:10px; cursor:pointer;" onclick="openBlogModal(${i})">Read More</button>
             </div>`).join('');
     }
+    let allBlogs = [];
+    function openBlogModal(i) {
+        const b = allBlogs[i];
+        document.getElementById('bm-title').innerText = b.title;
+        document.getElementById('bm-content').innerText = b.content;
+        const img = document.getElementById('bm-img');
+        if(b.image) { img.src = b.image; img.style.display='block'; } else img.style.display='none';
+        document.getElementById('blog-modal').style.display = 'flex';
+    }
+
     async function loadMaterials(){ allMats=await (await fetch('/api/materials')).json(); renderMat(allMats); }
     function renderMat(l){ document.getElementById('mat-list').innerHTML=l.map(m=>`<div class="card" onclick="unlockMat('${m._id}')"><img src="${m.image||'https://via.placeholder.com/200'}" class="book-cover"><h3>${m.title}</h3><p>${m.description||''}</p><button class="btn-gold" style="width:100%">Open</button></div>`).join(''); }
     function filterNotes(){ 
@@ -352,14 +381,31 @@
     async function viewCopy(rid,recid){ const p=prompt("Your Password:"); if(!p)return; const r=await fetch('/api/results/unlock-copy',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({resultId:rid,recordId:recid,password:p})}); const d=await r.json(); if(d.success)window.open(d.link); else alert("Incorrect Password"); }
 
     // --- EXAM ENGINE ---
-    async function loadTestsList(){ const d=await (await fetch('/api/tests')).json(); document.getElementById('test-list').innerHTML=d.map(t=>`<div class="card"><h3>${t.title}</h3><p>${t.duration} Mins</p><button class="btn-gold" onclick="startExam('${t._id}')">Start</button></div>`).join(''); }
+    async function loadTestsList(){ 
+        const d=await (await fetch('/api/tests')).json(); 
+        document.getElementById('test-list').innerHTML=d.map(t=>`
+            <div class="card">
+                <h3>${t.title} ${t.accessCode ? '🔒' : '🔓'}</h3>
+                <p>Duration: ${t.duration} Mins</p>
+                <button class="btn-gold" onclick="startExam('${t._id}')">Start</button>
+            </div>`).join(''); 
+    }
     async function startExam(id){
-        if(!user) return alert("Login first"); const c=prompt("Test Password:"); if(!c)return;
+        if(!user) return alert("Login first"); 
+        
+        // Find selected test to check if it has a code
+        const selectedTest = (await (await fetch('/api/tests')).json()).find(t => t._id === id);
+        let code = "";
+        if(selectedTest.accessCode) {
+            code = prompt("Enter Test Password:"); 
+            if(!code) return;
+        }
+
         try {
-            const r=await fetch('/api/test/start',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id,code:c,studentEmail:user.email})});
+            const r=await fetch('/api/test/start',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id,code,studentEmail:user.email})});
             const d=await r.json();
             if(d.success){ currentTest=d.test; studentAnswers=new Array(currentTest.questions.length).fill(null); visitedQs=new Array(currentTest.questions.length).fill(false); document.getElementById('student-name-display').innerText=user.name; show('exam-ui'); runTimer(currentTest.duration*60); renderQ(0); } else alert(d.message);
-        } catch(e) { alert("Connection Error (Check MongoDB IP)"); }
+        } catch(e) { alert("Connection Error"); }
     }
     function runTimer(s){ clearInterval(examInterval); examInterval=setInterval(()=>{ s--; document.getElementById('timer').innerText=`${Math.floor(s/60)}:${s%60}`; if(s<=0){clearInterval(examInterval); submitExam(true);} },1000); }
     function renderQ(i){ currentQIdx=i; visitedQs[i]=true; const q=currentTest.questions[i]; document.getElementById('q-num').innerText=i+1; document.getElementById('q-text').innerText=q.text; document.getElementById('q-marks').innerText=q.marks; document.getElementById('q-neg').innerText=q.negative; const img=document.getElementById('q-image-display'); if(q.image){img.src=q.image; img.style.display='block';}else{img.style.display='none';} document.getElementById('q-options').innerHTML=q.options.map((o,idx)=>`<label class="option-label"><input type="radio" name="opt" value="${idx}" ${studentAnswers[i]===idx?'checked':''}> ${o}</label>`).join(''); renderPalette(); }
