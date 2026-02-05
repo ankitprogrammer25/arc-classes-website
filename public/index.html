@@ -108,8 +108,9 @@
     <div id="blog-container" class="grid" style="margin-bottom:40px;"></div>
 
     <div style="text-align:center; padding:80px 40px; background:linear-gradient(135deg, var(--primary), var(--dark)); color:white; border-radius:20px;">
-        <h1 style="color:var(--gold); font-size:3rem;">Master Chemistry with ARC</h1>
-        <p>Premium Notes, GATE-Style Tests, and Expert Guidance.</p>
+        <h1 style="color:var(--gold); font-size:3rem;">Master Chemistry with ARC Classes</h1>
+        <h2 style="color:var(--gold); font-size:3rem;">5 Years+ Teaching Experience + NET/JRF/GATE Qualified Teacher </h2>
+        <p>Premium Notes, Chapter wise Tests, and Expert Guidance.</p>
         <button class="btn-gold" style="font-size:1.2rem; padding:15px 40px;" onclick="show('tests')">Start a Test Now</button>
     </div>
 </div>
@@ -121,7 +122,7 @@
 </div>
 
 <div id="tests" class="section">
-    <h2>📝 Online Tests (Max 3 Attempts)</h2>
+    <h2>📝 Online Tests (Max 3 Attempts allowed per test)</h2>
     <button id="test-back-btn" class="btn-gold" style="display:none; margin-bottom:15px;" onclick="loadTestsList()">← Back to Categories</button>
     <div id="test-list" class="grid">Loading...</div>
 </div>
@@ -222,7 +223,7 @@
             <input id="m-title" placeholder="Title"><input id="m-desc" placeholder="Desc"><input id="m-link" placeholder="Drive Link"><input id="m-code" placeholder="Password (Optional)">
             <p>Category:</p>
             <select id="m-cat">
-                <option>12th Books</option><option>Organic Books</option><option>Physical Chemistry</option><option>Inorganic Books</option><option>Handmade Notes</option><option>Coaching Notes</option><option>Test Series</option>
+                <option>11th Books</option><option>12th Books</option><option>Organic Chemistry Books</option><option>Physical Chemistry Books</option><option>Inorganic Chemistry Books</option><option>Handmade Notes</option><option>Coaching Notes</option><option>Practice Test Series</option>
             </select>
             <p>Cover:</p><input type="file" id="m-img-file" accept="image/*"><button class="btn-gold" onclick="uploadMaterial()">Upload</button>
         </div>
@@ -266,7 +267,7 @@
 
 <div id="review-modal" class="modal-overlay"><div class="modal-box" style="width:800px; text-align:left;"><h2 style="text-align:center;">Test Review</h2><div id="review-content" style="max-height:600px; overflow-y:auto;"></div><button class="btn-red" style="width:100%; margin-top:20px;" onclick="document.getElementById('review-modal').style.display='none'">Close Review</button></div></div>
 
-<footer>&copy; [arcclasses2025] All Rights Reserved</footer>
+<footer>&copy; [arcclasses2025]. All Rights Reserved</footer>
 
 <script>
     let user = JSON.parse(localStorage.getItem('arc_user'));
