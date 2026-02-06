@@ -9,7 +9,7 @@
         :root { --primary: #0f172a; --gold: #fbbf24; --light: #f8fafc; --red: #ef4444; --green: #22c55e; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--light); margin: 0; color: #333; min-width: 1200px; display: flex; flex-direction: column; min-height: 100vh; }
         
-        /* LAYOUT */
+        /* LAYOUT & NAVBAR */
         nav { background: var(--primary); padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
         .logo { 
             font-size: 2rem; font-weight: 900; 
@@ -31,7 +31,7 @@
         .btn { padding: 10px 20px; border:none; border-radius:6px; cursor:pointer; font-weight:bold; transition: 0.2s; }
         .btn-gold { background: var(--gold); color: var(--primary); }
         .btn-red { background: var(--red); color: white; }
-        .btn-small { padding: 5px 10px; font-size: 0.8rem; }
+        .btn-small { padding: 8px 15px; font-size: 0.9rem; }
         
         .section { display: none; padding: 40px; max-width: 1100px; margin: auto; flex: 1; }
         .section.active { display: block; animation: fadeIn 0.3s; }
@@ -41,9 +41,22 @@
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
         input, select, textarea { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
 
-        .toolbar { background: #e2e8f0; padding: 10px; border: 1px solid #ccc; border-radius: 6px 6px 0 0; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+        /* BLOG STYLES */
+        .blog-card { padding: 0; overflow: hidden; } 
+        .blog-card img { width: 100%; height: 180px; object-fit: cover; }
+        .blog-content-preview { padding: 15px; display: flex; flex-direction: column; height: 100%; }
+        .blog-title { margin: 0 0 10px 0; font-size: 1.2rem; color: var(--primary); }
+        #bm-content { line-height: 1.8; color: #333; font-size: 1.1rem; }
+        #bm-content img { max-width: 100%; height: auto; margin: 15px 0; display: block; border-radius: 8px; }
+
+        /* RICH EDITOR & TABLES */
+        .toolbar { background: #e2e8f0; padding: 10px; border: 1px solid #ccc; border-radius: 6px 6px 0 0; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; position: sticky; top: 0; z-index: 10; }
         .tool-btn { background: white; border: 1px solid #94a3b8; padding: 5px 10px; cursor: pointer; font-weight: bold; border-radius: 4px; min-width: 30px; }
+        
         .editor { min-height: 150px; border: 1px solid #ccc; padding: 15px; border-radius: 0 0 6px 6px; background: white; outline: none; line-height: 1.6; }
+        .editor-small { min-height: 40px; border: 1px solid #ccc; padding: 10px; border-radius: 6px; background: white; outline: none; margin-bottom: 10px; }
+        .editor-small:focus { border: 2px solid var(--primary); }
+        
         .editor img { max-width: 100%; height: auto; }
 
         table { width: 100%; border-collapse: collapse; margin-top: 15px; }
@@ -53,11 +66,13 @@
 
         .input-group { display: grid; grid-template-columns: 2fr 1fr 1fr 2fr auto; gap: 10px; align-items: center; background: #f1f5f9; padding: 15px; border-radius: 8px; }
 
+        /* MODALS */
         .modal { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); display:none; justify-content:center; align-items:center; z-index: 2000; }
         .modal-content { background:white; width: 900px; max-height: 90vh; overflow-y: auto; padding: 30px; border-radius: 15px; position: relative; }
-        .close-corner { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; color: #777; }
+        .close-corner { position: absolute; top: 15px; right: 20px; font-size: 2rem; cursor: pointer; color: #777; font-weight: bold; }
+        .close-corner:hover { color: var(--red); }
         
-        /* TEST CREATION LAYOUT */
+        /* TEST CREATOR LAYOUT */
         .create-test-layout { display: flex; gap: 20px; }
         .ct-left { flex: 3; }
         .ct-right { flex: 1; background: #f8fafc; padding: 15px; border: 1px solid #e2e8f0; border-radius: 8px; height: fit-content; }
@@ -66,7 +81,10 @@
         .q-btn:hover { background: #e2e8f0; }
         .q-btn.active { border: 2px solid var(--primary); background: #e0f2fe; }
 
+        /* LIBRARY */
         .folder { background: #e0f2fe; padding: 30px; text-align: center; border-radius: 12px; cursor: pointer; font-size: 1.2rem; font-weight: bold; border-bottom: 4px solid var(--primary); color: var(--primary); }
+        
+        /* EXAM & RESULTS */
         .exam-layout { display: flex; gap: 20px; height: 80vh; }
         .question-panel { flex: 3; background: white; padding: 30px; border-radius: 12px; overflow-y: auto; }
         .palette-panel { flex: 1; background: white; padding: 20px; border-radius: 12px; display: flex; flex-direction: column; }
@@ -74,7 +92,11 @@
         .p-btn { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border: 1px solid #ddd; cursor: pointer; border-radius: 50%; font-weight: bold; }
         .p-btn.done { background: var(--green); color: white; border-color: var(--green); }
         .p-btn.active { border: 2px solid var(--primary); }
-        
+        .review-row { border-bottom: 1px solid #eee; padding: 15px 0; }
+        .badge { padding: 5px 10px; border-radius: 4px; color: white; font-size: 0.8rem; font-weight: bold; }
+        .bg-green { background: var(--green); } .bg-red { background: var(--red); }
+
+        /* LOGIN & MISC */
         .login-tabs { display: flex; border-bottom: 2px solid #eee; margin-bottom: 20px; }
         .tab { flex: 1; text-align: center; padding: 10px; cursor: pointer; font-weight: bold; color: #777; }
         .tab.active { color: var(--primary); border-bottom: 3px solid var(--gold); }
@@ -107,12 +129,12 @@
 
 <div id="home" class="section active">
     <div style="text-align:center; padding: 50px 20px;">
-        <h1 style="color:var(--primary); font-size: 3rem;"> Master Chemistry with ARC Classes </h1>
+        <h1 style="color:var(--primary); font-size: 3rem;">Master Chemistry with ARC Classes </h1>
         <p>Premium Notes, Test Series, and Live Classes.</p>
-        <button class="btn btn-gold" onclick="show('tests')"> Start Demo Test </button>
+        <button class="btn btn-gold" onclick="show('tests')">Start Practice</button>
     </div>
-    <h3>Latest Blogs</h3>
-    <div id="blog-grid" class="grid"></div>
+    <h3 style="margin-left: 10px;">Latest Blogs</h3>
+    <div id="blog-grid" class="grid" style="padding: 10px;"></div>
 </div>
 
 <div id="login" class="section">
@@ -153,7 +175,7 @@
     </div>
     <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:20px;">
         <button class="btn btn-gold" onclick="initCreateTest()">➕ Create Test</button>
-        <button class="btn btn-gold" onclick="showAdm('upload')">📂 Upload File</button>
+        <button class="btn btn-gold" onclick="initUpload()">📂 Upload File</button>
         <button class="btn btn-gold" onclick="showAdm('blog')">✍️ Post Blog</button>
         <button class="btn btn-gold" onclick="showAdm('announce')">📢 Announcements</button>
         <button class="btn btn-gold" onclick="showAdm('results')">📈 Analyze Results</button>
@@ -226,12 +248,13 @@
         <div id="review-body"></div>
     </div>
 </div>
+
 <div id="blog-modal" class="modal">
     <div class="modal-content">
         <span class="close-corner" onclick="document.getElementById('blog-modal').style.display='none'">&times;</span>
-        <h2 id="bm-title"></h2>
-        <p id="bm-date"></p>
-        <img id="bm-img" style="width:100%; max-height:300px; object-fit:contain; display:none;">
+        <h2 id="bm-title" style="margin-bottom:10px; color:var(--primary); font-size:2rem;"></h2>
+        <p id="bm-date" style="color:#777; margin-bottom:20px;"></p>
+        <img id="bm-img" style="width:100%; max-height:400px; object-fit:contain; margin-bottom:20px; display:none; background:#f0f0f0;">
         <div id="bm-content"></div>
     </div>
 </div>
@@ -244,7 +267,8 @@
     let tempImg = "";
     let editingBlogId = null;
     let editingTestId = null;
-    let editQIndex = -1; // New: Track which question is being edited in Test Creator
+    let editingMaterialId = null; // Track editing state for library
+    let editQIndex = -1;
 
     // INIT
     if(user) {
@@ -309,25 +333,29 @@
                         <hr>
                         <h4>Add/Edit Question</h4>
                         ${toolbarHTML}
-                        <div id="q-editor" class="editor" contenteditable="true"></div>
+                        <div style="font-size:0.9rem; color:#666; margin-bottom:5px;">Question:</div>
+                        <div id="q-editor" class="editor" contenteditable="true" placeholder="Type question here..."></div>
                         <div style="margin:10px 0; display:flex; gap:10px; align-items:center;">
                             <b>Image:</b> <input type="file" onchange="encodeImg(this, 'q-prev')" accept="image/*" style="width:auto;">
                             <img id="q-prev" style="height:50px; display:none;">
                         </div>
+                        <div style="font-size:0.9rem; color:#666; margin-bottom:5px;">Options:</div>
                         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                            <input id="op0" placeholder="Option A"><input id="op1" placeholder="Option B">
-                            <input id="op2" placeholder="Option C"><input id="op3" placeholder="Option D">
+                            <div><b>A:</b> <div id="op0" class="editor-small" contenteditable="true"></div></div>
+                            <div><b>B:</b> <div id="op1" class="editor-small" contenteditable="true"></div></div>
+                            <div><b>C:</b> <div id="op2" class="editor-small" contenteditable="true"></div></div>
+                            <div><b>D:</b> <div id="op3" class="editor-small" contenteditable="true"></div></div>
                         </div>
-                        <input id="q-sol" placeholder="Solution">
+                        <div style="font-size:0.9rem; color:#666; margin:5px 0;">Solution:</div>
+                        <div id="q-sol" class="editor-small" contenteditable="true"></div>
                         Correct: <select id="q-corr"><option value="0">A</option><option value="1">B</option><option value="2">C</option><option value="3">D</option></select>
-                        
                         <div style="display:flex; gap:10px; margin-top:10px;">
                             <button class="btn btn-gold" onclick="saveDraftQ()">Save Question</button>
                             <button class="btn btn-red" onclick="clearQForm()">Clear Form</button>
                         </div>
                     </div>
                     <div class="ct-right">
-                        <h4>Questions Palette</h4>
+                        <h4>Questions</h4>
                         <div id="create-palette" class="q-grid"></div>
                         <hr>
                         <p>Total: <span id="q-count">0</span></p>
@@ -357,6 +385,7 @@
                 <div style="display:flex; gap:10px; margin-bottom:20px; flex-wrap:wrap;">
                     <button class="btn btn-gold" onclick="loadManageTests()">Tests (Practice/Live)</button>
                     <button class="btn btn-gold" onclick="loadManageBlogs()">Blogs</button>
+                    <button class="btn btn-gold" onclick="loadManageLibrary()">Library</button>
                     <button class="btn btn-gold" onclick="loadManageOffline()">Offline Results</button>
                     <button class="btn btn-gold" onclick="loadManageOnline()">Online Results</button>
                 </div>
@@ -369,7 +398,15 @@
              fetch('/api/announcement').then(r=>r.json()).then(d => { document.getElementById('ann-list').innerHTML = d.list.map(t => `<div style="padding:10px; border-bottom:1px solid #eee; display:flex; justify-content:space-between;">${t} <button onclick="delAnnounce('${t}')">X</button></div>`).join(''); });
         }
         else if(tab==='upload') {
-            c.innerHTML = `<h3>Upload Material</h3><input id="m-title" placeholder="Title"><input id="m-link" placeholder="PDF/Drive Link"><input id="m-img" placeholder="Cover Image URL"><select id="m-cat"><option>11th Class</option><option>12th Class</option><option>Organic</option><option>Physical</option><option>Inorganic</option><option>Test Series</option><option>Notes</option></select><input id="m-code" placeholder="Access Password (Optional)"><button class="btn btn-gold" onclick="uploadMat()">Upload</button>`;
+            // Updated Upload Tab to support Edit Mode
+            const btnText = editingMaterialId ? "UPDATE MATERIAL" : "Upload";
+            c.innerHTML = `<h3>${editingMaterialId ? 'Edit' : 'Upload'} Material</h3>
+            <input id="m-title" placeholder="Title">
+            <input id="m-link" placeholder="PDF/Drive Link">
+            <input id="m-img" placeholder="Cover Image URL">
+            <select id="m-cat"><option>11th Class</option><option>12th Class</option><option>Organic</option><option>Physical</option><option>Inorganic</option><option>Test Series</option><option>Notes</option></select>
+            <input id="m-code" placeholder="Access Password (Optional)">
+            <button class="btn btn-gold" onclick="uploadMat()">${btnText}</button>`;
         }
         else if(tab==='students') {
             c.innerHTML = `<h3>Registered Students</h3><table><thead><tr><th>Name</th><th>Email</th><th>Date Joined</th></tr></thead><tbody id="stu-list"></tbody></table>`;
@@ -377,69 +414,7 @@
         }
     }
 
-    // --- TEST CREATION LOGIC WITH PALETTE ---
-    function renderCreatePalette() {
-        const p = document.getElementById('create-palette');
-        if(!p) return;
-        p.innerHTML = draftQ.map((q, i) => `
-            <div class="q-btn ${i === editQIndex ? 'active' : ''}" onclick="loadDraftQ(${i})">${i+1}</div>
-        `).join('') + `<div class="q-btn" onclick="clearQForm()" style="font-size:1.2rem; font-weight:bold; color:green;">+</div>`;
-        document.getElementById('q-count').innerText = draftQ.length;
-    }
-
-    function saveDraftQ() {
-        const qData = {
-            text: document.getElementById('q-editor').innerHTML,
-            options: [0,1,2,3].map(i => document.getElementById('op'+i).value),
-            correct: parseInt(document.getElementById('q-corr').value),
-            marks: 4, negative: 1,
-            solution: document.getElementById('q-sol').value,
-            image: tempImg
-        };
-
-        if(editQIndex > -1) {
-            // Update existing
-            if(!qData.image) qData.image = draftQ[editQIndex].image; // Keep old img if not changed
-            draftQ[editQIndex] = qData;
-        } else {
-            // Add new
-            draftQ.push(qData);
-        }
-        
-        clearQForm();
-        renderCreatePalette();
-    }
-
-    function loadDraftQ(index) {
-        editQIndex = index;
-        const q = draftQ[index];
-        document.getElementById('q-editor').innerHTML = q.text;
-        [0,1,2,3].forEach(i => document.getElementById('op'+i).value = q.options[i]);
-        document.getElementById('q-corr').value = q.correct;
-        document.getElementById('q-sol').value = q.solution || "";
-        
-        if(q.image) {
-            document.getElementById('q-prev').src = q.image;
-            document.getElementById('q-prev').style.display = 'block';
-            tempImg = q.image; // Set tempImg so saving keeps it
-        } else {
-            document.getElementById('q-prev').style.display = 'none';
-            tempImg = "";
-        }
-        renderCreatePalette();
-    }
-
-    function clearQForm() {
-        editQIndex = -1;
-        document.getElementById('q-editor').innerHTML = "";
-        [0,1,2,3].forEach(i => document.getElementById('op'+i).value = "");
-        document.getElementById('q-sol').value = "";
-        document.getElementById('q-prev').style.display = 'none';
-        tempImg = "";
-        renderCreatePalette();
-    }
-
-    // --- MANAGE CONTENT LOGIC (NEW) ---
+    // --- MANAGE CONTENT LOGIC ---
     async function loadManageTests() {
         const res = await fetch('/api/tests'); const data = await res.json();
         document.getElementById('manage-area').innerHTML = `<table><thead><tr><th>Title</th><th>Type</th><th>Actions</th></tr></thead><tbody>${data.map(t => `<tr><td>${t.title}</td><td>${t.isLive ? '🔴 Live' : '📝 Practice'}</td><td><button onclick="editTest('${t._id}')">Edit</button> <button style="color:red" onclick="deleteItem('test','${t._id}')">Delete</button></td></tr>`).join('')}</tbody></table>`;
@@ -447,6 +422,10 @@
     async function loadManageBlogs() {
         const res = await fetch('/api/blogs'); const data = await res.json();
         document.getElementById('manage-area').innerHTML = `<table><tr><th>Title</th><th>Date</th><th>Actions</th></tr>${data.map(b => `<tr><td>${b.title}</td><td>${new Date(b.date).toLocaleDateString()}</td><td><button onclick="editBlog('${b._id}')">Edit</button> <button style="color:red" onclick="deleteItem('blog','${b._id}')">Delete</button></td></tr>`).join('')}</table>`;
+    }
+    async function loadManageLibrary() {
+        const res = await fetch('/api/materials'); const data = await res.json();
+        document.getElementById('manage-area').innerHTML = `<table><tr><th>Title</th><th>Category</th><th>Actions</th></tr>${data.map(m => `<tr><td>${m.title}</td><td>${m.category}</td><td><button onclick="editMaterial('${m._id}')">Edit</button> <button style="color:red" onclick="deleteItem('material','${m._id}')">Delete</button></td></tr>`).join('')}</table>`;
     }
     async function loadManageOffline() {
         const res = await fetch('/api/results/offline'); const data = await res.json();
@@ -465,16 +444,17 @@
         if(type==='offline-result') loadManageOffline();
         if(type==='result') loadManageOnline();
         if(type==='test') loadManageTests();
+        if(type==='material') loadManageLibrary();
     }
 
     // --- EDITING LOGIC ---
     function initCreateTest() { editingTestId = null; draftQ = []; showAdm('create-test'); renderCreatePalette(); }
-    
+    function initUpload() { editingMaterialId = null; showAdm('upload'); } // Reset for fresh upload
+
     async function editTest(id) {
         const res = await fetch(`/api/admin/test/${id}`);
         const test = await res.json();
         initCreateTest();
-        
         document.getElementById('t-title').value = test.title;
         document.getElementById('t-dur').value = test.duration;
         document.getElementById('t-code').value = test.accessCode || "";
@@ -482,7 +462,6 @@
         document.getElementById('t-live').checked = test.isLive;
         if(test.startTime) document.getElementById('t-start').value = new Date(test.startTime).toISOString().slice(0,16);
         if(test.endTime) document.getElementById('t-end').value = new Date(test.endTime).toISOString().slice(0,16);
-        
         draftQ = test.questions || [];
         renderCreatePalette();
         editingTestId = id;
@@ -501,6 +480,41 @@
             tempImg = blog.image;
         }
         editingBlogId = id;
+    }
+
+    async function editMaterial(id) {
+        // Fetch fresh list to be sure or use allMats
+        if(!allMats.length) await loadMaterials();
+        const mat = allMats.find(m => m._id === id);
+        if(!mat) return;
+        
+        editingMaterialId = id;
+        showAdm('upload'); // Switch tab and render form
+        
+        // Pre-fill form
+        document.getElementById('m-title').value = mat.title;
+        document.getElementById('m-link').value = mat.link;
+        document.getElementById('m-img').value = mat.image;
+        document.getElementById('m-cat').value = mat.category;
+        document.getElementById('m-code').value = mat.accessCode || "";
+    }
+
+    async function uploadMat() { 
+        const body = { 
+            title: document.getElementById('m-title').value, 
+            link: document.getElementById('m-link').value, 
+            image: document.getElementById('m-img').value, 
+            category: document.getElementById('m-cat').value, 
+            accessCode: document.getElementById('m-code').value 
+        };
+        
+        const method = editingMaterialId ? 'PUT' : 'POST';
+        const url = editingMaterialId ? `/api/admin/material/${editingMaterialId}` : '/api/admin/material';
+
+        await fetch(url, { method, headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) }); 
+        alert(editingMaterialId ? "Material Updated!" : "Material Uploaded!");
+        editingMaterialId = null; // Reset
+        showAdm('upload'); // Clear form
     }
 
     // --- OFFLINE RESULT LOGIC ---
@@ -565,29 +579,127 @@
     
     async function postAnnounce() { await fetch('/api/admin/announcement/add', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({text: document.getElementById('ann-text').value}) }); showAdm('announce'); loadAnnouncements(); }
     async function delAnnounce(text) { await fetch('/api/admin/announcement/delete', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({text}) }); showAdm('announce'); }
-    async function uploadMat() { await fetch('/api/admin/material', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ title: document.getElementById('m-title').value, link: document.getElementById('m-link').value, image: document.getElementById('m-img').value, category: document.getElementById('m-cat').value, accessCode: document.getElementById('m-code').value }) }); alert("Material Uploaded!"); }
+    
     function filterTable(inp) { const filter = inp.value.toUpperCase(); const tr = document.getElementById('adm-res-list').getElementsByTagName('tr'); for (let i=0; i<tr.length; i++) { const txt = tr[i].innerText; tr[i].style.display = txt.toUpperCase().indexOf(filter) > -1 ? "" : "none"; } }
 
     async function loadAnnouncements() { try { const res = await fetch('/api/announcement'); const data = await res.json(); document.getElementById('anno-marquee').innerHTML = (data.list && data.list.length > 0) ? data.list.join(' &nbsp;&nbsp; | &nbsp;&nbsp; ') : "Welcome to ARC Classes"; } catch(e) {} }
-    async function loadBlogs() { const res = await fetch('/api/blogs'); allBlogs = await res.json(); document.getElementById('blog-grid').innerHTML = allBlogs.map((b, i) => `<div class="card blog-card">${b.image ? `<img src="${b.image}" style="width:100%; height:150px; object-fit:cover;">` : ''}<h3>${b.title}</h3><div class="blog-text">${b.content}</div><button style="color:blue; background:none; border:none; margin-top:5px;" onclick="openBlog(${i})">Read More</button></div>`).join(''); }
-    function openBlog(i) { const b = allBlogs[i]; document.getElementById('bm-title').innerText = b.title; document.getElementById('bm-date').innerText = new Date(b.date).toDateString(); document.getElementById('bm-content').innerHTML = b.content; if(b.image) { document.getElementById('bm-img').src = b.image; document.getElementById('bm-img').style.display='block'; } document.getElementById('blog-modal').style.display='flex'; }
-
+    
     async function loadTests(isLive) { const res = await fetch('/api/tests'); const tests = await res.json(); document.getElementById(isLive?'live-list':'test-list').innerHTML = tests.filter(t => (t.isLive || false) === isLive).map(t => `<div class="card" style="border-left: 5px solid ${isLive ? 'red' : 'gold'}"><h3>${t.title} ${t.accessCode?'🔒':''}</h3><p>${t.duration} Mins | ${t.questions ? '?' : ''} Qs</p>${isLive ? `<p style="color:red">Start: ${new Date(t.startTime).toLocaleString()}</p>` : ''}<button class="btn btn-gold" onclick="startTest('${t._id}')">Start</button></div>`).join(''); }
     async function startTest(id) { const code = prompt("Enter Test Password (if any):"); const res = await fetch('/api/test/start', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ id, code, studentEmail: user.email }) }); const data = await res.json(); if(data.success) { currentTest = data.test; answers = new Array(currentTest.questions.length).fill(null); timeTaken = new Array(currentTest.questions.length).fill(0); qIndex = 0; show('exam'); renderQ(); } else alert(data.message); }
-    function renderQ() { const q = currentTest.questions[qIndex]; document.getElementById('q-no').innerText = `Q${qIndex + 1}`; document.getElementById('q-text').innerHTML = q.text; const img = document.getElementById('q-img'); if(q.image) { img.src = q.image; img.style.display = 'block'; } else img.style.display = 'none'; document.getElementById('q-opts').innerHTML = q.options.map((o, i) => `<label style="display:block; padding:8px;"><input type="radio" name="opt" value="${i}" ${answers[qIndex] === i ? 'checked' : ''}> ${o}</label>`).join(''); document.getElementById('palette').innerHTML = answers.map((a, i) => `<div class="p-btn ${a !== null ? 'done' : (i === qIndex ? 'active' : '')}" onclick="gotoQ(${i})">${i+1}</div>`).join(''); }
+    
+    // UPDATED RENDERQ TO SUPPORT HTML IN OPTIONS
+    function renderQ() { 
+        const q = currentTest.questions[qIndex]; 
+        document.getElementById('q-no').innerText = `Q${qIndex + 1}`; 
+        document.getElementById('q-text').innerHTML = q.text; 
+        const img = document.getElementById('q-img'); 
+        if(q.image) { img.src = q.image; img.style.display = 'block'; } else img.style.display = 'none'; 
+        
+        // RENDER OPTIONS AS HTML
+        document.getElementById('q-opts').innerHTML = q.options.map((o, i) => `
+            <label style="display:block; padding:8px; display:flex; align-items:flex-start;">
+                <input type="radio" name="opt" value="${i}" ${answers[qIndex] === i ? 'checked' : ''} style="margin-top:5px; margin-right:8px;"> 
+                <div>${o}</div>
+            </label>
+        `).join(''); 
+        
+        document.getElementById('palette').innerHTML = answers.map((a, i) => `<div class="p-btn ${a !== null ? 'done' : (i === qIndex ? 'active' : '')}" onclick="gotoQ(${i})">${i+1}</div>`).join(''); 
+    }
+    
     function saveNext() { const sel = document.querySelector('input[name="opt"]:checked'); answers[qIndex] = sel ? parseInt(sel.value) : null; if(qIndex < currentTest.questions.length - 1) { qIndex++; renderQ(); } }
     function clearAns() { answers[qIndex] = null; renderQ(); }
     function gotoQ(i) { qIndex = i; renderQ(); }
     async function submitTest() { if(!confirm("Submit?")) return; const res = await fetch('/api/test/submit', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ testId: currentTest._id, answers, timeTaken, studentName: user.name, studentEmail: user.email }) }); const data = await res.json(); if(data.success) { alert(`Score: ${data.score}`); location.reload(); } }
+    
+    // UPDATED VIEWSHEET TO SUPPORT HTML IN OPTIONS
+    async function viewSheet(id) { 
+        const res = await fetch('/api/result-details', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ resultId: id }) }); 
+        const data = await res.json(); 
+        if(!data.success) return alert(data.message); 
+        const r = data.result; 
+        document.getElementById('review-stats').innerHTML = `<span>Score: ${r.score}/${r.totalMarks}</span><span>Rank: #${data.rank}</span><span>Accuracy: ${r.percentage.toFixed(1)}%</span>`; 
+        document.getElementById('review-body').innerHTML = data.questions.map((q, i) => `
+            <div class="review-row">
+                <p><strong>Q${i+1}:</strong> ${q.text}</p>
+                ${q.image ? `<img src="${q.image}" style="height:100px">` : ''}
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:5px;">
+                    ${q.options.map((opt, idx) => `
+                        <div style="padding:5px; border:1px solid #ddd; ${idx === q.correct ? 'background:#dcfce7; border-color:green;' : ''} ${idx === q.studentAnswer && idx !== q.correct ? 'background:#fee2e2; border-color:red;' : ''}"> ${opt} </div>
+                    `).join('')}
+                </div>
+                <p style="margin-top:5px; font-size:0.9rem;">Status: <span class="badge ${q.status==='Correct'?'bg-green':'bg-red'}">${q.status}</span></p>
+                ${q.solution ? `<div style="background:#f0f9ff; padding:10px; margin-top:5px;"><strong>💡 Solution:</strong> ${q.solution}</div>` : ''}
+            </div>`).join(''); 
+        document.getElementById('review-modal').style.display = 'flex'; 
+    }
+    
     async function loadResults(type) { const res = await fetch('/api/student/results/online', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ email: user.email }) }); const data = await res.json(); document.getElementById('result-list').innerHTML = `<table><tr><th>Date</th><th>Test</th><th>Score</th><th>Action</th></tr>${data.results.filter(r => r.testType === type).map(r => `<tr><td>${new Date(r.date).toLocaleDateString()}</td><td>${r.testTitle}</td><td>${r.score}/${r.totalMarks}</td><td><button class="btn btn-gold" style="padding:5px;" onclick="viewSheet('${r._id}')">View Sheet</button></td></tr>`).join('')}</table>`; }
     async function loadOfflineResults() { const res = await fetch('/api/results/offline'); const data = await res.json(); document.getElementById('result-list').innerHTML = data.map(r => `<h3>${r.title}</h3><table><tr><th>Rank</th><th>Student</th><th>Marks</th><th>Total</th><th>Copy</th></tr>${r.records.map(rec => `<tr><td>#${rec.rank}</td><td>${rec.studentName}</td><td>${rec.obtainedMarks}</td><td>${rec.totalMarks}</td><td>${rec.copyLink ? `<a href="${rec.copyLink}" target="_blank" style="color:blue">View</a>` : '-'}</td></tr>`).join('')}</table>`).join(''); }
-    async function viewSheet(id) { const res = await fetch('/api/result-details', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ resultId: id }) }); const data = await res.json(); if(!data.success) return alert(data.message); const r = data.result; document.getElementById('review-stats').innerHTML = `<span>Score: ${r.score}/${r.totalMarks}</span><span>Rank: #${data.rank}</span><span>Accuracy: ${r.percentage.toFixed(1)}%</span>`; document.getElementById('review-body').innerHTML = data.questions.map((q, i) => `<div class="review-row"><p><strong>Q${i+1}:</strong> ${q.text}</p>${q.image ? `<img src="${q.image}" style="height:100px">` : ''}<div style="display:grid; grid-template-columns: 1fr 1fr; gap:5px;">${q.options.map((opt, idx) => `<div style="padding:5px; border:1px solid #ddd; ${idx === q.correct ? 'background:#dcfce7; border-color:green;' : ''} ${idx === q.studentAnswer && idx !== q.correct ? 'background:#fee2e2; border-color:red;' : ''}"> ${opt} </div>`).join('')}</div><p style="margin-top:5px; font-size:0.9rem;">Status: <span class="badge ${q.status==='Correct'?'bg-green':'bg-red'}">${q.status}</span></p>${q.solution ? `<div style="background:#f0f9ff; padding:10px; margin-top:5px;"><strong>💡 Solution:</strong> ${q.solution}</div>` : ''}</div>`).join(''); document.getElementById('review-modal').style.display = 'flex'; }
     let allMats = [];
     async function loadMaterials() { allMats = await (await fetch('/api/materials')).json(); }
     function loadLib(cat) { document.getElementById('lib-cats').style.display = 'none'; document.getElementById('lib-back').style.display = 'block'; if(allMats.length === 0) loadMaterials().then(() => renderLib(cat)); else renderLib(cat); }
     function renderLib(cat) { document.getElementById('lib-content').innerHTML = allMats.filter(m => m.category === cat || (cat === '11th Class' && m.category.includes('11'))).map(m => `<div class="card"><img src="${m.image||''}" style="height:150px; background:#ddd; object-fit:cover;"><h4>${m.title} ${m.accessCode?'🔒':''}</h4><button class="btn btn-gold" onclick="openMat('${m._id}')">Open</button></div>`).join(''); }
     function resetLib() { document.getElementById('lib-cats').style.display = 'grid'; document.getElementById('lib-back').style.display = 'none'; document.getElementById('lib-content').innerHTML = ''; }
     async function openMat(id) { const code = prompt("Enter Password:"); const res = await fetch('/api/material/unlock', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id, code}) }); const data = await res.json(); if(data.success) window.open(data.link); else alert("Wrong Password"); }
+    
+    // --- TEST CREATION LOGIC ---
+    function renderCreatePalette() {
+        const p = document.getElementById('create-palette');
+        if(!p) return;
+        p.innerHTML = draftQ.map((q, i) => `
+            <div class="q-btn ${i === editQIndex ? 'active' : ''}" onclick="loadDraftQ(${i})">${i+1}</div>
+        `).join('') + `<div class="q-btn" onclick="clearQForm()" style="font-size:1.2rem; font-weight:bold; color:green;">+</div>`;
+        document.getElementById('q-count').innerText = draftQ.length;
+    }
+
+    function saveDraftQ() {
+        // USE innerHTML to get RICH TEXT
+        const qData = {
+            text: document.getElementById('q-editor').innerHTML,
+            options: [0,1,2,3].map(i => document.getElementById('op'+i).innerHTML),
+            correct: parseInt(document.getElementById('q-corr').value),
+            marks: 4, negative: 1,
+            solution: document.getElementById('q-sol').innerHTML,
+            image: tempImg
+        };
+
+        if(editQIndex > -1) {
+            if(!qData.image) qData.image = draftQ[editQIndex].image;
+            draftQ[editQIndex] = qData;
+        } else {
+            draftQ.push(qData);
+        }
+        clearQForm();
+        renderCreatePalette();
+    }
+
+    function loadDraftQ(index) {
+        editQIndex = index;
+        const q = draftQ[index];
+        document.getElementById('q-editor').innerHTML = q.text;
+        [0,1,2,3].forEach(i => document.getElementById('op'+i).innerHTML = q.options[i]);
+        document.getElementById('q-corr').value = q.correct;
+        document.getElementById('q-sol').innerHTML = q.solution || "";
+        if(q.image) {
+            document.getElementById('q-prev').src = q.image;
+            document.getElementById('q-prev').style.display = 'block';
+            tempImg = q.image;
+        } else {
+            document.getElementById('q-prev').style.display = 'none';
+            tempImg = "";
+        }
+        renderCreatePalette();
+    }
+
+    function clearQForm() {
+        editQIndex = -1;
+        document.getElementById('q-editor').innerHTML = "";
+        [0,1,2,3].forEach(i => document.getElementById('op'+i).innerHTML = "");
+        document.getElementById('q-sol').innerHTML = "";
+        document.getElementById('q-prev').style.display = 'none';
+        tempImg = "";
+        renderCreatePalette();
+    }
 </script>
 </body>
 </html>
