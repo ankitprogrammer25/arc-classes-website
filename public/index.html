@@ -8,6 +8,8 @@
     <style>
         :root { --primary: #0f172a; --gold: #fbbf24; --light: #f8fafc; --red: #ef4444; --dark: #1e293b; --purple: #a855f7; --green: #22c55e; --white: #ffffff; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--light); margin: 0; color: #333; min-width: 1200px; display: flex; flex-direction: column; min-height: 100vh; }
+        
+        /* GENERAL UI */
         .logo { font-size: 2rem; font-weight: 900; letter-spacing: 2px; background: linear-gradient(270deg, #ff0000, #fbbf24, #00ff00, #0000ff, #ff00ff); background-size: 400% 400%; -webkit-background-clip: text; color: transparent; animation: rainbow 6s ease infinite; }
         @keyframes rainbow { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         nav { background: var(--primary); padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
@@ -16,28 +18,26 @@
         .section { display: none; padding: 40px; max-width: 1100px; margin: auto; flex: 1; }
         .section.active { display: block; animation: fadeIn 0.5s; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
         .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.05); transition: transform 0.2s; position: relative; display:flex; flex-direction:column; border: 1px solid #eee; }
         .card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
         .cat-card { background: var(--primary); color: white; padding: 30px; border-radius: 12px; text-align: center; cursor: pointer; font-size: 1.2rem; font-weight: bold; border-bottom: 5px solid var(--gold); transition: 0.2s; }
         .cat-card:hover { transform: scale(1.05); }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; }
-        .book-cover { width: 100%; height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 15px; border:1px solid #eee; }
+        
         .btn-gold { background: var(--gold); color: var(--primary); padding: 10px 20px; border:none; border-radius:6px; cursor:pointer; font-weight:bold; }
         .btn-red { background: var(--red); color: white; padding: 10px 20px; border:none; border-radius:6px; cursor:pointer; font-weight:bold; }
         .form-box { max-width: 800px; margin: 40px auto; background: white; padding: 40px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
         input, select, textarea { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 1rem; }
+        
         .marquee-container { background: var(--gold); color: var(--primary); padding: 12px; font-weight: bold; border-radius: 8px; margin-bottom: 30px; font-size: 1.1rem; overflow: hidden; white-space: nowrap; position: relative; }
         .marquee-content { display: inline-block; padding-left: 100%; animation: scroll-left 20s linear infinite; }
         @keyframes scroll-left { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
-        .blog-card { background: white !important; color: #333 !important; border: 1px solid #ddd; }
-        .blog-text { max-height: 80px; overflow: hidden; transition: max-height 0.3s; color: #555; }
-        .toolbar { background: #f3f4f6; padding: 10px; border: 1px solid #ccc; border-radius: 8px 8px 0 0; display: flex; flex-wrap: wrap; gap: 5px; }
-        .tool-btn { background: white; border: 1px solid #ccc; padding: 5px 10px; cursor: pointer; font-weight: bold; border-radius: 4px; }
-        .editor-area { min-height: 200px; border: 1px solid #ccc; padding: 15px; border-radius: 0 0 8px 8px; outline: none; background: white; font-size: 1.1rem; }
+        
+        /* EXAM & RESULT UI */
         .exam-container { display: flex; height: 80vh; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 5px 20px rgba(0,0,0,0.15); border: 1px solid #ddd; }
         .exam-left { flex: 3; padding: 40px; overflow-y: auto; border-right: 1px solid #eee; }
         .exam-right { flex: 1; background: #f8fafc; padding: 20px; display: flex; flex-direction: column; border-left: 1px solid #eee; }
-        .q-image { max-width: 100%; max-height: 300px; display: block; margin: 20px 0; border: 1px solid #ddd; border-radius: 5px; }
         .option-label { display: flex; align-items: center; padding: 15px; border: 2px solid #eee; margin: 10px 0; cursor: pointer; border-radius: 8px; transition: 0.2s; font-size: 1.1rem; }
         .option-label:hover { background: #f1f5f9; border-color: var(--primary); }
         .option-label input { margin-right: 15px; transform: scale(1.5); }
@@ -46,15 +46,20 @@
         .p-btn.answered { background: var(--green); color: white; border-color: var(--green); }
         .p-btn.visited { background: var(--purple); color: white; border-color: var(--purple); }
         .p-btn.active { border: 3px solid var(--primary); transform: scale(1.1); }
+        
         .modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:2000; display:none; justify-content:center; align-items:center; }
         .modal-box { background:white; padding:40px; border-radius:20px; width:800px; max-height:90vh; overflow-y:auto; text-align:center; position:relative; }
-        .no-result-popup { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: black; color: white; padding: 20px 40px; font-weight: bold; font-size: 1.5rem; border-radius: 10px; display: none; z-index: 3000; }
         table { width: 100%; border-collapse: collapse; margin-top: 15px; }
         th, td { padding: 12px; border: 1px solid #ddd; text-align: left; }
         th { background: var(--primary); color: white; }
+        
         .review-q { text-align:left; border:1px solid #ddd; padding:15px; margin-bottom:10px; border-radius:8px; }
         .review-opt { padding:8px; margin:5px 0; border-radius:5px; border:1px solid #eee; }
-        footer { background: #1e3a8a; color: white; padding: 20px; text-align: center; margin-top: auto; font-size: 1rem; border-top: 5px solid var(--gold); }
+        
+        /* RICH TEXT TOOLS */
+        .toolbar { background: #f3f4f6; padding: 10px; border: 1px solid #ccc; border-radius: 8px 8px 0 0; display: flex; flex-wrap: wrap; gap: 5px; }
+        .tool-btn { background: white; border: 1px solid #ccc; padding: 5px 10px; cursor: pointer; font-weight: bold; border-radius: 4px; }
+        .editor-area { min-height: 200px; border: 1px solid #ccc; padding: 15px; border-radius: 0 0 8px 8px; outline: none; background: white; font-size: 1.1rem; }
     </style>
 </head>
 <body>
@@ -73,8 +78,6 @@
     </div>
 </nav>
 
-<div id="no-result-pop" class="no-result-popup">No result found</div>
-
 <div id="home" class="section active">
     <div style="display:flex; gap:10px; margin-bottom:20px;">
         <input id="home-search" value="" placeholder="🔍 Search Books & Notes (3+ letters)..." style="flex:1; padding:15px; font-size:1.1rem; border:2px solid var(--primary);" onkeyup="filterNotes()">
@@ -84,13 +87,12 @@
     <div id="blog-container" class="grid" style="margin-bottom:40px;"></div>
     <div style="text-align:center; padding:80px 40px; background:linear-gradient(135deg, var(--primary), var(--dark)); color:white; border-radius:20px;">
         <h1 style="color:var(--gold); font-size:3rem;">Master Chemistry with ARC</h1>
-        <p>Premium Notes, GATE-Style Tests, and Expert Guidance.</p>
         <button class="btn-gold" style="font-size:1.2rem; padding:15px 40px;" onclick="show('tests')">Start a Test Now</button>
     </div>
 </div>
 
 <div id="notes" class="section"><h2>📚 Library</h2><button id="lib-back-btn" class="btn-gold" style="display:none; margin-bottom:15px;" onclick="loadMaterials()">← Back to Categories</button><div id="mat-list" class="grid">Loading...</div></div>
-<div id="tests" class="section"><h2>📝 Practice Tests (Max 3 Attempts)</h2><button id="test-back-btn" class="btn-gold" style="display:none; margin-bottom:15px;" onclick="loadTestsList()">← Back to Categories</button><div id="test-list" class="grid">Loading...</div></div>
+<div id="tests" class="section"><h2>📝 Practice Tests</h2><button id="test-back-btn" class="btn-gold" style="display:none; margin-bottom:15px;" onclick="loadTestsList()">← Back to Categories</button><div id="test-list" class="grid">Loading...</div></div>
 <div id="live-tests" class="section"><h2>🔴 Live Scheduled Tests</h2><div id="live-test-list" class="grid">Loading...</div></div>
 
 <div id="exam-ui" class="section" style="max-width:100%; padding:0;">
@@ -112,7 +114,7 @@
         <div class="exam-right">
             <div style="background:var(--primary); color:var(--gold); padding:20px; text-align:center; font-size:1.8rem; font-weight:800; border-radius:10px; margin-bottom:20px;" id="timer">00:00</div>
             <div style="font-size:1.1rem; margin-bottom:20px;"><strong>Student: </strong><span id="student-name-display">...</span></div>
-            <div style="flex:1; overflow-y:auto;"><p><strong>Palette:</strong> <span style="color:var(--green)">● Done</span> <span style="color:var(--purple)">● Visited</span></p><div class="palette-grid" id="palette"></div></div>
+            <div style="flex:1; overflow-y:auto;"><div class="palette-grid" id="palette"></div></div>
             <button class="btn-red" style="width:100%; padding:20px; font-size:1.2rem;" onclick="submitExam()">SUBMIT TEST</button>
         </div>
     </div>
@@ -132,14 +134,14 @@
     <div class="form-box">
         <h2>Login</h2>
         <form onsubmit="event.preventDefault(); handleLogin();">
-            <input id="l-email" placeholder="Email">
-            <input id="l-pass" type="password" placeholder="Password">
+            <input id="l-email" placeholder="Email" required>
+            <input id="l-pass" type="password" placeholder="Password" required>
             <button type="submit" class="btn-gold" style="width:100%">Login</button>
         </form>
         <p style="text-align:center; cursor:pointer; color:blue" onclick="toggleReg()">New? Register</p>
         <p style="text-align:center; font-size:0.9rem; color:#999">Teacher? (admin@arc.com)</p>
     </div>
-    <div id="reg-box" class="form-box" style="display:none"><h2>Register</h2><p style="color:red">⚠️ Remember your details.</p><input id="r-name" placeholder="Name"><div style="display:flex; align-items:center; gap:10px"><input id="r-prefix" placeholder="username" style="text-align:right"><span>@arcstudent.com</span></div><input id="r-pass" type="password" placeholder="Password"><button class="btn-gold" style="width:100%" onclick="handleReg()">Register Now</button></div>
+    <div id="reg-box" class="form-box" style="display:none"><h2>Register</h2><input id="r-name" placeholder="Name"><div style="display:flex; align-items:center; gap:10px"><input id="r-prefix" placeholder="username" style="text-align:right"><span>@arcstudent.com</span></div><input id="r-pass" type="password" placeholder="Password"><button class="btn-gold" style="width:100%" onclick="handleReg()">Register Now</button></div>
 </div>
 
 <div id="admin" class="section">
@@ -154,7 +156,6 @@
         <button class="btn-gold" onclick="showAdminTab('students')">Students</button>
         <button class="btn-red" onclick="showAdminTab('manage')">Manage (Edit/Delete)</button>
     </div>
-    
     <div id="adm-students" style="display:none"><h3>Students</h3><table id="student-table"></table></div>
     <div id="adm-online-res" style="display:none"><h3>Online Results</h3><table id="online-res-table"></table></div>
     <div id="adm-manage" style="display:none"><h3>Manage Content</h3><div id="manage-list"></div></div>
@@ -232,7 +233,7 @@
         document.querySelector('nav').style.display = (id==='exam-ui')?'none':'flex';
         if(id==='notes') loadMaterials(); if(id==='tests') loadTestsList(); 
         if(id==='live-tests') loadLiveTests();
-        if(id==='results') { loadMyOnlineHistory(); switchResultTab('practice'); }
+        if(id==='results') { switchResultTab('practice'); }
     }
     function showAdminTab(id) {
         ['students','online-res','create-test','upload-mat','upload-res','announce','create-blog','manage'].forEach(t=>document.getElementById('adm-'+t).style.display='none');
@@ -270,19 +271,13 @@
     async function loadStudents(){ const d=await (await fetch('/api/admin/students')).json(); document.getElementById('student-table').innerHTML=`<tr><th>Name</th><th>Email</th><th>Password</th></tr>`+d.map(s=>`<tr><td>${s.name}</td><td>${s.email}</td><td>${s.password}</td></tr>`).join(''); }
     async function loadOnlineResults(){ const d=await (await fetch('/api/admin/results/online')).json(); document.getElementById('online-res-table').innerHTML=`<tr><th>Date</th><th>Test</th><th>Student</th><th>Score</th><th>Action</th></tr>`+d.map(r=>`<tr><td>${new Date(r.date).toLocaleDateString()}</td><td>${r.testTitle}</td><td>${r.studentName}<br>${r.studentEmail}</td><td>${r.score}/${r.totalMarks}</td><td><button class="btn-gold" onclick="viewSubmission('${r._id}')">View</button> <button class="btn-red" onclick="deleteResult('${r._id}')">Del</button></td></tr>`).join(''); }
     
-    // VIEW SUBMISSION (Robust Error Handling)
+    // SAFE VIEW SUBMISSION
     async function viewSubmission(rid){ 
         try {
             const res = await fetch('/api/result-details', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ resultId:rid }) }); 
-            const text = await res.text();
+            const data = await res.json(); 
             
-            // Check for JSON Parse Error (Crash)
-            let data;
-            try { data = JSON.parse(text); } 
-            catch(e) { console.error(text); alert("Server Error: Test data might be corrupted or deleted."); return; }
-
-            if(!data.success) { alert(data.message); return; }
-            
+            if(!data.success) { alert(data.message || "Error"); return; }
             const { result, test, rank } = data; 
             
             document.getElementById('review-chart-box').style.display = 'block';
@@ -291,9 +286,9 @@
             const ctx = document.getElementById('reviewChart').getContext('2d');
             if(window.reviewPie) window.reviewPie.destroy(); 
             
-            // If Test Deleted, show limited info
-            if(!test) {
-                document.getElementById('review-content').innerHTML = `<p style="color:red;">The teacher has deleted the original test questions. Detailed review is unavailable.</p>`;
+            // If Test Deleted, show Limited
+            if(data.testDeleted) {
+                document.getElementById('review-content').innerHTML = `<p style="color:red; text-align:center;">The teacher has deleted the original test questions. Detailed review is unavailable.</p>`;
             } else {
                 let correct=0, wrong=0, skipped=0;
                 test.questions.forEach((q,i) => { if(result.answers[i]===q.correct) correct++; else if(result.answers[i]!==null) wrong++; else skipped++; });
@@ -310,7 +305,7 @@
                 document.getElementById('review-content').innerHTML = html; 
             }
             document.getElementById('review-modal').style.display = 'flex';
-        } catch(e) { alert("Failed to open answer sheet."); }
+        } catch(e) { alert("Error opening answer sheet."); }
     }
     
     async function deleteResult(id){ if(confirm("Delete Result?")) await fetch(`/api/admin/result/online/${id}`,{method:'DELETE'}); loadOnlineResults(); }
@@ -414,11 +409,6 @@
     }
     
     async function viewCopy(rid,recid){ const p=prompt("Your Password:"); if(!p)return; const r=await fetch('/api/results/unlock-copy',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({resultId:rid,recordId:recid,password:p})}); const d=await r.json(); if(d.success)window.open(d.link); else alert("Incorrect Password"); }
-    async function loadMyOnlineHistory() {
-        if(!user) return;
-        const res = await fetch('/api/student/results/online', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({email:user.email})});
-        const data = await res.json();
-    }
 
     async function startExam(id){
         if(!user) return alert("Login first"); 

@@ -10,7 +10,7 @@ app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // --- DB CONNECTION ---
-// ⚠️ IMPORTANT: If you are testing locally and WiFi blocks Cloud, use: "mongodb://127.0.0.1:27017/arc_classes"
+// ⚠️ CLOUD LINK (Use this for Render):
 const dbLink = "mongodb+srv://ankitprogrammer25:a32x05sYvukG178G@cluster0.0dhqpzv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 
 mongoose.connect(dbLink)
@@ -32,7 +32,7 @@ const Material = mongoose.model('Material', MaterialSchema);
 
 const QuestionSchema = new mongoose.Schema({
     text: String, image: String, options: [String], correct: Number, 
-    marks: Number, negative: Number, topic: String, solution: String // Solution field
+    marks: Number, negative: Number, topic: String, solution: String 
 });
 
 const TestSchema = new mongoose.Schema({
@@ -86,22 +86,21 @@ app.post('/api/login', async (req, res) => {
 app.get('/api/admin/students', async (req, res) => res.json(await Student.find().sort({ joinedAt: -1 })));
 app.get('/api/admin/results/online', async (req, res) => res.json(await Result.find().sort({ date: -1 })));
 
-// --- VIEW ANSWER SHEET (FIXED) ---
+// --- ROBUST VIEW ANSWER SHEET ---
 app.post('/api/result-details', async (req, res) => {
     try {
-        // 1. Find the result
         const result = await Result.findById(req.body.resultId);
-        if(!result) return res.json({ success: false, message: "Result not found" });
+        if(!result) return res.json({ success: false, message: "Result record missing." });
         
-        // 2. Calculate Rank Dynamically (Compare with others who took SAME test)
+        // Dynamic Rank
         const rank = (await Result.countDocuments({ testId: result.testId, score: { $gt: result.score } })) + 1;
         
-        // 3. Find the Test to get Questions & Solutions
+        // Find Test
         const test = await Test.findById(result.testId);
         
-        // 4. Handle Case: Test Deleted
+        // If test is deleted, we return what we can (Score/Rank) but flag it
         if(!test) {
-            return res.json({ success: false, message: "The teacher has deleted this test. Questions are no longer available.", rank, result });
+            return res.json({ success: true, result, rank, testDeleted: true });
         }
 
         res.json({ success: true, result, test, rank });
@@ -172,7 +171,7 @@ app.post('/api/test/start', async (req, res) => {
     
     const t = await Test.findById(id);
     
-    // LIVE TEST CHECK (Fixed Date Comparison)
+    // LIVE TEST CHECK
     if(t.isLive) {
         const now = new Date();
         const start = new Date(t.startTime);
@@ -187,7 +186,7 @@ app.post('/api/test/start', async (req, res) => {
 
     if(!t.accessCode || t.accessCode === code) {
         if(!t.isLive) { s.testAttempts.set(id, (s.testAttempts.get(id)||0) + 1); await s.save(); }
-        // Send questions WITHOUT solution (Security)
+        // Send questions WITHOUT solution
         const safeQ = t.questions.map(q => ({ text: q.text, image: q.image, options: q.options, marks: q.marks, negative: q.negative }));
         res.json({ success: true, test: {...t._doc, questions: safeQ} });
     } else res.json({ success: false, message: "Wrong Password" });
@@ -214,7 +213,7 @@ app.post('/api/test/submit', async (req, res) => {
         const r = new Result({ studentName, studentEmail, testTitle: t.title, testId: t._id, testType: type, score, totalMarks: total, percentage: pct, rank: 0, feedback: fb, answers, topicAnalytics });
         await r.save();
         
-        // Immediate Rank Calculation
+        // Immediate Rank
         const rank = (await Result.countDocuments({ testId: t._id, score: { $gt: score } })) + 1;
         r.rank = rank; await r.save();
         
