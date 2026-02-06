@@ -9,7 +9,7 @@
         :root { --primary: #0f172a; --gold: #fbbf24; --light: #f8fafc; --red: #ef4444; --green: #22c55e; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--light); margin: 0; color: #333; min-width: 1200px; display: flex; flex-direction: column; min-height: 100vh; }
         
-        /* LAYOUT */
+        /* LAYOUT & NAVBAR */
         nav { background: var(--primary); padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
         
         /* RGB LOGO */
@@ -21,14 +21,13 @@
         }
         @keyframes rainbow { 0% { background-position: 0%; } 100% { background-position: 400%; } }
 
+        /* MENU */
         .menu { display: flex; align-items: center; gap: 25px; white-space: nowrap; }
         .menu a { color: white; text-decoration: none; font-weight: 600; cursor: pointer; transition: 0.3s; }
         .menu a:hover { color: var(--gold); }
-        
-        /* ADMIN LINK HIGHLIGHT */
         #nav-admin { background: var(--red); padding: 5px 15px; border-radius: 4px; color: white !important; display: none; }
 
-        /* ANNOUNCEMENT BAR */
+        /* NOTICES */
         .anno-bar { background: var(--gold); color: var(--primary); padding: 8px 0; font-weight: bold; overflow: hidden; white-space: nowrap; display: flex; border-bottom: 2px solid #eab308; }
         .anno-label { background: var(--primary); color: white; padding: 0 15px; z-index: 10; display: flex; align-items: center; box-shadow: 5px 0 10px rgba(0,0,0,0.1); }
         marquee { line-height: 1.5; font-size: 1.1rem; }
@@ -55,23 +54,18 @@
         .tab.active { color: var(--primary); border-bottom: 3px solid var(--gold); }
         .form-box { max-width: 400px; margin: auto; background: white; padding: 40px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
 
-        /* CATEGORY FOLDERS */
-        .folder { background: #e0f2fe; padding: 30px; text-align: center; border-radius: 12px; cursor: pointer; font-size: 1.2rem; font-weight: bold; border-bottom: 4px solid var(--primary); color: var(--primary); }
-        .folder:hover { background: #bae6fd; }
-
-        /* BLOG & EDITOR */
-        .blog-card .blog-text {
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            line-clamp: 3;
-            overflow: hidden;
-            margin-bottom: 10px;
-            color: #555;
-        }
+        /* ADMIN TABLES & EDITOR */
         .toolbar { background: #f3f4f6; padding: 8px; border: 1px solid #ccc; border-radius: 6px 6px 0 0; display: flex; gap: 5px; }
         .tool-btn { background: white; border: 1px solid #ccc; padding: 4px 10px; cursor: pointer; font-weight: bold; border-radius: 4px; }
         .editor { min-height: 150px; border: 1px solid #ccc; padding: 15px; border-radius: 0 0 6px 6px; background: white; outline: none; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { padding: 12px; border: 1px solid #ddd; text-align: left; }
+        th { background: var(--primary); color: white; }
+        tr:nth-child(even) { background: #f9fafb; }
+
+        /* FOLDERS */
+        .folder { background: #e0f2fe; padding: 30px; text-align: center; border-radius: 12px; cursor: pointer; font-size: 1.2rem; font-weight: bold; border-bottom: 4px solid var(--primary); color: var(--primary); }
+        .folder:hover { background: #bae6fd; }
 
         /* EXAM & RESULTS */
         .exam-layout { display: flex; gap: 20px; height: 80vh; }
@@ -85,11 +79,20 @@
         /* MODALS */
         .modal { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); display:none; justify-content:center; align-items:center; z-index: 2000; }
         .modal-content { background:white; width: 900px; max-height: 90vh; overflow-y: auto; padding: 30px; border-radius: 15px; position: relative; }
+        .close-corner { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; color: #777; }
+        .close-corner:hover { color: var(--red); }
         .review-row { border-bottom: 1px solid #eee; padding: 15px 0; }
         .badge { padding: 5px 10px; border-radius: 4px; color: white; font-size: 0.8rem; font-weight: bold; }
         .bg-green { background: var(--green); } .bg-red { background: var(--red); }
-        .close-corner { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; color: #777; }
-        .close-corner:hover { color: var(--red); }
+        .blog-card .blog-text {
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            line-clamp: 3;
+            overflow: hidden;
+            margin-bottom: 10px;
+            color: #555;
+        }
     </style>
 </head>
 <body>
@@ -110,7 +113,7 @@
 
 <div class="anno-bar">
     <div class="anno-label">🔔 NOTICES</div>
-    <marquee id="anno-marquee" onmouseover="this.stop()" onmouseout="this.start()">Loading announcements...</marquee>
+    <marquee id="anno-marquee" onmouseover="this.stop()" onmouseout="this.start()">Loading...</marquee>
 </div>
 
 <div id="home" class="section active">
@@ -129,24 +132,20 @@
             <div class="tab active" onclick="switchTab('student')" id="tab-student">Student</div>
             <div class="tab" onclick="switchTab('teacher')" id="tab-teacher">Teacher</div>
         </div>
-        
         <h2 id="login-title">Student Login</h2>
         <form onsubmit="event.preventDefault(); doLogin()">
             <div id="student-input">
                 <input id="l-email" placeholder="username" required>
                 <div style="text-align:right; font-size:0.8rem; color:#777; margin-top:-5px; margin-bottom:10px;">@arcstudent.com</div>
             </div>
-            
             <div id="teacher-input" style="display:none;">
                 <input id="l-admin-email" placeholder="admin@arc.com">
             </div>
-
             <input id="l-pass" type="password" placeholder="Password" required>
             <button type="submit" class="btn btn-gold" style="width:100%">Login</button>
         </form>
         <p id="reg-link" style="text-align:center; cursor:pointer; margin-top:15px;" onclick="document.getElementById('reg-box').style.display='block'; document.querySelector('.form-box').style.display='none';">New Student? Register</p>
     </div>
-
     <div id="reg-box" class="form-box" style="display:none; margin-top:20px;">
         <h2>Student Registration</h2>
         <input id="r-name" placeholder="Full Name">
@@ -163,17 +162,17 @@
         <h2>👨‍🏫 Teacher Panel</h2>
         <span style="color:var(--red); font-weight:bold;">Logged in as Admin</span>
     </div>
-    <hr>
     <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:20px;">
         <button class="btn btn-gold" onclick="showAdm('create-test')">➕ Create Test</button>
         <button class="btn btn-gold" onclick="showAdm('upload')">📂 Upload File</button>
         <button class="btn btn-gold" onclick="showAdm('blog')">✍️ Post Blog</button>
         <button class="btn btn-gold" onclick="showAdm('announce')">📢 Announcements</button>
+        <button class="btn btn-gold" onclick="showAdm('results')">📈 Analyze Results</button>
         <button class="btn btn-gold" onclick="showAdm('offline')">📊 Offline Result</button>
         <button class="btn btn-gold" onclick="showAdm('students')">👥 Students</button>
     </div>
     <div id="adm-content" style="background:white; padding:20px; border-radius:10px; border:1px solid #ddd; min-height:300px;">
-        <p>Select an option above to manage content.</p>
+        <p>Select an option above.</p>
     </div>
 </div>
 
@@ -191,7 +190,6 @@
     <button id="lib-back" class="btn btn-red" style="display:none; margin-bottom:10px;" onclick="resetLib()">Back</button>
     <div id="lib-content" class="grid"></div>
 </div>
-
 <div id="tests" class="section"><h2>📝 Practice Tests</h2><div id="test-list" class="grid"></div></div>
 <div id="live" class="section"><h2>🔴 Live Tests</h2><div id="live-list" class="grid"></div></div>
 
@@ -257,10 +255,7 @@
     if(user) {
         document.getElementById('nav-login').style.display = 'none';
         document.getElementById('nav-logout').style.display = 'block';
-        // CHECK IF TEACHER
-        if(user.role === 'admin') {
-            document.getElementById('nav-admin').style.display = 'block';
-        }
+        if(user.role === 'admin') document.getElementById('nav-admin').style.display = 'block';
     }
     loadBlogs();
     loadAnnouncements();
@@ -268,7 +263,6 @@
     function show(id) {
         if((id==='tests' || id==='live' || id==='results') && !user) return show('login');
         if(id==='admin' && (!user || user.role !== 'admin')) return alert("Access Denied");
-
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
         document.getElementById(id).classList.add('active');
         if(id==='tests') loadTests(false);
@@ -276,37 +270,22 @@
         if(id==='results') loadResults('practice');
     }
 
-    // --- LOGIN LOGIC ---
+    // --- AUTH ---
     function switchTab(mode) {
         loginMode = mode;
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
         document.getElementById('tab-'+mode).classList.add('active');
-        
-        if(mode === 'student') {
-            document.getElementById('student-input').style.display = 'block';
-            document.getElementById('teacher-input').style.display = 'none';
-            document.getElementById('login-title').innerText = 'Student Login';
-            document.getElementById('reg-link').style.display = 'block';
-        } else {
-            document.getElementById('student-input').style.display = 'none';
-            document.getElementById('teacher-input').style.display = 'block';
-            document.getElementById('login-title').innerText = 'Teacher Login';
-            document.getElementById('reg-link').style.display = 'none';
-        }
+        document.getElementById('student-input').style.display = mode === 'student' ? 'block' : 'none';
+        document.getElementById('teacher-input').style.display = mode === 'student' ? 'none' : 'block';
+        document.getElementById('login-title').innerText = mode === 'student' ? 'Student Login' : 'Teacher Login';
+        document.getElementById('reg-link').style.display = mode === 'student' ? 'block' : 'none';
     }
 
     async function doLogin() {
-        let email, password = document.getElementById('l-pass').value;
+        let email = loginMode === 'student' ? document.getElementById('l-email').value : document.getElementById('l-admin-email').value;
+        const password = document.getElementById('l-pass').value;
+        if(loginMode === 'student' && !email.includes('@')) email += '@arcstudent.com'; 
         
-        if(loginMode === 'student') {
-            email = document.getElementById('l-email').value; // Suffix handled in backend or needs appending here?
-            // Backend expects full email for login usually, let's check index.js
-            // index.js checks exact match. So for student, we must append suffix here to match registration.
-            if(!email.includes('@')) email += '@arcstudent.com'; 
-        } else {
-            email = document.getElementById('l-admin-email').value;
-        }
-
         const res = await fetch('/api/login', {
             method: 'POST', headers: {'Content-Type':'application/json'},
             body: JSON.stringify({ email, password, role: loginMode })
@@ -324,154 +303,130 @@
             body: JSON.stringify({ name: document.getElementById('r-name').value, emailPart: document.getElementById('r-prefix').value, password: document.getElementById('r-pass').value })
         });
         const data = await res.json();
-        if(data.success) { alert("Registered! Login now."); location.reload(); } else alert(data.message);
+        if(data.success) { alert("Registered!"); location.reload(); } else alert(data.message);
     }
     
     function logout() { localStorage.removeItem('arc_user'); location.reload(); }
 
-    // --- TEACHER PANEL FUNCTIONS ---
+    // --- ADMIN PANEL FUNCTIONS (FIXED) ---
     function showAdm(tab) {
         const c = document.getElementById('adm-content');
+        
         if(tab === 'create-test') {
-            c.innerHTML = `
-                <h3>Create Test</h3>
-                <input id="t-title" placeholder="Title">
-                <input id="t-dur" type="number" placeholder="Duration (min)">
-                <input id="t-code" placeholder="Password (Optional)">
-                <select id="t-cat"><option>11th</option><option>12th</option><option>Organic</option><option>Full Syllabus</option></select>
-                <div style="margin:10px 0; border:1px solid #ccc; padding:10px;">
-                    <label><input type="checkbox" id="t-live"> Is Live Test?</label>
-                    <br>Start: <input type="datetime-local" id="t-start"> End: <input type="datetime-local" id="t-end">
-                </div>
-                <hr>
-                <h4>Add Question</h4>
-                <div class="toolbar">
-                    <button class="tool-btn" onclick="exec('bold')">B</button>
-                    <button class="tool-btn" onclick="exec('subscript')">X₂</button>
-                    <button class="tool-btn" onclick="exec('superscript')">X²</button>
-                </div>
-                <div id="q-editor" class="editor" contenteditable="true"></div>
-                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                    <input id="op0" placeholder="Option A"><input id="op1" placeholder="Option B">
-                    <input id="op2" placeholder="Option C"><input id="op3" placeholder="Option D">
-                </div>
-                <input id="q-sol" placeholder="Solution">
-                Correct: <select id="q-corr"><option value="0">A</option><option value="1">B</option><option value="2">C</option><option value="3">D</option></select>
-                <button class="btn btn-gold" onclick="addDraftQ()">Add Question</button>
-                <p>Questions Added: <span id="q-count">0</span></p>
-                <button class="btn btn-red" onclick="pubTest()">PUBLISH</button>
-            `;
+            c.innerHTML = `<h3>Create Test</h3><input id="t-title" placeholder="Title"><input id="t-dur" type="number" placeholder="Duration (min)"><input id="t-code" placeholder="Password (Optional)"><select id="t-cat"><option>11th</option><option>12th</option><option>Organic</option><option>Full Syllabus</option></select><div style="margin:10px 0; border:1px solid #ccc; padding:10px;"><label><input type="checkbox" id="t-live"> Is Live Test?</label><br>Start: <input type="datetime-local" id="t-start"> End: <input type="datetime-local" id="t-end"></div><hr><h4>Add Question</h4><div class="toolbar"><button class="tool-btn" onclick="exec('bold')">B</button><button class="tool-btn" onclick="exec('subscript')">X₂</button><button class="tool-btn" onclick="exec('superscript')">X²</button></div><div id="q-editor" class="editor" contenteditable="true"></div><div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;"><input id="op0" placeholder="Option A"><input id="op1" placeholder="Option B"><input id="op2" placeholder="Option C"><input id="op3" placeholder="Option D"></div><input id="q-sol" placeholder="Solution">Correct: <select id="q-corr"><option value="0">A</option><option value="1">B</option><option value="2">C</option><option value="3">D</option></select><button class="btn btn-gold" onclick="addDraftQ()">Add Question</button><p>Questions Added: <span id="q-count"><span id="q-count-val">0</span></span></p><button class="btn btn-red" onclick="pubTest()">PUBLISH</button>`;
+        }
+        else if(tab === 'upload') {
+            c.innerHTML = `<h3>Upload Material</h3><input id="m-title" placeholder="Title"><input id="m-link" placeholder="PDF/Drive Link"><input id="m-img" placeholder="Cover Image URL"><select id="m-cat"><option>11th Class</option><option>12th Class</option><option>Organic</option><option>Physical</option><option>Inorganic</option><option>Test Series</option><option>Notes</option></select><input id="m-code" placeholder="Access Password (Optional)"><button class="btn btn-gold" onclick="uploadMat()">Upload</button>`;
+        }
+        else if(tab === 'blog') {
+            c.innerHTML = `<h3>Post Blog</h3><input id="b-title" placeholder="Blog Title"><textarea id="b-content" style="height:100px" placeholder="Content"></textarea><input id="b-img" placeholder="Image URL"><button class="btn btn-gold" onclick="postBlog()">Post</button>`;
         }
         else if(tab === 'announce') {
-            c.innerHTML = `<h3>Manage Announcements</h3>
-            <input id="ann-text" placeholder="New Announcement Text">
-            <button class="btn btn-gold" onclick="postAnnounce()">Post</button>
-            <div id="ann-list" style="margin-top:20px;"></div>`;
+            c.innerHTML = `<h3>Manage Announcements</h3><input id="ann-text" placeholder="New Announcement Text"><button class="btn btn-gold" onclick="postAnnounce()">Post</button><div id="ann-list" style="margin-top:20px;"></div>`;
             fetch('/api/announcement').then(r=>r.json()).then(d => {
                 document.getElementById('ann-list').innerHTML = d.list.map(t => `<div style="padding:10px; border-bottom:1px solid #eee; display:flex; justify-content:space-between;">${t} <button onclick="delAnnounce('${t}')">X</button></div>`).join('');
             });
         }
-        // ... (Other admin functions remain similar, omitted for brevity but logic is valid)
+        else if(tab === 'offline') {
+            c.innerHTML = `<h3>Add Offline Result</h3><input id="off-title" placeholder="Test Title"><textarea id="off-data" placeholder="Name,Marks,Rank (One per line)" style="height:150px;"></textarea><button class="btn btn-gold" onclick="postOffline()">Upload Results</button>`;
+        }
+        else if(tab === 'students') {
+            c.innerHTML = `<h3>Registered Students</h3><table><thead><tr><th>Name</th><th>Email</th><th>Date Joined</th></tr></thead><tbody id="stu-list"></tbody></table>`;
+            fetch('/api/admin/students').then(r=>r.json()).then(d => {
+                document.getElementById('stu-list').innerHTML = d.map(s => `<tr><td>${s.name}</td><td>${s.email}</td><td>${new Date(s.joinedAt).toLocaleDateString()}</td></tr>`).join('');
+            });
+        }
+        else if(tab === 'results') {
+            c.innerHTML = `<h3>Online Test Analysis</h3><input placeholder="Search Student or Test..." onkeyup="filterTable(this)"><table><thead><tr><th>Student</th><th>Test</th><th>Score</th><th>Type</th><th>Date</th></tr></thead><tbody id="adm-res-list"></tbody></table>`;
+            fetch('/api/admin/results/online').then(r=>r.json()).then(d => {
+                document.getElementById('adm-res-list').innerHTML = d.map(r => `<tr><td>${r.studentName}<br><small>${r.studentEmail}</small></td><td>${r.testTitle}</td><td>${r.score}/${r.totalMarks} (${r.percentage.toFixed(1)}%)</td><td>${r.testType}</td><td>${new Date(r.date).toLocaleDateString()}</td></tr>`).join('');
+            });
+        }
     }
 
+    // --- ADMIN ACTION HANDLERS ---
+    async function uploadMat() {
+        await fetch('/api/admin/material', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ title: document.getElementById('m-title').value, link: document.getElementById('m-link').value, image: document.getElementById('m-img').value, category: document.getElementById('m-cat').value, accessCode: document.getElementById('m-code').value }) }); alert("Material Uploaded!");
+    }
+    async function postBlog() {
+        await fetch('/api/admin/blog', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ title: document.getElementById('b-title').value, content: document.getElementById('b-content').value, image: document.getElementById('b-img').value }) }); alert("Blog Posted!");
+    }
+    async function postOffline() {
+        const raw = document.getElementById('off-data').value;
+        const records = raw.split('\n').map(l => { const p=l.split(','); return { studentName: p[0], marks: p[1], rank: p[2] }; });
+        await fetch('/api/admin/offline-result', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ title: document.getElementById('off-title').value, records }) }); alert("Offline Results Uploaded!");
+    }
+    function filterTable(inp) {
+        const filter = inp.value.toUpperCase();
+        const tr = document.getElementById('adm-res-list').getElementsByTagName('tr');
+        for (let i=0; i<tr.length; i++) {
+            const txt = tr[i].innerText;
+            tr[i].style.display = txt.toUpperCase().indexOf(filter) > -1 ? "" : "none";
+        }
+    }
     function exec(cmd) { document.execCommand(cmd, false, null); }
     function addDraftQ() {
-        draftQ.push({
-            text: document.getElementById('q-editor').innerHTML,
-            options: [0,1,2,3].map(i => document.getElementById('op'+i).value),
-            correct: parseInt(document.getElementById('q-corr').value),
-            marks: 4, negative: 1,
-            solution: document.getElementById('q-sol').value
-        });
-        document.getElementById('q-count').innerText = draftQ.length;
-        document.getElementById('q-editor').innerHTML = "";
-        [0,1,2,3].forEach(i => document.getElementById('op'+i).value = "");
+        draftQ.push({ text: document.getElementById('q-editor').innerHTML, options: [0,1,2,3].map(i => document.getElementById('op'+i).value), correct: parseInt(document.getElementById('q-corr').value), marks: 4, negative: 1, solution: document.getElementById('q-sol').value });
+        document.getElementById('q-count-val').innerText = draftQ.length;
+        document.getElementById('q-editor').innerHTML = ""; [0,1,2,3].forEach(i => document.getElementById('op'+i).value = "");
     }
     async function pubTest() {
-        await fetch('/api/admin/test', {
-            method: 'POST', headers: {'Content-Type':'application/json'},
-            body: JSON.stringify({
-                title: document.getElementById('t-title').value,
-                duration: document.getElementById('t-dur').value,
-                accessCode: document.getElementById('t-code').value,
-                category: document.getElementById('t-cat').value,
-                isLive: document.getElementById('t-live').checked,
-                startTime: document.getElementById('t-start').value,
-                endTime: document.getElementById('t-end').value,
-                questions: draftQ
-            })
-        });
-        alert("Published!"); draftQ = [];
+        await fetch('/api/admin/test', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ title: document.getElementById('t-title').value, duration: document.getElementById('t-dur').value, accessCode: document.getElementById('t-code').value, category: document.getElementById('t-cat').value, isLive: document.getElementById('t-live').checked, startTime: document.getElementById('t-start').value, endTime: document.getElementById('t-end').value, questions: draftQ }) }); alert("Published!"); draftQ = [];
     }
     async function postAnnounce() {
-        await fetch('/api/admin/announcement/add', {
-            method:'POST', headers:{'Content-Type':'application/json'},
-            body: JSON.stringify({text: document.getElementById('ann-text').value})
-        });
-        showAdm('announce'); loadAnnouncements(); 
+        await fetch('/api/admin/announcement/add', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({text: document.getElementById('ann-text').value}) });
+        showAdm('announce'); loadAnnouncements();
     }
     async function delAnnounce(text) {
-        await fetch('/api/admin/announcement/delete', {
-            method:'POST', headers:{'Content-Type':'application/json'},
-            body: JSON.stringify({text})
-        });
+        await fetch('/api/admin/announcement/delete', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({text}) });
         showAdm('announce');
     }
-    async function loadAnnouncements() {
-        try {
-            const res = await fetch('/api/announcement');
-            const data = await res.json();
-            document.getElementById('anno-marquee').innerHTML = data.list.join(' &nbsp;&nbsp; | &nbsp;&nbsp; ') || "Welcome to ARC Classes";
-        } catch(e) { console.error("Anno Error"); }
-    }
+
+    // --- COMMON LOADERS ---
+    async function loadAnnouncements() { try { const res = await fetch('/api/announcement'); const data = await res.json(); document.getElementById('anno-marquee').innerHTML = data.list.join(' &nbsp;&nbsp; | &nbsp;&nbsp; ') || "Welcome to ARC Classes"; } catch(e) {} }
     async function loadBlogs() {
-        const res = await fetch('/api/blogs');
-        allBlogs = await res.json();
-        document.getElementById('blog-grid').innerHTML = allBlogs.map((b, i) => `
-            <div class="card blog-card">
-                ${b.image ? `<img src="${b.image}" style="width:100%; height:150px; object-fit:cover;">` : ''}
-                <h3>${b.title}</h3>
-                <div class="blog-text">${b.content}</div>
-                <button style="color:blue; background:none; border:none; margin-top:5px;" onclick="openBlog(${i})">Read More</button>
-            </div>
-        `).join('');
+        const res = await fetch('/api/blogs'); allBlogs = await res.json();
+        document.getElementById('blog-grid').innerHTML = allBlogs.map((b, i) => `<div class="card blog-card">${b.image ? `<img src="${b.image}" style="width:100%; height:150px; object-fit:cover;">` : ''}<h3>${b.title}</h3><div class="blog-text">${b.content}</div><button style="color:blue; background:none; border:none; margin-top:5px;" onclick="openBlog(${i})">Read More</button></div>`).join('');
     }
     function openBlog(i) {
         const b = allBlogs[i];
-        document.getElementById('bm-title').innerText = b.title;
-        document.getElementById('bm-content').innerText = b.content;
+        document.getElementById('bm-title').innerText = b.title; document.getElementById('bm-date').innerText = new Date(b.date).toDateString(); document.getElementById('bm-content').innerText = b.content; if(b.image) { document.getElementById('bm-img').src = b.image; document.getElementById('bm-img').style.display='block'; }
         document.getElementById('blog-modal').style.display='flex';
     }
-    // ... (Remaining core functions: loadTests, startTest, loadResults, etc. same as before)
-    // Placeholders for context completeness:
+
+    // --- STUDENT LOGIC ---
     async function loadTests(isLive) { 
         const res = await fetch('/api/tests'); const tests = await res.json();
-        document.getElementById(isLive?'live-list':'test-list').innerHTML = tests.filter(t=>t.isLive===isLive).map(t=>`
-            <div class="card"><h3>${t.title} ${t.accessCode?'🔒':''}</h3><button class="btn btn-gold" onclick="startTest('${t._id}')">Start</button></div>
-        `).join('');
+        document.getElementById(isLive?'live-list':'test-list').innerHTML = tests.filter(t=>t.isLive===isLive).map(t=>`<div class="card" style="border-left: 5px solid ${isLive ? 'red' : 'gold'}"><h3>${t.title} ${t.accessCode?'🔒':''}</h3><p>${t.duration} Mins | ${t.questions ? '?' : ''} Qs</p>${isLive ? `<p style="color:red">Start: ${new Date(t.startTime).toLocaleString()}</p>` : ''}<button class="btn btn-gold" onclick="startTest('${t._id}')">Start</button></div>`).join('');
     }
-    async function startTest(id) { /* Same as previous version */ 
-         const code = prompt("Enter Test Password (if any):");
-        const res = await fetch('/api/test/start', {
-            method: 'POST', headers: {'Content-Type':'application/json'},
-            body: JSON.stringify({ id, code, studentEmail: user.email })
-        });
+    async function startTest(id) {
+        const code = prompt("Enter Test Password (if any):");
+        const res = await fetch('/api/test/start', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ id, code, studentEmail: user.email }) });
         const data = await res.json();
-        if(data.success) {
-            currentTest = data.test; answers = new Array(currentTest.questions.length).fill(null);
-            show('exam'); renderQ();
-        } else alert(data.message);
+        if(data.success) { currentTest = data.test; answers = new Array(currentTest.questions.length).fill(null); timeTaken = new Array(currentTest.questions.length).fill(0); qIndex = 0; show('exam'); renderQ(); } else alert(data.message);
     }
-    function renderQ() { /* Same as previous */ 
+    function renderQ() {
         const q = currentTest.questions[qIndex];
-        document.getElementById('q-text').innerHTML = q.text;
-        document.getElementById('q-opts').innerHTML = q.options.map((o,i)=>`<label><input type="radio" name="opt" value="${i}"> ${o}</label>`).join('');
+        document.getElementById('q-no').innerText = `Q${qIndex + 1}`; document.getElementById('q-text').innerHTML = q.text; const img = document.getElementById('q-img'); if(q.image) { img.src = q.image; img.style.display = 'block'; } else img.style.display = 'none';
+        document.getElementById('q-opts').innerHTML = q.options.map((o, i) => `<label style="display:block; padding:8px;"><input type="radio" name="opt" value="${i}" ${answers[qIndex] === i ? 'checked' : ''}> ${o}</label>`).join('');
+        document.getElementById('palette').innerHTML = answers.map((a, i) => `<div class="p-btn ${a !== null ? 'done' : (i === qIndex ? 'active' : '')}" onclick="gotoQ(${i})">${i+1}</div>`).join('');
     }
-    function saveNext() { /* Same as previous */ }
-    async function submitTest() { /* Same as previous */ }
-    async function loadResults() { /* Same as previous */ }
-    async function loadLib(c) { /* Same as previous */ }
-    async function resetLib() { /* Same as previous */ }
+    function saveNext() { const sel = document.querySelector('input[name="opt"]:checked'); answers[qIndex] = sel ? parseInt(sel.value) : null; if(qIndex < currentTest.questions.length - 1) { qIndex++; renderQ(); } }
+    function clearAns() { answers[qIndex] = null; renderQ(); }
+    function gotoQ(i) { qIndex = i; renderQ(); }
+    async function submitTest() {
+        if(!confirm("Submit?")) return;
+        const res = await fetch('/api/test/submit', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ testId: currentTest._id, answers, timeTaken, studentName: user.name, studentEmail: user.email }) });
+        const data = await res.json(); if(data.success) { alert(`Score: ${data.score}`); location.reload(); }
+    }
+    let allMats = [];
+    async function loadMaterials() { allMats = await (await fetch('/api/materials')).json(); }
+    function loadLib(cat) { document.getElementById('lib-cats').style.display = 'none'; document.getElementById('lib-back').style.display = 'block'; if(allMats.length === 0) loadMaterials().then(() => renderLib(cat)); else renderLib(cat); }
+    function renderLib(cat) { document.getElementById('lib-content').innerHTML = allMats.filter(m => m.category === cat || (cat === '11th Class' && m.category.includes('11'))).map(m => `<div class="card"><img src="${m.image||''}" style="height:150px; background:#ddd; object-fit:cover;"><h4>${m.title} ${m.accessCode?'🔒':''}</h4><button class="btn btn-gold" onclick="openMat('${m._id}')">Open</button></div>`).join(''); }
+    function resetLib() { document.getElementById('lib-cats').style.display = 'grid'; document.getElementById('lib-back').style.display = 'none'; document.getElementById('lib-content').innerHTML = ''; }
+    async function openMat(id) { const code = prompt("Enter Password:"); const res = await fetch('/api/material/unlock', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id, code}) }); const data = await res.json(); if(data.success) window.open(data.link); else alert("Wrong Password"); }
+    async function loadResults(type) { const res = await fetch('/api/student/results/online', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ email: user.email }) }); const data = await res.json(); document.getElementById('result-list').innerHTML = `<table><tr><th>Date</th><th>Test</th><th>Score</th></tr>${data.results.filter(r => r.testType === type).map(r => `<tr><td>${new Date(r.date).toLocaleDateString()}</td><td>${r.testTitle}</td><td>${r.score}/${r.totalMarks}</td></tr>`).join('')}</table>`; }
+    async function loadOfflineResults() { const res = await fetch('/api/results/offline'); const data = await res.json(); document.getElementById('result-list').innerHTML = data.map(r => `<h3>${r.title}</h3><table><tr><th>Rank</th><th>Student</th><th>Marks</th></tr>${r.records.map(rec => `<tr><td>#${rec.rank}</td><td>${rec.studentName}</td><td>${rec.marks}</td></tr>`).join('')}</table>`).join(''); }
 </script>
 </body>
 </html>

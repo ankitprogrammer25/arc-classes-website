@@ -63,7 +63,7 @@ const Config = mongoose.model('Config', ConfigSchema);
 
 // --- 3. ROUTES ---
 
-// --- AUTH (UPDATED FOR TEACHER LOGIN) ---
+// --- AUTH ---
 app.post('/api/register', async (req, res) => {
     try {
         const { name, emailPart, password } = req.body; 
@@ -77,25 +77,26 @@ app.post('/api/register', async (req, res) => {
 app.post('/api/login', async (req, res) => {
     try {
         const { email, password } = req.body; 
-
-        // 🚨 HARDCODED TEACHER LOGIN (For instant access)
+        // 🚨 HARDCODED TEACHER LOGIN
         if (email === 'admin@arc.com' && password === 'admin123') {
             return res.json({ success: true, name: "ARC Admin", email: "admin@arc.com", role: 'admin' });
         }
-
-        // Student Login
         const student = await Student.findOne({ email });
         if (!student || student.password !== password) return res.json({ success: false });
-        
         res.json({ success: true, name: student.name, email: student.email, role: 'student' });
     } catch (e) { res.json({ success: false }); }
 });
 
 // --- ADMIN API ---
 app.get('/api/admin/students', async (req, res) => res.json(await Student.find().sort({ joinedAt: -1 })));
+app.get('/api/admin/results/online', async (req, res) => res.json(await Result.find().sort({ date: -1 })));
+
 app.post('/api/admin/material', async (req, res) => { await new Material(req.body).save(); res.json({ success: true }); });
 app.post('/api/admin/test', async (req, res) => { await new Test(req.body).save(); res.json({ success: true }); });
 app.post('/api/admin/blog', async (req, res) => { await new Blog(req.body).save(); res.json({ success: true }); });
+app.post('/api/admin/offline-result', async (req, res) => { await new OfflineResult(req.body).save(); res.json({ success: true }); });
+
+// ANNOUNCEMENTS
 app.get('/api/announcement', async (req, res) => { 
     const c = await Config.findOne({ type: 'announce_list' });
     res.json({ list: c ? c.list : ["Welcome to ARC Classes"] });
@@ -115,11 +116,17 @@ app.get('/api/materials', async (req, res) => res.json(await Material.find()));
 app.get('/api/tests', async (req, res) => res.json(await Test.find({}, 'title duration category date accessCode isLive startTime endTime')));
 app.get('/api/blogs', async (req, res) => res.json(await Blog.find().sort({ date: -1 })));
 app.post('/api/student/results/online', async (req, res) => res.json({ success: true, results: await Result.find({ studentEmail: req.body.email }).sort({ date: -1 }) }));
+app.get('/api/results/offline', async (req, res) => res.json(await OfflineResult.find()));
+
+app.post('/api/material/unlock', async (req, res) => {
+    const f = await Material.findById(req.body.id);
+    if(f && (!f.accessCode || f.accessCode === req.body.code)) res.json({ success: true, link: f.link }); else res.json({ success: false });
+});
 
 app.post('/api/test/start', async (req, res) => {
     const { id, code, studentEmail } = req.body; 
     
-    // Check if it's the Admin trying to preview (Bypass student check)
+    // Admin bypass for previews
     if (studentEmail !== 'admin@arc.com') {
         const s = await Student.findOne({ email: studentEmail });
         if(!s) return res.json({ success: false, message: "Login first" });
@@ -135,6 +142,27 @@ app.post('/api/test/start', async (req, res) => {
         const safeQ = t.questions.map(q => ({ text: q.text, image: q.image, options: q.options, marks: q.marks, negative: q.negative }));
         res.json({ success: true, test: {...t._doc, questions: safeQ} });
     } else res.json({ success: false, message: "Wrong Password" });
+});
+
+app.post('/api/test/submit', async (req, res) => {
+    try {
+        const { testId, answers, timeTaken, studentName, studentEmail } = req.body; 
+        const t = await Test.findById(testId);
+        let score = 0, total = 0;
+        t.questions.forEach((q, i) => {
+            total += q.marks;
+            if (answers[i] === q.correct) score += q.marks;
+            else if (answers[i] !== null) score -= q.negative;
+        });
+        const pct = (score / total) * 100;
+        const r = new Result({ 
+            studentName, studentEmail, testTitle: t.title, testId: t._id, testType: t.isLive ? 'live' : 'practice', 
+            score, totalMarks: total, percentage: pct, rank: 0, feedback: pct>80?"Excellent":"Keep Improving", 
+            answers, timeTaken 
+        });
+        await r.save();
+        res.json({ success: true, score });
+    } catch(e) { res.json({ success: false }); }
 });
 
 const PORT = process.env.PORT || 5000;
