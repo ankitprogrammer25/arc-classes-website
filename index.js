@@ -40,9 +40,10 @@ const TestSchema = new mongoose.Schema({
 });
 const Test = mongoose.model('Test', TestSchema);
 
+// UPDATED: Added totalMarks, obtainedMarks to Schema
 const OfflineResultSchema = new mongoose.Schema({
     title: String, date: { type: Date, default: Date.now },
-    records: [{ studentName: String, marks: Number, rank: Number, copyLink: String }]
+    records: [{ studentName: String, totalMarks: Number, obtainedMarks: Number, rank: Number, copyLink: String }]
 });
 const OfflineResult = mongoose.model('OfflineResult', OfflineResultSchema);
 
@@ -77,7 +78,6 @@ app.post('/api/register', async (req, res) => {
 app.post('/api/login', async (req, res) => {
     try {
         const { email, password } = req.body; 
-        // 🚨 HARDCODED TEACHER LOGIN
         if (email === 'admin@arc.com' && password === 'admin123') {
             return res.json({ success: true, name: "ARC Admin", email: "admin@arc.com", role: 'admin' });
         }
@@ -94,9 +94,21 @@ app.get('/api/admin/results/online', async (req, res) => res.json(await Result.f
 app.post('/api/admin/material', async (req, res) => { await new Material(req.body).save(); res.json({ success: true }); });
 app.post('/api/admin/test', async (req, res) => { await new Test(req.body).save(); res.json({ success: true }); });
 app.post('/api/admin/blog', async (req, res) => { await new Blog(req.body).save(); res.json({ success: true }); });
-app.post('/api/admin/offline-result', async (req, res) => { await new OfflineResult(req.body).save(); res.json({ success: true }); });
 
-// ANNOUNCEMENTS
+// UPDATED: AUTO-RANKING LOGIC
+app.post('/api/admin/offline-result', async (req, res) => { 
+    try {
+        const { title, records } = req.body;
+        // Sort by obtained marks (descending)
+        records.sort((a, b) => b.obtainedMarks - a.obtainedMarks);
+        // Assign rank
+        records.forEach((rec, index) => { rec.rank = index + 1; });
+        
+        await new OfflineResult({ title, records }).save(); 
+        res.json({ success: true });
+    } catch(e) { res.json({ success: false }); }
+});
+
 app.get('/api/announcement', async (req, res) => { 
     const c = await Config.findOne({ type: 'announce_list' });
     res.json({ list: c ? c.list : ["Welcome to ARC Classes"] });
@@ -118,7 +130,11 @@ app.get('/api/blogs', async (req, res) => res.json(await Blog.find().sort({ date
 app.post('/api/student/results/online', async (req, res) => res.json({ success: true, results: await Result.find({ studentEmail: req.body.email }).sort({ date: -1 }) }));
 app.get('/api/results/offline', async (req, res) => res.json(await OfflineResult.find()));
 
-// CORE RESULT DETAILS (For both Student & Admin)
+app.post('/api/material/unlock', async (req, res) => {
+    const f = await Material.findById(req.body.id);
+    if(f && (!f.accessCode || f.accessCode === req.body.code)) res.json({ success: true, link: f.link }); else res.json({ success: false });
+});
+
 app.post('/api/result-details', async (req, res) => {
     try {
         const result = await Result.findById(req.body.resultId);
@@ -136,20 +152,12 @@ app.post('/api/result-details', async (req, res) => {
     } catch(e) { res.json({ success: false, message: e.message }); }
 });
 
-app.post('/api/material/unlock', async (req, res) => {
-    const f = await Material.findById(req.body.id);
-    if(f && (!f.accessCode || f.accessCode === req.body.code)) res.json({ success: true, link: f.link }); else res.json({ success: false });
-});
-
 app.post('/api/test/start', async (req, res) => {
     const { id, code, studentEmail } = req.body; 
-    
-    // Admin bypass for previews
     if (studentEmail !== 'admin@arc.com') {
         const s = await Student.findOne({ email: studentEmail });
         if(!s) return res.json({ success: false, message: "Login first" });
     }
-
     const t = await Test.findById(id);
     if(t.isLive && studentEmail !== 'admin@arc.com') {
         const now = new Date();
