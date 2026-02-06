@@ -8,7 +8,6 @@
     <style>
         :root { --primary: #0f172a; --gold: #fbbf24; --light: #f8fafc; --red: #ef4444; --dark: #1e293b; --purple: #a855f7; --green: #22c55e; --white: #ffffff; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--light); margin: 0; color: #333; min-width: 1200px; display: flex; flex-direction: column; min-height: 100vh; }
-        
         .logo { font-size: 2rem; font-weight: 900; letter-spacing: 2px; background: linear-gradient(270deg, #ff0000, #fbbf24, #00ff00, #0000ff, #ff00ff); background-size: 400% 400%; -webkit-background-clip: text; color: transparent; animation: rainbow 6s ease infinite; }
         @keyframes rainbow { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         nav { background: var(--primary); padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
@@ -130,7 +129,14 @@
 </div>
 
 <div id="login" class="section">
-    <div class="form-box"><h2>Login</h2><input id="l-email" placeholder="Email"><input id="l-pass" type="password" placeholder="Password"><button class="btn-gold" style="width:100%" onclick="handleLogin()">Login</button><p style="text-align:center; cursor:pointer; color:blue" onclick="toggleReg()">New? Register</p><p style="text-align:center; font-size:0.9rem; color:#999">Teacher? (admin@arc.com)</p></div>
+    <div class="form-box">
+        <h2>Login</h2>
+        <input id="l-email" placeholder="Email">
+        <input id="l-pass" type="password" placeholder="Password" onkeypress="if(event.key==='Enter') handleLogin()">
+        <button class="btn-gold" style="width:100%" onclick="handleLogin()">Login</button>
+        <p style="text-align:center; cursor:pointer; color:blue" onclick="toggleReg()">New? Register</p>
+        <p style="text-align:center; font-size:0.9rem; color:#999">Teacher? (admin@arc.com)</p>
+    </div>
     <div id="reg-box" class="form-box" style="display:none"><h2>Register</h2><p style="color:red">⚠️ Remember your details.</p><input id="r-name" placeholder="Name"><div style="display:flex; align-items:center; gap:10px"><input id="r-prefix" placeholder="username" style="text-align:right"><span>@arcstudent.com</span></div><input id="r-pass" type="password" placeholder="Password"><button class="btn-gold" style="width:100%" onclick="handleReg()">Register Now</button></div>
 </div>
 
@@ -180,7 +186,7 @@
                 <p>Image:</p><input type="file" id="q-img-file" accept="image/*"><img id="q-img-preview" style="height:80px; display:none">
                 <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px;"><div id="op0" contenteditable="true" style="border:1px solid #ccc; padding:10px; background:white;"></div><div id="op1" contenteditable="true" style="border:1px solid #ccc; padding:10px; background:white;"></div><div id="op2" contenteditable="true" style="border:1px solid #ccc; padding:10px; background:white;"></div><div id="op3" contenteditable="true" style="border:1px solid #ccc; padding:10px; background:white;"></div></div>
                 <input id="q-topic" placeholder="Topic" style="margin-top:10px">
-                <textarea id="q-sol" placeholder="Solution/Explanation (Visible after test)" style="margin-top:10px; width:100%; height:80px;"></textarea>
+                <textarea id="q-sol" placeholder="Solution/Explanation (Visible only after test submission)" style="margin-top:10px; width:100%; height:80px; border:1px solid #ccc; padding:10px;"></textarea>
                 <div style="display:flex; gap:10px; margin-top:10px"><select id="q-corr"><option value="0">Correct: A</option><option value="1">Correct: B</option><option value="2">Correct: C</option><option value="3">Correct: D</option></select><input type="number" id="q-mark" value="2"><input type="number" id="q-neg" value="0.5"></div>
                 <button class="btn-gold" style="margin-top:10px" onclick="saveDraftQuestion()">Save Question</button>
                 <p style="margin-top:10px; font-weight:bold;">Questions:</p><div id="draft-palette" class="draft-palette"></div>
@@ -256,15 +262,16 @@
     async function loadStudents(){ const d=await (await fetch('/api/admin/students')).json(); document.getElementById('student-table').innerHTML=`<tr><th>Name</th><th>Email</th><th>Password</th></tr>`+d.map(s=>`<tr><td>${s.name}</td><td>${s.email}</td><td>${s.password}</td></tr>`).join(''); }
     async function loadOnlineResults(){ const d=await (await fetch('/api/admin/results/online')).json(); document.getElementById('online-res-table').innerHTML=`<tr><th>Date</th><th>Test</th><th>Student</th><th>Score</th><th>Action</th></tr>`+d.map(r=>`<tr><td>${new Date(r.date).toLocaleDateString()}</td><td>${r.testTitle}</td><td>${r.studentName}<br>${r.studentEmail}</td><td>${r.score}/${r.totalMarks}</td><td><button class="btn-gold" onclick="viewSubmission('${r._id}')">View</button> <button class="btn-red" onclick="deleteResult('${r._id}')">Del</button></td></tr>`).join(''); }
     
-    // VIEW SUBMISSION (SHARED)
+    // VIEW SUBMISSION (SAFE MODE)
     async function viewSubmission(rid){ 
         const res = await fetch('/api/result-details', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ resultId:rid }) }); 
         const data = await res.json(); 
+        
         if(!data.success) {
-            if(data.testDeleted) alert("The Test for this result has been deleted by the teacher.");
-            else alert("Error viewing result.");
+            alert(data.message || "Error viewing result.");
             return;
         }
+        
         const { result, test, rank } = data; 
         
         document.getElementById('review-chart-box').style.display = 'block';
@@ -273,18 +280,23 @@
         const ctx = document.getElementById('reviewChart').getContext('2d');
         if(window.reviewPie) window.reviewPie.destroy(); 
         
-        let correct=0, wrong=0, skipped=0;
-        test.questions.forEach((q,i) => { if(result.answers[i]===q.correct) correct++; else if(result.answers[i]!==null) wrong++; else skipped++; });
-        
-        window.reviewPie = new Chart(ctx, {type:'pie', data:{labels:['Correct','Wrong','Skipped'], datasets:[{data:[correct,wrong,skipped], backgroundColor:['#22c55e','#ef4444','#ddd']}]}});
+        // Handle case where test is deleted (show score but no questions)
+        if(!test) {
+            document.getElementById('review-content').innerHTML = "<p><em>The teacher has deleted the original test questions. Only score data is available.</em></p>";
+        } else {
+            let correct=0, wrong=0, skipped=0;
+            test.questions.forEach((q,i) => { if(result.answers[i]===q.correct) correct++; else if(result.answers[i]!==null) wrong++; else skipped++; });
+            
+            window.reviewPie = new Chart(ctx, {type:'pie', data:{labels:['Correct','Wrong','Skipped'], datasets:[{data:[correct,wrong,skipped], backgroundColor:['#22c55e','#ef4444','#ddd']}]}});
 
-        let html = `<h3>${result.studentName} - ${result.testTitle}</h3>`; 
-        test.questions.forEach((q, i) => { 
-            const studentAns = result.answers[i]; const isCorrect = studentAns === q.correct; 
-            const style = studentAns===null?"gray":(isCorrect?"green":"red"); 
-            html += `<div class="review-q"><p>Q${i+1}: ${q.text} <span style="color:${style}; float:right;">${isCorrect?"Correct":"Wrong"}</span></p>${q.image?`<img src="${q.image}" style="height:100px;">`:''}${q.options.map((o,oi)=>`<div class="review-opt" style="${oi===q.correct?'background:#dcfce7':(oi===studentAns?'background:#fee2e2':'')}">${o}</div>`).join('')}${q.solution ? `<div style="margin-top:10px; padding:10px; background:#f0f9ff; border-left:4px solid var(--primary);"><strong>Solution:</strong> ${q.solution}</div>` : ''}</div>`; 
-        }); 
-        document.getElementById('review-content').innerHTML = html; 
+            let html = `<h3>${result.studentName} - ${result.testTitle}</h3>`; 
+            test.questions.forEach((q, i) => { 
+                const studentAns = result.answers[i]; const isCorrect = studentAns === q.correct; 
+                const style = studentAns===null?"gray":(isCorrect?"green":"red"); 
+                html += `<div class="review-q"><p>Q${i+1}: ${q.text} <span style="color:${style}; float:right;">${isCorrect?"Correct":"Wrong"}</span></p>${q.image?`<img src="${q.image}" style="height:100px;">`:''}${q.options.map((o,oi)=>`<div class="review-opt" style="${oi===q.correct?'background:#dcfce7':(oi===studentAns?'background:#fee2e2':'')}">${o}</div>`).join('')}${q.solution ? `<div style="margin-top:10px; padding:10px; background:#f0f9ff; border-left:4px solid var(--primary);"><strong>Solution:</strong> ${q.solution}</div>` : ''}</div>`; 
+            }); 
+            document.getElementById('review-content').innerHTML = html; 
+        }
         document.getElementById('review-modal').style.display = 'flex'; 
     }
     async function deleteResult(id){ if(confirm("Delete Result?")) await fetch(`/api/admin/result/online/${id}`,{method:'DELETE'}); loadOnlineResults(); }
@@ -372,7 +384,6 @@
     function filterNotes(){ const q=document.getElementById('home-search').value.toLowerCase(); if(q.length < 3) return; const f = allMats.filter(m=>m.title.toLowerCase().includes(q)); if(f.length===0) { document.getElementById('no-result-pop').style.display='block'; setTimeout(()=>document.getElementById('no-result-pop').style.display='none',2000); } else { document.getElementById('mat-list').innerHTML = ""; renderMat(f); show('notes'); } }
     async function unlockMat(id){ const c=prompt("Password:"); if(!c)return; const r=await fetch('/api/material/unlock',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id,code:c})}); const d=await r.json(); if(d.success)window.open(d.link); else alert("Wrong"); }
     
-    // RESULT SECTION
     async function switchResultTab(type) {
         document.getElementById('result-table').innerHTML = "Loading...";
         if(type === 'offline') {
@@ -388,19 +399,18 @@
         }
     }
     
-    // VIEW COPY
     async function viewCopy(rid,recid){ const p=prompt("Your Password:"); if(!p)return; const r=await fetch('/api/results/unlock-copy',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({resultId:rid,recordId:recid,password:p})}); const d=await r.json(); if(d.success)window.open(d.link); else alert("Incorrect Password"); }
     async function loadMyOnlineHistory() {
         if(!user) return;
         const res = await fetch('/api/student/results/online', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({email:user.email})});
         const data = await res.json();
-        // This function is now mostly handled by switchResultTab
     }
 
     async function startExam(id){
         if(!user) return alert("Login first"); 
         const selectedTest = allTests.find(t => t._id === id); let code = ""; if(selectedTest.accessCode) { code = prompt("Enter Test Password:"); if(!code) return; }
-        try { const r=await fetch('/api/test/start',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id,code,studentEmail:user.email})}); const d=await r.json(); if(d.success){ currentTest=d.test; studentAnswers=new Array(currentTest.questions.length).fill(null); visitedQs=new Array(currentTest.questions.length).fill(false); document.getElementById('student-name-display').innerText=user.name; show('exam-ui'); runTimer(currentTest.duration*60); renderQ(0); } else alert(d.message); } catch(e) { alert("Connection Error"); }
+        try { const r=await fetch('/api/test/start',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id,code,studentEmail:user.email})}); const d=await r.json(); 
+        if(d.success){ currentTest=d.test; studentAnswers=new Array(currentTest.questions.length).fill(null); visitedQs=new Array(currentTest.questions.length).fill(false); document.getElementById('student-name-display').innerText=user.name; show('exam-ui'); runTimer(currentTest.duration*60); renderQ(0); } else alert(d.message); } catch(e) { alert("Connection Error"); }
     }
     function runTimer(s){ clearInterval(examInterval); examInterval=setInterval(()=>{ s--; document.getElementById('timer').innerText=`${Math.floor(s/60)}:${s%60}`; if(s<=0){clearInterval(examInterval); submitExam(true);} },1000); }
     function renderQ(i){ currentQIdx=i; visitedQs[i]=true; const q=currentTest.questions[i]; document.getElementById('q-num').innerText=i+1; document.getElementById('q-text').innerHTML=q.text; const img=document.getElementById('q-image-display'); if(q.image){img.src=q.image; img.style.display='block';}else{img.style.display='none';} document.getElementById('q-options').innerHTML=q.options.map((o,idx)=>`<label class="option-label"><input type="radio" name="opt" value="${idx}" ${studentAnswers[i]===idx?'checked':''}> ${o}</label>`).join(''); renderPalette(); }
