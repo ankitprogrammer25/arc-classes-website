@@ -10,11 +10,12 @@ app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // --- DB CONNECTION ---
-// USE YOUR CLOUD LINK HERE (Ensure IP is 0.0.0.0/0 in Atlas)
+// ⚠️ IMPORTANT: If you are testing locally and WiFi blocks Cloud, use: "mongodb://127.0.0.1:27017/arc_classes"
 const dbLink = "mongodb+srv://ankitprogrammer25:a32x05sYvukG178G@cluster0.0dhqpzv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+
 mongoose.connect(dbLink)
     .then(() => console.log('✅ Connected to MongoDB'))
-    .catch(err => console.log('❌ DB Error:', err));
+    .catch(err => console.log('❌ DB Error:', err.message));
 
 // --- MODELS ---
 const StudentSchema = new mongoose.Schema({
@@ -31,7 +32,7 @@ const Material = mongoose.model('Material', MaterialSchema);
 
 const QuestionSchema = new mongoose.Schema({
     text: String, image: String, options: [String], correct: Number, 
-    marks: Number, negative: Number, topic: String, solution: String // Added Solution
+    marks: Number, negative: Number, topic: String, solution: String // Solution field
 });
 
 const TestSchema = new mongoose.Schema({
@@ -70,38 +71,43 @@ app.post('/api/register', async (req, res) => {
         const { name, emailPart, password } = req.body; const fullEmail = emailPart + "@arcstudent.com";
         if(await Student.findOne({ email: fullEmail })) return res.json({ success: false, message: "Taken" });
         await new Student({ name, email: fullEmail, password }).save(); res.json({ success: true });
-    } catch (e) { res.json({ success: false }); }
+    } catch (e) { res.json({ success: false, message: "Error" }); }
 });
 app.post('/api/login', async (req, res) => {
-    const { email, password } = req.body; const student = await Student.findOne({ email });
-    if (!student || student.password !== password) return res.json({ success: false });
-    res.json({ success: true, name: student.name, email: student.email });
+    try {
+        const { email, password } = req.body; 
+        const student = await Student.findOne({ email });
+        if (!student || student.password !== password) return res.json({ success: false });
+        res.json({ success: true, name: student.name, email: student.email });
+    } catch (e) { res.json({ success: false, message: "Server Error" }); }
 });
 
 // Admin Data
 app.get('/api/admin/students', async (req, res) => res.json(await Student.find().sort({ joinedAt: -1 })));
 app.get('/api/admin/results/online', async (req, res) => res.json(await Result.find().sort({ date: -1 })));
 
-// CRITICAL FIX: View Copy (Prevents Crash if Test is Deleted)
+// --- VIEW ANSWER SHEET (FIXED) ---
 app.post('/api/result-details', async (req, res) => {
     try {
+        // 1. Find the result
         const result = await Result.findById(req.body.resultId);
-        if(!result) return res.json({ success: false, message: "Result record not found." });
+        if(!result) return res.json({ success: false, message: "Result not found" });
         
-        // Dynamic Rank Calculation
+        // 2. Calculate Rank Dynamically (Compare with others who took SAME test)
         const rank = (await Result.countDocuments({ testId: result.testId, score: { $gt: result.score } })) + 1;
         
+        // 3. Find the Test to get Questions & Solutions
         const test = await Test.findById(result.testId);
         
-        // Safety Check: If teacher deleted the test, we can't show questions
+        // 4. Handle Case: Test Deleted
         if(!test) {
-            return res.json({ success: false, message: "The original test was deleted by the teacher. Cannot view questions.", rank, result });
+            return res.json({ success: false, message: "The teacher has deleted this test. Questions are no longer available.", rank, result });
         }
 
         res.json({ success: true, result, test, rank });
     } catch(e) { 
         console.error("View Copy Error:", e);
-        res.json({ success: false, message: "Server Error: " + e.message }); 
+        res.json({ success: false, message: "Server Error" }); 
     }
 });
 
@@ -119,7 +125,7 @@ app.post('/api/admin/blog', async (req, res) => { await new Blog(req.body).save(
 app.delete('/api/admin/blog/:id', async (req, res) => { await Blog.findByIdAndDelete(req.params.id); res.json({ success: true }); });
 app.put('/api/admin/blog/:id', async (req, res) => { await Blog.findByIdAndUpdate(req.params.id, req.body); res.json({ success: true }); });
 
-// Announcement
+// Announcements
 app.get('/api/announcement', async (req, res) => { 
     const c = await Config.findOne({ type: 'announce_list' });
     res.json({ list: c ? c.list : ["Welcome to ARC Classes!"] });
@@ -144,6 +150,7 @@ app.get('/api/results/offline', async (req, res) => {
     const r = await OfflineResult.find();
     res.json(r.map(x => ({ _id: x._id, title: x.title, date: x.date, records: x.records.map(rec => ({ studentName: rec.studentName, marks: rec.marks, rank: rec.rank, _id: rec._id })) })));
 });
+// Student History
 app.post('/api/student/results/online', async (req, res) => {
     try {
         const results = await Result.find({ studentEmail: req.body.email }).sort({ date: -1 });
@@ -165,14 +172,14 @@ app.post('/api/test/start', async (req, res) => {
     
     const t = await Test.findById(id);
     
-    // LIVE TEST CHECK
+    // LIVE TEST CHECK (Fixed Date Comparison)
     if(t.isLive) {
         const now = new Date();
         const start = new Date(t.startTime);
         const end = new Date(t.endTime);
         
-        if(now < start) return res.json({ success: false, message: `Test starts on ${start.toLocaleString()}` });
-        if(now > end) return res.json({ success: false, message: "This Live Test has expired." });
+        if(now < start) return res.json({ success: false, message: `Test starts at ${start.toLocaleString()}` });
+        if(now > end) return res.json({ success: false, message: "Test has expired." });
     } else {
         const attempts = s.testAttempts.get(id) || 0; 
         if (attempts >= 3) return res.json({ success: false, message: "Max 3 attempts used." });
@@ -180,7 +187,7 @@ app.post('/api/test/start', async (req, res) => {
 
     if(!t.accessCode || t.accessCode === code) {
         if(!t.isLive) { s.testAttempts.set(id, (s.testAttempts.get(id)||0) + 1); await s.save(); }
-        // Hide solution during test
+        // Send questions WITHOUT solution (Security)
         const safeQ = t.questions.map(q => ({ text: q.text, image: q.image, options: q.options, marks: q.marks, negative: q.negative }));
         res.json({ success: true, test: {...t._doc, questions: safeQ} });
     } else res.json({ success: false, message: "Wrong Password" });
