@@ -11,8 +11,29 @@
         
         /* LAYOUT */
         nav { background: var(--primary); padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
-        .logo { font-size: 2rem; font-weight: 900; background: linear-gradient(90deg, #ff0000, #fbbf24, #00ff00); -webkit-background-clip: text; color: transparent; }
-        .menu a { color: white; margin-left: 25px; text-decoration: none; font-weight: 600; cursor: pointer; }
+        
+        /* RGB LOGO FIX */
+        .logo { 
+            font-size: 2rem; 
+            font-weight: 900; 
+            background: linear-gradient(90deg, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000);
+            background-size: 400%;
+            -webkit-background-clip: text; 
+            background-clip: text;
+            color: transparent; 
+            animation: rainbow 8s linear infinite;
+            cursor: pointer;
+        }
+        @keyframes rainbow { 0% { background-position: 0%; } 100% { background-position: 400%; } }
+
+        .menu a { color: white; margin-left: 25px; text-decoration: none; font-weight: 600; cursor: pointer; transition: 0.3s; }
+        .menu a:hover { color: var(--gold); }
+        
+        /* ANNOUNCEMENT BAR */
+        .anno-bar { background: var(--gold); color: var(--primary); padding: 8px 0; font-weight: bold; overflow: hidden; white-space: nowrap; display: flex; border-bottom: 2px solid #eab308; }
+        .anno-label { background: var(--primary); color: white; padding: 0 15px; z-index: 10; display: flex; align-items: center; box-shadow: 5px 0 10px rgba(0,0,0,0.1); }
+        marquee { line-height: 1.5; font-size: 1.1rem; }
+
         .section { display: none; padding: 40px; max-width: 1100px; margin: auto; flex: 1; }
         .section.active { display: block; animation: fadeIn 0.3s; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -21,14 +42,25 @@
         .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: 0.2s; border: 1px solid #eee; display: flex; flex-direction: column; }
         .card:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
-        .btn { padding: 10px 20px; border:none; border-radius:6px; cursor:pointer; font-weight:bold; }
+        .btn { padding: 10px 20px; border:none; border-radius:6px; cursor:pointer; font-weight:bold; transition: 0.2s; }
         .btn-gold { background: var(--gold); color: var(--primary); }
+        .btn-gold:hover { background: #f59e0b; }
         .btn-red { background: var(--red); color: white; }
         input, select, textarea { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
         
         /* CATEGORY FOLDERS */
         .folder { background: #e0f2fe; padding: 30px; text-align: center; border-radius: 12px; cursor: pointer; font-size: 1.2rem; font-weight: bold; border-bottom: 4px solid var(--primary); color: var(--primary); }
         .folder:hover { background: #bae6fd; }
+
+        /* BLOG STYLES */
+        .blog-card .blog-text {
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            margin-bottom: 10px;
+            color: #555;
+        }
 
         /* EDITOR TOOLBAR */
         .toolbar { background: #f3f4f6; padding: 8px; border: 1px solid #ccc; border-radius: 6px 6px 0 0; display: flex; gap: 5px; }
@@ -50,12 +82,16 @@
         .review-row { border-bottom: 1px solid #eee; padding: 15px 0; }
         .badge { padding: 5px 10px; border-radius: 4px; color: white; font-size: 0.8rem; font-weight: bold; }
         .bg-green { background: var(--green); } .bg-red { background: var(--red); }
+        
+        /* CLOSE BTN */
+        .close-corner { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; color: #777; }
+        .close-corner:hover { color: var(--red); }
     </style>
 </head>
 <body>
 
 <nav>
-    <div class="logo">ARC CLASSES</div>
+    <div class="logo" onclick="show('home')">ARC CLASSES</div>
     <div class="menu">
         <a onclick="show('home')">Home</a>
         <a onclick="show('library')">Library</a>
@@ -68,12 +104,20 @@
     </div>
 </nav>
 
+<div class="anno-bar">
+    <div class="anno-label">🔔 NOTICES</div>
+    <marquee id="anno-marquee" onmouseover="this.stop()" onmouseout="this.start()">
+        Loading announcements...
+    </marquee>
+</div>
+
 <div id="home" class="section active">
     <div style="text-align:center; padding: 50px 20px;">
         <h1 style="color:var(--primary); font-size: 3rem;">Master Chemistry with ARC</h1>
         <p>Premium Notes, Test Series, and Live Classes.</p>
         <button class="btn btn-gold" onclick="show('tests')">Start Practice</button>
     </div>
+    
     <h3>Latest Blogs</h3>
     <div id="blog-grid" class="grid"></div>
 </div>
@@ -154,6 +198,7 @@
         <button class="btn btn-gold" onclick="showAdm('create-test')">Create Test</button>
         <button class="btn btn-gold" onclick="showAdm('upload')">Upload File</button>
         <button class="btn btn-gold" onclick="showAdm('blog')">Post Blog</button>
+        <button class="btn btn-gold" onclick="showAdm('announce')">Announcements</button>
         <button class="btn btn-gold" onclick="showAdm('offline')">Offline Result</button>
         <button class="btn btn-gold" onclick="showAdm('students')">Students</button>
         <button class="btn btn-red" onclick="showAdm('manage')">Manage/Delete</button>
@@ -163,17 +208,27 @@
 
 <div id="review-modal" class="modal">
     <div class="modal-content">
+        <span class="close-corner" onclick="document.getElementById('review-modal').style.display='none'">&times;</span>
         <h2>Test Review</h2>
         <div id="review-stats" style="display:flex; justify-content:space-around; margin-bottom:20px; font-size:1.2rem; font-weight:bold;"></div>
         <div id="review-body"></div>
-        <button class="btn btn-red" style="width:100%; margin-top:20px;" onclick="document.getElementById('review-modal').style.display='none'">Close</button>
+    </div>
+</div>
+
+<div id="blog-modal" class="modal">
+    <div class="modal-content">
+        <span class="close-corner" onclick="document.getElementById('blog-modal').style.display='none'">&times;</span>
+        <h2 id="bm-title" style="margin-bottom:10px; color:var(--primary);"></h2>
+        <p id="bm-date" style="color:#777; font-size:0.9rem; margin-bottom:20px;"></p>
+        <img id="bm-img" style="width:100%; max-height:300px; object-fit:contain; margin-bottom:20px; display:none; background:#f0f0f0;">
+        <div id="bm-content" style="line-height:1.6; white-space: pre-wrap;"></div>
     </div>
 </div>
 
 <script>
     let user = JSON.parse(localStorage.getItem('arc_user'));
     let currentTest = null, answers = [], timeTaken = [], timer = null, qIndex = 0;
-    let draftQ = [], qImg = "";
+    let draftQ = [], allBlogs = []; // Store blogs globally
 
     // INIT
     if(user) {
@@ -182,6 +237,7 @@
         if(user.email === 'admin@arc.com') document.getElementById('nav-admin').style.display = 'block';
     }
     loadBlogs();
+    loadAnnouncements();
 
     function show(id) {
         if((id==='tests' || id==='live' || id==='results') && !user) return show('login');
@@ -190,6 +246,16 @@
         if(id==='tests') loadTests(false);
         if(id==='live') loadTests(true);
         if(id==='results') loadResults('practice');
+    }
+
+    // --- ANNOUNCEMENTS ---
+    async function loadAnnouncements() {
+        try {
+            const res = await fetch('/api/announcement');
+            const data = await res.json();
+            const text = data.list.join(' &nbsp;&nbsp; | &nbsp;&nbsp; ');
+            document.getElementById('anno-marquee').innerHTML = text || "Welcome to ARC Classes";
+        } catch(e) { console.error("Anno Error"); }
     }
 
     // --- AUTH ---
@@ -216,20 +282,17 @@
 
     // --- LIBRARY ---
     let allMats = [];
-    async function loadMaterials() {
-        allMats = await (await fetch('/api/materials')).json();
-    }
+    async function loadMaterials() { allMats = await (await fetch('/api/materials')).json(); }
     function loadLib(cat) {
         document.getElementById('lib-cats').style.display = 'none';
         document.getElementById('lib-back').style.display = 'block';
-        if(allMats.length === 0) loadMaterials().then(() => renderLib(cat));
-        else renderLib(cat);
+        if(allMats.length === 0) loadMaterials().then(() => renderLib(cat)); else renderLib(cat);
     }
     function renderLib(cat) {
         const items = allMats.filter(m => m.category === cat || (cat === '11th Class' && m.category.includes('11')));
         document.getElementById('lib-content').innerHTML = items.map(m => `
             <div class="card">
-                <img src="${m.image || ''}" class="book-cover" style="height:150px; background:#ddd;">
+                <img src="${m.image || ''}" style="height:150px; background:#ddd; object-fit:cover;">
                 <h4>${m.title} ${m.accessCode ? '🔒' : ''}</h4>
                 <button class="btn btn-gold" onclick="openMat('${m._id}')">Open</button>
             </div>
@@ -283,12 +346,11 @@
         } else alert(data.message);
     }
 
-    let intervalSec = 0; // Tracks seconds spent on CURRENT question
+    let intervalSec = 0;
     function startTimer(totalSec) {
         clearInterval(timer);
         timer = setInterval(() => {
-            totalSec--;
-            intervalSec++; // Increment time for current question
+            totalSec--; intervalSec++;
             const m = Math.floor(totalSec / 60);
             const s = totalSec % 60;
             document.getElementById('timer').innerText = `${m}:${s < 10 ? '0'+s : s}`;
@@ -306,73 +368,58 @@
         if(q.image) { img.src = q.image; img.style.display = 'block'; } else img.style.display = 'none';
 
         document.getElementById('q-opts').innerHTML = q.options.map((o, i) => `
-            <label class="option-label">
+            <label style="display:block; padding:8px; cursor:pointer;">
                 <input type="radio" name="opt" value="${i}" ${answers[qIndex] === i ? 'checked' : ''}> ${o}
             </label>
         `).join('');
-
         renderPalette();
     }
 
     function saveNext() {
         const sel = document.querySelector('input[name="opt"]:checked');
         answers[qIndex] = sel ? parseInt(sel.value) : null;
-        timeTaken[qIndex] += intervalSec; // Save time spent
-        intervalSec = 0; // Reset question timer
-        
+        timeTaken[qIndex] += intervalSec; intervalSec = 0;
         if(qIndex < currentTest.questions.length - 1) { qIndex++; renderQ(); }
     }
     
     function clearAns() { answers[qIndex] = null; renderPalette(); }
-
     function renderPalette() {
         document.getElementById('palette').innerHTML = answers.map((a, i) => `
             <div class="p-btn ${a !== null ? 'done' : (i === qIndex ? 'active' : '')}" onclick="gotoQ(${i})">${i+1}</div>
         `).join('');
     }
-    function gotoQ(i) {
-        timeTaken[qIndex] += intervalSec; intervalSec = 0;
-        qIndex = i; renderQ();
-    }
+    function gotoQ(i) { timeTaken[qIndex] += intervalSec; intervalSec = 0; qIndex = i; renderQ(); }
 
     async function submitTest() {
         if(!confirm("Submit Test?")) return;
-        clearInterval(timer);
-        timeTaken[qIndex] += intervalSec; // Save last question time
-
+        clearInterval(timer); timeTaken[qIndex] += intervalSec;
         const res = await fetch('/api/test/submit', {
             method: 'POST', headers: {'Content-Type':'application/json'},
-            body: JSON.stringify({ 
-                testId: currentTest._id, 
-                answers, 
-                timeTaken,
-                studentName: user.name, 
-                studentEmail: user.email 
-            })
+            body: JSON.stringify({ testId: currentTest._id, answers, timeTaken, studentName: user.name, studentEmail: user.email })
         });
         const data = await res.json();
-        if(data.success) {
-            alert(`Score: ${data.score}/${data.totalMarks}\nRank: #${data.rank}`);
-            location.reload();
-        } else alert("Error submitting");
+        if(data.success) { alert(`Score: ${data.score}/${data.totalMarks}\nRank: #${data.rank}`); location.reload(); }
     }
 
-    // --- RESULTS & REVIEW ---
+    // --- RESULTS ---
     async function loadResults(type) {
         const res = await fetch('/api/student/results/online', {
             method: 'POST', headers: {'Content-Type':'application/json'},
             body: JSON.stringify({ email: user.email })
         });
         const data = await res.json();
-        document.getElementById('result-list').innerHTML = `<table><tr><th>Date</th><th>Test</th><th>Score</th><th>Action</th></tr>
-        ${data.results.filter(r => r.testType === type).map(r => `
-            <tr>
-                <td>${new Date(r.date).toLocaleDateString()}</td>
-                <td>${r.testTitle}</td>
-                <td>${r.score}/${r.totalMarks}</td>
-                <td><button class="btn btn-gold" onclick="viewSheet('${r._id}')">View Sheet</button></td>
-            </tr>
-        `).join('')}</table>`;
+        document.getElementById('result-list').innerHTML = `
+        <table style="width:100%; border-collapse:collapse; margin-top:10px;">
+            <tr style="background:#eee; text-align:left;"><th style="padding:10px;">Date</th><th>Test</th><th>Score</th><th>Action</th></tr>
+            ${data.results.filter(r => r.testType === type).map(r => `
+                <tr style="border-bottom:1px solid #eee;">
+                    <td style="padding:10px;">${new Date(r.date).toLocaleDateString()}</td>
+                    <td>${r.testTitle}</td>
+                    <td><b>${r.score}</b>/${r.totalMarks}</td>
+                    <td><button class="btn btn-gold" style="padding:5px 10px;" onclick="viewSheet('${r._id}')">View</button></td>
+                </tr>
+            `).join('')}
+        </table>`;
     }
 
     async function viewSheet(id) {
@@ -381,59 +428,58 @@
             body: JSON.stringify({ resultId: id })
         });
         const data = await res.json();
-        
         if(!data.success) return alert(data.message);
         
-        // Populate Review Modal
         const r = data.result;
         document.getElementById('review-stats').innerHTML = `
             <span>Score: ${r.score}/${r.totalMarks}</span>
             <span>Rank: #${data.rank}</span>
             <span>Accuracy: ${r.percentage.toFixed(1)}%</span>
         `;
-
-        // Check if questions exist
-        if(!data.questions || data.questions.length === 0) {
-            document.getElementById('review-body').innerHTML = "<p>Questions for this test have been deleted.</p>";
-        } else {
-            document.getElementById('review-body').innerHTML = data.questions.map((q, i) => `
-                <div class="review-row">
-                    <p><strong>Q${i+1}:</strong> ${q.text}</p>
-                    ${q.image ? `<img src="${q.image}" style="height:100px">` : ''}
-                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:5px;">
-                        ${q.options.map((opt, idx) => `
-                            <div style="padding:5px; border:1px solid #ddd; 
-                                ${idx === q.correct ? 'background:#dcfce7; border-color:green;' : ''}
-                                ${idx === q.studentAnswer && idx !== q.correct ? 'background:#fee2e2; border-color:red;' : ''}
-                            ">
-                                ${opt}
-                            </div>
-                        `).join('')}
-                    </div>
-                    <p style="margin-top:5px; font-size:0.9rem;">
-                        Status: <span class="badge ${q.status==='Correct'?'bg-green':'bg-red'}">${q.status}</span>
-                        | Time Spent: ${q.timeSpent}s
-                    </p>
-                    ${q.solution ? `<div style="background:#f0f9ff; padding:10px; margin-top:5px;"><strong>💡 Solution:</strong> ${q.solution}</div>` : ''}
+        document.getElementById('review-body').innerHTML = data.questions.map((q, i) => `
+            <div class="review-row">
+                <p><strong>Q${i+1}:</strong> ${q.text}</p>
+                ${q.image ? `<img src="${q.image}" style="height:100px">` : ''}
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:5px;">
+                    ${q.options.map((opt, idx) => `
+                        <div style="padding:5px; border:1px solid #ddd; 
+                            ${idx === q.correct ? 'background:#dcfce7; border-color:green;' : ''}
+                            ${idx === q.studentAnswer && idx !== q.correct ? 'background:#fee2e2; border-color:red;' : ''}
+                        "> ${opt} </div>
+                    `).join('')}
                 </div>
-            `).join('');
-        }
-        
+                <p style="margin-top:5px; font-size:0.9rem;">
+                    Status: <span class="badge ${q.status==='Correct'?'bg-green':'bg-red'}">${q.status}</span>
+                    | Time Spent: ${q.timeSpent}s
+                </p>
+                ${q.solution ? `<div style="background:#f0f9ff; padding:10px; margin-top:5px;"><strong>💡 Solution:</strong> ${q.solution}</div>` : ''}
+            </div>
+        `).join('');
         document.getElementById('review-modal').style.display = 'flex';
     }
 
     // --- BLOGS ---
     async function loadBlogs() {
         const res = await fetch('/api/blogs');
-        const blogs = await res.json();
-        document.getElementById('blog-grid').innerHTML = blogs.map(b => `
+        allBlogs = await res.json();
+        document.getElementById('blog-grid').innerHTML = allBlogs.map((b, i) => `
             <div class="card blog-card">
-                ${b.image ? `<img src="${b.image}" style="width:100%; height:150px; object-fit:cover;">` : ''}
-                <h3>${b.title}</h3>
+                ${b.image ? `<img src="${b.image}" style="width:100%; height:150px; object-fit:cover; border-radius:6px;">` : ''}
+                <h3 style="margin:10px 0;">${b.title}</h3>
                 <div class="blog-text">${b.content}</div>
-                <button style="color:blue; background:none; border:none; margin-top:5px; cursor:pointer;" onclick="alert('Full blog view not implemented in this demo')">Read More</button>
+                <button style="color:blue; background:none; border:none; margin-top:auto; cursor:pointer; text-align:left; padding:0;" onclick="openBlog(${i})">Read More</button>
             </div>
         `).join('');
+    }
+
+    function openBlog(index) {
+        const b = allBlogs[index];
+        document.getElementById('bm-title').innerText = b.title;
+        document.getElementById('bm-date').innerText = new Date(b.date).toDateString();
+        document.getElementById('bm-content').innerText = b.content;
+        const img = document.getElementById('bm-img');
+        if(b.image) { img.src = b.image; img.style.display = 'block'; } else img.style.display = 'none';
+        document.getElementById('blog-modal').style.display = 'flex';
     }
 
     // --- ADMIN ---
@@ -445,13 +491,10 @@
                 <input id="t-title" placeholder="Title">
                 <input id="t-dur" type="number" placeholder="Duration (min)">
                 <input id="t-code" placeholder="Password (Optional)">
-                <select id="t-cat">
-                    <option>11th</option><option>12th</option><option>Organic</option><option>Full Syllabus</option>
-                </select>
+                <select id="t-cat"><option>11th</option><option>12th</option><option>Organic</option><option>Full Syllabus</option></select>
                 <div style="margin:10px 0; border:1px solid #ccc; padding:10px;">
                     <label><input type="checkbox" id="t-live"> Is Live Test?</label>
-                    <br>Start: <input type="datetime-local" id="t-start">
-                    End: <input type="datetime-local" id="t-end">
+                    <br>Start: <input type="datetime-local" id="t-start"> End: <input type="datetime-local" id="t-end">
                 </div>
                 <hr>
                 <h4>Add Question</h4>
@@ -459,30 +502,40 @@
                     <button class="tool-btn" onclick="exec('bold')">B</button>
                     <button class="tool-btn" onclick="exec('subscript')">X₂</button>
                     <button class="tool-btn" onclick="exec('superscript')">X²</button>
-                    <button class="tool-btn" onclick="insSym(' &rarr; ')">→</button>
-                    <button class="tool-btn" onclick="insSym(' ⇌ ')">⇌</button>
                 </div>
                 <div id="q-editor" class="editor" contenteditable="true"></div>
-                
                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                    <input id="op0" placeholder="Option A">
-                    <input id="op1" placeholder="Option B">
-                    <input id="op2" placeholder="Option C">
-                    <input id="op3" placeholder="Option D">
+                    <input id="op0" placeholder="Option A"><input id="op1" placeholder="Option B">
+                    <input id="op2" placeholder="Option C"><input id="op3" placeholder="Option D">
                 </div>
-                <input id="q-sol" placeholder="Solution (Visible after test)">
+                <input id="q-sol" placeholder="Solution">
                 Correct: <select id="q-corr"><option value="0">A</option><option value="1">B</option><option value="2">C</option><option value="3">D</option></select>
                 <button class="btn btn-gold" onclick="addDraftQ()">Add Question</button>
                 <p>Questions Added: <span id="q-count">0</span></p>
                 <button class="btn btn-red" onclick="pubTest()">PUBLISH</button>
             `;
         }
-        // ... (Other admin tabs omitted for brevity, logic follows same pattern)
+        else if (tab === 'announce') {
+            c.innerHTML = `<h3>Manage Announcements</h3>
+            <input id="ann-text" placeholder="New Announcement Text">
+            <button class="btn btn-gold" onclick="postAnnounce()">Post</button>
+            <div id="ann-list" style="margin-top:20px;"></div>`;
+            fetch('/api/announcement').then(r=>r.json()).then(d => {
+                document.getElementById('ann-list').innerHTML = d.list.map(t => `<div style="padding:10px; border-bottom:1px solid #eee; display:flex; justify-content:space-between;">${t} <button onclick="delAnnounce('${t}')">X</button></div>`).join('');
+            });
+        }
+        else if (tab === 'blog') {
+            c.innerHTML = `<h3>Post Blog</h3>
+            <input id="b-title" placeholder="Blog Title">
+            <textarea id="b-content" style="height:100px" placeholder="Content"></textarea>
+            <input id="b-img" placeholder="Image URL">
+            <button class="btn btn-gold" onclick="postBlog()">Post Blog</button>`;
+        }
+        // ... other admin tabs (offline/upload/students) kept same logic
     }
 
     function exec(cmd) { document.execCommand(cmd, false, null); }
-    function insSym(sym) { document.getElementById('q-editor').focus(); document.execCommand('insertText', false, sym); }
-
+    
     function addDraftQ() {
         draftQ.push({
             text: document.getElementById('q-editor').innerHTML,
@@ -497,7 +550,6 @@
     }
 
     async function pubTest() {
-        const isLive = document.getElementById('t-live').checked;
         await fetch('/api/admin/test', {
             method: 'POST', headers: {'Content-Type':'application/json'},
             body: JSON.stringify({
@@ -505,13 +557,40 @@
                 duration: document.getElementById('t-dur').value,
                 accessCode: document.getElementById('t-code').value,
                 category: document.getElementById('t-cat').value,
-                isLive,
+                isLive: document.getElementById('t-live').checked,
                 startTime: document.getElementById('t-start').value,
                 endTime: document.getElementById('t-end').value,
                 questions: draftQ
             })
         });
         alert("Published!"); draftQ = [];
+    }
+    
+    async function postAnnounce() {
+        await fetch('/api/admin/announcement/add', {
+            method:'POST', headers:{'Content-Type':'application/json'},
+            body: JSON.stringify({text: document.getElementById('ann-text').value})
+        });
+        showAdm('announce');
+        loadAnnouncements(); // Refresh Bar
+    }
+    async function delAnnounce(text) {
+        await fetch('/api/admin/announcement/delete', {
+            method:'POST', headers:{'Content-Type':'application/json'},
+            body: JSON.stringify({text})
+        });
+        showAdm('announce');
+    }
+    async function postBlog() {
+        await fetch('/api/admin/blog', {
+            method:'POST', headers:{'Content-Type':'application/json'},
+            body: JSON.stringify({
+                title: document.getElementById('b-title').value,
+                content: document.getElementById('b-content').value,
+                image: document.getElementById('b-img').value
+            })
+        });
+        alert("Blog Posted!");
     }
 </script>
 </body>

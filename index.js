@@ -10,7 +10,7 @@ app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // --- 1. DATABASE CONNECTION ---
-// ⚠️ NOTE: If testing on a restricted WiFi (College/Office), use: "mongodb://127.0.0.1:27017/arc_classes"
+// ⚠️ Replace with your actual connection string if not testing locally
 const dbLink = "mongodb+srv://ankitprogrammer25:a32x05sYvukG178G@cluster0.0dhqpzv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 
 mongoose.connect(dbLink)
@@ -24,7 +24,7 @@ const StudentSchema = new mongoose.Schema({
 const Student = mongoose.model('Student', StudentSchema);
 
 const MaterialSchema = new mongoose.Schema({
-    title: String, description: String, link: String, category: String, // "11th", "Organic", etc.
+    title: String, description: String, link: String, category: String, 
     image: String, accessCode: String, date: { type: Date, default: Date.now }
 });
 const Material = mongoose.model('Material', MaterialSchema);
@@ -50,8 +50,8 @@ const OfflineResult = mongoose.model('OfflineResult', OfflineResultSchema);
 const ResultSchema = new mongoose.Schema({
     studentName: String, studentEmail: String, testTitle: String, testId: String, testType: String,
     score: Number, totalMarks: Number, percentage: Number, rank: Number, feedback: String,
-    answers: [Number], // Index of option selected
-    timeTaken: [Number], // Seconds per question
+    answers: [Number], 
+    timeTaken: [Number], 
     date: { type: Date, default: Date.now }
 });
 const Result = mongoose.model('Result', ResultSchema);
@@ -61,6 +61,7 @@ const BlogSchema = new mongoose.Schema({
 });
 const Blog = mongoose.model('Blog', BlogSchema);
 
+// Schema for dynamic content like Announcements
 const ConfigSchema = new mongoose.Schema({ type: String, list: [String] });
 const Config = mongoose.model('Config', ConfigSchema);
 
@@ -96,15 +97,11 @@ app.post('/api/result-details', async (req, res) => {
         const result = await Result.findById(req.body.resultId);
         if(!result) return res.json({ success: false, message: "Result Not Found" });
 
-        // Dynamic Rank: Count how many people scored HIGHER than this student in THIS test
         const rank = (await Result.countDocuments({ testId: result.testId, score: { $gt: result.score } })) + 1;
-        
         const test = await Test.findById(result.testId);
         
-        // If test is deleted, we return what we can
         if(!test) return res.json({ success: true, result, rank, questions: [], message: "Test was deleted by teacher." });
 
-        // Merge Data for Frontend
         const detailedQuestions = test.questions.map((q, i) => ({
             text: q.text,
             image: q.image,
@@ -169,8 +166,6 @@ app.post('/api/test/start', async (req, res) => {
     if(!s) return res.json({ success: false, message: "Login first" });
 
     const t = await Test.findById(id);
-    
-    // Live Test Logic
     if(t.isLive) {
         const now = new Date();
         if(now < new Date(t.startTime)) return res.json({ success: false, message: `Starts: ${new Date(t.startTime).toLocaleString()}` });
@@ -178,7 +173,6 @@ app.post('/api/test/start', async (req, res) => {
     }
 
     if(!t.accessCode || t.accessCode === code) {
-        // Send questions hidden (no correct answers)
         const safeQ = t.questions.map(q => ({ text: q.text, image: q.image, options: q.options, marks: q.marks, negative: q.negative }));
         res.json({ success: true, test: {...t._doc, questions: safeQ} });
     } else res.json({ success: false, message: "Wrong Password" });
@@ -197,19 +191,17 @@ app.post('/api/test/submit', async (req, res) => {
         });
 
         const pct = (score / total) * 100;
-        const type = t.isLive ? 'live' : 'practice';
-        
         const r = new Result({ 
-            studentName, studentEmail, testTitle: t.title, testId: t._id, testType: type, 
+            studentName, studentEmail, testTitle: t.title, testId: t._id, testType: t.isLive ? 'live' : 'practice', 
             score, totalMarks: total, percentage: pct, rank: 0, feedback: pct>80?"Excellent":"Keep Improving", 
-            answers, timeTaken // Saving Time Taken Array
+            answers, timeTaken 
         });
         await r.save();
         
         const rank = (await Result.countDocuments({ testId: t._id, score: { $gt: score } })) + 1;
         r.rank = rank; await r.save();
         
-        res.json({ success: true, resultId: r._id });
+        res.json({ success: true, score, totalMarks: total, rank });
     } catch(e) { res.json({ success: false }); }
 });
 
