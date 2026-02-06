@@ -12,21 +12,18 @@
         /* LAYOUT */
         nav { background: var(--primary); padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
         
-        /* RGB LOGO FIX */
+        /* RGB LOGO */
         .logo { 
-            font-size: 2rem; 
-            font-weight: 900; 
+            font-size: 2rem; font-weight: 900; 
             background: linear-gradient(90deg, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000);
-            background-size: 400%;
-            -webkit-background-clip: text; 
-            background-clip: text;
-            color: transparent; 
-            animation: rainbow 8s linear infinite;
-            cursor: pointer;
+            background-size: 400%; -webkit-background-clip: text; background-clip: text; color: transparent; 
+            animation: rainbow 8s linear infinite; cursor: pointer;
         }
         @keyframes rainbow { 0% { background-position: 0%; } 100% { background-position: 400%; } }
 
-        .menu a { color: white; margin-left: 25px; text-decoration: none; font-weight: 600; cursor: pointer; transition: 0.3s; }
+        /* MENU FIX: FORCE ONE LINE */
+        .menu { display: flex; align-items: center; gap: 25px; white-space: nowrap; }
+        .menu a { color: white; text-decoration: none; font-weight: 600; cursor: pointer; transition: 0.3s; }
         .menu a:hover { color: var(--gold); }
         
         /* ANNOUNCEMENT BAR */
@@ -37,6 +34,9 @@
         .section { display: none; padding: 40px; max-width: 1100px; margin: auto; flex: 1; }
         .section.active { display: block; animation: fadeIn 0.3s; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* FOOTER */
+        footer { background: var(--primary); color: white; text-align: center; padding: 20px; margin-top: auto; border-top: 4px solid var(--gold); }
 
         /* COMPONENTS */
         .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: 0.2s; border: 1px solid #eee; display: flex; flex-direction: column; }
@@ -57,6 +57,7 @@
             display: -webkit-box;
             -webkit-line-clamp: 3;
             -webkit-box-orient: vertical;
+            line-clamp: 3;
             overflow: hidden;
             margin-bottom: 10px;
             color: #555;
@@ -82,8 +83,6 @@
         .review-row { border-bottom: 1px solid #eee; padding: 15px 0; }
         .badge { padding: 5px 10px; border-radius: 4px; color: white; font-size: 0.8rem; font-weight: bold; }
         .bg-green { background: var(--green); } .bg-red { background: var(--red); }
-        
-        /* CLOSE BTN */
         .close-corner { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; color: #777; }
         .close-corner:hover { color: var(--red); }
     </style>
@@ -106,9 +105,7 @@
 
 <div class="anno-bar">
     <div class="anno-label">🔔 NOTICES</div>
-    <marquee id="anno-marquee" onmouseover="this.stop()" onmouseout="this.start()">
-        Loading announcements...
-    </marquee>
+    <marquee id="anno-marquee" onmouseover="this.stop()" onmouseout="this.start()">Loading announcements...</marquee>
 </div>
 
 <div id="home" class="section active">
@@ -117,7 +114,6 @@
         <p>Premium Notes, Test Series, and Live Classes.</p>
         <button class="btn btn-gold" onclick="show('tests')">Start Practice</button>
     </div>
-    
     <h3>Latest Blogs</h3>
     <div id="blog-grid" class="grid"></div>
 </div>
@@ -206,6 +202,10 @@
     <div id="adm-content" style="margin-top:20px;"></div>
 </div>
 
+<footer>
+    &copy; 2026 ARC Classes. All Rights Reserved. | Empowering Students
+</footer>
+
 <div id="review-modal" class="modal">
     <div class="modal-content">
         <span class="close-corner" onclick="document.getElementById('review-modal').style.display='none'">&times;</span>
@@ -228,7 +228,7 @@
 <script>
     let user = JSON.parse(localStorage.getItem('arc_user'));
     let currentTest = null, answers = [], timeTaken = [], timer = null, qIndex = 0;
-    let draftQ = [], allBlogs = []; // Store blogs globally
+    let draftQ = [], allBlogs = []; 
 
     // INIT
     if(user) {
@@ -248,7 +248,6 @@
         if(id==='results') loadResults('practice');
     }
 
-    // --- ANNOUNCEMENTS ---
     async function loadAnnouncements() {
         try {
             const res = await fetch('/api/announcement');
@@ -258,7 +257,6 @@
         } catch(e) { console.error("Anno Error"); }
     }
 
-    // --- AUTH ---
     async function doLogin() {
         const res = await fetch('/api/login', {
             method: 'POST', headers: {'Content-Type':'application/json'},
@@ -280,7 +278,7 @@
     }
     function logout() { localStorage.removeItem('arc_user'); location.reload(); }
 
-    // --- LIBRARY ---
+    // --- LIBRARY & LOCK ICON ---
     let allMats = [];
     async function loadMaterials() { allMats = await (await fetch('/api/materials')).json(); }
     function loadLib(cat) {
@@ -313,14 +311,14 @@
         if(data.success) window.open(data.link); else alert("Wrong Password");
     }
 
-    // --- TESTS ---
+    // --- TESTS & LOCK ICON ---
     async function loadTests(isLive) {
         const res = await fetch('/api/tests');
         const tests = await res.json();
         const target = isLive ? 'live-list' : 'test-list';
         document.getElementById(target).innerHTML = tests.filter(t => t.isLive === isLive).map(t => `
             <div class="card" style="border-left: 5px solid ${isLive ? 'red' : 'gold'}">
-                <h3>${t.title}</h3>
+                <h3>${t.title} ${t.accessCode ? '🔒' : ''}</h3>
                 <p>${t.duration} Mins | ${t.questions ? '?' : ''} Qs</p>
                 ${isLive ? `<p style="color:red">Start: ${new Date(t.startTime).toLocaleString()}</p>` : ''}
                 <button class="btn btn-gold" onclick="startTest('${t._id}')">Start</button>
@@ -531,7 +529,7 @@
             <input id="b-img" placeholder="Image URL">
             <button class="btn btn-gold" onclick="postBlog()">Post Blog</button>`;
         }
-        // ... other admin tabs (offline/upload/students) kept same logic
+        // Admin tabs for upload/offline/students logic kept consistent
     }
 
     function exec(cmd) { document.execCommand(cmd, false, null); }
@@ -572,7 +570,7 @@
             body: JSON.stringify({text: document.getElementById('ann-text').value})
         });
         showAdm('announce');
-        loadAnnouncements(); // Refresh Bar
+        loadAnnouncements(); 
     }
     async function delAnnounce(text) {
         await fetch('/api/admin/announcement/delete', {
