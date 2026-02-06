@@ -178,7 +178,9 @@
                 <div id="q-text-rich" class="editor-area" contenteditable="true" style="min-height:100px;"></div>
                 <p>Image:</p><input type="file" id="q-img-file" accept="image/*"><img id="q-img-preview" style="height:80px; display:none">
                 <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px;"><div id="op0" contenteditable="true" style="border:1px solid #ccc; padding:10px; background:white;"></div><div id="op1" contenteditable="true" style="border:1px solid #ccc; padding:10px; background:white;"></div><div id="op2" contenteditable="true" style="border:1px solid #ccc; padding:10px; background:white;"></div><div id="op3" contenteditable="true" style="border:1px solid #ccc; padding:10px; background:white;"></div></div>
-                <input id="q-topic" placeholder="Topic" style="margin-top:10px"><div style="display:flex; gap:10px; margin-top:10px"><select id="q-corr"><option value="0">Correct: A</option><option value="1">Correct: B</option><option value="2">Correct: C</option><option value="3">Correct: D</option></select><input type="number" id="q-mark" value="2"><input type="number" id="q-neg" value="0.5"></div>
+                <input id="q-topic" placeholder="Topic" style="margin-top:10px">
+                <textarea id="q-sol" placeholder="Solution/Explanation (Visible after test)" style="margin-top:10px; width:100%; height:80px;"></textarea>
+                <div style="display:flex; gap:10px; margin-top:10px"><select id="q-corr"><option value="0">Correct: A</option><option value="1">Correct: B</option><option value="2">Correct: C</option><option value="3">Correct: D</option></select><input type="number" id="q-mark" value="2"><input type="number" id="q-neg" value="0.5"></div>
                 <button class="btn-gold" style="margin-top:10px" onclick="saveDraftQuestion()">Save Question</button>
                 <p style="margin-top:10px; font-weight:bold;">Questions:</p><div id="draft-palette" class="draft-palette"></div>
             </div>
@@ -253,11 +255,15 @@
     async function loadStudents(){ const d=await (await fetch('/api/admin/students')).json(); document.getElementById('student-table').innerHTML=`<tr><th>Name</th><th>Email</th><th>Password</th></tr>`+d.map(s=>`<tr><td>${s.name}</td><td>${s.email}</td><td>${s.password}</td></tr>`).join(''); }
     async function loadOnlineResults(){ const d=await (await fetch('/api/admin/results/online')).json(); document.getElementById('online-res-table').innerHTML=`<tr><th>Date</th><th>Test</th><th>Student</th><th>Score</th><th>Action</th></tr>`+d.map(r=>`<tr><td>${new Date(r.date).toLocaleDateString()}</td><td>${r.testTitle}</td><td>${r.studentName}<br>${r.studentEmail}</td><td>${r.score}/${r.totalMarks}</td><td><button class="btn-gold" onclick="viewSubmission('${r._id}')">View</button> <button class="btn-red" onclick="deleteResult('${r._id}')">Del</button></td></tr>`).join(''); }
     
-    // VIEW SUBMISSION (SHARED)
+    // VIEW SUBMISSION
     async function viewSubmission(rid){ 
         const res = await fetch('/api/result-details', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ resultId:rid }) }); 
         const data = await res.json(); 
-        if(!data.success) return alert("Error"); 
+        if(!data.success) {
+            if(data.testDeleted) alert("The Test for this result has been deleted by the teacher.");
+            else alert("Error viewing result.");
+            return;
+        }
         const { result, test, rank } = data; 
         
         document.getElementById('review-chart-box').style.display = 'block';
@@ -275,7 +281,7 @@
         test.questions.forEach((q, i) => { 
             const studentAns = result.answers[i]; const isCorrect = studentAns === q.correct; 
             const style = studentAns===null?"gray":(isCorrect?"green":"red"); 
-            html += `<div class="review-q"><p>Q${i+1}: ${q.text} <span style="color:${style}; float:right;">${isCorrect?"Correct":"Wrong"}</span></p>${q.image?`<img src="${q.image}" style="height:100px;">`:''}${q.options.map((o,oi)=>`<div class="review-opt" style="${oi===q.correct?'background:#dcfce7':(oi===studentAns?'background:#fee2e2':'')}">${o}</div>`).join('')}</div>`; 
+            html += `<div class="review-q"><p>Q${i+1}: ${q.text} <span style="color:${style}; float:right;">${isCorrect?"Correct":"Wrong"}</span></p>${q.image?`<img src="${q.image}" style="height:100px;">`:''}${q.options.map((o,oi)=>`<div class="review-opt" style="${oi===q.correct?'background:#dcfce7':(oi===studentAns?'background:#fee2e2':'')}">${o}</div>`).join('')}${q.solution ? `<div style="margin-top:10px; padding:10px; background:#f0f9ff; border-left:4px solid var(--primary);"><strong>Solution:</strong> ${q.solution}</div>` : ''}</div>`; 
         }); 
         document.getElementById('review-content').innerHTML = html; 
         document.getElementById('review-modal').style.display = 'flex'; 
@@ -292,13 +298,13 @@
     async function publishOfflineResult(){ await fetch('/api/admin/offline-result',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({title:document.getElementById('off-title').value, records:draftRecs})}); alert("Published!"); draftRecs=[]; }
     
     function saveDraftQuestion() {
-        const qObj = { text:document.getElementById('q-text-rich').innerHTML, image:qImgBase64, options:[0,1,2,3].map(i=>document.getElementById('op'+i).innerHTML), correct:parseInt(document.getElementById('q-corr').value), marks:parseFloat(document.getElementById('q-mark').value), negative:parseFloat(document.getElementById('q-neg').value), topic:document.getElementById('q-topic').value };
+        const qObj = { text:document.getElementById('q-text-rich').innerHTML, image:qImgBase64, options:[0,1,2,3].map(i=>document.getElementById('op'+i).innerHTML), correct:parseInt(document.getElementById('q-corr').value), marks:parseFloat(document.getElementById('q-mark').value), negative:parseFloat(document.getElementById('q-neg').value), topic:document.getElementById('q-topic').value, solution:document.getElementById('q-sol').value };
         if(editingQIdx > -1) draftQs[editingQIdx] = qObj; else draftQs.push(qObj);
         renderDraftPalette(); clearQForm();
     }
     function renderDraftPalette() { document.getElementById('draft-palette').innerHTML = draftQs.map((_, i) => `<div class="p-btn" style="width:30px; height:30px; display:inline-flex; margin:2px; background:#ddd;" onclick="editDraftQ(${i})">${i+1}</div>`).join(''); }
-    function editDraftQ(i) { editingQIdx = i; const q = draftQs[i]; document.getElementById('q-header').innerText = `Edit Q${i+1}`; document.getElementById('q-text-rich').innerHTML = q.text; [0,1,2,3].forEach(idx => document.getElementById('op'+idx).innerHTML = q.options[idx]); if(q.image) { document.getElementById('q-img-preview').src = q.image; document.getElementById('q-img-preview').style.display='block'; qImgBase64 = q.image; } }
-    function clearQForm() { editingQIdx = -1; document.getElementById('q-header').innerText = `Add Question ${draftQs.length+1}`; document.getElementById('q-text-rich').innerHTML=""; qImgBase64=""; document.getElementById('q-img-preview').style.display='none'; [0,1,2,3].forEach(i=>document.getElementById('op'+i).innerHTML=""); document.getElementById('q-topic').value=""; }
+    function editDraftQ(i) { editingQIdx = i; const q = draftQs[i]; document.getElementById('q-header').innerText = `Edit Q${i+1}`; document.getElementById('q-text-rich').innerHTML = q.text; [0,1,2,3].forEach(idx => document.getElementById('op'+idx).innerHTML = q.options[idx]); if(q.image) { document.getElementById('q-img-preview').src = q.image; document.getElementById('q-img-preview').style.display='block'; qImgBase64 = q.image; } document.getElementById('q-sol').value = q.solution || ""; }
+    function clearQForm() { editingQIdx = -1; document.getElementById('q-header').innerText = `Add Question ${draftQs.length+1}`; document.getElementById('q-text-rich').innerHTML=""; qImgBase64=""; document.getElementById('q-img-preview').style.display='none'; [0,1,2,3].forEach(i=>document.getElementById('op'+i).innerHTML=""); document.getElementById('q-topic').value=""; document.getElementById('q-sol').value=""; }
     async function publishTest(){ 
         const isLive = document.getElementById('t-isLive').checked;
         const body = JSON.stringify({title:document.getElementById('t-title').value, duration:document.getElementById('t-dur').value, accessCode:document.getElementById('t-code').value, instructions:document.getElementById('t-inst').value, category:document.getElementById('t-cat').value, questions:draftQs, isLive, startTime:document.getElementById('t-start').value, endTime:document.getElementById('t-end').value });
