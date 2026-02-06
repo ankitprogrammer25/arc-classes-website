@@ -38,7 +38,10 @@
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border: 1px solid #eee; display: flex; flex-direction: column; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        
+        /* GRID SYSTEM (Fixed for Library/Blogs) */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; width: 100%; box-sizing: border-box; }
+        
         input, select, textarea { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
 
         /* BLOG STYLES */
@@ -49,14 +52,12 @@
         #bm-content { line-height: 1.8; color: #333; font-size: 1.1rem; }
         #bm-content img { max-width: 100%; height: auto; margin: 15px 0; display: block; border-radius: 8px; }
 
-        /* RICH EDITOR & TABLES */
+        /* RICH EDITOR */
         .toolbar { background: #e2e8f0; padding: 10px; border: 1px solid #ccc; border-radius: 6px 6px 0 0; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; position: sticky; top: 0; z-index: 10; }
         .tool-btn { background: white; border: 1px solid #94a3b8; padding: 5px 10px; cursor: pointer; font-weight: bold; border-radius: 4px; min-width: 30px; }
-        
         .editor { min-height: 150px; border: 1px solid #ccc; padding: 15px; border-radius: 0 0 6px 6px; background: white; outline: none; line-height: 1.6; }
         .editor-small { min-height: 40px; border: 1px solid #ccc; padding: 10px; border-radius: 6px; background: white; outline: none; margin-bottom: 10px; }
         .editor-small:focus { border: 2px solid var(--primary); }
-        
         .editor img { max-width: 100%; height: auto; }
 
         table { width: 100%; border-collapse: collapse; margin-top: 15px; }
@@ -72,7 +73,7 @@
         .close-corner { position: absolute; top: 15px; right: 20px; font-size: 2rem; cursor: pointer; color: #777; font-weight: bold; }
         .close-corner:hover { color: var(--red); }
         
-        /* TEST CREATOR LAYOUT */
+        /* TEST CREATION PALETTE */
         .create-test-layout { display: flex; gap: 20px; }
         .ct-left { flex: 3; }
         .ct-right { flex: 1; background: #f8fafc; padding: 15px; border: 1px solid #e2e8f0; border-radius: 8px; height: fit-content; }
@@ -81,17 +82,40 @@
         .q-btn:hover { background: #e2e8f0; }
         .q-btn.active { border: 2px solid var(--primary); background: #e0f2fe; }
 
-        /* LIBRARY */
-        .folder { background: #e0f2fe; padding: 30px; text-align: center; border-radius: 12px; cursor: pointer; font-size: 1.2rem; font-weight: bold; border-bottom: 4px solid var(--primary); color: var(--primary); }
+        /* LIBRARY FOLDERS */
+        .folder { background: #e0f2fe; padding: 30px; text-align: center; border-radius: 12px; cursor: pointer; font-size: 1.2rem; font-weight: bold; border-bottom: 4px solid var(--primary); color: var(--primary); transition:0.2s; }
+        .folder:hover { transform: translateY(-3px); background: #bae6fd; }
         
-        /* EXAM & RESULTS */
+        /* EXAM & MCQ ALIGNMENT FIX */
         .exam-layout { display: flex; gap: 20px; height: 80vh; }
         .question-panel { flex: 3; background: white; padding: 30px; border-radius: 12px; overflow-y: auto; }
         .palette-panel { flex: 1; background: white; padding: 20px; border-radius: 12px; display: flex; flex-direction: column; }
+        
+        /* FIXED MCQ LABEL */
+        .mcq-label {
+            display: flex; 
+            align-items: flex-start; /* Aligns circle with top of text */
+            padding: 10px; 
+            margin-bottom: 8px;
+            border: 1px solid #eee;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .mcq-label:hover { background: #f8fafc; }
+        .mcq-label input { 
+            margin-right: 12px; 
+            margin-top: 5px; /* Slight adjustment for alignment */
+            width: 18px; 
+            height: 18px;
+            flex-shrink: 0; /* Prevents squishing */
+        }
+
         .p-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
         .p-btn { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border: 1px solid #ddd; cursor: pointer; border-radius: 50%; font-weight: bold; }
         .p-btn.done { background: var(--green); color: white; border-color: var(--green); }
         .p-btn.active { border: 2px solid var(--primary); }
+        
         .review-row { border-bottom: 1px solid #eee; padding: 15px 0; }
         .badge { padding: 5px 10px; border-radius: 4px; color: white; font-size: 0.8rem; font-weight: bold; }
         .bg-green { background: var(--green); } .bg-red { background: var(--red); }
@@ -114,7 +138,7 @@
         <a onclick="show('home')">Home</a>
         <a onclick="show('library')">Library</a>
         <a onclick="show('tests')">Practice Tests</a>
-        <a onclick="show('live')"><span class="blink">🔴</span> Upcoming Test </a>
+        <a onclick="show('live')"><span class="blink">🔴</span> Upcoming test</a>
         <a onclick="show('results')" id="nav-results">Results</a>
         <a onclick="show('login')" id="nav-login">Login</a>
         <a onclick="show('admin')" id="nav-admin">TEACHER PANEL</a>
@@ -129,7 +153,7 @@
 
 <div id="home" class="section active">
     <div style="text-align:center; padding: 50px 20px;">
-        <h1 style="color:var(--primary); font-size: 3rem;">Master Chemistry with ARC Classes </h1>
+        <h1 style="color:var(--primary); font-size: 3rem;">Master Chemistry with ARC Classes</h1>
         <p>Premium Notes, Test Series, and Live Classes.</p>
         <button class="btn btn-gold" onclick="show('tests')">Start Practice</button>
     </div>
@@ -199,11 +223,12 @@
         <div class="folder" onclick="loadLib('Test Series')">Test Series</div>
         <div class="folder" onclick="loadLib('Notes')">Coaching Notes</div>
     </div>
-    <button id="lib-back" class="btn btn-red" style="display:none; margin-bottom:10px;" onclick="resetLib()">Back</button>
+    <button id="lib-back" class="btn btn-red" style="display:none; margin-bottom:20px;" onclick="resetLib()">Back</button>
     <div id="lib-content" class="grid"></div>
 </div>
+
 <div id="tests" class="section"><h2>📝 Practice Tests</h2><div id="test-list" class="grid"></div></div>
-<div id="live" class="section"><h2>🔴 Live or Upcoming Tests</h2><div id="live-list" class="grid"></div></div>
+<div id="live" class="section"><h2>🔴 Live Tests or Upcoming Tests</h2><div id="live-list" class="grid"></div></div>
 
 <div id="exam" class="section" style="max-width:100%; padding:20px;">
     <div class="exam-layout">
@@ -267,7 +292,7 @@
     let tempImg = "";
     let editingBlogId = null;
     let editingTestId = null;
-    let editingMaterialId = null; // Track editing state for library
+    let editingMaterialId = null; 
     let editQIndex = -1;
 
     // INIT
@@ -392,13 +417,11 @@
                 <div id="manage-area" style="overflow-x:auto;">Select a category to manage.</div>
             `;
         }
-        // ... (reuse announce, upload, students)
         else if(tab==='announce') {
              c.innerHTML = `<h3>Manage Announcements</h3><input id="ann-text" placeholder="New Announcement Text"><button class="btn btn-gold" onclick="postAnnounce()">Post</button><div id="ann-list" style="margin-top:20px;"></div>`;
              fetch('/api/announcement').then(r=>r.json()).then(d => { document.getElementById('ann-list').innerHTML = d.list.map(t => `<div style="padding:10px; border-bottom:1px solid #eee; display:flex; justify-content:space-between;">${t} <button onclick="delAnnounce('${t}')">X</button></div>`).join(''); });
         }
         else if(tab==='upload') {
-            // Updated Upload Tab to support Edit Mode
             const btnText = editingMaterialId ? "UPDATE MATERIAL" : "Upload";
             c.innerHTML = `<h3>${editingMaterialId ? 'Edit' : 'Upload'} Material</h3>
             <input id="m-title" placeholder="Title">
@@ -449,7 +472,7 @@
 
     // --- EDITING LOGIC ---
     function initCreateTest() { editingTestId = null; draftQ = []; showAdm('create-test'); renderCreatePalette(); }
-    function initUpload() { editingMaterialId = null; showAdm('upload'); } // Reset for fresh upload
+    function initUpload() { editingMaterialId = null; showAdm('upload'); } 
 
     async function editTest(id) {
         const res = await fetch(`/api/admin/test/${id}`);
@@ -483,15 +506,11 @@
     }
 
     async function editMaterial(id) {
-        // Fetch fresh list to be sure or use allMats
         if(!allMats.length) await loadMaterials();
         const mat = allMats.find(m => m._id === id);
         if(!mat) return;
-        
         editingMaterialId = id;
-        showAdm('upload'); // Switch tab and render form
-        
-        // Pre-fill form
+        showAdm('upload');
         document.getElementById('m-title').value = mat.title;
         document.getElementById('m-link').value = mat.link;
         document.getElementById('m-img').value = mat.image;
@@ -507,14 +526,11 @@
             category: document.getElementById('m-cat').value, 
             accessCode: document.getElementById('m-code').value 
         };
-        
         const method = editingMaterialId ? 'PUT' : 'POST';
         const url = editingMaterialId ? `/api/admin/material/${editingMaterialId}` : '/api/admin/material';
-
         await fetch(url, { method, headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) }); 
         alert(editingMaterialId ? "Material Updated!" : "Material Uploaded!");
-        editingMaterialId = null; // Reset
-        showAdm('upload'); // Clear form
+        editingMaterialId = null; showAdm('upload'); 
     }
 
     // --- OFFLINE RESULT LOGIC ---
@@ -587,31 +603,40 @@
     async function loadTests(isLive) { const res = await fetch('/api/tests'); const tests = await res.json(); document.getElementById(isLive?'live-list':'test-list').innerHTML = tests.filter(t => (t.isLive || false) === isLive).map(t => `<div class="card" style="border-left: 5px solid ${isLive ? 'red' : 'gold'}"><h3>${t.title} ${t.accessCode?'🔒':''}</h3><p>${t.duration} Mins | ${t.questions ? '?' : ''} Qs</p>${isLive ? `<p style="color:red">Start: ${new Date(t.startTime).toLocaleString()}</p>` : ''}<button class="btn btn-gold" onclick="startTest('${t._id}')">Start</button></div>`).join(''); }
     async function startTest(id) { const code = prompt("Enter Test Password (if any):"); const res = await fetch('/api/test/start', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ id, code, studentEmail: user.email }) }); const data = await res.json(); if(data.success) { currentTest = data.test; answers = new Array(currentTest.questions.length).fill(null); timeTaken = new Array(currentTest.questions.length).fill(0); qIndex = 0; show('exam'); renderQ(); } else alert(data.message); }
     
-    // UPDATED RENDERQ TO SUPPORT HTML IN OPTIONS
     function renderQ() { 
         const q = currentTest.questions[qIndex]; 
         document.getElementById('q-no').innerText = `Q${qIndex + 1}`; 
         document.getElementById('q-text').innerHTML = q.text; 
         const img = document.getElementById('q-img'); 
         if(q.image) { img.src = q.image; img.style.display = 'block'; } else img.style.display = 'none'; 
-        
-        // RENDER OPTIONS AS HTML
         document.getElementById('q-opts').innerHTML = q.options.map((o, i) => `
-            <label style="display:block; padding:8px; display:flex; align-items:flex-start;">
-                <input type="radio" name="opt" value="${i}" ${answers[qIndex] === i ? 'checked' : ''} style="margin-top:5px; margin-right:8px;"> 
+            <label class="mcq-label">
+                <input type="radio" name="opt" value="${i}" ${answers[qIndex] === i ? 'checked' : ''}> 
                 <div>${o}</div>
             </label>
         `).join(''); 
-        
         document.getElementById('palette').innerHTML = answers.map((a, i) => `<div class="p-btn ${a !== null ? 'done' : (i === qIndex ? 'active' : '')}" onclick="gotoQ(${i})">${i+1}</div>`).join(''); 
     }
     
-    function saveNext() { const sel = document.querySelector('input[name="opt"]:checked'); answers[qIndex] = sel ? parseInt(sel.value) : null; if(qIndex < currentTest.questions.length - 1) { qIndex++; renderQ(); } }
+    // TIMER LOGIC
+    let intervalSec = 0; 
+    function startTimer(totalSec) {
+        clearInterval(timer);
+        timer = setInterval(() => {
+            totalSec--; intervalSec++;
+            const m = Math.floor(totalSec / 60);
+            const s = totalSec % 60;
+            document.getElementById('timer').innerText = `${m}:${s < 10 ? '0'+s : s}`;
+            if(totalSec <= 0) submitTest();
+        }, 1000);
+    }
+
+    function saveNext() { const sel = document.querySelector('input[name="opt"]:checked'); answers[qIndex] = sel ? parseInt(sel.value) : null; timeTaken[qIndex] = (timeTaken[qIndex] || 0) + intervalSec; intervalSec = 0; if(qIndex < currentTest.questions.length - 1) { qIndex++; renderQ(); } }
     function clearAns() { answers[qIndex] = null; renderQ(); }
-    function gotoQ(i) { qIndex = i; renderQ(); }
-    async function submitTest() { if(!confirm("Submit?")) return; const res = await fetch('/api/test/submit', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ testId: currentTest._id, answers, timeTaken, studentName: user.name, studentEmail: user.email }) }); const data = await res.json(); if(data.success) { alert(`Score: ${data.score}`); location.reload(); } }
+    function gotoQ(i) { timeTaken[qIndex] = (timeTaken[qIndex] || 0) + intervalSec; intervalSec = 0; qIndex = i; renderQ(); }
+    async function submitTest() { if(!confirm("Submit?")) return; clearInterval(timer); const res = await fetch('/api/test/submit', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ testId: currentTest._id, answers, timeTaken, studentName: user.name, studentEmail: user.email }) }); const data = await res.json(); if(data.success) { alert(`Score: ${data.score}`); location.reload(); } }
     
-    // UPDATED VIEWSHEET TO SUPPORT HTML IN OPTIONS
+    // UPDATED VIEWSHEET
     async function viewSheet(id) { 
         const res = await fetch('/api/result-details', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ resultId: id }) }); 
         const data = await res.json(); 
@@ -653,7 +678,6 @@
     }
 
     function saveDraftQ() {
-        // USE innerHTML to get RICH TEXT
         const qData = {
             text: document.getElementById('q-editor').innerHTML,
             options: [0,1,2,3].map(i => document.getElementById('op'+i).innerHTML),
