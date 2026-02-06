@@ -118,6 +118,24 @@ app.get('/api/blogs', async (req, res) => res.json(await Blog.find().sort({ date
 app.post('/api/student/results/online', async (req, res) => res.json({ success: true, results: await Result.find({ studentEmail: req.body.email }).sort({ date: -1 }) }));
 app.get('/api/results/offline', async (req, res) => res.json(await OfflineResult.find()));
 
+// CORE RESULT DETAILS (For both Student & Admin)
+app.post('/api/result-details', async (req, res) => {
+    try {
+        const result = await Result.findById(req.body.resultId);
+        if(!result) return res.json({ success: false, message: "Result Not Found" });
+        const rank = (await Result.countDocuments({ testId: result.testId, score: { $gt: result.score } })) + 1;
+        const test = await Test.findById(result.testId);
+        if(!test) return res.json({ success: true, result, rank, questions: [], message: "Test was deleted by teacher." });
+        
+        const detailedQuestions = test.questions.map((q, i) => ({
+            text: q.text, image: q.image, options: q.options, correct: q.correct, solution: q.solution,
+            studentAnswer: result.answers[i], timeSpent: result.timeTaken ? result.timeTaken[i] : 0,
+            status: result.answers[i] === q.correct ? 'Correct' : (result.answers[i] === null ? 'Skipped' : 'Wrong')
+        }));
+        res.json({ success: true, result, rank, questions: detailedQuestions });
+    } catch(e) { res.json({ success: false, message: e.message }); }
+});
+
 app.post('/api/material/unlock', async (req, res) => {
     const f = await Material.findById(req.body.id);
     if(f && (!f.accessCode || f.accessCode === req.body.code)) res.json({ success: true, link: f.link }); else res.json({ success: false });

@@ -84,15 +84,7 @@
         .review-row { border-bottom: 1px solid #eee; padding: 15px 0; }
         .badge { padding: 5px 10px; border-radius: 4px; color: white; font-size: 0.8rem; font-weight: bold; }
         .bg-green { background: var(--green); } .bg-red { background: var(--red); }
-        .blog-card .blog-text {
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            line-clamp: 3;
-            overflow: hidden;
-            margin-bottom: 10px;
-            color: #555;
-        }
+        .blog-card .blog-text { display: -webkit-box; -webkit-line-clamp: 3; line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 10px; color: #555; }
     </style>
 </head>
 <body>
@@ -308,12 +300,12 @@
     
     function logout() { localStorage.removeItem('arc_user'); location.reload(); }
 
-    // --- ADMIN PANEL FUNCTIONS (FIXED) ---
+    // --- ADMIN PANEL FUNCTIONS (UPDATED) ---
     function showAdm(tab) {
         const c = document.getElementById('adm-content');
         
         if(tab === 'create-test') {
-            c.innerHTML = `<h3>Create Test</h3><input id="t-title" placeholder="Title"><input id="t-dur" type="number" placeholder="Duration (min)"><input id="t-code" placeholder="Password (Optional)"><select id="t-cat"><option>11th</option><option>12th</option><option>Organic</option><option>Full Syllabus</option></select><div style="margin:10px 0; border:1px solid #ccc; padding:10px;"><label><input type="checkbox" id="t-live"> Is Live Test?</label><br>Start: <input type="datetime-local" id="t-start"> End: <input type="datetime-local" id="t-end"></div><hr><h4>Add Question</h4><div class="toolbar"><button class="tool-btn" onclick="exec('bold')">B</button><button class="tool-btn" onclick="exec('subscript')">X₂</button><button class="tool-btn" onclick="exec('superscript')">X²</button></div><div id="q-editor" class="editor" contenteditable="true"></div><div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;"><input id="op0" placeholder="Option A"><input id="op1" placeholder="Option B"><input id="op2" placeholder="Option C"><input id="op3" placeholder="Option D"></div><input id="q-sol" placeholder="Solution">Correct: <select id="q-corr"><option value="0">A</option><option value="1">B</option><option value="2">C</option><option value="3">D</option></select><button class="btn btn-gold" onclick="addDraftQ()">Add Question</button><p>Questions Added: <span id="q-count"><span id="q-count-val">0</span></span></p><button class="btn btn-red" onclick="pubTest()">PUBLISH</button>`;
+            c.innerHTML = `<h3>Create Test</h3><input id="t-title" placeholder="Title"><input id="t-dur" type="number" placeholder="Duration (min)"><input id="t-code" placeholder="Password (Optional)"><select id="t-cat"><option>11th</option><option>12th</option><option>Organic</option><option>Full Syllabus</option></select><div style="margin:10px 0; border:1px solid #ccc; padding:10px;"><label><input type="checkbox" id="t-live"> Is Live Test?</label><br>Start: <input type="datetime-local" id="t-start"> End: <input type="datetime-local" id="t-end"></div><hr><h4>Add Question</h4><div class="toolbar"><button class="tool-btn" onclick="exec('bold')">B</button><button class="tool-btn" onclick="exec('subscript')">X₂</button><button class="tool-btn" onclick="exec('superscript')">X²</button></div><div id="q-editor" class="editor" contenteditable="true"></div><div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;"><input id="op0" placeholder="Option A"><input id="op1" placeholder="Option B"><input id="op2" placeholder="Option C"><input id="op3" placeholder="Option D"></div><input id="q-sol" placeholder="Solution">Correct: <select id="q-corr"><option value="0">A</option><option value="1">B</option><option value="2">C</option><option value="3">D</option></select><button class="btn btn-gold" onclick="addDraftQ()">Add Question</button><p>Questions Added: <span id="q-count">${draftQ.length}</span></p><button class="btn btn-red" onclick="pubTest()">PUBLISH</button>`;
         }
         else if(tab === 'upload') {
             c.innerHTML = `<h3>Upload Material</h3><input id="m-title" placeholder="Title"><input id="m-link" placeholder="PDF/Drive Link"><input id="m-img" placeholder="Cover Image URL"><select id="m-cat"><option>11th Class</option><option>12th Class</option><option>Organic</option><option>Physical</option><option>Inorganic</option><option>Test Series</option><option>Notes</option></select><input id="m-code" placeholder="Access Password (Optional)"><button class="btn btn-gold" onclick="uploadMat()">Upload</button>`;
@@ -328,7 +320,8 @@
             });
         }
         else if(tab === 'offline') {
-            c.innerHTML = `<h3>Add Offline Result</h3><input id="off-title" placeholder="Test Title"><textarea id="off-data" placeholder="Name,Marks,Rank (One per line)" style="height:150px;"></textarea><button class="btn btn-gold" onclick="postOffline()">Upload Results</button>`;
+            // UPDATED: Now supports Link input
+            c.innerHTML = `<h3>Add Offline Result</h3><input id="off-title" placeholder="Test Title"><textarea id="off-data" placeholder="Name,Marks,Rank,Link (One per line)" style="height:150px;"></textarea><button class="btn btn-gold" onclick="postOffline()">Upload Results</button>`;
         }
         else if(tab === 'students') {
             c.innerHTML = `<h3>Registered Students</h3><table><thead><tr><th>Name</th><th>Email</th><th>Date Joined</th></tr></thead><tbody id="stu-list"></tbody></table>`;
@@ -337,23 +330,25 @@
             });
         }
         else if(tab === 'results') {
-            c.innerHTML = `<h3>Online Test Analysis</h3><input placeholder="Search Student or Test..." onkeyup="filterTable(this)"><table><thead><tr><th>Student</th><th>Test</th><th>Score</th><th>Type</th><th>Date</th></tr></thead><tbody id="adm-res-list"></tbody></table>`;
+            // UPDATED: Added View Sheet Action
+            c.innerHTML = `<h3>Online Test Analysis</h3><input placeholder="Search Student or Test..." onkeyup="filterTable(this)"><table><thead><tr><th>Student</th><th>Test</th><th>Score</th><th>Type</th><th>Date</th><th>Action</th></tr></thead><tbody id="adm-res-list"></tbody></table>`;
             fetch('/api/admin/results/online').then(r=>r.json()).then(d => {
-                document.getElementById('adm-res-list').innerHTML = d.map(r => `<tr><td>${r.studentName}<br><small>${r.studentEmail}</small></td><td>${r.testTitle}</td><td>${r.score}/${r.totalMarks} (${r.percentage.toFixed(1)}%)</td><td>${r.testType}</td><td>${new Date(r.date).toLocaleDateString()}</td></tr>`).join('');
+                document.getElementById('adm-res-list').innerHTML = d.map(r => `<tr><td>${r.studentName}<br><small>${r.studentEmail}</small></td><td>${r.testTitle}</td><td>${r.score}/${r.totalMarks} (${r.percentage.toFixed(1)}%)</td><td>${r.testType}</td><td>${new Date(r.date).toLocaleDateString()}</td><td><button class="btn btn-gold" style="padding:5px;" onclick="viewSheet('${r._id}')">View Sheet</button></td></tr>`).join('');
             });
         }
     }
 
-    // --- ADMIN ACTION HANDLERS ---
+    // --- ADMIN ACTIONS ---
     async function uploadMat() {
         await fetch('/api/admin/material', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ title: document.getElementById('m-title').value, link: document.getElementById('m-link').value, image: document.getElementById('m-img').value, category: document.getElementById('m-cat').value, accessCode: document.getElementById('m-code').value }) }); alert("Material Uploaded!");
     }
     async function postBlog() {
         await fetch('/api/admin/blog', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ title: document.getElementById('b-title').value, content: document.getElementById('b-content').value, image: document.getElementById('b-img').value }) }); alert("Blog Posted!");
     }
+    // UPDATED: Parse the 4th value as Link
     async function postOffline() {
         const raw = document.getElementById('off-data').value;
-        const records = raw.split('\n').map(l => { const p=l.split(','); return { studentName: p[0], marks: p[1], rank: p[2] }; });
+        const records = raw.split('\n').filter(l=>l.trim()).map(l => { const p=l.split(','); return { studentName: p[0].trim(), marks: p[1].trim(), rank: p[2].trim(), copyLink: p[3]?p[3].trim():'' }; });
         await fetch('/api/admin/offline-result', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ title: document.getElementById('off-title').value, records }) }); alert("Offline Results Uploaded!");
     }
     function filterTable(inp) {
@@ -367,7 +362,7 @@
     function exec(cmd) { document.execCommand(cmd, false, null); }
     function addDraftQ() {
         draftQ.push({ text: document.getElementById('q-editor').innerHTML, options: [0,1,2,3].map(i => document.getElementById('op'+i).value), correct: parseInt(document.getElementById('q-corr').value), marks: 4, negative: 1, solution: document.getElementById('q-sol').value });
-        document.getElementById('q-count-val').innerText = draftQ.length;
+        document.getElementById('q-count').innerText = draftQ.length;
         document.getElementById('q-editor').innerHTML = ""; [0,1,2,3].forEach(i => document.getElementById('op'+i).value = "");
     }
     async function pubTest() {
@@ -394,7 +389,7 @@
         document.getElementById('blog-modal').style.display='flex';
     }
 
-    // --- STUDENT LOGIC ---
+    // --- STUDENT LOGIC (TESTS/SHEETS) ---
     async function loadTests(isLive) { 
         const res = await fetch('/api/tests'); const tests = await res.json();
         document.getElementById(isLive?'live-list':'test-list').innerHTML = tests.filter(t=>t.isLive===isLive).map(t=>`<div class="card" style="border-left: 5px solid ${isLive ? 'red' : 'gold'}"><h3>${t.title} ${t.accessCode?'🔒':''}</h3><p>${t.duration} Mins | ${t.questions ? '?' : ''} Qs</p>${isLive ? `<p style="color:red">Start: ${new Date(t.startTime).toLocaleString()}</p>` : ''}<button class="btn btn-gold" onclick="startTest('${t._id}')">Start</button></div>`).join('');
@@ -419,14 +414,39 @@
         const res = await fetch('/api/test/submit', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ testId: currentTest._id, answers, timeTaken, studentName: user.name, studentEmail: user.email }) });
         const data = await res.json(); if(data.success) { alert(`Score: ${data.score}`); location.reload(); }
     }
+    
+    // --- RESULTS LOGIC ---
+    // VIEW ANSWER SHEET
+    async function viewSheet(id) {
+        const res = await fetch('/api/result-details', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ resultId: id }) });
+        const data = await res.json();
+        if(!data.success) return alert(data.message);
+        const r = data.result;
+        document.getElementById('review-stats').innerHTML = `<span>Score: ${r.score}/${r.totalMarks}</span><span>Rank: #${data.rank}</span><span>Accuracy: ${r.percentage.toFixed(1)}%</span>`;
+        document.getElementById('review-body').innerHTML = data.questions.map((q, i) => `
+            <div class="review-row"><p><strong>Q${i+1}:</strong> ${q.text}</p>${q.image ? `<img src="${q.image}" style="height:100px">` : ''}<div style="display:grid; grid-template-columns: 1fr 1fr; gap:5px;">${q.options.map((opt, idx) => `<div style="padding:5px; border:1px solid #ddd; ${idx === q.correct ? 'background:#dcfce7; border-color:green;' : ''} ${idx === q.studentAnswer && idx !== q.correct ? 'background:#fee2e2; border-color:red;' : ''}"> ${opt} </div>`).join('')}</div><p style="margin-top:5px; font-size:0.9rem;">Status: <span class="badge ${q.status==='Correct'?'bg-green':'bg-red'}">${q.status}</span> | Time Spent: ${q.timeSpent}s</p>${q.solution ? `<div style="background:#f0f9ff; padding:10px; margin-top:5px;"><strong>💡 Solution:</strong> ${q.solution}</div>` : ''}</div>
+        `).join('');
+        document.getElementById('review-modal').style.display = 'flex';
+    }
+
+    async function loadResults(type) {
+        const res = await fetch('/api/student/results/online', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ email: user.email }) });
+        const data = await res.json();
+        document.getElementById('result-list').innerHTML = `<table><tr><th>Date</th><th>Test</th><th>Score</th><th>Action</th></tr>${data.results.filter(r => r.testType === type).map(r => `<tr><td>${new Date(r.date).toLocaleDateString()}</td><td>${r.testTitle}</td><td>${r.score}/${r.totalMarks}</td><td><button class="btn btn-gold" style="padding:5px;" onclick="viewSheet('${r._id}')">View</button></td></tr>`).join('')}</table>`;
+    }
+    
+    // UPDATED: Shows Link in Student View
+    async function loadOfflineResults() {
+        const res = await fetch('/api/results/offline'); const data = await res.json();
+        document.getElementById('result-list').innerHTML = data.map(r => `<h3>${r.title}</h3><table><tr><th>Rank</th><th>Student</th><th>Marks</th><th>View Copy</th></tr>${r.records.map(rec => `<tr><td>#${rec.rank}</td><td>${rec.studentName}</td><td>${rec.marks}</td><td>${rec.copyLink ? `<a href="${rec.copyLink}" target="_blank" style="color:blue">View Copy</a>` : '-'}</td></tr>`).join('')}</table>`).join('');
+    }
+    
     let allMats = [];
     async function loadMaterials() { allMats = await (await fetch('/api/materials')).json(); }
     function loadLib(cat) { document.getElementById('lib-cats').style.display = 'none'; document.getElementById('lib-back').style.display = 'block'; if(allMats.length === 0) loadMaterials().then(() => renderLib(cat)); else renderLib(cat); }
     function renderLib(cat) { document.getElementById('lib-content').innerHTML = allMats.filter(m => m.category === cat || (cat === '11th Class' && m.category.includes('11'))).map(m => `<div class="card"><img src="${m.image||''}" style="height:150px; background:#ddd; object-fit:cover;"><h4>${m.title} ${m.accessCode?'🔒':''}</h4><button class="btn btn-gold" onclick="openMat('${m._id}')">Open</button></div>`).join(''); }
     function resetLib() { document.getElementById('lib-cats').style.display = 'grid'; document.getElementById('lib-back').style.display = 'none'; document.getElementById('lib-content').innerHTML = ''; }
     async function openMat(id) { const code = prompt("Enter Password:"); const res = await fetch('/api/material/unlock', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id, code}) }); const data = await res.json(); if(data.success) window.open(data.link); else alert("Wrong Password"); }
-    async function loadResults(type) { const res = await fetch('/api/student/results/online', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ email: user.email }) }); const data = await res.json(); document.getElementById('result-list').innerHTML = `<table><tr><th>Date</th><th>Test</th><th>Score</th></tr>${data.results.filter(r => r.testType === type).map(r => `<tr><td>${new Date(r.date).toLocaleDateString()}</td><td>${r.testTitle}</td><td>${r.score}/${r.totalMarks}</td></tr>`).join('')}</table>`; }
-    async function loadOfflineResults() { const res = await fetch('/api/results/offline'); const data = await res.json(); document.getElementById('result-list').innerHTML = data.map(r => `<h3>${r.title}</h3><table><tr><th>Rank</th><th>Student</th><th>Marks</th></tr>${r.records.map(rec => `<tr><td>#${rec.rank}</td><td>${rec.studentName}</td><td>${rec.marks}</td></tr>`).join('')}</table>`).join(''); }
 </script>
 </body>
 </html>
