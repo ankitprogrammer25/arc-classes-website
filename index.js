@@ -40,7 +40,6 @@ const TestSchema = new mongoose.Schema({
 });
 const Test = mongoose.model('Test', TestSchema);
 
-// UPDATED: Added totalMarks, obtainedMarks to Schema
 const OfflineResultSchema = new mongoose.Schema({
     title: String, date: { type: Date, default: Date.now },
     records: [{ studentName: String, totalMarks: Number, obtainedMarks: Number, rank: Number, copyLink: String }]
@@ -93,17 +92,17 @@ app.get('/api/admin/results/online', async (req, res) => res.json(await Result.f
 
 app.post('/api/admin/material', async (req, res) => { await new Material(req.body).save(); res.json({ success: true }); });
 app.post('/api/admin/test', async (req, res) => { await new Test(req.body).save(); res.json({ success: true }); });
+
+// NEW: UPDATE BLOG
 app.post('/api/admin/blog', async (req, res) => { await new Blog(req.body).save(); res.json({ success: true }); });
+app.put('/api/admin/blog/:id', async (req, res) => { await Blog.findByIdAndUpdate(req.params.id, req.body); res.json({ success: true }); });
 
 // UPDATED: AUTO-RANKING LOGIC
 app.post('/api/admin/offline-result', async (req, res) => { 
     try {
         const { title, records } = req.body;
-        // Sort by obtained marks (descending)
         records.sort((a, b) => b.obtainedMarks - a.obtainedMarks);
-        // Assign rank
         records.forEach((rec, index) => { rec.rank = index + 1; });
-        
         await new OfflineResult({ title, records }).save(); 
         res.json({ success: true });
     } catch(e) { res.json({ success: false }); }
@@ -122,6 +121,11 @@ app.post('/api/admin/announcement/delete', async (req, res) => {
     if(c) { c.list = c.list.filter(t => t !== req.body.text); await c.save(); }
     res.json({ success: true });
 });
+
+// DELETE ENDPOINTS FOR MANAGE SECTION
+app.delete('/api/admin/blog/:id', async (req, res) => { await Blog.findByIdAndDelete(req.params.id); res.json({ success: true }); });
+app.delete('/api/admin/offline-result/:id', async (req, res) => { await OfflineResult.findByIdAndDelete(req.params.id); res.json({ success: true }); });
+app.delete('/api/admin/result/:id', async (req, res) => { await Result.findByIdAndDelete(req.params.id); res.json({ success: true }); });
 
 // --- STUDENT API ---
 app.get('/api/materials', async (req, res) => res.json(await Material.find()));
