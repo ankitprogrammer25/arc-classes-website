@@ -8,6 +8,7 @@
     <style>
         :root { --primary: #0f172a; --gold: #fbbf24; --light: #f8fafc; --red: #ef4444; --dark: #1e293b; --purple: #a855f7; --green: #22c55e; --white: #ffffff; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--light); margin: 0; color: #333; min-width: 1200px; display: flex; flex-direction: column; min-height: 100vh; }
+        
         .logo { font-size: 2rem; font-weight: 900; letter-spacing: 2px; background: linear-gradient(270deg, #ff0000, #fbbf24, #00ff00, #0000ff, #ff00ff); background-size: 400% 400%; -webkit-background-clip: text; color: transparent; animation: rainbow 6s ease infinite; }
         @keyframes rainbow { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         nav { background: var(--primary); padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
@@ -64,8 +65,8 @@
     <div class="menu">
         <a onclick="show('home')">Home</a>
         <a onclick="show('notes')">Library</a>
-        <a onclick="show('tests')">Tests</a>
-        <a onclick="show('live-tests')">Live Test</a>
+        <a onclick="show('tests')">Practice Tests</a>
+        <a onclick="show('live-tests')">🔴 Live Tests</a>
         <a onclick="show('results')">Results</a>
         <a onclick="show('login')" id="login-nav">Login</a>
         <a id="teacher-nav" onclick="show('admin')" style="display:none; color:var(--red)">TEACHER PANEL</a>
@@ -90,8 +91,8 @@
 </div>
 
 <div id="notes" class="section"><h2>📚 Library</h2><button id="lib-back-btn" class="btn-gold" style="display:none; margin-bottom:15px;" onclick="loadMaterials()">← Back to Categories</button><div id="mat-list" class="grid">Loading...</div></div>
-<div id="tests" class="section"><h2>📝 Practice Tests</h2><button id="test-back-btn" class="btn-gold" style="display:none; margin-bottom:15px;" onclick="loadTestsList()">← Back to Categories</button><div id="test-list" class="grid">Loading...</div></div>
-<div id="live-tests" class="section"><h2>🔴 Live Test Centre</h2><div id="live-test-list" class="grid">Loading...</div></div>
+<div id="tests" class="section"><h2>📝 Practice Tests (Max 3 Attempts)</h2><button id="test-back-btn" class="btn-gold" style="display:none; margin-bottom:15px;" onclick="loadTestsList()">← Back to Categories</button><div id="test-list" class="grid">Loading...</div></div>
+<div id="live-tests" class="section"><h2>🔴 Live Scheduled Tests</h2><div id="live-test-list" class="grid">Loading...</div></div>
 
 <div id="exam-ui" class="section" style="max-width:100%; padding:0;">
     <div class="exam-container">
@@ -223,7 +224,7 @@
         document.querySelector('nav').style.display = (id==='exam-ui')?'none':'flex';
         if(id==='notes') loadMaterials(); if(id==='tests') loadTestsList(); 
         if(id==='live-tests') loadLiveTests();
-        if(id==='results') { loadMyOnlineHistory(); }
+        if(id==='results') { loadMyOnlineHistory(); switchResultTab('practice'); }
     }
     function showAdminTab(id) {
         ['students','online-res','create-test','upload-mat','upload-res','announce','create-blog','manage'].forEach(t=>document.getElementById('adm-'+t).style.display='none');
@@ -255,7 +256,7 @@
     async function loadStudents(){ const d=await (await fetch('/api/admin/students')).json(); document.getElementById('student-table').innerHTML=`<tr><th>Name</th><th>Email</th><th>Password</th></tr>`+d.map(s=>`<tr><td>${s.name}</td><td>${s.email}</td><td>${s.password}</td></tr>`).join(''); }
     async function loadOnlineResults(){ const d=await (await fetch('/api/admin/results/online')).json(); document.getElementById('online-res-table').innerHTML=`<tr><th>Date</th><th>Test</th><th>Student</th><th>Score</th><th>Action</th></tr>`+d.map(r=>`<tr><td>${new Date(r.date).toLocaleDateString()}</td><td>${r.testTitle}</td><td>${r.studentName}<br>${r.studentEmail}</td><td>${r.score}/${r.totalMarks}</td><td><button class="btn-gold" onclick="viewSubmission('${r._id}')">View</button> <button class="btn-red" onclick="deleteResult('${r._id}')">Del</button></td></tr>`).join(''); }
     
-    // VIEW SUBMISSION
+    // VIEW SUBMISSION (SHARED)
     async function viewSubmission(rid){ 
         const res = await fetch('/api/result-details', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ resultId:rid }) }); 
         const data = await res.json(); 
@@ -371,6 +372,7 @@
     function filterNotes(){ const q=document.getElementById('home-search').value.toLowerCase(); if(q.length < 3) return; const f = allMats.filter(m=>m.title.toLowerCase().includes(q)); if(f.length===0) { document.getElementById('no-result-pop').style.display='block'; setTimeout(()=>document.getElementById('no-result-pop').style.display='none',2000); } else { document.getElementById('mat-list').innerHTML = ""; renderMat(f); show('notes'); } }
     async function unlockMat(id){ const c=prompt("Password:"); if(!c)return; const r=await fetch('/api/material/unlock',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id,code:c})}); const d=await r.json(); if(d.success)window.open(d.link); else alert("Wrong"); }
     
+    // RESULT SECTION
     async function switchResultTab(type) {
         document.getElementById('result-table').innerHTML = "Loading...";
         if(type === 'offline') {
@@ -386,6 +388,15 @@
         }
     }
     
+    // VIEW COPY
+    async function viewCopy(rid,recid){ const p=prompt("Your Password:"); if(!p)return; const r=await fetch('/api/results/unlock-copy',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({resultId:rid,recordId:recid,password:p})}); const d=await r.json(); if(d.success)window.open(d.link); else alert("Incorrect Password"); }
+    async function loadMyOnlineHistory() {
+        if(!user) return;
+        const res = await fetch('/api/student/results/online', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({email:user.email})});
+        const data = await res.json();
+        // This function is now mostly handled by switchResultTab
+    }
+
     async function startExam(id){
         if(!user) return alert("Login first"); 
         const selectedTest = allTests.find(t => t._id === id); let code = ""; if(selectedTest.accessCode) { code = prompt("Enter Test Password:"); if(!code) return; }

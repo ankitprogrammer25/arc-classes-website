@@ -10,6 +10,7 @@ app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // --- DB CONNECTION ---
+// Ensure your IP is whitelisted (0.0.0.0/0) in MongoDB Atlas!
 const dbLink = "mongodb+srv://ankitprogrammer25:a32x05sYvukG178G@cluster0.0dhqpzv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 mongoose.connect(dbLink)
     .then(() => console.log('✅ Connected to MongoDB'))
@@ -28,7 +29,6 @@ const MaterialSchema = new mongoose.Schema({
 });
 const Material = mongoose.model('Material', MaterialSchema);
 
-// Updated Question with SOLUTION
 const QuestionSchema = new mongoose.Schema({
     text: String, image: String, options: [String], correct: Number, 
     marks: Number, negative: Number, topic: String, solution: String 
@@ -82,38 +82,41 @@ app.post('/api/login', async (req, res) => {
 app.get('/api/admin/students', async (req, res) => res.json(await Student.find().sort({ joinedAt: -1 })));
 app.get('/api/admin/results/online', async (req, res) => res.json(await Result.find().sort({ date: -1 })));
 
-// Result Details (SAFE MODE)
+// Result Details & Dynamic Rank
 app.post('/api/result-details', async (req, res) => {
     try {
         const result = await Result.findById(req.body.resultId);
         if(!result) return res.json({ success: false, message: "Result not found" });
         
         const test = await Test.findById(result.testId);
-        // Rank Calculation
+        // Calculate Rank Dynamically: Count people with higher score in SAME test
         const rank = (await Result.countDocuments({ testId: result.testId, score: { $gt: result.score } })) + 1;
         
-        // If test was deleted by teacher, send partial data so it doesn't crash
+        // If test was deleted, send flag
         if(!test) return res.json({ success: true, result, rank, testDeleted: true });
 
         res.json({ success: true, result, test, rank });
-    } catch(e) { res.json({ success: false, message: "Server Error" }); }
+    } catch(e) { res.json({ success: false }); }
 });
 
-// Admin Actions
+// Admin Actions (Create/Edit/Delete)
 app.post('/api/admin/material', async (req, res) => { await new Material(req.body).save(); res.json({ success: true }); });
 app.delete('/api/admin/material/:id', async (req, res) => { await Material.findByIdAndDelete(req.params.id); res.json({ success: true }); });
+
 app.post('/api/admin/test', async (req, res) => { await new Test(req.body).save(); res.json({ success: true }); });
 app.put('/api/admin/test/:id', async (req, res) => { await Test.findByIdAndUpdate(req.params.id, req.body); res.json({ success: true }); });
 app.delete('/api/admin/test/:id', async (req, res) => { await Test.findByIdAndDelete(req.params.id); res.json({ success: true }); });
 app.get('/api/admin/test/:id', async (req, res) => { res.json(await Test.findById(req.params.id)); });
+
 app.post('/api/admin/offline-result', async (req, res) => { await new OfflineResult(req.body).save(); res.json({ success: true }); });
 app.delete('/api/admin/offline-result/:id', async (req, res) => { await OfflineResult.findByIdAndDelete(req.params.id); res.json({ success: true }); });
 app.delete('/api/admin/result/online/:id', async (req, res) => { await Result.findByIdAndDelete(req.params.id); res.json({ success: true }); });
+
 app.post('/api/admin/blog', async (req, res) => { await new Blog(req.body).save(); res.json({ success: true }); });
 app.delete('/api/admin/blog/:id', async (req, res) => { await Blog.findByIdAndDelete(req.params.id); res.json({ success: true }); });
 app.put('/api/admin/blog/:id', async (req, res) => { await Blog.findByIdAndUpdate(req.params.id, req.body); res.json({ success: true }); });
 
-// Announcements
+// Announcement
 app.get('/api/announcement', async (req, res) => { 
     const c = await Config.findOne({ type: 'announce_list' });
     res.json({ list: c ? c.list : ["Welcome to ARC Classes!"] });
@@ -138,7 +141,7 @@ app.get('/api/results/offline', async (req, res) => {
     const r = await OfflineResult.find();
     res.json(r.map(x => ({ _id: x._id, title: x.title, date: x.date, records: x.records.map(rec => ({ studentName: rec.studentName, marks: rec.marks, rank: rec.rank, _id: rec._id })) })));
 });
-// Student History
+// Student Online History
 app.post('/api/student/results/online', async (req, res) => {
     try {
         const results = await Result.find({ studentEmail: req.body.email }).sort({ date: -1 });
@@ -160,9 +163,10 @@ app.post('/api/test/start', async (req, res) => {
     if(!s) return res.json({ success: false, message: "Login first." });
     
     const t = await Test.findById(id);
+    // LIVE TEST LOGIC
     if(t.isLive) {
         const now = new Date();
-        if(now < new Date(t.startTime)) return res.json({ success: false, message: "Test has not started yet." });
+        if(now < new Date(t.startTime)) return res.json({ success: false, message: `Test starts at ${new Date(t.startTime).toLocaleString()}` });
         if(now > new Date(t.endTime)) return res.json({ success: false, message: "Test has expired." });
     } else {
         const attempts = s.testAttempts.get(id) || 0; 
@@ -171,7 +175,7 @@ app.post('/api/test/start', async (req, res) => {
 
     if(!t.accessCode || t.accessCode === code) {
         if(!t.isLive) { s.testAttempts.set(id, (s.testAttempts.get(id)||0) + 1); await s.save(); }
-        // Hide solution during test
+        // Send questions WITHOUT solution
         const safeQ = t.questions.map(q => ({ text: q.text, image: q.image, options: q.options, marks: q.marks, negative: q.negative }));
         res.json({ success: true, test: {...t._doc, questions: safeQ} });
     } else res.json({ success: false, message: "Wrong Password" });
@@ -197,8 +201,10 @@ app.post('/api/test/submit', async (req, res) => {
         
         const r = new Result({ studentName, studentEmail, testTitle: t.title, testId: t._id, testType: type, score, totalMarks: total, percentage: pct, rank: 0, feedback: fb, answers, topicAnalytics });
         await r.save();
+        
         const rank = (await Result.countDocuments({ testId: t._id, score: { $gt: score } })) + 1;
         r.rank = rank; await r.save();
+        
         res.json({ success: true, score, totalMarks: total, rank, percentage: pct.toFixed(1), feedback: fb, stats: { correct, wrong, skipped }, resultId: r._id });
     } catch(e) { res.json({ success: false }); }
 });
