@@ -273,6 +273,7 @@
     let offlineDraft = []; 
     let loginMode = 'student';
     let tempImg = "";
+    let tempSolImg = ""; // UPDATED: New variable for solution image
     let editingBlogId = null;
     let editingTestId = null;
     let editingMaterialId = null; 
@@ -302,6 +303,7 @@
         if(id==='results') loadResults('practice');
     }
 
+    // UPDATED: Added more reaction arrows to the toolbar
     const toolbarHTML = `
         <div class="toolbar">
             <button class="tool-btn" onclick="exec('bold')" title="Bold"><b>B</b></button>
@@ -312,11 +314,14 @@
             <input type="color" onchange="exec('foreColor', this.value)" title="Color" style="height:30px; width:30px; cursor:pointer; padding:0; border:none;">
             <select onchange="insChar(this.value); this.value='';" style="width:auto; margin:0;" title="Symbols">
                 <option value="">Symbols</option>
-                <option value=" &rarr; ">&rarr;</option>
-                <option value=" &rightleftharpoons; ">&rightleftharpoons;</option>
-                <option value=" &Delta; ">&Delta;</option>
-                <option value=" &deg; ">&deg;</option>
-                <option value=" &pi; ">&pi;</option>
+                <option value=" &rarr; ">&rarr; (Right Arrow)</option>
+                <option value=" &rightleftharpoons; ">&rightleftharpoons; (Equilibrium)</option>
+                <option value=" &longleftrightarrow; ">&longleftrightarrow; (Resonance)</option>
+                <option value=" &rightleftarrows; ">&rightleftarrows; (Right-Left)</option>
+                <option value=" &rightrightarrows; ">&rightrightarrows; (Right-Right)</option>
+                <option value=" &Delta; ">&Delta; (Delta)</option>
+                <option value=" &deg; ">&deg; (Degree)</option>
+                <option value=" &pi; ">&pi; (Pi)</option>
             </select>
         </div>`;
 
@@ -344,7 +349,7 @@
                         <div style="font-size:0.9rem; color:#666; margin-bottom:5px;">Question:</div>
                         <div id="q-editor" class="editor" contenteditable="true" placeholder="Type question here..."></div>
                         <div style="margin:10px 0; display:flex; gap:10px; align-items:center;">
-                            <b>Image:</b> <input type="file" onchange="encodeImg(this, 'q-prev')" accept="image/*" style="width:auto;">
+                            <b>Question Image:</b> <input type="file" onchange="encodeImg(this, 'q-prev')" accept="image/*" style="width:auto;">
                             <img id="q-prev" style="height:50px; display:none;">
                         </div>
                         <div style="font-size:0.9rem; color:#666; margin-bottom:5px;">Options:</div>
@@ -357,6 +362,11 @@
                         <div style="font-size:0.9rem; color:#666; margin:5px 0;">Solution:</div>
                         <div id="q-sol" class="editor-small" contenteditable="true"></div>
                         
+                        <div style="margin:10px 0; display:flex; gap:10px; align-items:center;">
+                            <b>Solution Image:</b> <input type="file" id="q-sol-file" onchange="encodeImg(this, 'sol-prev', true)" accept="image/*" style="width:auto;">
+                            <img id="sol-prev" style="height:50px; display:none;">
+                        </div>
+
                         <div style="display:flex; gap:10px; align-items:center; margin:10px 0;">
                             Correct: <select id="q-corr" style="width:auto;"><option value="0">A</option><option value="1">B</option><option value="2">C</option><option value="3">D</option></select>
                             <input type="number" id="q-marks" placeholder="Marks (+ve)" value="4" style="flex:1" title="Positive Marks">
@@ -421,7 +431,6 @@
             <button class="btn btn-gold" onclick="uploadMat()">${btnText}</button>`;
         }
         else if(tab==='students') {
-            // UPDATED: Added Password Column
             c.innerHTML = `<h3>Registered Students</h3><table><thead><tr><th>Name</th><th>Email</th><th>Password</th><th>Date Joined</th></tr></thead><tbody id="stu-list"></tbody></table>`;
             fetch('/api/admin/students').then(r=>r.json()).then(d => { 
                 document.getElementById('stu-list').innerHTML = d.map(s => `<tr><td>${s.name}</td><td>${s.email}</td><td style="font-family:monospace; color:#ef4444;">${s.password}</td><td>${new Date(s.joinedAt).toLocaleDateString()}</td></tr>`).join(''); 
@@ -435,7 +444,7 @@
     }
     async function loadManageBlogs() {
         const res = await fetch('/api/blogs'); const data = await res.json();
-        allBlogs = data; // Update global for edit
+        allBlogs = data; 
         document.getElementById('manage-area').innerHTML = `<table><tr><th>Title</th><th>Date</th><th>Actions</th></tr>${data.map(b => `<tr><td>${b.title}</td><td>${new Date(b.date).toLocaleDateString()}</td><td><button onclick="editBlog('${b._id}')">Edit</button> <button style="color:red" onclick="deleteItem('blog','${b._id}')">Delete</button></td></tr>`).join('')}</table>`;
     }
     
@@ -470,6 +479,12 @@
     function initCreateTest() { editingTestId = null; draftQ = []; showAdm('create-test'); renderCreatePalette(); }
     function initUpload() { editingMaterialId = null; showAdm('upload'); } 
 
+    // UPDATED: Helper function to convert Date object to local ISO string (YYYY-MM-DDTHH:mm)
+    function toLocalISOString(date) {
+        const localDate = new Date(date - date.getTimezoneOffset() * 60000);
+        return localDate.toISOString().slice(0, 16);
+    }
+
     async function editTest(id) {
         const res = await fetch(`/api/admin/test/${id}`);
         const test = await res.json();
@@ -479,8 +494,11 @@
         document.getElementById('t-code').value = test.accessCode || "";
         document.getElementById('t-cat').value = test.category;
         document.getElementById('t-live').checked = test.isLive;
-        if(test.startTime) document.getElementById('t-start').value = new Date(test.startTime).toISOString().slice(0,16);
-        if(test.endTime) document.getElementById('t-end').value = new Date(test.endTime).toISOString().slice(0,16);
+        
+        // UPDATED: Use toLocalISOString to fix time slot bug
+        if(test.startTime) document.getElementById('t-start').value = toLocalISOString(new Date(test.startTime));
+        if(test.endTime) document.getElementById('t-end').value = toLocalISOString(new Date(test.endTime));
+        
         draftQ = test.questions || [];
         renderCreatePalette();
         editingTestId = id;
@@ -552,7 +570,28 @@
     // --- CORE FUNCTIONS ---
     function exec(cmd, val=null) { document.execCommand(cmd, false, val); }
     function insChar(char) { document.execCommand('insertText', false, char); }
-    function encodeImg(input, previewId) { if(input.files && input.files[0]) { const reader = new FileReader(); reader.onload = function(e) { tempImg = e.target.result; if(previewId) { const img = document.getElementById(previewId); img.src = tempImg; img.style.display = 'block'; } }; reader.readAsDataURL(input.files[0]); } }
+    
+    // UPDATED: Modified to handle both question and solution images
+    function encodeImg(input, previewId, isSolution = false) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const result = e.target.result;
+                if (isSolution) {
+                    tempSolImg = result;
+                } else {
+                    tempImg = result;
+                }
+                if (previewId) {
+                    const img = document.getElementById(previewId);
+                    img.src = result;
+                    img.style.display = 'block';
+                }
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+    
     function insertInlineImg(input) { if(input.files && input.files[0]) { const reader = new FileReader(); reader.onload = function(e) { document.getElementById('b-content').focus(); document.execCommand('insertImage', false, e.target.result); }; reader.readAsDataURL(input.files[0]); } }
 
     function switchTab(mode) { loginMode = mode; document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); document.getElementById('tab-'+mode).classList.add('active'); document.getElementById('student-input').style.display = mode === 'student' ? 'block' : 'none'; document.getElementById('teacher-input').style.display = mode === 'student' ? 'none' : 'block'; document.getElementById('login-title').innerText = mode === 'student' ? 'Student Login' : 'Teacher Login'; document.getElementById('reg-link').style.display = mode === 'student' ? 'block' : 'none'; }
@@ -679,10 +718,7 @@
     function renderQ() { 
         const q = currentTest.questions[qIndex]; 
         document.getElementById('q-no').innerText = `Q${qIndex + 1}`; 
-        
-        // UPDATED: Show dynamic marks in exam header
         document.getElementById('q-marks').innerText = `+${q.marks} / -${q.negative}`;
-        
         document.getElementById('q-text').innerHTML = q.text; 
         const img = document.getElementById('q-img'); 
         if(q.image) { img.src = q.image; img.style.display = 'block'; } else img.style.display = 'none'; 
@@ -725,7 +761,8 @@
 
     async function submitTest() { if(!confirm("Submit?")) return; clearInterval(timer); const res = await fetch('/api/test/submit', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ testId: currentTest._id, answers, timeTaken, studentName: user.name, studentEmail: user.email }) }); const data = await res.json(); if(data.success) { alert(`Score: ${data.score}`); location.reload(); } }
     
-    async function viewSheet(id) { const res = await fetch('/api/result-details', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ resultId: id }) }); const data = await res.json(); if(!data.success) return alert(data.message); const r = data.result; document.getElementById('review-stats').innerHTML = `<span>Score: ${r.score}/${r.totalMarks}</span><span>Rank: #${data.rank}</span><span>Accuracy: ${r.percentage.toFixed(1)}%</span>`; document.getElementById('review-body').innerHTML = data.questions.map((q, i) => `<div class="review-row"><p><strong>Q${i+1}:</strong> ${q.text}</p>${q.image ? `<img src="${q.image}" style="height:100px">` : ''}<div style="display:grid; grid-template-columns: 1fr 1fr; gap:5px;">${q.options.map((opt, idx) => `<div style="padding:5px; border:1px solid #ddd; ${idx === q.correct ? 'background:#dcfce7; border-color:green;' : ''} ${idx === q.studentAnswer && idx !== q.correct ? 'background:#fee2e2; border-color:red;' : ''}"> ${opt} </div>`).join('')}</div><p style="margin-top:5px; font-size:0.9rem;">Status: <span class="badge ${q.status==='Correct'?'bg-green':'bg-red'}">${q.status}</span></p>${q.solution ? `<div style="background:#f0f9ff; padding:10px; margin-top:5px;"><strong>💡 Solution:</strong> ${q.solution}</div>` : ''}</div>`).join(''); document.getElementById('review-modal').style.display = 'flex'; }
+    // UPDATED: Modified to show solution image
+    async function viewSheet(id) { const res = await fetch('/api/result-details', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ resultId: id }) }); const data = await res.json(); if(!data.success) return alert(data.message); const r = data.result; document.getElementById('review-stats').innerHTML = `<span>Score: ${r.score}/${r.totalMarks}</span><span>Rank: #${data.rank}</span><span>Accuracy: ${r.percentage.toFixed(1)}%</span>`; document.getElementById('review-body').innerHTML = data.questions.map((q, i) => `<div class="review-row"><p><strong>Q${i+1}:</strong> ${q.text}</p>${q.image ? `<img src="${q.image}" style="height:100px">` : ''}<div style="display:grid; grid-template-columns: 1fr 1fr; gap:5px;">${q.options.map((opt, idx) => `<div style="padding:5px; border:1px solid #ddd; ${idx === q.correct ? 'background:#dcfce7; border-color:green;' : ''} ${idx === q.studentAnswer && idx !== q.correct ? 'background:#fee2e2; border-color:red;' : ''}"> ${opt} </div>`).join('')}</div><p style="margin-top:5px; font-size:0.9rem;">Status: <span class="badge ${q.status==='Correct'?'bg-green':'bg-red'}">${q.status}</span></p>${q.solution || q.solutionImage ? `<div style="background:#f0f9ff; padding:10px; margin-top:5px;"><strong>💡 Solution:</strong><br>${q.solution}${q.solutionImage ? `<br><img src="${q.solutionImage}" style="max-height:150px; margin-top:10px;">` : ''}</div>` : ''}</div>`).join(''); document.getElementById('review-modal').style.display = 'flex'; }
     
     async function loadResults(type) { const res = await fetch('/api/student/results/online', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ email: user.email }) }); const data = await res.json(); document.getElementById('result-list').innerHTML = `<table><tr><th>Date</th><th>Test</th><th>Score</th><th>Action</th></tr>${data.results.filter(r => r.testType === type).map(r => `<tr><td>${new Date(r.date).toLocaleDateString()}</td><td>${r.testTitle}</td><td>${r.score}/${r.totalMarks}</td><td><button class="btn btn-gold" style="padding:5px;" onclick="viewSheet('${r._id}')">View Sheet</button></td></tr>`).join('')}</table>`; }
     async function loadOfflineResults() { const res = await fetch('/api/results/offline'); const data = await res.json(); document.getElementById('result-list').innerHTML = data.map(r => `<h3>${r.title}</h3><table><tr><th>Rank</th><th>Student</th><th>Marks</th><th>Total</th><th>Copy</th></tr>${r.records.map(rec => `<tr><td>#${rec.rank}</td><td>${rec.studentName}</td><td>${rec.obtainedMarks}</td><td>${rec.totalMarks}</td><td>${rec.copyLink ? `<a href="${rec.copyLink}" target="_blank" style="color:blue">View</a>` : '-'}</td></tr>`).join('')}</table>`).join(''); }
@@ -745,20 +782,22 @@
         document.getElementById('q-count').innerText = draftQ.length;
     }
 
+    // UPDATED: Include solutionImage in saved draft data
     function saveDraftQ() {
         const qData = {
             text: document.getElementById('q-editor').innerHTML,
             options: [0,1,2,3].map(i => document.getElementById('op'+i).innerHTML),
             correct: parseInt(document.getElementById('q-corr').value),
-            // UPDATED: Capture custom marks
             marks: parseFloat(document.getElementById('q-marks').value) || 0,
             negative: parseFloat(document.getElementById('q-neg').value) || 0,
             solution: document.getElementById('q-sol').innerHTML,
-            image: tempImg
+            image: tempImg,
+            solutionImage: tempSolImg // Added
         };
 
         if(editQIndex > -1) {
             if(!qData.image) qData.image = draftQ[editQIndex].image;
+            if(!qData.solutionImage) qData.solutionImage = draftQ[editQIndex].solutionImage;
             draftQ[editQIndex] = qData;
         } else {
             draftQ.push(qData);
@@ -767,6 +806,7 @@
         renderCreatePalette();
     }
 
+    // UPDATED: Load solutionImage from draft data
     function loadDraftQ(index) {
         editQIndex = index;
         const q = draftQ[index];
@@ -774,11 +814,12 @@
         [0,1,2,3].forEach(i => document.getElementById('op'+i).innerHTML = q.options[i]);
         document.getElementById('q-corr').value = q.correct;
         
-        // UPDATED: Load custom marks into inputs
         document.getElementById('q-marks').value = q.marks;
         document.getElementById('q-neg').value = q.negative;
 
         document.getElementById('q-sol').innerHTML = q.solution || "";
+        
+        // Question Image
         if(q.image) {
             document.getElementById('q-prev').src = q.image;
             document.getElementById('q-prev').style.display = 'block';
@@ -787,21 +828,38 @@
             document.getElementById('q-prev').style.display = 'none';
             tempImg = "";
         }
+        
+        // Solution Image
+        if(q.solutionImage) {
+            document.getElementById('sol-prev').src = q.solutionImage;
+            document.getElementById('sol-prev').style.display = 'block';
+            tempSolImg = q.solutionImage;
+        } else {
+            document.getElementById('sol-prev').style.display = 'none';
+            tempSolImg = "";
+        }
+        
         renderCreatePalette();
     }
 
+    // UPDATED: Clear solution image data and preview
     function clearQForm() {
         editQIndex = -1;
         document.getElementById('q-editor').innerHTML = "";
-        [0,1,2,3].forEach(i => document.getElementById('op'+i).innerHTML = "");
+        [0,1,2,3].forEach(i => document.getElementById('op'+i).innerHTML = "";);
         document.getElementById('q-sol').innerHTML = "";
         
-        // UPDATED: Reset marks to defaults
         document.getElementById('q-marks').value = "4";
         document.getElementById('q-neg').value = "1";
 
         document.getElementById('q-prev').style.display = 'none';
         tempImg = "";
+        
+        // Reset Solution Image
+        document.getElementById('sol-prev').style.display = 'none';
+        document.getElementById('q-sol-file').value = "";
+        tempSolImg = "";
+        
         renderCreatePalette();
     }
 </script>
