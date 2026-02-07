@@ -21,6 +21,9 @@
 
         .blink { animation: blinker 1.5s linear infinite; }
         @keyframes blinker { 50% { opacity: 0; } }
+        /* NEW: Stronger blink for red alert */
+        .blink-red { animation: blinker-red 1s linear infinite; color: red; font-weight: bold; font-size: 1.5rem; text-align: center; }
+        @keyframes blinker-red { 50% { opacity: 0; } }
 
         .menu { display: flex; align-items: center; gap: 25px; white-space: nowrap; }
         .menu a { color: white; text-decoration: none; font-weight: 600; cursor: pointer; transition: 0.3s; }
@@ -257,6 +260,13 @@
     </div>
 </div>
 
+<div id="alert-modal" class="modal">
+    <div class="modal-content" style="text-align:center; padding: 40px; width: 400px;">
+        <span class="close-corner" onclick="document.getElementById('alert-modal').style.display='none'">&times;</span>
+        <h2 id="alert-msg" class="blink-red"></h2>
+    </div>
+</div>
+
 <div id="blog-modal" class="modal">
     <div class="modal-content">
         <span class="close-corner" onclick="document.getElementById('blog-modal').style.display='none'">&times;</span>
@@ -273,7 +283,7 @@
     let offlineDraft = []; 
     let loginMode = 'student';
     let tempImg = "";
-    let tempSolImg = ""; // UPDATED: New variable for solution image
+    let tempSolImg = "";
     let editingBlogId = null;
     let editingTestId = null;
     let editingMaterialId = null; 
@@ -303,7 +313,6 @@
         if(id==='results') loadResults('practice');
     }
 
-    // UPDATED: Added more reaction arrows to the toolbar
     const toolbarHTML = `
         <div class="toolbar">
             <button class="tool-btn" onclick="exec('bold')" title="Bold"><b>B</b></button>
@@ -479,7 +488,7 @@
     function initCreateTest() { editingTestId = null; draftQ = []; showAdm('create-test'); renderCreatePalette(); }
     function initUpload() { editingMaterialId = null; showAdm('upload'); } 
 
-    // UPDATED: Helper function to convert Date object to local ISO string (YYYY-MM-DDTHH:mm)
+    // FIX 6-HOUR ERROR: Convert Date object to local string for input value
     function toLocalISOString(date) {
         const localDate = new Date(date - date.getTimezoneOffset() * 60000);
         return localDate.toISOString().slice(0, 16);
@@ -495,7 +504,6 @@
         document.getElementById('t-cat').value = test.category;
         document.getElementById('t-live').checked = test.isLive;
         
-        // UPDATED: Use toLocalISOString to fix time slot bug
         if(test.startTime) document.getElementById('t-start').value = toLocalISOString(new Date(test.startTime));
         if(test.endTime) document.getElementById('t-end').value = toLocalISOString(new Date(test.endTime));
         
@@ -571,7 +579,6 @@
     function exec(cmd, val=null) { document.execCommand(cmd, false, val); }
     function insChar(char) { document.execCommand('insertText', false, char); }
     
-    // UPDATED: Modified to handle both question and solution images
     function encodeImg(input, previewId, isSolution = false) {
         if (input.files && input.files[0]) {
             const reader = new FileReader();
@@ -606,8 +613,9 @@
             accessCode: document.getElementById('t-code').value,
             category: document.getElementById('t-cat').value,
             isLive: document.getElementById('t-live').checked,
-            startTime: document.getElementById('t-start').value,
-            endTime: document.getElementById('t-end').value,
+            // FIX: Create Date object from value to ensure local time is respected before stringify
+            startTime: document.getElementById('t-start').value ? new Date(document.getElementById('t-start').value) : null,
+            endTime: document.getElementById('t-end').value ? new Date(document.getElementById('t-end').value) : null,
             questions: draftQ
         };
         const method = editingTestId ? 'PUT' : 'POST';
@@ -662,7 +670,21 @@
     async function loadTests(isLive) { 
         const res = await fetch('/api/tests'); 
         const tests = await res.json(); 
-        document.getElementById(isLive?'live-list':'test-list').innerHTML = tests.filter(t => (t.isLive || false) === isLive).map(t => `
+        const now = new Date();
+        
+        // UPDATED LOGIC: 
+        // Live Section = marked Live + Not Expired
+        // Practice Section = marked Practice OR (marked Live + Expired)
+        const filteredTests = tests.filter(t => {
+            const tEnd = t.endTime ? new Date(t.endTime) : null;
+            if (isLive) {
+                return t.isLive && tEnd && tEnd > now;
+            } else {
+                return !t.isLive || (t.isLive && tEnd && tEnd <= now);
+            }
+        });
+
+        document.getElementById(isLive?'live-list':'test-list').innerHTML = filteredTests.map(t => `
             <div class="card" style="border-left: 5px solid ${isLive ? 'red' : 'gold'}">
                 <h3>${t.title} ${t.accessCode ? '🔒' : ''}</h3>
                 <p>${t.duration} Mins</p>
@@ -704,6 +726,7 @@
 
         const res = await fetch('/api/test/start', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ id, code, studentEmail: user.email }) }); 
         const data = await res.json(); 
+        
         if(data.success) { 
             currentTest = data.test; 
             answers = new Array(currentTest.questions.length).fill(null); 
@@ -712,7 +735,15 @@
             show('exam'); 
             startTimer(currentTest.duration); 
             renderQ(); 
-        } else alert(data.message); 
+        } else {
+            // NEW: Show blinking red popup if test hasn't started
+            if (data.message === "Not Started") {
+                document.getElementById('alert-msg').innerText = "Test is not started till now";
+                document.getElementById('alert-modal').style.display = 'flex';
+            } else {
+                alert(data.message);
+            }
+        }
     }
     
     function renderQ() { 
@@ -761,7 +792,6 @@
 
     async function submitTest() { if(!confirm("Submit?")) return; clearInterval(timer); const res = await fetch('/api/test/submit', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ testId: currentTest._id, answers, timeTaken, studentName: user.name, studentEmail: user.email }) }); const data = await res.json(); if(data.success) { alert(`Score: ${data.score}`); location.reload(); } }
     
-    // UPDATED: Modified to show solution image
     async function viewSheet(id) { const res = await fetch('/api/result-details', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ resultId: id }) }); const data = await res.json(); if(!data.success) return alert(data.message); const r = data.result; document.getElementById('review-stats').innerHTML = `<span>Score: ${r.score}/${r.totalMarks}</span><span>Rank: #${data.rank}</span><span>Accuracy: ${r.percentage.toFixed(1)}%</span>`; document.getElementById('review-body').innerHTML = data.questions.map((q, i) => `<div class="review-row"><p><strong>Q${i+1}:</strong> ${q.text}</p>${q.image ? `<img src="${q.image}" style="height:100px">` : ''}<div style="display:grid; grid-template-columns: 1fr 1fr; gap:5px;">${q.options.map((opt, idx) => `<div style="padding:5px; border:1px solid #ddd; ${idx === q.correct ? 'background:#dcfce7; border-color:green;' : ''} ${idx === q.studentAnswer && idx !== q.correct ? 'background:#fee2e2; border-color:red;' : ''}"> ${opt} </div>`).join('')}</div><p style="margin-top:5px; font-size:0.9rem;">Status: <span class="badge ${q.status==='Correct'?'bg-green':'bg-red'}">${q.status}</span></p>${q.solution || q.solutionImage ? `<div style="background:#f0f9ff; padding:10px; margin-top:5px;"><strong>💡 Solution:</strong><br>${q.solution}${q.solutionImage ? `<br><img src="${q.solutionImage}" style="max-height:150px; margin-top:10px;">` : ''}</div>` : ''}</div>`).join(''); document.getElementById('review-modal').style.display = 'flex'; }
     
     async function loadResults(type) { const res = await fetch('/api/student/results/online', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ email: user.email }) }); const data = await res.json(); document.getElementById('result-list').innerHTML = `<table><tr><th>Date</th><th>Test</th><th>Score</th><th>Action</th></tr>${data.results.filter(r => r.testType === type).map(r => `<tr><td>${new Date(r.date).toLocaleDateString()}</td><td>${r.testTitle}</td><td>${r.score}/${r.totalMarks}</td><td><button class="btn btn-gold" style="padding:5px;" onclick="viewSheet('${r._id}')">View Sheet</button></td></tr>`).join('')}</table>`; }
@@ -782,7 +812,6 @@
         document.getElementById('q-count').innerText = draftQ.length;
     }
 
-    // UPDATED: Include solutionImage in saved draft data
     function saveDraftQ() {
         const qData = {
             text: document.getElementById('q-editor').innerHTML,
@@ -792,7 +821,7 @@
             negative: parseFloat(document.getElementById('q-neg').value) || 0,
             solution: document.getElementById('q-sol').innerHTML,
             image: tempImg,
-            solutionImage: tempSolImg // Added
+            solutionImage: tempSolImg 
         };
 
         if(editQIndex > -1) {
@@ -806,7 +835,6 @@
         renderCreatePalette();
     }
 
-    // UPDATED: Load solutionImage from draft data
     function loadDraftQ(index) {
         editQIndex = index;
         const q = draftQ[index];
@@ -819,7 +847,6 @@
 
         document.getElementById('q-sol').innerHTML = q.solution || "";
         
-        // Question Image
         if(q.image) {
             document.getElementById('q-prev').src = q.image;
             document.getElementById('q-prev').style.display = 'block';
@@ -829,7 +856,6 @@
             tempImg = "";
         }
         
-        // Solution Image
         if(q.solutionImage) {
             document.getElementById('sol-prev').src = q.solutionImage;
             document.getElementById('sol-prev').style.display = 'block';
@@ -842,7 +868,6 @@
         renderCreatePalette();
     }
 
-    // UPDATED: Clear solution image data and preview
     function clearQForm() {
         editQIndex = -1;
         document.getElementById('q-editor').innerHTML = "";
@@ -855,7 +880,6 @@
         document.getElementById('q-prev').style.display = 'none';
         tempImg = "";
         
-        // Reset Solution Image
         document.getElementById('sol-prev').style.display = 'none';
         document.getElementById('q-sol-file').value = "";
         tempSolImg = "";

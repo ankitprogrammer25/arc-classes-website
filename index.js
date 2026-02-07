@@ -5,13 +5,11 @@ const cors = require('cors');
 const path = require('path');
 
 const app = express();
-// Increased limit to handle multiple images per question (text, question image, solution image)
 app.use(express.json({ limit: '100mb' }));
 app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // --- 1. DATABASE CONNECTION ---
-// WARNING: Use Environment Variables for sensitive data in production
 const dbLink = "mongodb+srv://ankitprogrammer25:a32x05sYvukG178G@cluster0.0dhqpzv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 
 mongoose.connect(dbLink)
@@ -30,7 +28,6 @@ const MaterialSchema = new mongoose.Schema({
 });
 const Material = mongoose.model('Material', MaterialSchema);
 
-// UPDATED: Added solutionImage to QuestionSchema
 const QuestionSchema = new mongoose.Schema({
     text: String, image: String, options: [String], correct: Number, 
     marks: Number, negative: Number, topic: String, solution: String,
@@ -159,10 +156,9 @@ app.post('/api/result-details', async (req, res) => {
         const test = await Test.findById(result.testId);
         if(!test) return res.json({ success: true, result, rank, questions: [], message: "Test was deleted by teacher." });
         
-        // UPDATED: Map solutionImage to the response
         const detailedQuestions = test.questions.map((q, i) => ({
             text: q.text, image: q.image, options: q.options, correct: q.correct, 
-            solution: q.solution, solutionImage: q.solutionImage, // Added here
+            solution: q.solution, solutionImage: q.solutionImage,
             studentAnswer: result.answers[i], timeSpent: result.timeTaken ? result.timeTaken[i] : 0,
             status: result.answers[i] === q.correct ? 'Correct' : (result.answers[i] === null ? 'Skipped' : 'Wrong')
         }));
@@ -177,6 +173,8 @@ app.post('/api/test/start', async (req, res) => {
         if(!s) return res.json({ success: false, message: "Login first" });
     }
     const t = await Test.findById(id);
+    
+    // IMPORTANT: Backend check ensures "Not Started" message is sent accurately
     if(t.isLive && studentEmail !== 'admin@arc.com') {
         const now = new Date();
         if(now < new Date(t.startTime)) return res.json({ success: false, message: "Not Started" });
