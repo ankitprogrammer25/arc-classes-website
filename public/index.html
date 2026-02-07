@@ -277,7 +277,7 @@
     let editingTestId = null;
     let editingMaterialId = null; 
     let editQIndex = -1;
-    let allMats = []; // Global for edit reference
+    let allMats = []; 
 
     // INIT
     if(user) {
@@ -289,9 +289,7 @@
         }
     }
     
-    // FIX 3: Load Announcements immediately
     loadAnnouncements();
-    // FIX 1: Load Blogs on start
     loadBlogs();
 
     function show(id) {
@@ -358,7 +356,13 @@
                         </div>
                         <div style="font-size:0.9rem; color:#666; margin:5px 0;">Solution:</div>
                         <div id="q-sol" class="editor-small" contenteditable="true"></div>
-                        Correct: <select id="q-corr"><option value="0">A</option><option value="1">B</option><option value="2">C</option><option value="3">D</option></select>
+                        
+                        <div style="display:flex; gap:10px; align-items:center; margin:10px 0;">
+                            Correct: <select id="q-corr" style="width:auto;"><option value="0">A</option><option value="1">B</option><option value="2">C</option><option value="3">D</option></select>
+                            <input type="number" id="q-marks" placeholder="Marks (+ve)" value="4" style="flex:1" title="Positive Marks">
+                            <input type="number" id="q-neg" placeholder="Negative (-ve)" value="1" style="flex:1" title="Negative Marks">
+                        </div>
+
                         <div style="display:flex; gap:10px; margin-top:10px;">
                             <button class="btn btn-gold" onclick="saveDraftQ()">Save Question</button>
                             <button class="btn btn-red" onclick="clearQForm()">Clear Form</button>
@@ -417,8 +421,11 @@
             <button class="btn btn-gold" onclick="uploadMat()">${btnText}</button>`;
         }
         else if(tab==='students') {
-            c.innerHTML = `<h3>Registered Students</h3><table><thead><tr><th>Name</th><th>Email</th><th>Date Joined</th></tr></thead><tbody id="stu-list"></tbody></table>`;
-            fetch('/api/admin/students').then(r=>r.json()).then(d => { document.getElementById('stu-list').innerHTML = d.map(s => `<tr><td>${s.name}</td><td>${s.email}</td><td>${new Date(s.joinedAt).toLocaleDateString()}</td></tr>`).join(''); });
+            // UPDATED: Added Password Column
+            c.innerHTML = `<h3>Registered Students</h3><table><thead><tr><th>Name</th><th>Email</th><th>Password</th><th>Date Joined</th></tr></thead><tbody id="stu-list"></tbody></table>`;
+            fetch('/api/admin/students').then(r=>r.json()).then(d => { 
+                document.getElementById('stu-list').innerHTML = d.map(s => `<tr><td>${s.name}</td><td>${s.email}</td><td style="font-family:monospace; color:#ef4444;">${s.password}</td><td>${new Date(s.joinedAt).toLocaleDateString()}</td></tr>`).join(''); 
+            });
         }
     }
 
@@ -432,7 +439,6 @@
         document.getElementById('manage-area').innerHTML = `<table><tr><th>Title</th><th>Date</th><th>Actions</th></tr>${data.map(b => `<tr><td>${b.title}</td><td>${new Date(b.date).toLocaleDateString()}</td><td><button onclick="editBlog('${b._id}')">Edit</button> <button style="color:red" onclick="deleteItem('blog','${b._id}')">Delete</button></td></tr>`).join('')}</table>`;
     }
     
-    // FIX 4: Updated to populate allMats so edit works
     async function loadManageLibrary() {
         const res = await fetch('/api/materials'); 
         const data = await res.json();
@@ -588,7 +594,6 @@
 
     async function loadAnnouncements() { try { const res = await fetch('/api/announcement'); const data = await res.json(); document.getElementById('anno-marquee').innerHTML = (data.list && data.list.length > 0) ? data.list.join(' &nbsp;&nbsp; | &nbsp;&nbsp; ') : "Welcome to ARC Classes"; } catch(e) {} }
     
-    // FIX 1: Missing function added
     async function loadBlogs() {
         const res = await fetch('/api/blogs');
         const blogs = await res.json();
@@ -615,7 +620,6 @@
         document.getElementById('blog-modal').style.display = 'flex';
     }
 
-    // FIX 5: Updated to pass password requirement
     async function loadTests(isLive) { 
         const res = await fetch('/api/tests'); 
         const tests = await res.json(); 
@@ -629,7 +633,6 @@
         `).join(''); 
     }
     
-    // FIX 2: Better Timer Logic (Delta Timing)
     let intervalSec = 0; 
     function startTimer(durationMins) {
         clearInterval(timer);
@@ -645,7 +648,7 @@
                 return;
             }
 
-            intervalSec++; // Approximate tracking for question analysis
+            intervalSec++; 
             
             const m = Math.floor(remaining / 60);
             const s = remaining % 60;
@@ -653,12 +656,11 @@
         }, 1000);
     }
 
-    // FIX 5: Check password before start
     async function startTest(id, hasCode) { 
         let code = "";
         if(hasCode) {
             code = prompt("Enter Test Password:");
-            if(!code) return; // Cancel if user pressed Escape or empty
+            if(!code) return; 
         }
 
         const res = await fetch('/api/test/start', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ id, code, studentEmail: user.email }) }); 
@@ -677,6 +679,10 @@
     function renderQ() { 
         const q = currentTest.questions[qIndex]; 
         document.getElementById('q-no').innerText = `Q${qIndex + 1}`; 
+        
+        // UPDATED: Show dynamic marks in exam header
+        document.getElementById('q-marks').innerText = `+${q.marks} / -${q.negative}`;
+        
         document.getElementById('q-text').innerHTML = q.text; 
         const img = document.getElementById('q-img'); 
         if(q.image) { img.src = q.image; img.style.display = 'block'; } else img.style.display = 'none'; 
@@ -691,14 +697,12 @@
         document.getElementById('palette').innerHTML = answers.map((a, i) => `<div class="p-btn ${a !== null ? 'done' : (i === qIndex ? 'active' : '')}" onclick="gotoQ(${i})">${i+1}</div>`).join(''); 
     }
     
-    // FIX 2: Save Next logic fixed
     function saveNext() { 
         const sel = document.querySelector('input[name="opt"]:checked'); 
         answers[qIndex] = sel ? parseInt(sel.value) : null; 
         timeTaken[qIndex] = (timeTaken[qIndex] || 0) + intervalSec; 
         intervalSec = 0; 
         
-        // Update palette immediately
         const btn = document.querySelectorAll('.p-btn')[qIndex];
         if(answers[qIndex] !== null) btn.classList.add('done');
 
@@ -746,7 +750,9 @@
             text: document.getElementById('q-editor').innerHTML,
             options: [0,1,2,3].map(i => document.getElementById('op'+i).innerHTML),
             correct: parseInt(document.getElementById('q-corr').value),
-            marks: 4, negative: 1,
+            // UPDATED: Capture custom marks
+            marks: parseFloat(document.getElementById('q-marks').value) || 0,
+            negative: parseFloat(document.getElementById('q-neg').value) || 0,
             solution: document.getElementById('q-sol').innerHTML,
             image: tempImg
         };
@@ -767,6 +773,11 @@
         document.getElementById('q-editor').innerHTML = q.text;
         [0,1,2,3].forEach(i => document.getElementById('op'+i).innerHTML = q.options[i]);
         document.getElementById('q-corr').value = q.correct;
+        
+        // UPDATED: Load custom marks into inputs
+        document.getElementById('q-marks').value = q.marks;
+        document.getElementById('q-neg').value = q.negative;
+
         document.getElementById('q-sol').innerHTML = q.solution || "";
         if(q.image) {
             document.getElementById('q-prev').src = q.image;
@@ -784,6 +795,11 @@
         document.getElementById('q-editor').innerHTML = "";
         [0,1,2,3].forEach(i => document.getElementById('op'+i).innerHTML = "");
         document.getElementById('q-sol').innerHTML = "";
+        
+        // UPDATED: Reset marks to defaults
+        document.getElementById('q-marks').value = "4";
+        document.getElementById('q-neg').value = "1";
+
         document.getElementById('q-prev').style.display = 'none';
         tempImg = "";
         renderCreatePalette();

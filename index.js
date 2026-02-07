@@ -10,7 +10,6 @@ app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // --- 1. DATABASE CONNECTION ---
-// WARNING: Use Environment Variables for sensitive data in production
 const dbLink = "mongodb+srv://ankitprogrammer25:a32x05sYvukG178G@cluster0.0dhqpzv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 
 mongoose.connect(dbLink)
@@ -135,12 +134,8 @@ app.get('/api/admin/test/:id', async (req, res) => { res.json(await Test.findByI
 
 // --- STUDENT API ---
 app.get('/api/materials', async (req, res) => res.json(await Material.find()));
-// Updated to send accessCode status to frontend (to know if password exists)
 app.get('/api/tests', async (req, res) => {
     const tests = await Test.find({}, 'title duration category date accessCode isLive startTime endTime');
-    // Map to include a flag 'hasCode' instead of sending the actual code (security best practice)
-    // But for this logic, we will send accessCode so the backend logic in /start remains simple, 
-    // or just rely on the fact that if it's null, we don't ask.
     res.json(tests);
 });
 app.get('/api/blogs', async (req, res) => res.json(await Blog.find().sort({ date: -1 })));
@@ -181,8 +176,8 @@ app.post('/api/test/start', async (req, res) => {
         if(now < new Date(t.startTime)) return res.json({ success: false, message: "Not Started" });
         if(now > new Date(t.endTime)) return res.json({ success: false, message: "Expired" });
     }
-    // FIX: If test has no code, allow access regardless of what 'code' param is sent
     if(!t.accessCode || t.accessCode === "" || t.accessCode === code) {
+        // Here we just pass the questions. The marks are inside 't' object already.
         const safeQ = t.questions.map(q => ({ text: q.text, image: q.image, options: q.options, marks: q.marks, negative: q.negative }));
         res.json({ success: true, test: {...t._doc, questions: safeQ} });
     } else res.json({ success: false, message: "Wrong Password" });
@@ -194,9 +189,9 @@ app.post('/api/test/submit', async (req, res) => {
         const t = await Test.findById(testId);
         let score = 0, total = 0;
         t.questions.forEach((q, i) => {
-            total += q.marks;
+            total += q.marks; // Uses the custom marks stored in DB
             if (answers[i] === q.correct) score += q.marks;
-            else if (answers[i] !== null) score -= q.negative;
+            else if (answers[i] !== null) score -= q.negative; // Uses custom negative marks
         });
         const pct = (score / total) * 100;
         const r = new Result({ 
