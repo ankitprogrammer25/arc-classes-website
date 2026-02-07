@@ -38,10 +38,7 @@
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border: 1px solid #eee; display: flex; flex-direction: column; }
-        
-        /* GRID SYSTEM (Fixed for Library/Blogs) */
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; width: 100%; box-sizing: border-box; }
-        
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
         input, select, textarea { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
 
         /* BLOG STYLES */
@@ -82,11 +79,11 @@
         .q-btn:hover { background: #e2e8f0; }
         .q-btn.active { border: 2px solid var(--primary); background: #e0f2fe; }
 
-        /* LIBRARY FOLDERS */
+        /* LIBRARY */
         .folder { background: #e0f2fe; padding: 30px; text-align: center; border-radius: 12px; cursor: pointer; font-size: 1.2rem; font-weight: bold; border-bottom: 4px solid var(--primary); color: var(--primary); transition:0.2s; }
         .folder:hover { transform: translateY(-3px); background: #bae6fd; }
         
-        /* EXAM & MCQ ALIGNMENT FIX */
+        /* EXAM LAYOUT & MCQ ALIGNMENT FIX */
         .exam-layout { display: flex; gap: 20px; height: 80vh; }
         .question-panel { flex: 3; background: white; padding: 30px; border-radius: 12px; overflow-y: auto; }
         .palette-panel { flex: 1; background: white; padding: 20px; border-radius: 12px; display: flex; flex-direction: column; }
@@ -95,27 +92,28 @@
         .mcq-label {
             display: flex; 
             align-items: flex-start; /* Aligns circle with top of text */
-            padding: 10px; 
-            margin-bottom: 8px;
+            padding: 12px; 
+            margin-bottom: 10px;
             border: 1px solid #eee;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
             transition: 0.2s;
+            font-size: 1.1rem;
         }
-        .mcq-label:hover { background: #f8fafc; }
+        .mcq-label:hover { background: #f8fafc; border-color: var(--gold); }
         .mcq-label input { 
-            margin-right: 12px; 
+            margin-right: 15px; 
             margin-top: 5px; /* Slight adjustment for alignment */
-            width: 18px; 
-            height: 18px;
+            width: 20px; 
+            height: 20px;
             flex-shrink: 0; /* Prevents squishing */
+            cursor: pointer;
         }
 
         .p-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
         .p-btn { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border: 1px solid #ddd; cursor: pointer; border-radius: 50%; font-weight: bold; }
         .p-btn.done { background: var(--green); color: white; border-color: var(--green); }
         .p-btn.active { border: 2px solid var(--primary); }
-        
         .review-row { border-bottom: 1px solid #eee; padding: 15px 0; }
         .badge { padding: 5px 10px; border-radius: 4px; color: white; font-size: 0.8rem; font-weight: bold; }
         .bg-green { background: var(--green); } .bg-red { background: var(--red); }
@@ -137,8 +135,8 @@
     <div class="menu">
         <a onclick="show('home')">Home</a>
         <a onclick="show('library')">Library</a>
-        <a onclick="show('tests')">Practice Tests</a>
-        <a onclick="show('live')"><span class="blink">🔴</span> Upcoming test</a>
+        <a onclick="show('tests')">Tests</a>
+        <a onclick="show('live')"><span class="blink">🔴</span> Live</a>
         <a onclick="show('results')" id="nav-results">Results</a>
         <a onclick="show('login')" id="nav-login">Login</a>
         <a onclick="show('admin')" id="nav-admin">TEACHER PANEL</a>
@@ -153,7 +151,7 @@
 
 <div id="home" class="section active">
     <div style="text-align:center; padding: 50px 20px;">
-        <h1 style="color:var(--primary); font-size: 3rem;">Master Chemistry with ARC Classes</h1>
+        <h1 style="color:var(--primary); font-size: 3rem;">Master Chemistry with ARC</h1>
         <p>Premium Notes, Test Series, and Live Classes.</p>
         <button class="btn btn-gold" onclick="show('tests')">Start Practice</button>
     </div>
@@ -223,12 +221,11 @@
         <div class="folder" onclick="loadLib('Test Series')">Test Series</div>
         <div class="folder" onclick="loadLib('Notes')">Coaching Notes</div>
     </div>
-    <button id="lib-back" class="btn btn-red" style="display:none; margin-bottom:20px;" onclick="resetLib()">Back</button>
+    <button id="lib-back" class="btn btn-red" style="display:none; margin-bottom:10px;" onclick="resetLib()">Back</button>
     <div id="lib-content" class="grid"></div>
 </div>
-
 <div id="tests" class="section"><h2>📝 Practice Tests</h2><div id="test-list" class="grid"></div></div>
-<div id="live" class="section"><h2>🔴 Live Tests or Upcoming Tests</h2><div id="live-list" class="grid"></div></div>
+<div id="live" class="section"><h2>🔴 Live Tests</h2><div id="live-list" class="grid"></div></div>
 
 <div id="exam" class="section" style="max-width:100%; padding:20px;">
     <div class="exam-layout">
@@ -583,7 +580,7 @@
             await fetch(url, { method, headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) }); 
             alert(editingTestId ? "Updated!" : "Published!"); 
             editingTestId = null; draftQ = []; initCreateTest();
-        } catch(e) { alert("Error Publishing Test"); }
+        } catch(e) { alert("Error Publishing Test: " + e.message); }
     }
     
     async function postBlog() { 
@@ -601,29 +598,14 @@
     async function loadAnnouncements() { try { const res = await fetch('/api/announcement'); const data = await res.json(); document.getElementById('anno-marquee').innerHTML = (data.list && data.list.length > 0) ? data.list.join(' &nbsp;&nbsp; | &nbsp;&nbsp; ') : "Welcome to ARC Classes"; } catch(e) {} }
     
     async function loadTests(isLive) { const res = await fetch('/api/tests'); const tests = await res.json(); document.getElementById(isLive?'live-list':'test-list').innerHTML = tests.filter(t => (t.isLive || false) === isLive).map(t => `<div class="card" style="border-left: 5px solid ${isLive ? 'red' : 'gold'}"><h3>${t.title} ${t.accessCode?'🔒':''}</h3><p>${t.duration} Mins | ${t.questions ? '?' : ''} Qs</p>${isLive ? `<p style="color:red">Start: ${new Date(t.startTime).toLocaleString()}</p>` : ''}<button class="btn btn-gold" onclick="startTest('${t._id}')">Start</button></div>`).join(''); }
-    async function startTest(id) { const code = prompt("Enter Test Password (if any):"); const res = await fetch('/api/test/start', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ id, code, studentEmail: user.email }) }); const data = await res.json(); if(data.success) { currentTest = data.test; answers = new Array(currentTest.questions.length).fill(null); timeTaken = new Array(currentTest.questions.length).fill(0); qIndex = 0; show('exam'); renderQ(); } else alert(data.message); }
     
-    function renderQ() { 
-        const q = currentTest.questions[qIndex]; 
-        document.getElementById('q-no').innerText = `Q${qIndex + 1}`; 
-        document.getElementById('q-text').innerHTML = q.text; 
-        const img = document.getElementById('q-img'); 
-        if(q.image) { img.src = q.image; img.style.display = 'block'; } else img.style.display = 'none'; 
-        document.getElementById('q-opts').innerHTML = q.options.map((o, i) => `
-            <label class="mcq-label">
-                <input type="radio" name="opt" value="${i}" ${answers[qIndex] === i ? 'checked' : ''}> 
-                <div>${o}</div>
-            </label>
-        `).join(''); 
-        document.getElementById('palette').innerHTML = answers.map((a, i) => `<div class="p-btn ${a !== null ? 'done' : (i === qIndex ? 'active' : '')}" onclick="gotoQ(${i})">${i+1}</div>`).join(''); 
-    }
-    
-    // TIMER LOGIC
+    // --- TIMER LOGIC FIX ---
     let intervalSec = 0; 
     function startTimer(totalSec) {
         clearInterval(timer);
         timer = setInterval(() => {
-            totalSec--; intervalSec++;
+            totalSec--;
+            intervalSec++; 
             const m = Math.floor(totalSec / 60);
             const s = totalSec % 60;
             document.getElementById('timer').innerText = `${m}:${s < 10 ? '0'+s : s}`;
@@ -631,32 +613,45 @@
         }, 1000);
     }
 
+    async function startTest(id) { 
+        const code = prompt("Enter Test Password (if any):"); 
+        const res = await fetch('/api/test/start', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ id, code, studentEmail: user.email }) }); 
+        const data = await res.json(); 
+        if(data.success) { 
+            currentTest = data.test; 
+            answers = new Array(currentTest.questions.length).fill(null); 
+            timeTaken = new Array(currentTest.questions.length).fill(0); 
+            qIndex = 0; 
+            show('exam'); 
+            startTimer(currentTest.duration * 60); // START TIMER HERE
+            renderQ(); 
+        } else alert(data.message); 
+    }
+    
+    // UPDATED RENDERQ TO SUPPORT HTML IN OPTIONS & ALIGNED RADIO
+    function renderQ() { 
+        const q = currentTest.questions[qIndex]; 
+        document.getElementById('q-no').innerText = `Q${qIndex + 1}`; 
+        document.getElementById('q-text').innerHTML = q.text; 
+        const img = document.getElementById('q-img'); 
+        if(q.image) { img.src = q.image; img.style.display = 'block'; } else img.style.display = 'none'; 
+        
+        document.getElementById('q-opts').innerHTML = q.options.map((o, i) => `
+            <label class="mcq-label">
+                <input type="radio" name="opt" value="${i}" ${answers[qIndex] === i ? 'checked' : ''}> 
+                <div>${o}</div>
+            </label>
+        `).join(''); 
+        
+        document.getElementById('palette').innerHTML = answers.map((a, i) => `<div class="p-btn ${a !== null ? 'done' : (i === qIndex ? 'active' : '')}" onclick="gotoQ(${i})">${i+1}</div>`).join(''); 
+    }
+    
     function saveNext() { const sel = document.querySelector('input[name="opt"]:checked'); answers[qIndex] = sel ? parseInt(sel.value) : null; timeTaken[qIndex] = (timeTaken[qIndex] || 0) + intervalSec; intervalSec = 0; if(qIndex < currentTest.questions.length - 1) { qIndex++; renderQ(); } }
     function clearAns() { answers[qIndex] = null; renderQ(); }
     function gotoQ(i) { timeTaken[qIndex] = (timeTaken[qIndex] || 0) + intervalSec; intervalSec = 0; qIndex = i; renderQ(); }
     async function submitTest() { if(!confirm("Submit?")) return; clearInterval(timer); const res = await fetch('/api/test/submit', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ testId: currentTest._id, answers, timeTaken, studentName: user.name, studentEmail: user.email }) }); const data = await res.json(); if(data.success) { alert(`Score: ${data.score}`); location.reload(); } }
     
-    // UPDATED VIEWSHEET
-    async function viewSheet(id) { 
-        const res = await fetch('/api/result-details', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ resultId: id }) }); 
-        const data = await res.json(); 
-        if(!data.success) return alert(data.message); 
-        const r = data.result; 
-        document.getElementById('review-stats').innerHTML = `<span>Score: ${r.score}/${r.totalMarks}</span><span>Rank: #${data.rank}</span><span>Accuracy: ${r.percentage.toFixed(1)}%</span>`; 
-        document.getElementById('review-body').innerHTML = data.questions.map((q, i) => `
-            <div class="review-row">
-                <p><strong>Q${i+1}:</strong> ${q.text}</p>
-                ${q.image ? `<img src="${q.image}" style="height:100px">` : ''}
-                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:5px;">
-                    ${q.options.map((opt, idx) => `
-                        <div style="padding:5px; border:1px solid #ddd; ${idx === q.correct ? 'background:#dcfce7; border-color:green;' : ''} ${idx === q.studentAnswer && idx !== q.correct ? 'background:#fee2e2; border-color:red;' : ''}"> ${opt} </div>
-                    `).join('')}
-                </div>
-                <p style="margin-top:5px; font-size:0.9rem;">Status: <span class="badge ${q.status==='Correct'?'bg-green':'bg-red'}">${q.status}</span></p>
-                ${q.solution ? `<div style="background:#f0f9ff; padding:10px; margin-top:5px;"><strong>💡 Solution:</strong> ${q.solution}</div>` : ''}
-            </div>`).join(''); 
-        document.getElementById('review-modal').style.display = 'flex'; 
-    }
+    async function viewSheet(id) { const res = await fetch('/api/result-details', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ resultId: id }) }); const data = await res.json(); if(!data.success) return alert(data.message); const r = data.result; document.getElementById('review-stats').innerHTML = `<span>Score: ${r.score}/${r.totalMarks}</span><span>Rank: #${data.rank}</span><span>Accuracy: ${r.percentage.toFixed(1)}%</span>`; document.getElementById('review-body').innerHTML = data.questions.map((q, i) => `<div class="review-row"><p><strong>Q${i+1}:</strong> ${q.text}</p>${q.image ? `<img src="${q.image}" style="height:100px">` : ''}<div style="display:grid; grid-template-columns: 1fr 1fr; gap:5px;">${q.options.map((opt, idx) => `<div style="padding:5px; border:1px solid #ddd; ${idx === q.correct ? 'background:#dcfce7; border-color:green;' : ''} ${idx === q.studentAnswer && idx !== q.correct ? 'background:#fee2e2; border-color:red;' : ''}"> ${opt} </div>`).join('')}</div><p style="margin-top:5px; font-size:0.9rem;">Status: <span class="badge ${q.status==='Correct'?'bg-green':'bg-red'}">${q.status}</span></p>${q.solution ? `<div style="background:#f0f9ff; padding:10px; margin-top:5px;"><strong>💡 Solution:</strong> ${q.solution}</div>` : ''}</div>`).join(''); document.getElementById('review-modal').style.display = 'flex'; }
     
     async function loadResults(type) { const res = await fetch('/api/student/results/online', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ email: user.email }) }); const data = await res.json(); document.getElementById('result-list').innerHTML = `<table><tr><th>Date</th><th>Test</th><th>Score</th><th>Action</th></tr>${data.results.filter(r => r.testType === type).map(r => `<tr><td>${new Date(r.date).toLocaleDateString()}</td><td>${r.testTitle}</td><td>${r.score}/${r.totalMarks}</td><td><button class="btn btn-gold" style="padding:5px;" onclick="viewSheet('${r._id}')">View Sheet</button></td></tr>`).join('')}</table>`; }
     async function loadOfflineResults() { const res = await fetch('/api/results/offline'); const data = await res.json(); document.getElementById('result-list').innerHTML = data.map(r => `<h3>${r.title}</h3><table><tr><th>Rank</th><th>Student</th><th>Marks</th><th>Total</th><th>Copy</th></tr>${r.records.map(rec => `<tr><td>#${rec.rank}</td><td>${rec.studentName}</td><td>${rec.obtainedMarks}</td><td>${rec.totalMarks}</td><td>${rec.copyLink ? `<a href="${rec.copyLink}" target="_blank" style="color:blue">View</a>` : '-'}</td></tr>`).join('')}</table>`).join(''); }
@@ -678,6 +673,7 @@
     }
 
     function saveDraftQ() {
+        // USE innerHTML to get RICH TEXT
         const qData = {
             text: document.getElementById('q-editor').innerHTML,
             options: [0,1,2,3].map(i => document.getElementById('op'+i).innerHTML),
