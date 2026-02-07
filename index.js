@@ -152,9 +152,23 @@ app.post('/api/result-details', async (req, res) => {
     try {
         const result = await Result.findById(req.body.resultId);
         if(!result) return res.json({ success: false, message: "Result Not Found" });
-        const rank = (await Result.countDocuments({ testId: result.testId, score: { $gt: result.score } })) + 1;
+        
+        // 1. Fetch all results for this test to calculate Rank and Leaderboard
+        const allResults = await Result.find({ testId: result.testId }).sort({ score: -1 });
+        
+        // 2. Find current student's rank
+        const rank = allResults.findIndex(r => r._id.toString() === result._id.toString()) + 1;
+
+        // 3. Build Leaderboard (Name only, no Email)
+        const leaderboard = allResults.map((r, i) => ({
+            rank: i + 1,
+            name: r.studentName,
+            score: r.score,
+            total: r.totalMarks
+        }));
+
         const test = await Test.findById(result.testId);
-        if(!test) return res.json({ success: true, result, rank, questions: [], message: "Test was deleted by teacher." });
+        if(!test) return res.json({ success: true, result, rank, leaderboard, questions: [], message: "Test was deleted by teacher." });
         
         const detailedQuestions = test.questions.map((q, i) => ({
             text: q.text, image: q.image, options: q.options, correct: q.correct, 
@@ -162,7 +176,8 @@ app.post('/api/result-details', async (req, res) => {
             studentAnswer: result.answers[i], timeSpent: result.timeTaken ? result.timeTaken[i] : 0,
             status: result.answers[i] === q.correct ? 'Correct' : (result.answers[i] === null ? 'Skipped' : 'Wrong')
         }));
-        res.json({ success: true, result, rank, questions: detailedQuestions });
+        
+        res.json({ success: true, result, rank, leaderboard, questions: detailedQuestions });
     } catch(e) { res.json({ success: false, message: e.message }); }
 });
 
@@ -202,7 +217,8 @@ app.post('/api/test/submit', async (req, res) => {
             answers, timeTaken 
         });
         await r.save();
-        res.json({ success: true, score });
+        // UPDATED: Return resultId to allow immediate view of analysis
+        res.json({ success: true, score, resultId: r._id });
     } catch(e) { res.json({ success: false }); }
 });
 
