@@ -21,7 +21,7 @@
 
         .blink { animation: blinker 1.5s linear infinite; }
         @keyframes blinker { 50% { opacity: 0; } }
-        /* NEW: Stronger blink for red alert */
+        /* NEW: Alert Blink */
         .blink-red { animation: blinker-red 1s linear infinite; color: red; font-weight: bold; font-size: 1.5rem; text-align: center; }
         @keyframes blinker-red { 50% { opacity: 0; } }
 
@@ -344,13 +344,14 @@
                         <h3>Create / Edit Test</h3>
                         <input id="t-title" placeholder="Title">
                         <div style="display:flex; gap:10px;">
-                            <input id="t-dur" type="number" placeholder="Duration (min)">
+                            <input id="t-dur" type="number" placeholder="Duration (min)" onchange="calcEndTime()">
                             <input id="t-code" placeholder="Password (Optional)">
                         </div>
                         <select id="t-cat"><option>11th</option><option>12th</option><option>Organic</option><option>Full Syllabus</option></select>
                         <div style="margin:10px 0; padding:10px; border:1px solid #ddd;">
                             <label><input type="checkbox" id="t-live"> Is Live Test?</label>
-                            <br>Start: <input type="datetime-local" id="t-start"> End: <input type="datetime-local" id="t-end">
+                            <br>Start: <input type="datetime-local" id="t-start" onchange="calcEndTime()"> 
+                            <br>End (Auto): <input type="datetime-local" id="t-end" readonly style="background:#f0f0f0;">
                         </div>
                         <hr>
                         <h4>Add/Edit Question</h4>
@@ -488,10 +489,25 @@
     function initCreateTest() { editingTestId = null; draftQ = []; showAdm('create-test'); renderCreatePalette(); }
     function initUpload() { editingMaterialId = null; showAdm('upload'); } 
 
-    // FIX 6-HOUR ERROR: Convert Date object to local string for input value
+    // Time Formatting
     function toLocalISOString(date) {
         const localDate = new Date(date - date.getTimezoneOffset() * 60000);
         return localDate.toISOString().slice(0, 16);
+    }
+
+    // NEW: Auto Calculate End Time
+    function calcEndTime() {
+        const startVal = document.getElementById('t-start').value;
+        const durVal = document.getElementById('t-dur').value;
+        
+        if (startVal && durVal) {
+            const start = new Date(startVal);
+            const dur = parseInt(durVal);
+            const end = new Date(start.getTime() + dur * 60000);
+            
+            // Adjust to local ISO string for input
+            document.getElementById('t-end').value = toLocalISOString(end);
+        }
     }
 
     async function editTest(id) {
@@ -613,7 +629,7 @@
             accessCode: document.getElementById('t-code').value,
             category: document.getElementById('t-cat').value,
             isLive: document.getElementById('t-live').checked,
-            // FIX: Create Date object from value to ensure local time is respected before stringify
+            // UPDATED: Create Date object from value to ensure local time is respected
             startTime: document.getElementById('t-start').value ? new Date(document.getElementById('t-start').value) : null,
             endTime: document.getElementById('t-end').value ? new Date(document.getElementById('t-end').value) : null,
             questions: draftQ
@@ -672,14 +688,14 @@
         const tests = await res.json(); 
         const now = new Date();
         
-        // UPDATED LOGIC: 
-        // Live Section = marked Live + Not Expired
-        // Practice Section = marked Practice OR (marked Live + Expired)
+        // UPDATED: Filter to move Expired Live tests to Practice
         const filteredTests = tests.filter(t => {
             const tEnd = t.endTime ? new Date(t.endTime) : null;
             if (isLive) {
+                // Show in Live ONLY if strictly Live AND not expired
                 return t.isLive && tEnd && tEnd > now;
             } else {
+                // Show in Practice if Practice OR (Live AND expired)
                 return !t.isLive || (t.isLive && tEnd && tEnd <= now);
             }
         });
@@ -689,7 +705,7 @@
                 <h3>${t.title} ${t.accessCode ? '🔒' : ''}</h3>
                 <p>${t.duration} Mins</p>
                 ${isLive ? `<p style="color:red">Start: ${new Date(t.startTime).toLocaleString()}</p>` : ''}
-                <button class="btn btn-gold" onclick="startTest('${t._id}', ${t.accessCode ? true : false})">Start</button>
+                <button class="btn btn-gold" onclick="startTest('${t._id}', ${t.accessCode ? true : false}, '${t.startTime}')">Start</button>
             </div>
         `).join(''); 
     }
@@ -717,7 +733,20 @@
         }, 1000);
     }
 
-    async function startTest(id, hasCode) { 
+    // UPDATED: Strict Frontend Time Check
+    async function startTest(id, hasCode, startTimeStr) { 
+        // 1. Strict Time Check FIRST
+        if (startTimeStr) {
+            const now = new Date();
+            const start = new Date(startTimeStr);
+            if (now < start) {
+                document.getElementById('alert-msg').innerText = "The test is locked and not started till now";
+                document.getElementById('alert-modal').style.display = 'flex';
+                return; // STOP HERE
+            }
+        }
+
+        // 2. Only ask for password if started
         let code = "";
         if(hasCode) {
             code = prompt("Enter Test Password:");
@@ -736,13 +765,13 @@
             startTimer(currentTest.duration); 
             renderQ(); 
         } else {
-            // NEW: Show blinking red popup if test hasn't started
-            if (data.message === "Not Started") {
-                document.getElementById('alert-msg').innerText = "Test is not started till now";
+             // Fallback for backend rejection
+             if(data.message === "Not Started") {
+                document.getElementById('alert-msg').innerText = "The test is locked and not started till now";
                 document.getElementById('alert-modal').style.display = 'flex';
-            } else {
+             } else {
                 alert(data.message);
-            }
+             }
         }
     }
     

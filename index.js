@@ -174,7 +174,7 @@ app.post('/api/test/start', async (req, res) => {
     }
     const t = await Test.findById(id);
     
-    // IMPORTANT: Backend check ensures "Not Started" message is sent accurately
+    // Server-side check to prevent hacking
     if(t.isLive && studentEmail !== 'admin@arc.com') {
         const now = new Date();
         if(now < new Date(t.startTime)) return res.json({ success: false, message: "Not Started" });
