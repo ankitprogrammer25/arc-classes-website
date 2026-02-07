@@ -37,12 +37,13 @@
         .section.active { display: block; animation: fadeIn 0.3s; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border: 1px solid #eee; display: flex; flex-direction: column; }
+        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border: 1px solid #eee; display: flex; flex-direction: column; cursor: pointer;}
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
         input, select, textarea { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
 
         /* BLOG STYLES */
-        .blog-card { padding: 0; overflow: hidden; } 
+        .blog-card { padding: 0; overflow: hidden; cursor: pointer; transition: transform 0.2s; } 
+        .blog-card:hover { transform: translateY(-5px); }
         .blog-card img { width: 100%; height: 180px; object-fit: cover; }
         .blog-content-preview { padding: 15px; display: flex; flex-direction: column; height: 100%; }
         .blog-title { margin: 0 0 10px 0; font-size: 1.2rem; color: var(--primary); }
@@ -83,32 +84,17 @@
         .folder { background: #e0f2fe; padding: 30px; text-align: center; border-radius: 12px; cursor: pointer; font-size: 1.2rem; font-weight: bold; border-bottom: 4px solid var(--primary); color: var(--primary); transition:0.2s; }
         .folder:hover { transform: translateY(-3px); background: #bae6fd; }
         
-        /* EXAM LAYOUT & MCQ ALIGNMENT FIX */
+        /* EXAM LAYOUT */
         .exam-layout { display: flex; gap: 20px; height: 80vh; }
         .question-panel { flex: 3; background: white; padding: 30px; border-radius: 12px; overflow-y: auto; }
         .palette-panel { flex: 1; background: white; padding: 20px; border-radius: 12px; display: flex; flex-direction: column; }
         
-        /* FIXED MCQ LABEL */
         .mcq-label {
-            display: flex; 
-            align-items: flex-start; /* Aligns circle with top of text */
-            padding: 12px; 
-            margin-bottom: 10px;
-            border: 1px solid #eee;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: 0.2s;
-            font-size: 1.1rem;
+            display: flex; align-items: flex-start; padding: 12px; margin-bottom: 10px;
+            border: 1px solid #eee; border-radius: 8px; cursor: pointer; transition: 0.2s; font-size: 1.1rem;
         }
         .mcq-label:hover { background: #f8fafc; border-color: var(--gold); }
-        .mcq-label input { 
-            margin-right: 15px; 
-            margin-top: 5px; /* Slight adjustment for alignment */
-            width: 20px; 
-            height: 20px;
-            flex-shrink: 0; /* Prevents squishing */
-            cursor: pointer;
-        }
+        .mcq-label input { margin-right: 15px; margin-top: 5px; width: 20px; height: 20px; flex-shrink: 0; cursor: pointer; }
 
         .p-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
         .p-btn { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border: 1px solid #ddd; cursor: pointer; border-radius: 50%; font-weight: bold; }
@@ -291,6 +277,7 @@
     let editingTestId = null;
     let editingMaterialId = null; 
     let editQIndex = -1;
+    let allMats = []; // Global for edit reference
 
     // INIT
     if(user) {
@@ -301,8 +288,11 @@
             document.getElementById('nav-results').style.display = 'none';
         }
     }
-    loadBlogs();
+    
+    // FIX 3: Load Announcements immediately
     loadAnnouncements();
+    // FIX 1: Load Blogs on start
+    loadBlogs();
 
     function show(id) {
         if((id==='tests' || id==='live' || id==='results') && !user) return show('login');
@@ -314,7 +304,6 @@
         if(id==='results') loadResults('practice');
     }
 
-    // --- RICH EDITOR TOOLBAR ---
     const toolbarHTML = `
         <div class="toolbar">
             <button class="tool-btn" onclick="exec('bold')" title="Bold"><b>B</b></button>
@@ -333,7 +322,6 @@
             </select>
         </div>`;
 
-    // --- ADMIN PANEL ---
     function showAdm(tab) {
         const c = document.getElementById('adm-content');
         
@@ -434,19 +422,24 @@
         }
     }
 
-    // --- MANAGE CONTENT LOGIC ---
     async function loadManageTests() {
         const res = await fetch('/api/tests'); const data = await res.json();
         document.getElementById('manage-area').innerHTML = `<table><thead><tr><th>Title</th><th>Type</th><th>Actions</th></tr></thead><tbody>${data.map(t => `<tr><td>${t.title}</td><td>${t.isLive ? '🔴 Live' : '📝 Practice'}</td><td><button onclick="editTest('${t._id}')">Edit</button> <button style="color:red" onclick="deleteItem('test','${t._id}')">Delete</button></td></tr>`).join('')}</tbody></table>`;
     }
     async function loadManageBlogs() {
         const res = await fetch('/api/blogs'); const data = await res.json();
+        allBlogs = data; // Update global for edit
         document.getElementById('manage-area').innerHTML = `<table><tr><th>Title</th><th>Date</th><th>Actions</th></tr>${data.map(b => `<tr><td>${b.title}</td><td>${new Date(b.date).toLocaleDateString()}</td><td><button onclick="editBlog('${b._id}')">Edit</button> <button style="color:red" onclick="deleteItem('blog','${b._id}')">Delete</button></td></tr>`).join('')}</table>`;
     }
+    
+    // FIX 4: Updated to populate allMats so edit works
     async function loadManageLibrary() {
-        const res = await fetch('/api/materials'); const data = await res.json();
+        const res = await fetch('/api/materials'); 
+        const data = await res.json();
+        allMats = data; 
         document.getElementById('manage-area').innerHTML = `<table><tr><th>Title</th><th>Category</th><th>Actions</th></tr>${data.map(m => `<tr><td>${m.title}</td><td>${m.category}</td><td><button onclick="editMaterial('${m._id}')">Edit</button> <button style="color:red" onclick="deleteItem('material','${m._id}')">Delete</button></td></tr>`).join('')}</table>`;
     }
+    
     async function loadManageOffline() {
         const res = await fetch('/api/results/offline'); const data = await res.json();
         document.getElementById('manage-area').innerHTML = `<table><tr><th>Test Title</th><th>Records</th><th>Actions</th></tr>${data.map(r => `<tr><td>${r.title}</td><td>${r.records.length}</td><td><button style="color:red" onclick="deleteItem('offline-result','${r._id}')">Delete</button></td></tr>`).join('')}</table>`;
@@ -530,7 +523,6 @@
         editingMaterialId = null; showAdm('upload'); 
     }
 
-    // --- OFFLINE RESULT LOGIC ---
     function addOfflineStudent() {
         const name = document.getElementById('off-name').value;
         const total = document.getElementById('off-total').value;
@@ -575,7 +567,6 @@
         };
         const method = editingTestId ? 'PUT' : 'POST';
         const url = editingTestId ? `/api/admin/test/${editingTestId}` : '/api/admin/test';
-        
         try {
             await fetch(url, { method, headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) }); 
             alert(editingTestId ? "Updated!" : "Published!"); 
@@ -597,24 +588,79 @@
 
     async function loadAnnouncements() { try { const res = await fetch('/api/announcement'); const data = await res.json(); document.getElementById('anno-marquee').innerHTML = (data.list && data.list.length > 0) ? data.list.join(' &nbsp;&nbsp; | &nbsp;&nbsp; ') : "Welcome to ARC Classes"; } catch(e) {} }
     
-    async function loadTests(isLive) { const res = await fetch('/api/tests'); const tests = await res.json(); document.getElementById(isLive?'live-list':'test-list').innerHTML = tests.filter(t => (t.isLive || false) === isLive).map(t => `<div class="card" style="border-left: 5px solid ${isLive ? 'red' : 'gold'}"><h3>${t.title} ${t.accessCode?'🔒':''}</h3><p>${t.duration} Mins | ${t.questions ? '?' : ''} Qs</p>${isLive ? `<p style="color:red">Start: ${new Date(t.startTime).toLocaleString()}</p>` : ''}<button class="btn btn-gold" onclick="startTest('${t._id}')">Start</button></div>`).join(''); }
+    // FIX 1: Missing function added
+    async function loadBlogs() {
+        const res = await fetch('/api/blogs');
+        const blogs = await res.json();
+        allBlogs = blogs; 
+        document.getElementById('blog-grid').innerHTML = blogs.map(b => `
+            <div class="card blog-card" onclick="viewBlog('${b._id}')">
+                <img src="${b.image || 'https://via.placeholder.com/300'}" alt="cover">
+                <div class="blog-content-preview">
+                    <h3 class="blog-title">${b.title}</h3>
+                    <small>${new Date(b.date).toLocaleDateString()}</small>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function viewBlog(id) {
+        const blog = allBlogs.find(b => b._id === id);
+        if(!blog) return;
+        document.getElementById('bm-title').innerText = blog.title;
+        document.getElementById('bm-date').innerText = new Date(blog.date).toLocaleDateString();
+        document.getElementById('bm-content').innerHTML = blog.content;
+        const img = document.getElementById('bm-img');
+        if(blog.image) { img.src = blog.image; img.style.display='block'; } else img.style.display='none';
+        document.getElementById('blog-modal').style.display = 'flex';
+    }
+
+    // FIX 5: Updated to pass password requirement
+    async function loadTests(isLive) { 
+        const res = await fetch('/api/tests'); 
+        const tests = await res.json(); 
+        document.getElementById(isLive?'live-list':'test-list').innerHTML = tests.filter(t => (t.isLive || false) === isLive).map(t => `
+            <div class="card" style="border-left: 5px solid ${isLive ? 'red' : 'gold'}">
+                <h3>${t.title} ${t.accessCode ? '🔒' : ''}</h3>
+                <p>${t.duration} Mins</p>
+                ${isLive ? `<p style="color:red">Start: ${new Date(t.startTime).toLocaleString()}</p>` : ''}
+                <button class="btn btn-gold" onclick="startTest('${t._id}', ${t.accessCode ? true : false})">Start</button>
+            </div>
+        `).join(''); 
+    }
     
-    // --- TIMER LOGIC FIX ---
+    // FIX 2: Better Timer Logic (Delta Timing)
     let intervalSec = 0; 
-    function startTimer(totalSec) {
+    function startTimer(durationMins) {
         clearInterval(timer);
+        const endTime = Date.now() + (durationMins * 60 * 1000);
+        
         timer = setInterval(() => {
-            totalSec--;
-            intervalSec++; 
-            const m = Math.floor(totalSec / 60);
-            const s = totalSec % 60;
+            const now = Date.now();
+            const remaining = Math.floor((endTime - now) / 1000);
+            
+            if(remaining < 0) {
+                clearInterval(timer);
+                submitTest();
+                return;
+            }
+
+            intervalSec++; // Approximate tracking for question analysis
+            
+            const m = Math.floor(remaining / 60);
+            const s = remaining % 60;
             document.getElementById('timer').innerText = `${m}:${s < 10 ? '0'+s : s}`;
-            if(totalSec <= 0) submitTest();
         }, 1000);
     }
 
-    async function startTest(id) { 
-        const code = prompt("Enter Test Password (if any):"); 
+    // FIX 5: Check password before start
+    async function startTest(id, hasCode) { 
+        let code = "";
+        if(hasCode) {
+            code = prompt("Enter Test Password:");
+            if(!code) return; // Cancel if user pressed Escape or empty
+        }
+
         const res = await fetch('/api/test/start', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ id, code, studentEmail: user.email }) }); 
         const data = await res.json(); 
         if(data.success) { 
@@ -623,12 +669,11 @@
             timeTaken = new Array(currentTest.questions.length).fill(0); 
             qIndex = 0; 
             show('exam'); 
-            startTimer(currentTest.duration * 60); // START TIMER HERE
+            startTimer(currentTest.duration); 
             renderQ(); 
         } else alert(data.message); 
     }
     
-    // UPDATED RENDERQ TO SUPPORT HTML IN OPTIONS & ALIGNED RADIO
     function renderQ() { 
         const q = currentTest.questions[qIndex]; 
         document.getElementById('q-no').innerText = `Q${qIndex + 1}`; 
@@ -646,23 +691,47 @@
         document.getElementById('palette').innerHTML = answers.map((a, i) => `<div class="p-btn ${a !== null ? 'done' : (i === qIndex ? 'active' : '')}" onclick="gotoQ(${i})">${i+1}</div>`).join(''); 
     }
     
-    function saveNext() { const sel = document.querySelector('input[name="opt"]:checked'); answers[qIndex] = sel ? parseInt(sel.value) : null; timeTaken[qIndex] = (timeTaken[qIndex] || 0) + intervalSec; intervalSec = 0; if(qIndex < currentTest.questions.length - 1) { qIndex++; renderQ(); } }
+    // FIX 2: Save Next logic fixed
+    function saveNext() { 
+        const sel = document.querySelector('input[name="opt"]:checked'); 
+        answers[qIndex] = sel ? parseInt(sel.value) : null; 
+        timeTaken[qIndex] = (timeTaken[qIndex] || 0) + intervalSec; 
+        intervalSec = 0; 
+        
+        // Update palette immediately
+        const btn = document.querySelectorAll('.p-btn')[qIndex];
+        if(answers[qIndex] !== null) btn.classList.add('done');
+
+        if(qIndex < currentTest.questions.length - 1) { 
+            qIndex++; 
+            renderQ(); 
+        } else {
+            alert("Last question answer saved.");
+        }
+    }
+
     function clearAns() { answers[qIndex] = null; renderQ(); }
-    function gotoQ(i) { timeTaken[qIndex] = (timeTaken[qIndex] || 0) + intervalSec; intervalSec = 0; qIndex = i; renderQ(); }
+    
+    function gotoQ(i) { 
+        timeTaken[qIndex] = (timeTaken[qIndex] || 0) + intervalSec; 
+        intervalSec = 0; 
+        qIndex = i; 
+        renderQ(); 
+    }
+
     async function submitTest() { if(!confirm("Submit?")) return; clearInterval(timer); const res = await fetch('/api/test/submit', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ testId: currentTest._id, answers, timeTaken, studentName: user.name, studentEmail: user.email }) }); const data = await res.json(); if(data.success) { alert(`Score: ${data.score}`); location.reload(); } }
     
     async function viewSheet(id) { const res = await fetch('/api/result-details', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ resultId: id }) }); const data = await res.json(); if(!data.success) return alert(data.message); const r = data.result; document.getElementById('review-stats').innerHTML = `<span>Score: ${r.score}/${r.totalMarks}</span><span>Rank: #${data.rank}</span><span>Accuracy: ${r.percentage.toFixed(1)}%</span>`; document.getElementById('review-body').innerHTML = data.questions.map((q, i) => `<div class="review-row"><p><strong>Q${i+1}:</strong> ${q.text}</p>${q.image ? `<img src="${q.image}" style="height:100px">` : ''}<div style="display:grid; grid-template-columns: 1fr 1fr; gap:5px;">${q.options.map((opt, idx) => `<div style="padding:5px; border:1px solid #ddd; ${idx === q.correct ? 'background:#dcfce7; border-color:green;' : ''} ${idx === q.studentAnswer && idx !== q.correct ? 'background:#fee2e2; border-color:red;' : ''}"> ${opt} </div>`).join('')}</div><p style="margin-top:5px; font-size:0.9rem;">Status: <span class="badge ${q.status==='Correct'?'bg-green':'bg-red'}">${q.status}</span></p>${q.solution ? `<div style="background:#f0f9ff; padding:10px; margin-top:5px;"><strong>💡 Solution:</strong> ${q.solution}</div>` : ''}</div>`).join(''); document.getElementById('review-modal').style.display = 'flex'; }
     
     async function loadResults(type) { const res = await fetch('/api/student/results/online', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ email: user.email }) }); const data = await res.json(); document.getElementById('result-list').innerHTML = `<table><tr><th>Date</th><th>Test</th><th>Score</th><th>Action</th></tr>${data.results.filter(r => r.testType === type).map(r => `<tr><td>${new Date(r.date).toLocaleDateString()}</td><td>${r.testTitle}</td><td>${r.score}/${r.totalMarks}</td><td><button class="btn btn-gold" style="padding:5px;" onclick="viewSheet('${r._id}')">View Sheet</button></td></tr>`).join('')}</table>`; }
     async function loadOfflineResults() { const res = await fetch('/api/results/offline'); const data = await res.json(); document.getElementById('result-list').innerHTML = data.map(r => `<h3>${r.title}</h3><table><tr><th>Rank</th><th>Student</th><th>Marks</th><th>Total</th><th>Copy</th></tr>${r.records.map(rec => `<tr><td>#${rec.rank}</td><td>${rec.studentName}</td><td>${rec.obtainedMarks}</td><td>${rec.totalMarks}</td><td>${rec.copyLink ? `<a href="${rec.copyLink}" target="_blank" style="color:blue">View</a>` : '-'}</td></tr>`).join('')}</table>`).join(''); }
-    let allMats = [];
+    
     async function loadMaterials() { allMats = await (await fetch('/api/materials')).json(); }
     function loadLib(cat) { document.getElementById('lib-cats').style.display = 'none'; document.getElementById('lib-back').style.display = 'block'; if(allMats.length === 0) loadMaterials().then(() => renderLib(cat)); else renderLib(cat); }
     function renderLib(cat) { document.getElementById('lib-content').innerHTML = allMats.filter(m => m.category === cat || (cat === '11th Class' && m.category.includes('11'))).map(m => `<div class="card"><img src="${m.image||''}" style="height:150px; background:#ddd; object-fit:cover;"><h4>${m.title} ${m.accessCode?'🔒':''}</h4><button class="btn btn-gold" onclick="openMat('${m._id}')">Open</button></div>`).join(''); }
     function resetLib() { document.getElementById('lib-cats').style.display = 'grid'; document.getElementById('lib-back').style.display = 'none'; document.getElementById('lib-content').innerHTML = ''; }
     async function openMat(id) { const code = prompt("Enter Password:"); const res = await fetch('/api/material/unlock', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id, code}) }); const data = await res.json(); if(data.success) window.open(data.link); else alert("Wrong Password"); }
     
-    // --- TEST CREATION LOGIC ---
     function renderCreatePalette() {
         const p = document.getElementById('create-palette');
         if(!p) return;
@@ -673,7 +742,6 @@
     }
 
     function saveDraftQ() {
-        // USE innerHTML to get RICH TEXT
         const qData = {
             text: document.getElementById('q-editor').innerHTML,
             options: [0,1,2,3].map(i => document.getElementById('op'+i).innerHTML),

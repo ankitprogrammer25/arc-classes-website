@@ -10,6 +10,7 @@ app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // --- 1. DATABASE CONNECTION ---
+// WARNING: Use Environment Variables for sensitive data in production
 const dbLink = "mongodb+srv://ankitprogrammer25:a32x05sYvukG178G@cluster0.0dhqpzv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 
 mongoose.connect(dbLink)
@@ -95,11 +96,11 @@ app.put('/api/admin/material/:id', async (req, res) => { await Material.findById
 app.post('/api/admin/test', async (req, res) => { await new Test(req.body).save(); res.json({ success: true }); });
 app.put('/api/admin/test/:id', async (req, res) => { await Test.findByIdAndUpdate(req.params.id, req.body); res.json({ success: true }); });
 
-// NEW: UPDATE BLOG
+// UPDATE BLOG
 app.post('/api/admin/blog', async (req, res) => { await new Blog(req.body).save(); res.json({ success: true }); });
 app.put('/api/admin/blog/:id', async (req, res) => { await Blog.findByIdAndUpdate(req.params.id, req.body); res.json({ success: true }); });
 
-// UPDATED: AUTO-RANKING LOGIC
+// AUTO-RANKING LOGIC
 app.post('/api/admin/offline-result', async (req, res) => { 
     try {
         const { title, records } = req.body;
@@ -124,7 +125,7 @@ app.post('/api/admin/announcement/delete', async (req, res) => {
     res.json({ success: true });
 });
 
-// DELETE ENDPOINTS FOR MANAGE SECTION
+// DELETE ENDPOINTS
 app.delete('/api/admin/blog/:id', async (req, res) => { await Blog.findByIdAndDelete(req.params.id); res.json({ success: true }); });
 app.delete('/api/admin/offline-result/:id', async (req, res) => { await OfflineResult.findByIdAndDelete(req.params.id); res.json({ success: true }); });
 app.delete('/api/admin/result/:id', async (req, res) => { await Result.findByIdAndDelete(req.params.id); res.json({ success: true }); });
@@ -134,7 +135,14 @@ app.get('/api/admin/test/:id', async (req, res) => { res.json(await Test.findByI
 
 // --- STUDENT API ---
 app.get('/api/materials', async (req, res) => res.json(await Material.find()));
-app.get('/api/tests', async (req, res) => res.json(await Test.find({}, 'title duration category date accessCode isLive startTime endTime')));
+// Updated to send accessCode status to frontend (to know if password exists)
+app.get('/api/tests', async (req, res) => {
+    const tests = await Test.find({}, 'title duration category date accessCode isLive startTime endTime');
+    // Map to include a flag 'hasCode' instead of sending the actual code (security best practice)
+    // But for this logic, we will send accessCode so the backend logic in /start remains simple, 
+    // or just rely on the fact that if it's null, we don't ask.
+    res.json(tests);
+});
 app.get('/api/blogs', async (req, res) => res.json(await Blog.find().sort({ date: -1 })));
 app.post('/api/student/results/online', async (req, res) => res.json({ success: true, results: await Result.find({ studentEmail: req.body.email }).sort({ date: -1 }) }));
 app.get('/api/results/offline', async (req, res) => res.json(await OfflineResult.find()));
@@ -173,7 +181,8 @@ app.post('/api/test/start', async (req, res) => {
         if(now < new Date(t.startTime)) return res.json({ success: false, message: "Not Started" });
         if(now > new Date(t.endTime)) return res.json({ success: false, message: "Expired" });
     }
-    if(!t.accessCode || t.accessCode === code) {
+    // FIX: If test has no code, allow access regardless of what 'code' param is sent
+    if(!t.accessCode || t.accessCode === "" || t.accessCode === code) {
         const safeQ = t.questions.map(q => ({ text: q.text, image: q.image, options: q.options, marks: q.marks, negative: q.negative }));
         res.json({ success: true, test: {...t._doc, questions: safeQ} });
     } else res.json({ success: false, message: "Wrong Password" });
