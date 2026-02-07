@@ -21,7 +21,6 @@
 
         .blink { animation: blinker 1.5s linear infinite; }
         @keyframes blinker { 50% { opacity: 0; } }
-        /* NEW: Alert Blink */
         .blink-red { animation: blinker-red 1s linear infinite; color: red; font-weight: bold; font-size: 1.5rem; text-align: center; }
         @keyframes blinker-red { 50% { opacity: 0; } }
 
@@ -43,6 +42,33 @@
         .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border: 1px solid #eee; display: flex; flex-direction: column; cursor: pointer;}
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
         input, select, textarea { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
+
+        /* NEW: Styles for the Registration Input Group */
+        .reg-input-group {
+            display: flex;
+            align-items: center;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            overflow: hidden;
+            margin: 10px 0;
+            background: white;
+        }
+        .reg-input-group input {
+            border: none;
+            outline: none;
+            margin: 0;
+            padding: 10px;
+            flex: 1;
+        }
+        .reg-suffix {
+            background: #f1f5f9;
+            color: #64748b;
+            padding: 10px 15px;
+            border-left: 1px solid #ccc;
+            font-size: 0.9rem;
+            font-weight: bold;
+            user-select: none;
+        }
 
         /* BLOG STYLES */
         .blog-card { padding: 0; overflow: hidden; cursor: pointer; transition: transform 0.2s; } 
@@ -171,8 +197,12 @@
     <div id="reg-box" class="form-box" style="display:none; margin-top:20px;">
         <h2>Student Registration</h2>
         <input id="r-name" placeholder="Full Name">
-        <input id="r-prefix" placeholder="username"> 
-        <div style="text-align:right; font-size:0.8rem; color:#777; margin-top:-5px; margin-bottom:10px;">@arcstudent.com</div>
+        
+        <div class="reg-input-group">
+            <input id="r-prefix" placeholder="username"> 
+            <div class="reg-suffix">@arcstudent.com</div>
+        </div>
+
         <input id="r-pass" type="password" placeholder="Password">
         <button class="btn btn-gold" style="width:100%" onclick="doReg()">Register</button>
         <p style="text-align:center; cursor:pointer; margin-top:15px;" onclick="document.getElementById('reg-box').style.display='none'; document.querySelector('.form-box').style.display='block';">Back to Login</p>
@@ -221,7 +251,7 @@
         <div class="question-panel">
             <div style="display:flex; justify-content:space-between;">
                 <h3 id="q-no">Q1</h3>
-                <span id="q-marks" style="color:var(--green); font-weight:bold;">+4</span>
+                <span id="q-marks" style="color:var(--green); font-weight:bold;"></span>
             </div>
             <div id="q-text" style="font-size:1.3rem; margin:20px 0;"></div>
             <img id="q-img" style="max-height:200px; display:none; margin:10px 0;">
@@ -495,7 +525,7 @@
         return localDate.toISOString().slice(0, 16);
     }
 
-    // NEW: Auto Calculate End Time
+    // Auto Calculate End Time
     function calcEndTime() {
         const startVal = document.getElementById('t-start').value;
         const durVal = document.getElementById('t-dur').value;
@@ -629,7 +659,6 @@
             accessCode: document.getElementById('t-code').value,
             category: document.getElementById('t-cat').value,
             isLive: document.getElementById('t-live').checked,
-            // UPDATED: Create Date object from value to ensure local time is respected
             startTime: document.getElementById('t-start').value ? new Date(document.getElementById('t-start').value) : null,
             endTime: document.getElementById('t-end').value ? new Date(document.getElementById('t-end').value) : null,
             questions: draftQ
@@ -688,14 +717,11 @@
         const tests = await res.json(); 
         const now = new Date();
         
-        // UPDATED: Filter to move Expired Live tests to Practice
         const filteredTests = tests.filter(t => {
             const tEnd = t.endTime ? new Date(t.endTime) : null;
             if (isLive) {
-                // Show in Live ONLY if strictly Live AND not expired
                 return t.isLive && tEnd && tEnd > now;
             } else {
-                // Show in Practice if Practice OR (Live AND expired)
                 return !t.isLive || (t.isLive && tEnd && tEnd <= now);
             }
         });
@@ -721,7 +747,8 @@
             
             if(remaining < 0) {
                 clearInterval(timer);
-                submitTest();
+                // FIX: Force submit without confirmation when time is up
+                submitTest(true);
                 return;
             }
 
@@ -733,20 +760,17 @@
         }, 1000);
     }
 
-    // UPDATED: Strict Frontend Time Check
     async function startTest(id, hasCode, startTimeStr) { 
-        // 1. Strict Time Check FIRST
         if (startTimeStr) {
             const now = new Date();
             const start = new Date(startTimeStr);
             if (now < start) {
                 document.getElementById('alert-msg').innerText = "The test is locked and not started till now";
                 document.getElementById('alert-modal').style.display = 'flex';
-                return; // STOP HERE
+                return; 
             }
         }
 
-        // 2. Only ask for password if started
         let code = "";
         if(hasCode) {
             code = prompt("Enter Test Password:");
@@ -765,7 +789,6 @@
             startTimer(currentTest.duration); 
             renderQ(); 
         } else {
-             // Fallback for backend rejection
              if(data.message === "Not Started") {
                 document.getElementById('alert-msg').innerText = "The test is locked and not started till now";
                 document.getElementById('alert-modal').style.display = 'flex';
@@ -778,7 +801,13 @@
     function renderQ() { 
         const q = currentTest.questions[qIndex]; 
         document.getElementById('q-no').innerText = `Q${qIndex + 1}`; 
-        document.getElementById('q-marks').innerText = `+${q.marks} / -${q.negative}`;
+        
+        // FIX: Display dynamic marks for the current question
+        // Use '||' to provide default if undefined, but marks can be 0 so check strictly or use default 4
+        const m = q.marks !== undefined ? q.marks : 4;
+        const n = q.negative !== undefined ? q.negative : 1;
+        document.getElementById('q-marks').innerText = `+${m} / -${n}`;
+        
         document.getElementById('q-text').innerHTML = q.text; 
         const img = document.getElementById('q-img'); 
         if(q.image) { img.src = q.image; img.style.display = 'block'; } else img.style.display = 'none'; 
@@ -819,7 +848,18 @@
         renderQ(); 
     }
 
-    async function submitTest() { if(!confirm("Submit?")) return; clearInterval(timer); const res = await fetch('/api/test/submit', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ testId: currentTest._id, answers, timeTaken, studentName: user.name, studentEmail: user.email }) }); const data = await res.json(); if(data.success) { alert(`Score: ${data.score}`); location.reload(); } }
+    // FIX: Added 'auto' parameter to bypass confirmation for auto-submit
+    async function submitTest(auto = false) { 
+        if(!auto && !confirm("Submit?")) return; 
+        
+        clearInterval(timer); 
+        const res = await fetch('/api/test/submit', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ testId: currentTest._id, answers, timeTaken, studentName: user.name, studentEmail: user.email }) }); 
+        const data = await res.json(); 
+        if(data.success) { 
+            alert(`Score: ${data.score}`); 
+            location.reload(); 
+        } 
+    }
     
     async function viewSheet(id) { const res = await fetch('/api/result-details', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ resultId: id }) }); const data = await res.json(); if(!data.success) return alert(data.message); const r = data.result; document.getElementById('review-stats').innerHTML = `<span>Score: ${r.score}/${r.totalMarks}</span><span>Rank: #${data.rank}</span><span>Accuracy: ${r.percentage.toFixed(1)}%</span>`; document.getElementById('review-body').innerHTML = data.questions.map((q, i) => `<div class="review-row"><p><strong>Q${i+1}:</strong> ${q.text}</p>${q.image ? `<img src="${q.image}" style="height:100px">` : ''}<div style="display:grid; grid-template-columns: 1fr 1fr; gap:5px;">${q.options.map((opt, idx) => `<div style="padding:5px; border:1px solid #ddd; ${idx === q.correct ? 'background:#dcfce7; border-color:green;' : ''} ${idx === q.studentAnswer && idx !== q.correct ? 'background:#fee2e2; border-color:red;' : ''}"> ${opt} </div>`).join('')}</div><p style="margin-top:5px; font-size:0.9rem;">Status: <span class="badge ${q.status==='Correct'?'bg-green':'bg-red'}">${q.status}</span></p>${q.solution || q.solutionImage ? `<div style="background:#f0f9ff; padding:10px; margin-top:5px;"><strong>💡 Solution:</strong><br>${q.solution}${q.solutionImage ? `<br><img src="${q.solutionImage}" style="max-height:150px; margin-top:10px;">` : ''}</div>` : ''}</div>`).join(''); document.getElementById('review-modal').style.display = 'flex'; }
     
