@@ -117,8 +117,9 @@
     <div class="menu" id="nav-menu">
         <a onclick="show('home')">Home</a>
         <a onclick="show('library')">Library</a>
-        <a onclick="show('tests')">Tests</a>
-        <a onclick="show('live')"><span class="blink">🔴</span> Live</a>
+        <a onclick="show('tests')">Practice Tests</a>
+        <a onclick="show('live')"><span class="blink">🔴</span> Live Test</a>
+        <a onclick="show('schedule')">📅 Upcoming Test Schedule</a>
         <a onclick="show('results')" id="nav-results">Results</a>
         <a onclick="show('login')" id="nav-login">Login</a>
         <a onclick="show('admin')" id="nav-admin" style="display:none; background: var(--red); padding: 5px 10px; border-radius: 4px;">TEACHER</a>
@@ -205,6 +206,23 @@
 <div id="tests" class="section"><h2>📝 Practice Tests</h2><div id="test-list" class="grid"></div></div>
 <div id="live" class="section"><h2>🔴 Live Tests</h2><div id="live-list" class="grid"></div></div>
 
+<div id="schedule" class="section">
+    <h2 style="text-align:center; color:var(--primary);">📅 Upcoming Test Schedule</h2>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Class</th>
+                    <th>Topic</th>
+                    <th>Time</th>
+                    <th>Password</th>
+                </tr>
+            </thead>
+            <tbody id="schedule-list"></tbody>
+        </table>
+    </div>
+</div>
+
 <div id="exam" class="section" style="padding:10px; height: 100vh;">
     <div class="exam-layout">
         <div class="question-panel">
@@ -278,28 +296,49 @@
     function openModal(id) { document.getElementById(id).style.display = 'flex'; document.body.classList.add('modal-open'); }
     function closeModal(id) { document.getElementById(id).style.display = 'none'; document.body.classList.remove('modal-open'); }
 
+//////////////////////////////////////////////////autosubmit test/////////////////////////////////////////////////////////////////////////////
     window.onload = function() {
         loadMaterials(); loadAnnouncements(); loadBlogs();
         const lastSection = localStorage.getItem('arc_last_section') || 'home';
+        
         if(user) {
             document.getElementById('nav-login').style.display = 'none';
             document.getElementById('nav-logout').style.display = 'block';
             if(user.role === 'admin') document.getElementById('nav-admin').style.display = 'block';
         }
+
         const session = JSON.parse(localStorage.getItem('arc_test_session'));
         if (session && user) {
             const now = Date.now();
+            
+            // 1. Restore Data Essential for Submission
+            currentTest = session.test;
+            answers = session.answers;
+            timeTaken = session.timeTaken;
+            
             if (session.endTime > now) {
-                currentTest = session.test; answers = session.answers; timeTaken = session.timeTaken; qIndex = session.qIndex;
-                show('exam'); renderQ();
+                // CASE A: Time Remaining -> RESUME TEST
+                qIndex = session.qIndex;
+                show('exam'); 
+                renderQ();
                 const pBtns = document.getElementById('palette').children;
-                // answers.forEach((ans, i) => { if(ans !== null) pBtns[i].classList.add('done'); });
+                // Highlight answered questions
+                if(pBtns.length > 0) {
+                     answers.forEach((ans, i) => { if(ans !== null && pBtns[i]) pBtns[i].classList.add('done'); });
+                }
                 startTimer(session.endTime);
-                return; 
-            } else { localStorage.removeItem('arc_test_session'); }
+                return; // Stop here, don't show home
+            } else {
+                // CASE B: Time Expired While Away -> AUTO SUBMIT IMMEDIATELY
+                // Don't just delete; send what we have to the server
+                alert("Time expired while you were away. Submitting test now...");
+                submitTest(true); 
+                return;
+            }
         }
         if(user) show(lastSection); else show('home');
     };
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     let user = JSON.parse(localStorage.getItem('arc_user'));
     let currentTest = null, answers = [], timeTaken = [], timer = null, qIndex = 0, draftQ = [], allBlogs = [], allMats = [];
@@ -318,6 +357,7 @@
 
     function show(id) {
         if((id==='tests' || id==='live' || id==='results') && !user) return show('login');
+        if(id === 'schedule') loadSchedule();
         if(id==='admin' && (!user || user.role !== 'admin')) return alert("Access Denied");
         localStorage.setItem('arc_last_section', id);
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
@@ -429,7 +469,14 @@
             if(editingOfflineId) renderOfflineDraft();
         }
         else if (tab === 'manage') {
-            c.innerHTML = `<h3>Manage Content</h3><div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:15px;"><button class="btn btn-gold btn-small" onclick="loadManageTests()">Tests</button><button class="btn btn-gold btn-small" onclick="loadManageBlogs()">Blogs</button><button class="btn btn-gold btn-small" onclick="loadManageLibrary()">Library</button><button class="btn btn-gold btn-small" onclick="loadManageOffline()">Offline</button><button class="btn btn-gold btn-small" onclick="loadManageStudents()">Students</button></div><div id="manage-area" class="table-container">Select a category above.</div>`;
+            c.innerHTML = `<h3>Manage Content</h3><div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:15px;">
+                <button class="btn btn-gold btn-small" onclick="loadManageTests()">Tests</button>
+                <button class="btn btn-gold btn-small" onclick="loadManageBlogs()">Blogs</button>
+                <button class="btn btn-gold btn-small" onclick="loadManageLibrary()">Library</button>
+                <button class="btn btn-gold btn-small" onclick="loadManageOffline()">Offline</button>
+                <button class="btn btn-gold btn-small" onclick="loadManageSchedule()">Schedule</button>
+                <button class="btn btn-gold btn-small" onclick="loadManageStudents()">Students</button>
+                </div><div id="manage-area" class="table-container">Select a category above.</div>`;
         }
         else if (tab === 'upload') {
             c.innerHTML = `<h3>${editingMaterialId ? 'Edit' : 'Upload'} File</h3><input id="m-title" placeholder="Title"><input id="m-link" placeholder="Link"><input id="m-img" placeholder="Image URL"><select id="m-cat"><option>11th Class</option><option>12th Class</option><option>Notes</option><option>Test Series</option></select><input id="m-code" placeholder="Pass (Opt)"><button class="btn btn-gold" style="width:100%; margin-top:10px;" onclick="uploadMat()">${editingMaterialId ? 'UPDATE' : 'UPLOAD'}</button>`;
@@ -442,6 +489,21 @@
             c.innerHTML = `<h3>Online Results</h3><input placeholder="Search..." onkeyup="filterTable(this)"><div class="table-container"><table><thead><tr><th>Student</th><th>Test</th><th>Score</th><th>Action</th></tr></thead><tbody id="adm-res-list"></tbody></table></div>`;
             fetch('/api/admin/results/online').then(r=>r.json()).then(d => { document.getElementById('adm-res-list').innerHTML = d.map(r => `<tr><td>${r.studentName}</td><td>${r.testTitle}</td><td>${r.score}</td><td><button class="btn btn-gold btn-small" onclick="viewSheet('${r._id}')">View</button> <button class="btn btn-red btn-small" onclick="deleteItem('result','${r._id}')">Del</button></td></tr>`).join(''); });
         }
+        else if (tab === 'add-schedule') {
+    c.innerHTML = `
+        <h3>${editingScheduleId ? 'Edit' : 'Add'} Test Schedule</h3>
+        <select id="s-cls">
+            <option>11th Class</option><option>12th Class</option><option>Dropper</option>
+        </select>
+        <input id="s-topic" placeholder="Test Topic">
+        <input id="s-pass" placeholder="Password (Optional)">
+        <label>Test Time:</label>
+        <input type="datetime-local" id="s-time">
+        <button class="btn btn-gold" style="width:100%; margin-top:15px;" onclick="saveSchedule()">
+            ${editingScheduleId ? 'UPDATE SCHEDULE' : 'ADD SCHEDULE'}
+        </button>
+    `;
+}
         else if (tab === 'announce') {
              c.innerHTML = `<h3>News</h3><input id="ann-text" placeholder="Text"><button class="btn btn-gold" onclick="postAnnounce()">Post</button><div id="ann-list" style="margin-top:20px;"></div>`;
              fetch('/api/announcement').then(r=>r.json()).then(d => { document.getElementById('ann-list').innerHTML = d.list.map(t => `<div style="padding:10px; border-bottom:1px solid #eee; display:flex; justify-content:space-between;">${t} <button onclick="delAnnounce('${t}')">X</button></div>`).join(''); });
@@ -477,6 +539,7 @@
         else if(type==='offline-result') { if(document.getElementById('manage-area') && document.getElementById('manage-area').style.display !== 'none') loadManageOffline(); else showAdm('offline'); }
         else if(type==='test') loadManageTests();
         else if(type==='blog') loadManageBlogs();
+        else if(type === 'schedule') loadManageSchedule();
         else if(type==='material') loadManageLibrary();
     }
 
@@ -501,7 +564,46 @@
     function insertInlineImg(input) { if(input.files && input.files[0]) { const reader = new FileReader(); reader.onload = function(e) { document.getElementById('b-content').focus(); document.execCommand('insertImage', false, e.target.result); }; reader.readAsDataURL(input.files[0]); } }
     
     function switchTab(mode) { loginMode = mode; document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); document.getElementById('tab-'+mode).classList.add('active'); document.getElementById('student-input').style.display = mode === 'student' ? 'block' : 'none'; document.getElementById('teacher-input').style.display = mode === 'student' ? 'none' : 'block'; document.getElementById('login-title').innerText = mode === 'student' ? 'Student Login' : 'Teacher Login'; document.getElementById('reg-link').style.display = mode === 'student' ? 'block' : 'none'; }
-    async function doLogin() { let email = loginMode === 'student' ? document.getElementById('l-email').value : document.getElementById('l-admin-email').value; const password = document.getElementById('l-pass').value; if(loginMode === 'student' && !email.includes('@')) email += '@arcstudent.com'; const res = await fetch('/api/login', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ email, password, role: loginMode }) }); const data = await res.json(); if(data.success) { localStorage.setItem('arc_user', JSON.stringify({name: data.name, email: data.email, role: data.role})); location.reload(); } else alert("Invalid"); }
+  
+    /////////////////////////////////////////////////////////////////////////////LOGIN PAGE/////////////////////////////
+async function doLogin() { 
+        let email = loginMode === 'student' ? document.getElementById('l-email').value : document.getElementById('l-admin-email').value;
+        const password = document.getElementById('l-pass').value;
+        
+        // Auto-append domain if missing for students
+        if(loginMode === 'student' && !email.includes('@')) email += '@arcstudent.com';
+
+        const res = await fetch('/api/login', { 
+            method: 'POST', 
+            headers: {'Content-Type':'application/json'}, 
+            body: JSON.stringify({ email, password, role: loginMode }) 
+        });
+        
+        const data = await res.json();
+        
+        if(data.success) {
+            // 1. Save User Data
+            const userData = {name: data.name, email: data.email, role: data.role};
+            localStorage.setItem('arc_user', JSON.stringify(userData));
+            user = userData; // Update the global user variable immediately
+
+            // 2. Update Navigation Bar (Hide Login, Show Logout)
+            document.getElementById('nav-login').style.display = 'none';
+            document.getElementById('nav-logout').style.display = 'block';
+            if(user.role === 'admin') {
+                document.getElementById('nav-admin').style.display = 'block';
+            }
+
+            // 3. Go to Home Page (INSTEAD OF RELOADING)
+            alert("Login Successful!");
+            show('home'); 
+
+        } else {
+            alert("Invalid Email or Password");
+        } 
+    }
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     async function doReg() { const res = await fetch('/api/register', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ name: document.getElementById('r-name').value, emailPart: document.getElementById('r-prefix').value, password: document.getElementById('r-pass').value }) }); const data = await res.json(); if(data.success) { alert("Registered!"); location.reload(); } else alert(data.message); }
     function logout() { localStorage.removeItem('arc_user'); localStorage.removeItem('arc_last_section'); clearSession(); location.reload(); }
     
@@ -538,7 +640,15 @@
 
     async function startTest(id, hasCode, startTimeStr) { if (startTimeStr) { const now = new Date(); const start = new Date(startTimeStr); if (now < start) { document.getElementById('alert-msg').innerText = "Test Locked"; openModal('alert-modal'); return; } } let code = ""; if(hasCode) { code = prompt("Enter Password:"); if(!code) return; } const res = await fetch('/api/test/start', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ id, code, studentEmail: user.email }) }); const data = await res.json(); if(data.success) { currentTest = data.test; answers = new Array(currentTest.questions.length).fill(null); timeTaken = new Array(currentTest.questions.length).fill(0); qIndex = 0; startTimer(currentTest.duration); show('exam'); renderQ(); } else { document.getElementById('alert-msg').innerText = data.message; openModal('alert-modal'); } }
     
-    function renderQ() { const q = currentTest.questions[qIndex]; document.getElementById('q-no').innerText = `Q${qIndex + 1}`; const m = q.marks || 4; const n = q.negative || 0; document.getElementById('q-marks').innerText = `+${m} / -${n}`; document.getElementById('q-text').innerHTML = q.text; const img = document.getElementById('q-img'); if(q.image) { img.src = q.image; img.style.display = 'block'; } else img.style.display = 'none'; document.getElementById('q-opts').innerHTML = q.options.map((o, i) => `<label class="mcq-label"><input type="radio" name="opt" value="${i}" ${answers[qIndex] === i ? 'checked' : ''}> <div>${o}</div></label>`).join(''); document.getElementById('palette').innerHTML = answers.map((a, i) => `<div class="p-btn ${a !== null ? 'done' : (i === qIndex ? 'active' : '')}" onclick="gotoQ(${i})">${i+1}</div>`).join(''); }
+    function renderQ() { const q = currentTest.questions[qIndex]; 
+        document.getElementById('q-no').innerText = `Q${qIndex + 1}`; 
+        const m = q.marks || 4; 
+        const n = q.negative || 0; 
+        document.getElementById('q-marks').innerText = `+${m} / -${n}`; 
+        document.getElementById('q-text').innerHTML = q.text; 
+        const img = document.getElementById('q-img'); 
+        if(q.image) { img.src = q.image; img.style.display = 'block'; 
+        } else img.style.display = 'none'; document.getElementById('q-opts').innerHTML = q.options.map((o, i) => `<label class="mcq-label"><input type="radio" name="opt" value="${i}" ${answers[qIndex] === i ? 'checked' : ''}> <div>${o}</div></label>`).join(''); document.getElementById('palette').innerHTML = answers.map((a, i) => `<div class="p-btn ${a !== null ? 'done' : (i === qIndex ? 'active' : '')}" onclick="gotoQ(${i})">${i+1}</div>`).join(''); }
     
     function saveNext() { 
         const sel = document.querySelector('input[name="opt"]:checked'); 
@@ -590,6 +700,84 @@
     function saveDraftQ() { const qData = { text: document.getElementById('q-editor').innerHTML, options: [0,1,2,3].map(i => document.getElementById('op'+i).innerHTML), correct: parseInt(document.getElementById('q-corr').value), marks: parseFloat(document.getElementById('q-marks').value) || 4, negative: parseFloat(document.getElementById('q-neg').value) || 0, solution: document.getElementById('q-sol').innerHTML, image: tempImg, solutionImage: tempSolImg }; if(editQIndex > -1) { if(!qData.image) qData.image = draftQ[editQIndex].image; if(!qData.solutionImage) qData.solutionImage = draftQ[editQIndex].solutionImage; draftQ[editQIndex] = qData; } else { draftQ.push(qData); } clearQForm(); }
     function loadDraftQ(index) { editQIndex = index; const q = draftQ[index]; document.getElementById('q-editor').innerHTML = q.text; [0,1,2,3].forEach(i => document.getElementById('op'+i).innerHTML = q.options[i]); document.getElementById('q-corr').value = q.correct; document.getElementById('q-marks').value = q.marks !== undefined ? q.marks : 4; document.getElementById('q-neg').value = q.negative !== undefined ? q.negative : 0; document.getElementById('q-sol').innerHTML = q.solution || ""; if(q.image) { document.getElementById('q-prev').src = q.image; document.getElementById('q-prev').style.display = 'block'; tempImg = q.image; } else { document.getElementById('q-prev').style.display = 'none'; tempImg = ""; } if(q.solutionImage) { document.getElementById('sol-prev').src = q.solutionImage; document.getElementById('sol-prev').style.display = 'block'; tempSolImg = q.solutionImage; } else { document.getElementById('sol-prev').style.display = 'none'; tempSolImg = ""; } renderCreatePalette(); }
     function clearQForm() { editQIndex = -1; document.getElementById('q-editor').innerHTML = ""; [0,1,2,3].forEach(i => document.getElementById('op'+i).innerHTML = ""); document.getElementById('q-sol').innerHTML = ""; document.getElementById('q-marks').value = "4"; document.getElementById('q-neg').value = "0"; document.getElementById('q-prev').style.display = 'none'; tempImg = ""; document.getElementById('sol-prev').style.display = 'none'; tempSolImg = ""; document.getElementById('q-sol-file').value = ""; renderCreatePalette(); }
+
+    //////////////////////////////////////////////////////////SCHEDULE HELPER///////////////////////////////
+    let editingScheduleId = null;
+
+    // 1. Load Schedule for Students
+    async function loadSchedule() {
+        const res = await fetch('/api/schedule');
+        const data = await res.json();
+        const list = document.getElementById('schedule-list');
+        if(list) {
+            list.innerHTML = data.map(s => `
+                <tr>
+                    <td><span class="badge bg-green">${s.cls}</span></td>
+                    <td><b>${s.topic}</b></td>
+                    <td>${new Date(s.time).toLocaleString()}</td>
+                    <td style="font-family:monospace; color:var(--red);">${s.password || '-'}</td>
+                </tr>
+            `).join('');
+        }
+    }
+
+    // 2. Admin: Load Schedule List for Management
+    async function loadManageSchedule() {
+        const res = await fetch('/api/schedule');
+        const data = await res.json();
+        document.getElementById('manage-area').innerHTML = `
+            <button class="btn btn-gold btn-small" style="margin-bottom:10px;" onclick="initAddSchedule()">+ Add New Schedule</button>
+            <table>
+                <tr><th>Topic</th><th>Time</th><th>Action</th></tr>
+                ${data.map(s => `
+                    <tr>
+                        <td>${s.topic} (${s.cls})</td>
+                        <td>${new Date(s.time).toLocaleString()}</td>
+                        <td>
+                            <button class="btn-small" onclick="editSchedule('${s._id}')">Edit</button> 
+                            <button class="btn-small btn-red" onclick="deleteItem('schedule','${s._id}')">Del</button>
+                        </td>
+                    </tr>`).join('')}
+            </table>`;
+    }
+
+    // 3. Admin: Init Add/Edit
+    function initAddSchedule() { editingScheduleId = null; showAdm('add-schedule'); }
+    
+    async function editSchedule(id) {
+        const res = await fetch('/api/schedule'); // Reuse list fetch to find item
+        const data = await res.json();
+        const s = data.find(item => item._id === id);
+        if(s) {
+            editingScheduleId = id;
+            showAdm('add-schedule');
+            document.getElementById('s-cls').value = s.cls;
+            document.getElementById('s-topic').value = s.topic;
+            document.getElementById('s-pass').value = s.password || "";
+            // Format date for input
+            const d = new Date(s.time);
+            d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+            document.getElementById('s-time').value = d.toISOString().slice(0, 16);
+        }
+    }
+
+    // 4. Admin: Save Function
+    async function saveSchedule() {
+        const body = {
+            cls: document.getElementById('s-cls').value,
+            topic: document.getElementById('s-topic').value,
+            password: document.getElementById('s-pass').value,
+            time: document.getElementById('s-time').value
+        };
+        const method = editingScheduleId ? 'PUT' : 'POST';
+        const url = editingScheduleId ? `/api/admin/schedule/${editingScheduleId}` : '/api/admin/schedule';
+        
+        await fetch(url, { method, headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
+        alert("Saved!");
+        showAdm('manage');
+        loadManageSchedule();
+    }
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 </script>
 </body>
 </html>
