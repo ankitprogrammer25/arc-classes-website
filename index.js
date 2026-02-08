@@ -4,6 +4,9 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const path = require('path');
 
+/////////////////////////////////////OTP SECTION///////////////////////////////////////
+const nodemailer = require('nodemailer'); // For sending OTP emails
+//////////////////////////////////////////////////////////////////////////////////////
 const app = express();
 app.use(express.json({ limit: '100mb' }));
 app.use(cors());
@@ -72,6 +75,67 @@ const ScheduleSchema = new mongoose.Schema({
     date: { type: Date, default: Date.now } // Created Date
 });
 const Schedule = mongoose.model('Schedule', ScheduleSchema);
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+// ///////////////////////////////==========================================
+/////////////////////////////////////////// 🟢 PASTE NODEMAILER CONFIG HERE
+// =================================================================================
+
+// 1. Configure Email Transporter
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: 'arcclasses25kashipur@gmail.com', // ⚠️ REPLACE WITH YOUR GMAIL
+        pass: process.env.EMAIL_PASS      // ⚠️ REPLACE WITH APP PASSWORD
+    }
+});
+
+let otpStore = {}; // Temporary storage for OTPs
+
+// 2. API to Send OTP
+app.post('/api/send-otp', (req, res) => {
+    const { email } = req.body;
+    const otp = Math.floor(100000 + Math.random() * 900000);
+
+    // Save OTP (expires in 5 mins)
+    otpStore[email] = { code: otp, expire: Date.now() + 300000 };
+
+    const mailOptions = {
+        from: 'ARC Classes <your-email@gmail.com>',
+        to: email,
+        subject: 'Your Login OTP - ARC Classes',
+        text: `Your OTP is: ${otp}. Do not share this with anyone.`
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+            console.log(error);
+            return res.json({ success: false, message: "Error sending email" });
+        }
+        res.json({ success: true, message: "OTP sent!" });
+    });
+});
+
+// 3. API to Verify OTP
+app.post('/api/verify-otp', (req, res) => {
+    const { email, userOtp } = req.body;
+    const data = otpStore[email];
+
+    if (!data) return res.json({ success: false, message: "OTP not found or expired" });
+    if (Date.now() > data.expire) return res.json({ success: false, message: "OTP expired" });
+    
+    if (parseInt(userOtp) === data.code) {
+        delete otpStore[email];
+        res.json({ success: true, message: "Verified" });
+    } else {
+        res.json({ success: false, message: "Invalid OTP" });
+    }
+});
+
+// ==========================================
+// END OF NODEMAILER CONFIG
+// ==========================================
+///////////////////////////////////////////////////////////////////////////////////////////////
 // --- 3. ROUTES ---
 
 // --- AUTH ---
