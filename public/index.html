@@ -8,9 +8,9 @@
     <style>
         :root { --primary: #0f172a; --gold: #fbbf24; --light: #f8fafc; --red: #ef4444; --green: #22c55e; }
         
-        /* --- CRITICAL FIX: DISABLE PULL-TO-REFRESH --- */
+        /* 1. SCROLL FIXES */
         html, body { 
-            overscroll-behavior-y: none; /* Stops the refresh gesture globally */
+            overscroll-behavior-y: none; 
             font-family: 'Segoe UI', sans-serif; 
             background: var(--light); 
             margin: 0; 
@@ -19,111 +19,87 @@
             flex-direction: column; 
             min-height: 100vh; 
         }
-        
-        /* Stop background scrolling when modal is open */
         body.modal-open { overflow: hidden; height: 100vh; }
 
-        /* NAVBAR */
         nav { background: var(--primary); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
-        .logo { 
-            font-size: 1.5rem; font-weight: 900; 
-            background: linear-gradient(90deg, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff);
-            background-size: 400%; -webkit-background-clip: text; background-clip: text; color: transparent; 
-            animation: rainbow 8s linear infinite; cursor: pointer;
-        }
+        .logo { font-size: 1.5rem; font-weight: 900; background: linear-gradient(90deg, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff); background-size: 400%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: rainbow 8s linear infinite; cursor: pointer; }
         @keyframes rainbow { 0% { background-position: 0%; } 100% { background-position: 400%; } }
 
-        /* HAMBURGER MENU */
         .menu-toggle { display: none; color: white; font-size: 1.8rem; cursor: pointer; }
         .menu { display: flex; align-items: center; gap: 20px; }
         .menu a { color: white; text-decoration: none; font-weight: 600; cursor: pointer; transition: 0.3s; }
         .menu a:hover { color: var(--gold); }
-        
         @media (max-width: 768px) {
             .menu { display: none; flex-direction: column; position: absolute; top: 60px; left: 0; width: 100%; background: var(--primary); padding: 20px 0; border-top: 1px solid #333; }
             .menu.active { display: flex; }
             .menu-toggle { display: block; }
         }
 
-        .blink { animation: blinker 1.5s linear infinite; }
-        @keyframes blinker { 50% { opacity: 0; } }
-
-        /* LAYOUT & GRIDS */
         .section { display: none; padding: 20px; max-width: 1200px; margin: auto; width: 100%; box-sizing: border-box; flex: 1; }
         .section.active { display: block; animation: fadeIn 0.3s; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border: 1px solid #eee; display: flex; flex-direction: column; cursor: pointer; transition: 0.2s; }
-        .card:hover { transform: translateY(-3px); }
-        
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
         #lib-cats.grid { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); } 
 
-        input, select, textarea { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
+        input, select { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
+        /* Rich Text Inputs */
+        .editor { min-height: 50px; border: 1px solid #ccc; padding: 10px; border-radius: 6px; margin: 5px 0; background: white; outline: none; }
+        .editor:focus { border-color: var(--primary); }
+        .toolbar button { cursor: pointer; padding: 5px 8px; font-weight: bold; border: 1px solid #ccc; background: #fff; margin-right: 2px; border-radius: 4px; }
+        .toolbar button:hover { background: #eee; }
+
         .btn { padding: 10px 20px; border:none; border-radius:6px; cursor:pointer; font-weight:bold; transition: 0.2s; white-space: nowrap; }
         .btn-gold { background: var(--gold); color: var(--primary); }
         .btn-red { background: var(--red); color: white; }
         .btn-small { padding: 5px 10px; font-size: 0.8rem; }
 
         /* MODALS */
-        .modal { 
-            position: fixed; top:0; left:0; width:100%; height:100%; 
-            background:rgba(0,0,0,0.85); display:none; 
-            justify-content:center; align-items:flex-start;
-            z-index: 2000; padding: 10px; box-sizing: border-box; 
-            overflow-y: auto; 
-            overscroll-behavior: contain; /* Extra safety */
-        }
-        
-        .modal-content { 
-            background:white; width: 100%; max-width: 800px; 
-            max-height: 90vh; overflow-y: auto; 
-            padding: 20px; border-radius: 12px; position: relative; 
-            margin-top: 20px; margin-bottom: 20px;
-            overscroll-behavior: contain; /* CRITICAL FIX: Allows internal scroll, prevents body refresh */
-            -webkit-overflow-scrolling: touch;
-        }
+        .modal { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); display:none; justify-content:center; align-items:flex-start; z-index: 2000; padding: 10px; box-sizing: border-box; overflow-y: auto; overscroll-behavior: contain; }
+        .modal-content { background:white; width: 100%; max-width: 900px; max-height: 90vh; overflow-y: auto; padding: 20px; border-radius: 12px; position: relative; margin-top: 20px; margin-bottom: 20px; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
+        .close-corner { position: absolute; top: 10px; right: 10px; background: #f1f5f9; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; cursor: pointer; color: #333; font-weight: bold; z-index: 20; border: 1px solid #ddd; }
 
-        .close-corner { 
-            position: absolute; top: 10px; right: 10px; 
-            background: #f1f5f9; width: 40px; height: 40px; 
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            font-size: 1.5rem; cursor: pointer; color: #333; font-weight: bold; z-index: 20;
-            border: 1px solid #ddd;
-        }
-        .close-corner:hover { background: var(--red); color: white; }
-
-        /* EXAM LAYOUT */
         .exam-layout { display: flex; gap: 20px; height: calc(100vh - 140px); flex-direction: column; }
         @media(min-width: 900px) { .exam-layout { flex-direction: row; } }
-
         .question-panel { flex: 3; background: white; padding: 15px; border-radius: 12px; overflow-y: auto; display: flex; flex-direction: column; position: relative; }
         .palette-panel { flex: 1; background: white; padding: 15px; border-radius: 12px; display: flex; flex-direction: column; max-height: 200px; overflow-y: auto; }
         @media(min-width: 900px) { .palette-panel { max-height: none; } }
+        
+        /* Creator Palette */
+        .creator-grid { display: grid; grid-template-columns: 1fr 200px; gap: 20px; }
+        @media(max-width: 768px) { .creator-grid { grid-template-columns: 1fr; } }
 
-        .timer-box { background: #fee2e2; color: var(--red); font-weight: bold; font-size: 1.2rem; text-align: center; padding: 10px; border-radius: 8px; margin-bottom: 10px; border: 1px solid var(--red); }
         .p-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(35px, 1fr)); gap: 5px; }
         .p-btn { width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; border: 1px solid #ddd; cursor: pointer; border-radius: 50%; font-weight: bold; font-size: 0.9rem; }
         .p-btn.done { background: var(--green); color: white; border-color: var(--green); }
         .p-btn.active { border: 2px solid var(--primary); }
-        .mcq-label { display: flex; align-items: flex-start; padding: 12px; margin-bottom: 10px; border: 1px solid #eee; border-radius: 8px; cursor: pointer; }
-        .mcq-label input { margin-right: 15px; margin-top: 5px; width: 20px; height: 20px; flex-shrink: 0; }
-
-        /* TABLES */
-        .table-container { overflow-x: auto; margin-bottom: 20px; border: 1px solid #eee; border-radius: 8px; overscroll-behavior-x: contain; }
-        table { width: 100%; border-collapse: collapse; min-width: 500px; }
+        
+        .table-container { overflow-x: auto; margin-bottom: 20px; border: 1px solid #eee; border-radius: 8px; }
+        table { width: 100%; border-collapse: collapse; min-width: 600px; }
         th, td { padding: 10px; border: 1px solid #ddd; text-align: left; }
         th { background: var(--primary); color: white; }
         
-        .badge { padding: 4px 8px; border-radius: 4px; color: white; font-size: 0.8rem; font-weight: bold; }
-        .bg-green { background: var(--green); } .bg-red { background: var(--red); }
-        .review-row { border-bottom: 1px solid #eee; padding: 15px 0; }
-        
-        .form-box { width: 100%; max-width: 400px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
         footer { background: var(--primary); color: white; text-align: center; padding: 20px; margin-top: auto; border-top: 4px solid var(--gold); }
     </style>
 </head>
 <body>
+
+<template id="rt-toolbar">
+    <div class="toolbar" style="background:#f1f5f9; padding:5px; border:1px solid #ccc; border-bottom:none; border-radius: 6px 6px 0 0; display:flex; gap:5px; flex-wrap:wrap;">
+        <button type="button" onclick="exec('bold')"><b>B</b></button>
+        <button type="button" onclick="exec('italic')"><i>I</i></button>
+        <button type="button" onclick="exec('underline')"><u>U</u></button>
+        <button type="button" onclick="exec('subscript')">X₂</button>
+        <button type="button" onclick="exec('superscript')">X²</button>
+        <button type="button" onclick="document.execCommand('foreColor', false, 'red')" style="color:red">A</button>
+        <button type="button" onclick="document.execCommand('foreColor', false, 'black')">A</button>
+        <button type="button" onclick="insertText(' → ')">→</button>
+        <button type="button" onclick="insertText(' ⇌ ')">⇌</button>
+        <button type="button" onclick="insertText(' Δ ')">Δ</button>
+        <button type="button" onclick="insertText(' ° ')">°</button>
+    </div>
+</template>
 
 <nav>
     <div class="logo" onclick="show('home')">ARC CLASSES</div>
@@ -132,23 +108,17 @@
         <a onclick="show('home')">Home</a>
         <a onclick="show('library')">Library</a>
         <a onclick="show('tests')">Tests</a>
-        <a onclick="show('live')"><span class="blink">🔴</span> Live</a>
-        <a onclick="show('results')" id="nav-results">Results</a>
+        <a onclick="show('live')"><span style="color:red">●</span> Live</a>
+        <a onclick="show('results')">Results</a>
         <a onclick="show('login')" id="nav-login">Login</a>
         <a onclick="show('admin')" id="nav-admin" style="display:none; background: var(--red); padding: 5px 10px; border-radius: 4px;">TEACHER</a>
         <a onclick="logout()" id="nav-logout" style="display:none">Logout</a>
     </div>
 </nav>
 
-<div class="anno-bar" style="background: var(--gold); color: var(--primary); padding: 8px 0; font-weight: bold; display: flex; overflow: hidden; white-space: nowrap;">
-    <div class="anno-label" style="background: var(--primary); color: white; padding: 0 15px; z-index: 10;">🔔</div>
-    <marquee id="anno-marquee" onmouseover="this.stop()" onmouseout="this.start()">Loading...</marquee>
-</div>
-
 <div id="home" class="section active">
     <div style="text-align:center; padding: 40px 10px;">
-        <h1 style="color:var(--primary); font-size: clamp(2rem, 5vw, 3rem);">Master Chemistry</h1>
-        <p>Premium Notes, Test Series, and Live Classes.</p>
+        <h1 style="color:var(--primary);">Master Chemistry</h1>
         <button class="btn btn-gold" onclick="show('tests')">Start Practice</button>
     </div>
     <h3 style="margin-left: 10px;">Latest Blogs</h3>
@@ -156,61 +126,48 @@
 </div>
 
 <div id="login" class="section">
-    <div class="form-box">
-        <div style="display: flex; border-bottom: 2px solid #eee; margin-bottom: 20px;">
-            <div class="tab active" style="flex:1; text-align:center; padding:10px; cursor:pointer; border-bottom:3px solid var(--gold);" onclick="switchTab('student')" id="tab-student">Student</div>
-            <div class="tab" style="flex:1; text-align:center; padding:10px; cursor:pointer;" onclick="switchTab('teacher')" id="tab-teacher">Teacher</div>
-        </div>
-        <h2 id="login-title" style="text-align:center;">Student Login</h2>
-        <form onsubmit="event.preventDefault(); doLogin()">
-            <div id="student-input">
-                <input id="l-email" placeholder="username" required>
-                <div style="text-align:right; font-size:0.8rem; color:#777;">@arcstudent.com</div>
-            </div>
-            <div id="teacher-input" style="display:none;"><input id="l-admin-email" placeholder="admin@arc.com"></div>
-            <input id="l-pass" type="password" placeholder="Password" required>
-            <button type="submit" class="btn btn-gold" style="width:100%">Login</button>
-        </form>
-        <p id="reg-link" style="text-align:center; cursor:pointer; margin-top:15px; color:blue;" onclick="document.getElementById('reg-box').style.display='block'; document.querySelector('.form-box').style.display='none';">New Student? Register</p>
+    <div style="width:100%; max-width:400px; margin:auto; background:white; padding:30px; border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,0.1);">
+        <h2 style="text-align:center;">Login</h2>
+        <input id="l-email" placeholder="Email / Admin ID">
+        <input id="l-pass" type="password" placeholder="Password">
+        <button class="btn btn-gold" style="width:100%" onclick="doLogin()">Login</button>
+        <p style="text-align:center; cursor:pointer; color:blue;" onclick="document.getElementById('reg-box').style.display='block'; document.getElementById('login').style.display='none';">New Student? Register</p>
     </div>
-    <div id="reg-box" class="form-box" style="display:none; margin-top:20px;">
+</div>
+
+<div id="reg-box" class="section" style="display:none;">
+    <div style="width:100%; max-width:400px; margin:auto; background:white; padding:30px; border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,0.1);">
         <h2 style="text-align:center;">Register</h2>
         <input id="r-name" placeholder="Full Name">
         <div style="display:flex; align-items:center; border:1px solid #ccc; border-radius:6px; background:white; margin:10px 0;">
             <input id="r-prefix" placeholder="username" style="border:none; margin:0;"> 
-            <div style="padding:10px; background:#f1f5f9; color:#64748b; border-left:1px solid #ccc;">@arcstudent.com</div>
+            <div style="padding:10px; background:#f1f5f9;">@arcstudent.com</div>
         </div>
         <input id="r-pass" type="password" placeholder="Password">
         <button class="btn btn-gold" style="width:100%" onclick="doReg()">Register</button>
-        <p style="text-align:center; cursor:pointer; margin-top:15px; color:blue;" onclick="document.getElementById('reg-box').style.display='none'; document.querySelector('.form-box').style.display='block';">Back to Login</p>
+        <p style="text-align:center; cursor:pointer; color:blue;" onclick="show('login'); document.getElementById('reg-box').style.display='none';">Back to Login</p>
     </div>
 </div>
 
 <div id="admin" class="section">
-    <div style="display:flex; justify-content:space-between; align-items:center;"><h2>👨‍🏫 Panel</h2><span style="color:var(--red);">Admin</span></div>
-    <div style="display:flex; gap:5px; flex-wrap:wrap; margin-bottom:15px;">
-        <button class="btn btn-gold btn-small" onclick="initCreateTest()">➕ Test</button>
-        <button class="btn btn-gold btn-small" onclick="initUpload()">📂 File</button>
+    <div style="display:flex; gap:5px; flex-wrap:wrap; margin-bottom:15px; border-bottom: 2px solid #eee; padding-bottom: 10px;">
+        <button class="btn btn-gold btn-small" onclick="initCreateTest()">➕ Test Maker</button>
         <button class="btn btn-gold btn-small" onclick="showAdm('blog')">✍️ Blog</button>
-        <button class="btn btn-gold btn-small" onclick="showAdm('announce')">📢 News</button>
-        <button class="btn btn-gold btn-small" onclick="showAdm('results')">📈 Online</button>
-        <button class="btn btn-gold btn-small" onclick="showAdm('offline')">📊 Offline</button>
-        <button class="btn btn-gold btn-small" onclick="showAdm('students')">👥 Students</button>
-        <button class="btn btn-red btn-small" onclick="showAdm('manage')">🛠️ Manage</button>
+        <button class="btn btn-gold btn-small" onclick="showAdm('offline')">📊 Offline Marks</button>
+        <button class="btn btn-gold btn-small" onclick="showAdm('upload')">📂 Upload File</button>
+        <button class="btn btn-red btn-small" onclick="showAdm('manage')">🛠️ Manage Content</button>
     </div>
-    <div id="adm-content" style="background:white; padding:15px; border-radius:10px; border:1px solid #ddd; min-height:300px; overflow-x:auto;">Select option.</div>
+    <div id="adm-content" style="background:white; padding:15px; border-radius:10px; border:1px solid #ddd; min-height:300px;"></div>
 </div>
 
 <div id="library" class="section">
     <h2>📚 Library</h2>
     <div id="lib-cats" class="grid">
-        <div class="card" onclick="loadLib('11th Class')" style="text-align:center; background:#e0f2fe; border-bottom:4px solid var(--primary);"><b>11th Class</b></div>
-        <div class="card" onclick="loadLib('12th Class')" style="text-align:center; background:#e0f2fe; border-bottom:4px solid var(--primary);"><b>12th Class</b></div>
-        <div class="card" onclick="loadLib('Organic')" style="text-align:center; background:#ffedd5; border-bottom:4px solid var(--gold);"><b>Organic</b></div>
-        <div class="card" onclick="loadLib('Physical')" style="text-align:center; background:#ffedd5; border-bottom:4px solid var(--gold);"><b>Physical</b></div>
-        <div class="card" onclick="loadLib('Inorganic')" style="text-align:center; background:#ffedd5; border-bottom:4px solid var(--gold);"><b>Inorganic</b></div>
-        <div class="card" onclick="loadLib('Test Series')" style="text-align:center; background:#dcfce7; border-bottom:4px solid var(--green);"><b>Test Series</b></div>
-        <div class="card" onclick="loadLib('Notes')" style="text-align:center; background:#f3f4f6; border-bottom:4px solid #999;"><b>Notes</b></div>
+        <div class="card" onclick="loadLib('11th Class')"><b>11th Class</b></div>
+        <div class="card" onclick="loadLib('12th Class')"><b>12th Class</b></div>
+        <div class="card" onclick="loadLib('Organic')"><b>Organic</b></div>
+        <div class="card" onclick="loadLib('Physical')"><b>Physical</b></div>
+        <div class="card" onclick="loadLib('Inorganic')"><b>Inorganic</b></div>
     </div>
     <button id="lib-back" class="btn btn-red" style="display:none; margin-bottom:15px;" onclick="resetLib()">Back</button>
     <div id="lib-content" class="grid"></div>
@@ -222,12 +179,11 @@
 <div id="exam" class="section" style="padding:10px; height: 100vh;">
     <div class="exam-layout">
         <div class="question-panel">
-            <div id="mobile-timer" class="timer-box">00:00</div>
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                <h3 id="q-no" style="margin:0;">Q1</h3>
-                <span id="q-marks" style="color:var(--green); font-weight:bold; font-size:0.9rem;"></span>
+            <div id="mobile-timer" style="background:#fee2e2; color:red; text-align:center; padding:5px; border:1px solid red; border-radius:5px; margin-bottom:10px; font-weight:bold;">00:00</div>
+            <div style="display:flex; justify-content:space-between;">
+                <h3 id="q-no">Q1</h3><span id="q-marks" style="color:green; font-weight:bold;"></span>
             </div>
-            <div id="q-text" style="font-size:1.1rem; margin-bottom:15px; flex-grow:1;"></div>
+            <div id="q-text" style="font-size:1.1rem; margin-bottom:15px;"></div>
             <img id="q-img" style="max-height:200px; display:none; margin:10px auto;">
             <div id="q-opts" style="margin-top:10px;"></div>
             <div style="margin-top:20px; display:flex; gap:10px; justify-content: space-between;">
@@ -236,7 +192,6 @@
             </div>
         </div>
         <div class="palette-panel">
-            <div style="font-size:0.9rem; text-align:center; margin-bottom:5px;">Palette</div>
             <div id="palette" class="p-grid"></div>
             <button class="btn btn-red" style="width:100%; margin-top:20px;" onclick="submitTest()">SUBMIT TEST</button>
         </div>
@@ -245,285 +200,329 @@
 
 <div id="results" class="section">
     <h2>🏆 Results</h2>
-    <div style="margin-bottom:20px; display:flex; gap:10px; overflow-x:auto;">
-        <button class="btn btn-gold btn-small" onclick="loadResults('practice')">Practice</button>
-        <button class="btn btn-gold btn-small" onclick="loadResults('live')">Live Tests</button>
+    <div style="display:flex; gap:10px; margin-bottom:10px;">
+        <button class="btn btn-gold btn-small" onclick="loadResults('online')">Online</button>
         <button class="btn btn-gold btn-small" onclick="loadOfflineResults()">Offline</button>
     </div>
     <div id="result-list" class="table-container"></div>
 </div>
 
-<footer>&copy; 2026 ARC Classes.</footer>
-
 <div id="review-modal" class="modal">
     <div class="modal-content">
         <div class="close-corner" onclick="closeModal('review-modal')">&times;</div>
-        <h2 style="margin-top:0;">Analysis</h2>
-        <div id="review-stats" style="text-align:center; margin-bottom:15px; font-weight:bold; font-size:1rem; display:flex; justify-content:space-around; flex-wrap:wrap;"></div>
-        <div style="display:flex; flex-wrap:wrap; gap:20px; justify-content:center; margin-bottom:20px;">
-            <div style="flex:1; min-width:250px; max-width:300px; height:250px;"><canvas id="resultChart"></canvas></div>
-            <div id="leaderboard-container" style="flex:1; min-width:250px; max-height:250px; overflow-y:auto; border:1px solid #eee; padding:10px; border-radius:8px;"></div>
-        </div>
-        <hr>
-        <h3>Answer Sheet</h3>
+        <h2>Analysis</h2>
+        <div id="review-stats" style="text-align:center; font-weight:bold; margin-bottom:15px;"></div>
         <div id="review-body"></div>
-    </div>
-</div>
-
-<div id="alert-modal" class="modal">
-    <div class="modal-content" style="text-align:center; padding: 30px; max-width: 350px;">
-        <div class="close-corner" onclick="closeModal('alert-modal')">&times;</div>
-        <h3 id="alert-msg" class="blink-red"></h3>
     </div>
 </div>
 
 <div id="blog-modal" class="modal">
     <div class="modal-content">
         <div class="close-corner" onclick="closeModal('blog-modal')">&times;</div>
-        <h2 id="bm-title" style="margin-top:0; padding-right: 40px; color:var(--primary);"></h2>
-        <p id="bm-date" style="color:#777; font-size:0.9rem;"></p>
-        <img id="bm-img" style="width:100%; max-height:300px; object-fit:contain; margin-bottom:20px; display:none; background:#f0f0f0;">
-        <div id="bm-content" style="line-height:1.6; padding-bottom:20px;"></div>
+        <h2 id="bm-title"></h2>
+        <div id="bm-content"></div>
     </div>
 </div>
 
 <script>
-    function toggleMenu() { document.getElementById('nav-menu').classList.toggle('active'); }
-    function openModal(id) { document.getElementById(id).style.display = 'flex'; document.body.classList.add('modal-open'); }
-    function closeModal(id) { document.getElementById(id).style.display = 'none'; document.body.classList.remove('modal-open'); }
+    // --- RICH TEXT HELPERS ---
+    function exec(cmd) { document.execCommand(cmd, false, null); }
+    function insertText(text) { 
+        const sel = window.getSelection();
+        if (sel.rangeCount) {
+            const range = sel.getRangeAt(0);
+            range.insertNode(document.createTextNode(text));
+        }
+    }
+    function getToolbar() { return document.getElementById('rt-toolbar').innerHTML; }
 
+    // --- GLOBAL VARS ---
+    let user = JSON.parse(localStorage.getItem('arc_user'));
+    let currentTest=null, answers=[], timer=null, qIndex=0, draftQ=[], offlineDraft=[];
+    let editingTestId = null, editingQIndex = null, tempImg = "", tempSolImg = "";
+    let allMats = [];
+
+    // --- INIT ---
     window.onload = function() {
-        // Preload Data to fix visibility issues
-        loadMaterials();
-        loadAnnouncements();
-        loadBlogs();
-
-        const lastSection = localStorage.getItem('arc_last_section') || 'home';
         if(user) {
-            document.getElementById('nav-login').style.display = 'none';
-            document.getElementById('nav-logout').style.display = 'block';
-            if(user.role === 'admin') document.getElementById('nav-admin').style.display = 'block';
+            document.getElementById('nav-login').style.display='none';
+            document.getElementById('nav-logout').style.display='block';
+            if(user.role==='admin') document.getElementById('nav-admin').style.display='block';
         }
-        const session = JSON.parse(localStorage.getItem('arc_test_session'));
-        if (session && user) {
-            const now = Date.now();
-            if (session.endTime > now) {
-                currentTest = session.test; answers = session.answers; timeTaken = session.timeTaken; qIndex = session.qIndex;
-                show('exam'); renderQ();
-                const pBtns = document.getElementById('palette').children;
-                answers.forEach((ans, i) => { if(ans !== null) pBtns[i].classList.add('done'); });
-                startTimer(session.endTime);
-                return; 
-            } else { localStorage.removeItem('arc_test_session'); }
-        }
-        if(user) show(lastSection); else show('home');
+        show('home'); loadBlogs(); loadMaterials();
     };
 
-    let user = JSON.parse(localStorage.getItem('arc_user'));
-    let currentTest = null, answers = [], timeTaken = [], timer = null, qIndex = 0, draftQ = [], allBlogs = [], allMats = [];
-    let offlineDraft = [], loginMode = 'student', tempImg = "", resultChartInstance = null;
-    let editingBlogId = null, editingTestId = null, editingMaterialId = null;
-
-    function saveSession(endTime) { if(!currentTest) return; localStorage.setItem('arc_test_session', JSON.stringify({ test: currentTest, answers: answers, timeTaken: timeTaken, qIndex: qIndex, endTime: endTime || JSON.parse(localStorage.getItem('arc_test_session'))?.endTime })); }
-    function clearSession() { localStorage.removeItem('arc_test_session'); }
-
     function show(id) {
-        if((id==='tests' || id==='live' || id==='results') && !user) return show('login');
-        if(id==='admin' && (!user || user.role !== 'admin')) return alert("Access Denied");
-        localStorage.setItem('arc_last_section', id);
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
         document.getElementById(id).classList.add('active');
-        window.scrollTo(0,0);
         document.getElementById('nav-menu').classList.remove('active');
-        if(id==='tests') loadTests(false); if(id==='live') loadTests(true); if(id==='results') loadResults('practice');
+        if(id === 'tests') loadTests(false);
+        if(id === 'live') loadTests(true);
+    }
+    
+    function toggleMenu() { document.getElementById('nav-menu').classList.toggle('active'); }
+    function closeModal(id) { document.getElementById(id).style.display='none'; document.body.classList.remove('modal-open'); }
+    function logout() { localStorage.removeItem('arc_user'); location.reload(); }
+
+    // --- AUTH ---
+    async function doLogin() {
+        const email = document.getElementById('l-email').value;
+        const password = document.getElementById('l-pass').value;
+        const res = await fetch('/api/login', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({email, password}) });
+        const data = await res.json();
+        if(data.success) { localStorage.setItem('arc_user', JSON.stringify(data)); location.reload(); } else alert("Failed");
+    }
+    async function doReg() {
+        const name = document.getElementById('r-name').value;
+        const emailPart = document.getElementById('r-prefix').value;
+        const password = document.getElementById('r-pass').value;
+        const res = await fetch('/api/register', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({name, emailPart, password}) });
+        const data = await res.json();
+        if(data.success) { alert("Registered!"); show('login'); } else alert(data.message);
     }
 
+    // --- ADMIN PANEL ---
     function showAdm(tab) {
         const c = document.getElementById('adm-content');
         if(tab === 'create-test') {
-             c.innerHTML = `<h3>Create Test</h3><input id="t-title" placeholder="Title"><div style="display:flex; gap:10px;"><input id="t-dur" type="number" placeholder="Mins" onchange="calcEndTime()"><input id="t-code" placeholder="Pass (Opt)"></div><select id="t-cat"><option>11th</option><option>12th</option><option>Organic</option><option>Full Syllabus</option></select><div style="margin:10px 0; padding:10px; border:1px solid #ddd;"><label><input type="checkbox" id="t-live"> Live Test?</label><br>Start: <input type="datetime-local" id="t-start" onchange="calcEndTime()" style="width:100%"><br>End: <input type="datetime-local" id="t-end" readonly style="background:#f0f0f0; width:100%"></div><hr><h4>Add Question</h4><div id="q-editor" class="editor" contenteditable="true" style="border:1px solid #ccc; padding:10px; min-height:50px;"></div><input type="file" onchange="encodeImg(this, 'q-prev')" style="margin-top:10px"><img id="q-prev" style="height:50px; display:none;"><div style="margin-top:10px;"><b>Options:</b></div><div style="display:grid; gap:5px;"><input id="op0" placeholder="A"><input id="op1" placeholder="B"><input id="op2" placeholder="C"><input id="op3" placeholder="D"></div><div style="margin-top:10px;">Correct: <select id="q-corr"><option value="0">A</option><option value="1">B</option><option value="2">C</option><option value="3">D</option></select></div><button class="btn btn-gold" style="width:100%; margin-top:10px;" onclick="saveDraftQ()">Save Question</button><hr><h4>Questions (<span id="q-count">0</span>)</h4><div id="create-palette" class="p-grid"></div><button class="btn btn-red" style="width:100%; margin-top:20px;" onclick="pubTest()">PUBLISH</button>`;
-             renderCreatePalette();
-        } else if(tab === 'blog') {
-            c.innerHTML = `<h3>Post Blog</h3><input id="b-title" placeholder="Title"><input type="file" onchange="encodeImg(this, 'b-cover-prev')"><img id="b-cover-prev" style="height:100px; display:none;"><div id="b-content" class="editor" contenteditable="true" style="min-height:200px; border:1px solid #ccc; padding:10px; margin-top:10px;"></div><button class="btn btn-gold" style="margin-top:10px; width:100%" onclick="postBlog()">Post</button>`;
-        } else if(tab === 'offline') {
-            offlineDraft = []; c.innerHTML = `<h3>Offline Result</h3><input id="off-title" placeholder="Test Title"><div style="display:grid; grid-template-columns: 2fr 1fr 1fr auto; gap:5px;"><input id="off-name" placeholder="Name"><input id="off-total" placeholder="Tot"><input id="off-obt" placeholder="Obt"><button class="btn btn-gold" onclick="addOfflineStudent()">+</button></div><div class="table-container"><table style="margin:0;"><thead><tr><th>Name</th><th>Mks</th><th>Del</th></tr></thead><tbody id="off-preview-body"></tbody></table></div><button class="btn btn-red" style="width:100%" onclick="postOffline()">Upload</button>`;
-        } else if(tab === 'announce') {
-             c.innerHTML = `<h3>News</h3><input id="ann-text" placeholder="Text"><button class="btn btn-gold" onclick="postAnnounce()">Post</button><div id="ann-list" style="margin-top:20px;"></div>`;
-             fetch('/api/announcement').then(r=>r.json()).then(d => { document.getElementById('ann-list').innerHTML = d.list.map(t => `<div style="padding:10px; border-bottom:1px solid #eee; display:flex; justify-content:space-between;">${t} <button onclick="delAnnounce('${t}')">X</button></div>`).join(''); });
-        } else if(tab === 'upload') {
-            c.innerHTML = `<h3>Upload Material</h3><input id="m-title" placeholder="Title"><input id="m-link" placeholder="Link (PDF/Drive)"><input id="m-img" placeholder="Image URL"><select id="m-cat"><option>11th Class</option><option>12th Class</option><option>Organic</option><option>Physical</option><option>Inorganic</option><option>Test Series</option><option>Notes</option></select><input id="m-code" placeholder="Password (Optional)"><button class="btn btn-gold" style="width:100%; margin-top:10px;" onclick="uploadMat()">Upload</button>`;
-        } else if(tab === 'results') {
-            c.innerHTML = `<h3>Online Results</h3><input placeholder="Search..." onkeyup="filterTable(this)"><div class="table-container"><table><thead><tr><th>Student</th><th>Test</th><th>Score</th><th>Act</th></tr></thead><tbody id="adm-res-list"></tbody></table></div>`;
-            fetch('/api/admin/results/online').then(r=>r.json()).then(d => { document.getElementById('adm-res-list').innerHTML = d.map(r => `<tr><td>${r.studentName}</td><td>${r.testTitle}</td><td>${r.score}</td><td><button class="btn btn-gold btn-small" onclick="viewSheet('${r._id}')">View</button></td></tr>`).join(''); });
-        } else if(tab === 'students') {
-            c.innerHTML = `<h3>Registered Students</h3><div class="table-container"><table><thead><tr><th>Name</th><th>Email</th><th>Pass</th></tr></thead><tbody id="stu-list"></tbody></table></div>`;
-            fetch('/api/admin/students').then(r=>r.json()).then(d => { document.getElementById('stu-list').innerHTML = d.map(s => `<tr><td>${s.name}</td><td>${s.email}</td><td>${s.password}</td></tr>`).join(''); });
-        } else if(tab === 'manage') {
-            c.innerHTML = `<h3>Manage Content</h3><div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:15px;"><button class="btn btn-gold btn-small" onclick="loadManageTests()">Tests</button><button class="btn btn-gold btn-small" onclick="loadManageBlogs()">Blogs</button><button class="btn btn-gold btn-small" onclick="loadManageLibrary()">Library</button></div><div id="manage-area" class="table-container">Select category.</div>`;
+            c.innerHTML = `
+                <div class="creator-grid">
+                    <div>
+                        <h3>Test Details</h3>
+                        <input id="t-title" placeholder="Test Title">
+                        <div style="display:flex; gap:10px;">
+                            <input id="t-dur" type="number" placeholder="Duration (Mins)">
+                            <input id="t-code" placeholder="Password (Optional)">
+                        </div>
+                        <label><input type="checkbox" id="t-live"> Live Test?</label>
+                        <div style="margin:5px 0;">Start Time: <input type="datetime-local" id="t-start"></div>
+                        <hr>
+                        <h4>Question Editor</h4>
+                        ${getToolbar()}<div id="q-editor" class="editor" contenteditable="true" placeholder="Question Text"></div>
+                        <input type="file" onchange="encodeImg(this, 'q-prev')"><img id="q-prev" style="height:50px; display:none;">
+                        
+                        <div style="margin-top:10px;"><b>Options</b></div>
+                        <div style="display:grid; gap:5px;">
+                            ${[0,1,2,3].map(i => `<div>${getToolbar()}<div id="op${i}" class="editor" contenteditable="true" placeholder="Option"></div></div>`).join('')}
+                        </div>
+                        Correct: <select id="q-corr"><option value="0">A</option><option value="1">B</option><option value="2">C</option><option value="3">D</option></select>
+                        
+                        <div style="margin-top:10px;"><b>Solution (Hidden during test)</b></div>
+                        ${getToolbar()}<div id="q-sol-editor" class="editor" contenteditable="true" placeholder="Solution Text"></div>
+                        <input type="file" onchange="encodeImg(this, 'sol-prev', true)"><img id="sol-prev" style="height:50px; display:none;">
+                        
+                        <button class="btn btn-gold" style="width:100%; margin-top:10px;" onclick="saveDraftQ()">Save Question</button>
+                    </div>
+                    <div style="border-left:1px solid #ccc; padding-left:10px;">
+                        <h4>Questions (<span id="q-count">0</span>)</h4>
+                        <div id="create-palette" style="display:flex; flex-wrap:wrap; gap:5px;"></div>
+                        <button class="btn btn-red" style="width:100%; margin-top:20px;" onclick="pubTest()">PUBLISH TEST</button>
+                    </div>
+                </div>`;
+            renderCreatePalette();
+        } else if (tab === 'blog') {
+            c.innerHTML = `<h3>Write Blog</h3><input id="b-title" placeholder="Title"><input type="file" onchange="encodeImg(this, 'b-prev')"><img id="b-prev" style="height:100px; display:none;">${getToolbar()}<div id="b-content" class="editor" contenteditable="true" style="min-height:200px"></div><button class="btn btn-gold" onclick="postBlog()" style="margin-top:10px;">Post Blog</button>`;
+        } else if (tab === 'offline') {
+            c.innerHTML = `<h3>Offline Marks Entry</h3><input id="off-title" placeholder="Test Title"><div style="display:grid; grid-template-columns: 2fr 1fr 1fr 2fr auto; gap:5px;"><input id="off-name" placeholder="Name"><input id="off-total" placeholder="Total"><input id="off-obt" placeholder="Obtained"><input id="off-link" placeholder="Sheet Link"><button class="btn btn-gold" onclick="addOfflineStudent()">+</button></div><div class="table-container"><table><thead><tr><th>Name</th><th>Marks</th><th>Link</th><th>Del</th></tr></thead><tbody id="off-body"></tbody></table></div><button class="btn btn-red" style="width:100%" onclick="postOffline()">Upload Result</button>`;
+            offlineDraft = []; renderOfflineDraft();
+        } else if (tab === 'manage') {
+            c.innerHTML = `<h3>Manage Content</h3><div style="display:flex; gap:10px; margin-bottom:10px;"><button class="btn btn-gold btn-small" onclick="loadManage('test')">Tests</button><button class="btn btn-gold btn-small" onclick="loadManage('blog')">Blogs</button><button class="btn btn-gold btn-small" onclick="loadManage('student')">Students</button></div><div id="manage-area" class="table-container">Select a category.</div>`;
+        } else if (tab === 'upload') {
+            c.innerHTML = `<h3>Upload Material</h3><input id="m-title" placeholder="Title"><input id="m-link" placeholder="PDF Link"><input id="m-img" placeholder="Image URL"><select id="m-cat"><option>11th Class</option><option>12th Class</option><option>Organic</option><option>Physical</option><option>Inorganic</option></select><button class="btn btn-gold" style="width:100%; margin-top:10px;" onclick="uploadMat()">Upload</button>`;
         }
     }
 
-    function initCreateTest() { editingTestId=null; draftQ=[]; showAdm('create-test'); }
-    function initUpload() { editingMaterialId=null; showAdm('upload'); }
-    async function loadManageTests() { const res = await fetch('/api/tests'); const data = await res.json(); document.getElementById('manage-area').innerHTML = `<table><tr><th>Title</th><th>Action</th></tr>${data.map(t => `<tr><td>${t.title}</td><td><button style="color:red" onclick="deleteItem('test','${t._id}')">Del</button></td></tr>`).join('')}</table>`; }
-    async function loadManageBlogs() { const res = await fetch('/api/blogs'); const data = await res.json(); document.getElementById('manage-area').innerHTML = `<table><tr><th>Title</th><th>Action</th></tr>${data.map(b => `<tr><td>${b.title}</td><td><button style="color:red" onclick="deleteItem('blog','${b._id}')">Del</button></td></tr>`).join('')}</table>`; }
-    async function loadManageLibrary() { const res = await fetch('/api/materials'); const data = await res.json(); document.getElementById('manage-area').innerHTML = `<table><tr><th>Title</th><th>Action</th></tr>${data.map(m => `<tr><td>${m.title}</td><td><button style="color:red" onclick="deleteItem('material','${m._id}')">Del</button></td></tr>`).join('')}</table>`; }
-    async function deleteItem(type, id) { if(!confirm("Are you sure?")) return; await fetch(`/api/admin/${type}/${id}`, { method: 'DELETE' }); alert("Deleted!"); showAdm('manage'); }
-    async function uploadMat() { const body = { title: document.getElementById('m-title').value, link: document.getElementById('m-link').value, image: document.getElementById('m-img').value, category: document.getElementById('m-cat').value, accessCode: document.getElementById('m-code').value }; await fetch('/api/admin/material', { method: 'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) }); alert("Uploaded!"); showAdm('upload'); }
-    function filterTable(inp) { const filter = inp.value.toUpperCase(); const tr = document.getElementById('adm-res-list').getElementsByTagName('tr'); for (let i=0; i<tr.length; i++) { const txt = tr[i].innerText; tr[i].style.display = txt.toUpperCase().indexOf(filter) > -1 ? "" : "none"; } }
-
-    function addOfflineStudent() { const name = document.getElementById('off-name').value; const total = document.getElementById('off-total').value; const obt = document.getElementById('off-obt').value; if(!name) return; offlineDraft.push({ studentName: name, totalMarks: total, obtainedMarks: obt }); renderOfflineDraft(); document.getElementById('off-name').value = ""; document.getElementById('off-obt').value = ""; }
-    function renderOfflineDraft() { document.getElementById('off-preview-body').innerHTML = offlineDraft.map((s, i) => `<tr><td>${s.studentName}</td><td>${s.obtainedMarks}</td><td><button style="color:red" onclick="offlineDraft.splice(${i},1); renderOfflineDraft()">X</button></td></tr>`).join(''); }
-    async function postOffline() { if(offlineDraft.length === 0) return; await fetch('/api/admin/offline-result', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ title: document.getElementById('off-title').value, records: offlineDraft }) }); alert("Uploaded"); offlineDraft = []; showAdm('offline'); }
-
-    function encodeImg(input, previewId) { if (input.files && input.files[0]) { const reader = new FileReader(); reader.onload = function (e) { const result = e.target.result; tempImg = result; if (previewId) { const img = document.getElementById(previewId); img.src = result; img.style.display = 'block'; } }; reader.readAsDataURL(input.files[0]); } }
-    function switchTab(mode) { loginMode = mode; document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); document.getElementById('tab-'+mode).classList.add('active'); document.getElementById('student-input').style.display = mode === 'student' ? 'block' : 'none'; document.getElementById('teacher-input').style.display = mode === 'student' ? 'none' : 'block'; document.getElementById('login-title').innerText = mode === 'student' ? 'Student Login' : 'Teacher Login'; document.getElementById('reg-link').style.display = mode === 'student' ? 'block' : 'none'; }
-    async function doLogin() { let email = loginMode === 'student' ? document.getElementById('l-email').value : document.getElementById('l-admin-email').value; const password = document.getElementById('l-pass').value; if(loginMode === 'student' && !email.includes('@')) email += '@arcstudent.com'; const res = await fetch('/api/login', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ email, password, role: loginMode }) }); const data = await res.json(); if(data.success) { localStorage.setItem('arc_user', JSON.stringify({name: data.name, email: data.email, role: data.role})); location.reload(); } else alert("Invalid"); }
-    async function doReg() { const res = await fetch('/api/register', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ name: document.getElementById('r-name').value, emailPart: document.getElementById('r-prefix').value, password: document.getElementById('r-pass').value }) }); const data = await res.json(); if(data.success) { alert("Registered!"); location.reload(); } else alert(data.message); }
-    function logout() { localStorage.removeItem('arc_user'); localStorage.removeItem('arc_last_section'); clearSession(); location.reload(); }
-    async function pubTest() { const body = { title: document.getElementById('t-title').value, duration: parseInt(document.getElementById('t-dur').value), accessCode: document.getElementById('t-code').value, category: document.getElementById('t-cat').value, isLive: document.getElementById('t-live').checked, startTime: document.getElementById('t-start').value ? new Date(document.getElementById('t-start').value) : null, endTime: document.getElementById('t-end').value ? new Date(document.getElementById('t-end').value) : null, questions: draftQ }; await fetch('/api/admin/test', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) }); alert("Published!"); draftQ = []; showAdm('create-test'); }
-    function renderCreatePalette() { document.getElementById('create-palette').innerHTML = draftQ.map((q, i) => `<div class="p-btn">${i+1}</div>`).join(''); document.getElementById('q-count').innerText = draftQ.length; }
-    function saveDraftQ() { const qData = { text: document.getElementById('q-editor').innerHTML, options: [0,1,2,3].map(i => document.getElementById('op'+i).value), correct: parseInt(document.getElementById('q-corr').value), image: tempImg }; draftQ.push(qData); document.getElementById('q-editor').innerHTML=""; [0,1,2,3].forEach(i=>document.getElementById('op'+i).value=""); tempImg=""; renderCreatePalette(); }
-    async function postBlog() { await fetch('/api/admin/blog', { method: 'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ title: document.getElementById('b-title').value, content: document.getElementById('b-content').innerHTML, image: tempImg }) }); alert("Saved"); tempImg = ""; showAdm('blog'); }
-    async function postAnnounce() { await fetch('/api/admin/announcement/add', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({text: document.getElementById('ann-text').value}) }); showAdm('announce'); }
-    async function delAnnounce(text) { await fetch('/api/admin/announcement/delete', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({text}) }); showAdm('announce'); }
-    async function loadAnnouncements() { try { const res = await fetch('/api/announcement'); const data = await res.json(); document.getElementById('anno-marquee').innerHTML = (data.list && data.list.length > 0) ? data.list.join(' &nbsp;|&nbsp; ') : "Welcome"; } catch(e) {} }
-    async function loadBlogs() { const res = await fetch('/api/blogs'); const blogs = await res.json(); allBlogs = blogs; document.getElementById('blog-grid').innerHTML = blogs.map(b => `<div class="card" onclick="viewBlog('${b._id}')"><img src="${b.image || 'https://via.placeholder.com/300'}" alt="cover" style="height:150px; object-fit:cover;"><div style="padding:10px;"><h4 style="margin:0;">${b.title}</h4><small>${new Date(b.date).toLocaleDateString()}</small></div></div>`).join(''); }
+    // --- TEST CREATION LOGIC ---
+    function initCreateTest(id=null) { editingTestId = id; draftQ = []; showAdm('create-test'); if(id) loadTestForEdit(id); }
+    async function loadTestForEdit(id) {
+        const res = await fetch(`/api/admin/test/${id}`); const t = await res.json();
+        document.getElementById('t-title').value = t.title;
+        document.getElementById('t-dur').value = t.duration;
+        document.getElementById('t-code').value = t.accessCode;
+        document.getElementById('t-live').checked = t.isLive;
+        document.getElementById('t-start').value = t.startTime ? t.startTime.slice(0,16) : "";
+        draftQ = t.questions; renderCreatePalette();
+    }
     
-    function viewBlog(id) { 
-        const blog = allBlogs.find(b => b._id === id); if(!blog) return; 
-        document.getElementById('bm-title').innerText = blog.title; 
-        document.getElementById('bm-date').innerText = new Date(blog.date).toLocaleDateString(); 
-        document.getElementById('bm-content').innerHTML = blog.content; 
-        const img = document.getElementById('bm-img'); 
-        if(blog.image) { img.src = blog.image; img.style.display='block'; } else img.style.display='none'; 
-        openModal('blog-modal');
+    function saveDraftQ() {
+        const qData = {
+            text: document.getElementById('q-editor').innerHTML,
+            solution: document.getElementById('q-sol-editor').innerHTML,
+            options: [0,1,2,3].map(i => document.getElementById('op'+i).innerHTML),
+            correct: parseInt(document.getElementById('q-corr').value),
+            image: tempImg, solutionImage: tempSolImg,
+            marks: 4, negative: 1
+        };
+        if(editingQIndex !== null) { draftQ[editingQIndex] = qData; editingQIndex = null; } else draftQ.push(qData);
+        // Clear inputs
+        document.getElementById('q-editor').innerHTML=""; document.getElementById('q-sol-editor').innerHTML="";
+        [0,1,2,3].forEach(i=>document.getElementById('op'+i).innerHTML="");
+        tempImg=""; tempSolImg=""; document.getElementById('q-prev').style.display='none'; document.getElementById('sol-prev').style.display='none';
+        renderCreatePalette();
     }
 
-    async function loadTests(isLive) { const res = await fetch('/api/tests'); const tests = await res.json(); const now = new Date(); const filteredTests = tests.filter(t => { const tEnd = t.endTime ? new Date(t.endTime) : null; if (isLive) { return t.isLive && tEnd && tEnd > now; } else { return !t.isLive || (t.isLive && tEnd && tEnd <= now); } }); document.getElementById(isLive?'live-list':'test-list').innerHTML = filteredTests.map(t => `<div class="card" style="border-left: 5px solid ${isLive ? 'red' : 'gold'}"><h3>${t.title} ${t.accessCode ? '🔒' : ''}</h3><p>${t.duration} Mins</p>${isLive ? `<p style="color:var(--red); font-weight:bold; font-size:0.9rem;">Start: ${new Date(t.startTime).toLocaleString()}</p>` : ''}<button class="btn btn-gold" onclick="startTest('${t._id}', ${t.accessCode ? true : false}, '${t.startTime}')">Start</button></div>`).join(''); }
-
-    function startTimer(targetTime) { 
-        clearInterval(timer); 
-        timer = setInterval(() => { 
-            const now = Date.now(); 
-            const remaining = Math.floor((targetTime - now) / 1000); 
-            if(remaining < 0) { clearInterval(timer); submitTest(true); return; } 
-            const m = Math.floor(remaining / 60); 
-            const s = remaining % 60; 
-            document.getElementById('mobile-timer').innerText = `${m}:${s < 10 ? '0'+s : s}`;
-        }, 1000); 
+    function renderCreatePalette() {
+        document.getElementById('q-count').innerText = draftQ.length;
+        document.getElementById('create-palette').innerHTML = draftQ.map((q, i) => `<div onclick="editQuestion(${i})" style="width:30px; height:30px; background:#ddd; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:0.8rem; border-radius:4px;">Q${i+1}</div>`).join('');
     }
 
-    async function startTest(id, hasCode, startTimeStr) { 
-        if (startTimeStr && new Date() < new Date(startTimeStr)) { document.getElementById('alert-msg').innerText = "Test Locked"; openModal('alert-modal'); return; }
-        let code = ""; if(hasCode) { code = prompt("Enter Password:"); if(!code) return; } 
-        const res = await fetch('/api/test/start', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ id, code, studentEmail: user.email }) }); 
-        const data = await res.json(); 
-        if(data.success) { 
-            currentTest = data.test; 
-            answers = new Array(currentTest.questions.length).fill(null); 
-            timeTaken = new Array(currentTest.questions.length).fill(0); 
-            qIndex = 0; 
-            const endTime = Date.now() + (currentTest.duration * 60 * 1000);
-            saveSession(endTime);
-            show('exam'); 
-            startTimer(endTime); 
-            renderQ(); 
-        } else { document.getElementById('alert-msg').innerText = data.message; openModal('alert-modal'); }
+    function editQuestion(i) {
+        editingQIndex = i; const q = draftQ[i];
+        document.getElementById('q-editor').innerHTML = q.text;
+        document.getElementById('q-sol-editor').innerHTML = q.solution || "";
+        q.options.forEach((o, idx) => document.getElementById('op'+idx).innerHTML = o);
+        document.getElementById('q-corr').value = q.correct;
     }
 
-    function renderQ() { 
-        const q = currentTest.questions[qIndex]; 
-        document.getElementById('q-no').innerText = `Q${qIndex + 1}`; 
-        const m = q.marks || 4; const n = q.negative || 1; 
-        document.getElementById('q-marks').innerText = `+${m} / -${n}`; 
-        document.getElementById('q-text').innerHTML = q.text; 
-        const img = document.getElementById('q-img'); 
-        if(q.image) { img.src = q.image; img.style.display = 'block'; } else img.style.display = 'none'; 
-        document.getElementById('q-opts').innerHTML = q.options.map((o, i) => `<label class="mcq-label"><input type="radio" name="opt" value="${i}" ${answers[qIndex] === i ? 'checked' : ''}> <div>${o}</div></label>`).join(''); 
-        document.getElementById('palette').innerHTML = answers.map((a, i) => `<div class="p-btn ${a !== null ? 'done' : (i === qIndex ? 'active' : '')}" onclick="gotoQ(${i})">${i+1}</div>`).join(''); 
+    async function pubTest() {
+        const body = {
+            _id: editingTestId,
+            title: document.getElementById('t-title').value,
+            duration: parseInt(document.getElementById('t-dur').value),
+            accessCode: document.getElementById('t-code').value,
+            isLive: document.getElementById('t-live').checked,
+            startTime: document.getElementById('t-start').value || null,
+            questions: draftQ
+        };
+        await fetch('/api/admin/test', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
+        alert("Published!"); show('admin');
     }
 
-    function saveNext() { 
-        const sel = document.querySelector('input[name="opt"]:checked'); 
-        answers[qIndex] = sel ? parseInt(sel.value) : null; 
-        saveSession();
-        const btn = document.querySelectorAll('.p-btn')[qIndex]; 
-        if(answers[qIndex] !== null) btn.classList.add('done'); 
-        if(qIndex < currentTest.questions.length - 1) { qIndex++; renderQ(); } 
-        else { alert("Last Question"); } 
-    }
-
-    function clearAns() { answers[qIndex] = null; saveSession(); renderQ(); }
-    function gotoQ(i) { qIndex = i; saveSession(); renderQ(); }
-
-    async function submitTest(auto = false) { 
-        if(!auto && !confirm("Submit?")) return; 
-        clearInterval(timer); 
-        const res = await fetch('/api/test/submit', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ testId: currentTest._id, answers, timeTaken, studentName: user.name, studentEmail: user.email }) }); 
-        const data = await res.json(); 
-        if(data.success) { 
-            clearSession(); 
-            document.getElementById('exam').classList.remove('active'); 
-            show('results'); 
-            viewSheet(data.resultId); 
-        } 
-    }
-
-    async function viewSheet(id) { 
-        const res = await fetch('/api/result-details', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ resultId: id }) }); 
-        const data = await res.json(); 
-        const r = data.result; 
-
-        document.getElementById('review-stats').innerHTML = `<span>Score: ${r.score}/${r.totalMarks}</span><span>Rank: #${data.rank}</span><span>${r.percentage.toFixed(0)}%</span>`; 
-        
-        let cor = 0, wrg = 0, skp = 0;
-        data.questions.forEach(q => { if(q.status==='Correct') cor++; else if(q.status==='Wrong') wrg++; else skp++; });
-
-        if(resultChartInstance) resultChartInstance.destroy();
-        const ctx = document.getElementById('resultChart').getContext('2d');
-        resultChartInstance = new Chart(ctx, {
-            type: 'doughnut',
-            data: { labels: ['Correct', 'Wrong', 'Skipped'], datasets: [{ data: [cor, wrg, skp], backgroundColor: ['#22c55e', '#ef4444', '#cbd5e1'] }] },
-            options: { responsive: true, maintainAspectRatio: false }
+    // --- OFFLINE & MANAGE ---
+    function addOfflineStudent() {
+        offlineDraft.push({
+            studentName: document.getElementById('off-name').value,
+            totalMarks: document.getElementById('off-total').value,
+            obtainedMarks: document.getElementById('off-obt').value,
+            copyLink: document.getElementById('off-link').value
         });
-
-        document.getElementById('leaderboard-container').innerHTML = `<table style="font-size:0.9rem; margin:0; width:100%;"><tr style="background:#f1f5f9;"><th>#</th><th>Name</th><th>Score</th></tr>${data.leaderboard.map(rec => `<tr style="${rec.rank === data.rank ? 'background:#e0f2fe; font-weight:bold;' : ''}"><td>${rec.rank}</td><td>${rec.name}</td><td>${rec.score}</td></tr>`).join('')}</table>`;
-
-        document.getElementById('review-body').innerHTML = data.questions.map((q, i) => `<div class="review-row"><p><strong>Q${i+1}:</strong> ${q.text}</p>${q.image ? `<img src="${q.image}" style="max-height:150px">` : ''}<div style="display:grid; grid-template-columns: 1fr 1fr; gap:5px; margin-top:5px;">${q.options.map((opt, idx) => `<div style="padding:5px; border:1px solid #ddd; border-radius:4px; ${idx === q.correct ? 'background:#dcfce7; border-color:green;' : ''} ${idx === q.studentAnswer && idx !== q.correct ? 'background:#fee2e2; border-color:red;' : ''}">${opt}</div>`).join('')}</div><div style="margin-top:5px;"><span class="badge ${q.status==='Correct'?'bg-green':'bg-red'}">${q.status}</span></div>${q.solution ? `<div style="background:#f0f9ff; padding:10px; margin-top:5px; border-radius:6px; font-size:0.9rem;"><strong>💡 Solution:</strong> ${q.solution}</div>` : ''}</div>`).join('');
-        openModal('review-modal');
+        renderOfflineDraft();
+    }
+    function renderOfflineDraft() {
+        document.getElementById('off-body').innerHTML = offlineDraft.map((s,i) => `<tr><td>${s.studentName}</td><td>${s.obtainedMarks}/${s.totalMarks}</td><td>${s.copyLink?'<a href="#">Link</a>':'-'}</td><td><button onclick="offlineDraft.splice(${i},1);renderOfflineDraft()">X</button></td></tr>`).join('');
+    }
+    async function postOffline() {
+        await fetch('/api/admin/offline-result', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ title: document.getElementById('off-title').value, records: offlineDraft }) });
+        alert("Uploaded"); show('admin');
     }
 
-    async function loadResults(type) { const res = await fetch('/api/student/results/online', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ email: user.email }) }); const data = await res.json(); document.getElementById('result-list').innerHTML = `<table style="min-width:400px;"><tr><th>Date</th><th>Test</th><th>Score</th><th>Act</th></tr>${data.results.filter(r => r.testType === type).map(r => `<tr><td>${new Date(r.date).toLocaleDateString()}</td><td>${r.testTitle}</td><td>${r.score}</td><td><button class="btn btn-gold btn-small" onclick="viewSheet('${r._id}')">View</button></td></tr>`).join('')}</table>`; }
-    async function loadOfflineResults() { const res = await fetch('/api/results/offline'); const data = await res.json(); document.getElementById('result-list').innerHTML = data.map(r => `<h4>${r.title}</h4><table><tr><th>Rank</th><th>Name</th><th>Mks</th></tr>${r.records.map(rec => `<tr><td>#${rec.rank}</td><td>${rec.studentName}</td><td>${rec.obtainedMarks}</td></tr>`).join('')}</table>`).join(''); }
-    
-    // --- RESTORED: ROBUST LIBRARY LOADING ---
-    async function loadMaterials() { 
-        try {
-            const res = await fetch('/api/materials');
-            allMats = await res.json();
-            console.log("Library loaded:", allMats.length);
-        } catch(e) { console.error("Lib Error", e); }
+    async function loadManage(type) {
+        let endpoint = type==='test' ? '/api/tests' : (type==='blog' ? '/api/blogs' : '/api/admin/students');
+        const res = await fetch(endpoint); const data = await res.json();
+        document.getElementById('manage-area').innerHTML = `<table><tr><th>Title/Name</th><th>Action</th></tr>${data.map(i => `<tr><td>${i.title || i.name}</td><td>${type==='test' ? `<button onclick="initCreateTest('${i._id}')">Edit</button> ` : ''}<button style="color:red" onclick="delItem('${type}','${i._id}')">Delete</button></td></tr>`).join('')}</table>`;
     }
-    
-    function loadLib(cat) { 
-        document.getElementById('lib-cats').style.display = 'none'; 
-        document.getElementById('lib-back').style.display = 'block'; 
-        // Force render, even if empty, so user sees "No items" instead of blank
-        renderLib(cat);
-    }
-    
-    function renderLib(cat) { 
-        const items = allMats.filter(m => m.category === cat || (cat === '11th Class' && m.category.includes('11')));
-        if(items.length === 0) {
-            document.getElementById('lib-content').innerHTML = "<p style='text-align:center; color:#777; width:100%;'>No materials found in this category.</p>";
-        } else {
-            document.getElementById('lib-content').innerHTML = items.map(m => `<div class="card"><img src="${m.image||''}" style="height:100px; background:#ddd; object-fit:cover;"><h4>${m.title} ${m.accessCode?'🔒':''}</h4><button class="btn btn-gold" onclick="openMat('${m._id}')">Open</button></div>`).join(''); 
+    async function delItem(type, id) { if(confirm("Delete?")) { await fetch(`/api/admin/${type}/${id}`, { method:'DELETE' }); loadManage(type); } }
+
+    // --- BLOG & MATERIAL ---
+    function encodeImg(input, prevId, isSol=false) {
+        if(input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                if(isSol) tempSolImg = e.target.result; else tempImg = e.target.result;
+                const img = document.getElementById(prevId); img.src=e.target.result; img.style.display='block';
+            };
+            reader.readAsDataURL(input.files[0]);
         }
     }
+    async function postBlog() { await fetch('/api/admin/blog', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ title:document.getElementById('b-title').value, content:document.getElementById('b-content').innerHTML, image:tempImg }) }); alert("Posted"); show('home'); }
+    async function loadBlogs() { const res=await fetch('/api/blogs'); const d=await res.json(); document.getElementById('blog-grid').innerHTML = d.map(b => `<div class="card" onclick="viewBlog('${b._id}')"><h4>${b.title}</h4></div>`).join(''); }
+
+    // --- EXAM ENGINE ---
+    async function loadTests(live) {
+        const res = await fetch('/api/tests'); const data = await res.json();
+        const now = new Date();
+        const list = data.filter(t => live ? (t.isLive && new Date(t.endTime) > now) : (!t.isLive || new Date(t.endTime) <= now));
+        document.getElementById(live?'live-list':'test-list').innerHTML = list.map(t => `<div class="card"><h3>${t.title}</h3><p>${t.duration} Mins</p><button class="btn btn-gold" onclick="startTest('${t._id}', ${t.accessCode?1:0})">Start</button></div>`).join('');
+    }
+
+    async function startTest(id, locked) {
+        if(locked) { const p=prompt("Password:"); if(!p) return; }
+        const res = await fetch('/api/test/start', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id, studentEmail:user.email}) });
+        const d = await res.json();
+        if(d.success) {
+            currentTest = d.test; answers = new Array(currentTest.questions.length).fill(null); qIndex=0;
+            // Auto calculate end time logic is handled by backend for verification, but frontend needs a target
+            const targetTime = currentTest.isLive ? new Date(currentTest.endTime).getTime() : Date.now() + (currentTest.duration * 60000);
+            show('exam'); renderQ(); startTimer(targetTime);
+        } else alert(d.message);
+    }
+
+    function renderQ() {
+        const q = currentTest.questions[qIndex];
+        document.getElementById('q-no').innerText = `Q${qIndex+1}`;
+        document.getElementById('q-text').innerHTML = q.text;
+        document.getElementById('q-opts').innerHTML = q.options.map((o,i) => `<label style="display:flex; padding:10px; border:1px solid #ddd; margin:5px 0; border-radius:6px;"><input type="radio" name="opt" value="${i}" ${answers[qIndex]===i?'checked':''}> <div style="margin-left:10px;">${o}</div></label>`).join('');
+        const img = document.getElementById('q-img');
+        if(q.image) { img.src=q.image; img.style.display='block'; } else img.style.display='none';
+        document.getElementById('palette').innerHTML = answers.map((a,i) => `<div class="p-btn ${a!==null?'done':''} ${i===qIndex?'active':''}" onclick="qIndex=${i};renderQ()">${i+1}</div>`).join('');
+    }
     
-    function resetLib() { document.getElementById('lib-cats').style.display = 'grid'; document.getElementById('lib-back').style.display = 'none'; document.getElementById('lib-content').innerHTML = ''; }
-    async function openMat(id) { const code = prompt("Password:"); const res = await fetch('/api/material/unlock', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id, code}) }); const data = await res.json(); if(data.success) window.open(data.link); else alert("Wrong Password"); }
+    function saveNext() {
+        const sel = document.querySelector('input[name="opt"]:checked');
+        answers[qIndex] = sel ? parseInt(sel.value) : null;
+        if(qIndex < currentTest.questions.length-1) { qIndex++; renderQ(); }
+    }
+
+    function startTimer(target) {
+        clearInterval(timer);
+        timer = setInterval(() => {
+            const now = Date.now(); const diff = Math.floor((target - now)/1000);
+            if(diff <= 0) { clearInterval(timer); submitTest(); return; }
+            const m = Math.floor(diff/60); const s = diff%60;
+            document.getElementById('mobile-timer').innerText = `${m}:${s<10?'0'+s:s}`;
+        }, 1000);
+    }
+
+    async function submitTest() {
+        clearInterval(timer);
+        const res = await fetch('/api/test/submit', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ testId:currentTest._id, answers, studentName:user.name, studentEmail:user.email }) });
+        const d = await res.json();
+        if(d.success) { show('results'); viewResult(d.resultId); }
+    }
+
+    // --- RESULTS ---
+    async function loadResults(type) {
+        const res = await fetch('/api/student/results/online', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({email:user.email}) });
+        const d = await res.json();
+        document.getElementById('result-list').innerHTML = `<table><tr><th>Test</th><th>Score</th><th>Act</th></tr>${d.results.map(r => `<tr><td>${r.testTitle}</td><td>${r.score}</td><td><button onclick="viewResult('${r._id}')">View</button></td></tr>`).join('')}</table>`;
+    }
+    
+    async function viewResult(id) {
+        const res = await fetch('/api/result-details', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({resultId:id}) });
+        const d = await res.json();
+        document.getElementById('review-stats').innerHTML = `Score: ${d.result.score} | Rank: #${d.rank}`;
+        document.getElementById('review-body').innerHTML = d.questions.map((q,i) => `
+            <div style="border-bottom:1px solid #eee; padding:10px 0;">
+                <div><strong>Q${i+1}:</strong> ${q.text}</div>
+                ${q.image ? `<img src="${q.image}" style="height:100px;">` : ''}
+                <div style="color:${q.status==='Correct'?'green':'red'}">Your Answer: ${q.studentAnswer!==null?q.options[q.studentAnswer]:'Skipped'}</div>
+                <div style="background:#f0fdf4; padding:10px; margin-top:5px; border-radius:5px;">
+                    <strong>Correct:</strong> ${q.options[q.correct]}<br>
+                    <strong>Solution:</strong> ${q.solution || "No solution provided."}
+                    ${q.solutionImage ? `<br><img src="${q.solutionImage}" style="max-height:150px; margin-top:5px;">` : ''}
+                </div>
+            </div>`).join('');
+        document.getElementById('review-modal').style.display='flex';
+        document.body.classList.add('modal-open');
+    }
+    
+    async function loadOfflineResults() {
+        const res = await fetch('/api/results/offline'); const d = await res.json();
+        document.getElementById('result-list').innerHTML = d.map(r => `<h4>${r.title}</h4><table><tr><th>Rank</th><th>Name</th><th>Marks</th><th>Link</th></tr>${r.records.map(s => `<tr><td>#${s.rank}</td><td>${s.studentName}</td><td>${s.obtainedMarks}/${s.totalMarks||'-'}</td><td>${s.copyLink ? `<a href="${s.copyLink}" target="_blank">View</a>` : '-'}</td></tr>`).join('')}</table>`).join('');
+    }
+
+    // --- LIBRARY ---
+    async function uploadMat() {
+        await fetch('/api/admin/material', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ title:document.getElementById('m-title').value, link:document.getElementById('m-link').value, category:document.getElementById('m-cat').value }) });
+        alert("Uploaded"); show('admin');
+    }
+    async function loadMaterials() { const res = await fetch('/api/materials'); allMats = await res.json(); }
+    function loadLib(cat) { 
+        document.getElementById('lib-cats').style.display='none'; document.getElementById('lib-back').style.display='block';
+        document.getElementById('lib-content').innerHTML = allMats.filter(m => m.category===cat).map(m => `<div class="card"><h4>${m.title}</h4><a href="${m.link}" target="_blank" class="btn btn-gold btn-small">Open</a></div>`).join('');
+    }
+    function resetLib() { document.getElementById('lib-cats').style.display='grid'; document.getElementById('lib-back').style.display='none'; document.getElementById('lib-content').innerHTML=''; }
+    
 </script>
 </body>
 </html>
