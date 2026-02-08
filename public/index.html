@@ -7,7 +7,18 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root { --primary: #0f172a; --gold: #fbbf24; --light: #f8fafc; --red: #ef4444; --green: #22c55e; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--light); margin: 0; color: #333; display: flex; flex-direction: column; min-height: 100vh; }
+        
+        /* --- CRITICAL FIX: DISABLE PULL-TO-REFRESH --- */
+        html, body { 
+            overscroll-behavior-y: none; /* Stops the refresh gesture globally */
+            font-family: 'Segoe UI', sans-serif; 
+            background: var(--light); 
+            margin: 0; 
+            color: #333; 
+            display: flex; 
+            flex-direction: column; 
+            min-height: 100vh; 
+        }
         
         /* Stop background scrolling when modal is open */
         body.modal-open { overflow: hidden; height: 100vh; }
@@ -61,6 +72,7 @@
             justify-content:center; align-items:flex-start;
             z-index: 2000; padding: 10px; box-sizing: border-box; 
             overflow-y: auto; 
+            overscroll-behavior: contain; /* Extra safety */
         }
         
         .modal-content { 
@@ -68,7 +80,8 @@
             max-height: 90vh; overflow-y: auto; 
             padding: 20px; border-radius: 12px; position: relative; 
             margin-top: 20px; margin-bottom: 20px;
-            overscroll-behavior: contain; -webkit-overflow-scrolling: touch;
+            overscroll-behavior: contain; /* CRITICAL FIX: Allows internal scroll, prevents body refresh */
+            -webkit-overflow-scrolling: touch;
         }
 
         .close-corner { 
@@ -280,6 +293,11 @@
     function closeModal(id) { document.getElementById(id).style.display = 'none'; document.body.classList.remove('modal-open'); }
 
     window.onload = function() {
+        // Preload Data to fix visibility issues
+        loadMaterials();
+        loadAnnouncements();
+        loadBlogs();
+
         const lastSection = localStorage.getItem('arc_last_section') || 'home';
         if(user) {
             document.getElementById('nav-login').style.display = 'none';
@@ -309,8 +327,6 @@
     function saveSession(endTime) { if(!currentTest) return; localStorage.setItem('arc_test_session', JSON.stringify({ test: currentTest, answers: answers, timeTaken: timeTaken, qIndex: qIndex, endTime: endTime || JSON.parse(localStorage.getItem('arc_test_session'))?.endTime })); }
     function clearSession() { localStorage.removeItem('arc_test_session'); }
 
-    loadAnnouncements(); loadBlogs();
-
     function show(id) {
         if((id==='tests' || id==='live' || id==='results') && !user) return show('login');
         if(id==='admin' && (!user || user.role !== 'admin')) return alert("Access Denied");
@@ -322,7 +338,6 @@
         if(id==='tests') loadTests(false); if(id==='live') loadTests(true); if(id==='results') loadResults('practice');
     }
 
-    // --- RESTORED ADMIN FUNCTIONS ---
     function showAdm(tab) {
         const c = document.getElementById('adm-content');
         if(tab === 'create-test') {
@@ -348,7 +363,6 @@
         }
     }
 
-    // --- RESTORED HELPER FUNCTIONS ---
     function initCreateTest() { editingTestId=null; draftQ=[]; showAdm('create-test'); }
     function initUpload() { editingMaterialId=null; showAdm('upload'); }
     async function loadManageTests() { const res = await fetch('/api/tests'); const data = await res.json(); document.getElementById('manage-area').innerHTML = `<table><tr><th>Title</th><th>Action</th></tr>${data.map(t => `<tr><td>${t.title}</td><td><button style="color:red" onclick="deleteItem('test','${t._id}')">Del</button></td></tr>`).join('')}</table>`; }
@@ -483,9 +497,31 @@
     async function loadResults(type) { const res = await fetch('/api/student/results/online', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ email: user.email }) }); const data = await res.json(); document.getElementById('result-list').innerHTML = `<table style="min-width:400px;"><tr><th>Date</th><th>Test</th><th>Score</th><th>Act</th></tr>${data.results.filter(r => r.testType === type).map(r => `<tr><td>${new Date(r.date).toLocaleDateString()}</td><td>${r.testTitle}</td><td>${r.score}</td><td><button class="btn btn-gold btn-small" onclick="viewSheet('${r._id}')">View</button></td></tr>`).join('')}</table>`; }
     async function loadOfflineResults() { const res = await fetch('/api/results/offline'); const data = await res.json(); document.getElementById('result-list').innerHTML = data.map(r => `<h4>${r.title}</h4><table><tr><th>Rank</th><th>Name</th><th>Mks</th></tr>${r.records.map(rec => `<tr><td>#${rec.rank}</td><td>${rec.studentName}</td><td>${rec.obtainedMarks}</td></tr>`).join('')}</table>`).join(''); }
     
-    async function loadMaterials() { allMats = await (await fetch('/api/materials')).json(); }
-    function loadLib(cat) { document.getElementById('lib-cats').style.display = 'none'; document.getElementById('lib-back').style.display = 'block'; if(allMats.length === 0) loadMaterials().then(() => renderLib(cat)); else renderLib(cat); }
-    function renderLib(cat) { document.getElementById('lib-content').innerHTML = allMats.filter(m => m.category === cat || (cat === '11th Class' && m.category.includes('11'))).map(m => `<div class="card"><img src="${m.image||''}" style="height:100px; background:#ddd; object-fit:cover;"><h4>${m.title} ${m.accessCode?'🔒':''}</h4><button class="btn btn-gold" onclick="openMat('${m._id}')">Open</button></div>`).join(''); }
+    // --- RESTORED: ROBUST LIBRARY LOADING ---
+    async function loadMaterials() { 
+        try {
+            const res = await fetch('/api/materials');
+            allMats = await res.json();
+            console.log("Library loaded:", allMats.length);
+        } catch(e) { console.error("Lib Error", e); }
+    }
+    
+    function loadLib(cat) { 
+        document.getElementById('lib-cats').style.display = 'none'; 
+        document.getElementById('lib-back').style.display = 'block'; 
+        // Force render, even if empty, so user sees "No items" instead of blank
+        renderLib(cat);
+    }
+    
+    function renderLib(cat) { 
+        const items = allMats.filter(m => m.category === cat || (cat === '11th Class' && m.category.includes('11')));
+        if(items.length === 0) {
+            document.getElementById('lib-content').innerHTML = "<p style='text-align:center; color:#777; width:100%;'>No materials found in this category.</p>";
+        } else {
+            document.getElementById('lib-content').innerHTML = items.map(m => `<div class="card"><img src="${m.image||''}" style="height:100px; background:#ddd; object-fit:cover;"><h4>${m.title} ${m.accessCode?'🔒':''}</h4><button class="btn btn-gold" onclick="openMat('${m._id}')">Open</button></div>`).join(''); 
+        }
+    }
+    
     function resetLib() { document.getElementById('lib-cats').style.display = 'grid'; document.getElementById('lib-back').style.display = 'none'; document.getElementById('lib-content').innerHTML = ''; }
     async function openMat(id) { const code = prompt("Password:"); const res = await fetch('/api/material/unlock', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id, code}) }); const data = await res.json(); if(data.success) window.open(data.link); else alert("Wrong Password"); }
 </script>
