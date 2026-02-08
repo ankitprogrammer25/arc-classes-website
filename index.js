@@ -9,12 +9,14 @@ app.use(express.json({ limit: '100mb' }));
 app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
 
+
 // --- 1. DATABASE CONNECTION ---
 const dbLink = "mongodb+srv://ankitprogrammer25:a32x05sYvukG178G@cluster0.0dhqpzv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 
 mongoose.connect(dbLink)
     .then(() => console.log('✅ MongoDB Connected'))
     .catch(err => console.log('❌ DB Connection Error:', err.message));
+
 
 // --- 2. SCHEMAS ---
 const StudentSchema = new mongoose.Schema({
@@ -62,6 +64,8 @@ const Blog = mongoose.model('Blog', BlogSchema);
 const ConfigSchema = new mongoose.Schema({ type: String, list: [String] });
 const Config = mongoose.model('Config', ConfigSchema);
 
+
+
 // --- 3. ROUTES ---
 
 // --- AUTH ---
@@ -87,7 +91,10 @@ app.post('/api/login', async (req, res) => {
     } catch (e) { res.json({ success: false }); }
 });
 
+
+
 // --- ADMIN API ---
+
 // STUDENTS
 app.get('/api/admin/students', async (req, res) => res.json(await Student.find().sort({ joinedAt: -1 })));
 app.get('/api/admin/student/:id', async (req, res) => res.json(await Student.findById(req.params.id)));
