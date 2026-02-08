@@ -142,12 +142,23 @@ app.post('/api/verify-otp', (req, res) => {
 // --- AUTH ---
 app.post('/api/register', async (req, res) => {
     try {
-        const { name, emailPart, password } = req.body; 
-        const fullEmail = emailPart + "@arcstudent.com";
-        if(await Student.findOne({ email: fullEmail })) return res.json({ success: false, message: "Username Taken" });
-        await new Student({ name, email: fullEmail, password }).save(); 
+        // 👇 CHANGED: Accept full 'email' instead of 'emailPart'
+        const { name, email, password } = req.body; 
+        
+        // Check if THIS email already exists
+        const existingUser = await Student.findOne({ email: email });
+        if(existingUser) {
+            return res.json({ success: false, message: "Email already registered" });
+        }
+
+        // Save the REAL email (e.g., mykdtv2024@gmail.com)
+        await new Student({ name, email, password }).save(); 
+        
         res.json({ success: true });
-    } catch (e) { res.json({ success: false, message: "Error" }); }
+    } catch (e) { 
+        console.log("Register Error:", e); // This prints the exact error to terminal
+        res.json({ success: false, message: "Error: Could not register student." }); 
+    }
 });
 
 app.post('/api/login', async (req, res) => {

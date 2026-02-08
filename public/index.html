@@ -209,6 +209,7 @@
     <div id="adm-content" style="background:white; padding:15px; border-radius:10px; border:1px solid #ddd; min-height:300px; overflow-x:auto;">Select option.</div>
 </div>
 
+
 <div id="library" class="section">
     <h2>📚 Library</h2>
     <div id="lib-cats" class="grid">
@@ -716,29 +717,29 @@ async function doReg() {
         if(!isEmailVerified) return alert("Please verify email with OTP first.");
         
         const name = document.getElementById('r-name').value;
-        const email = document.getElementById('r-email').value; // Use Full Email now
+        const email = document.getElementById('r-email').value; // Get Full Email
         const password = document.getElementById('r-pass').value;
 
-        // Note: Modified backend to accept full 'email' instead of 'emailPart'
-        // If backend expects 'emailPart', we might need to adjust, but let's send full email
-        // Update your /api/register in index.js to use req.body.email directly if needed.
-        // Assuming we update backend slightly or send emailPart manually:
-        
-        // Let's stick to the previous backend logic:
-        const emailPart = email.split('@')[0]; 
+        if(!name || !password) return alert("Please fill all fields");
 
+        const btn = document.getElementById('btn-register');
+        btn.innerText = "Registering...";
+
+        // 👇 CHANGED: Send 'email' (full), NOT 'emailPart'
         const res = await fetch('/api/register', { 
             method: 'POST', 
             headers: {'Content-Type':'application/json'}, 
-            body: JSON.stringify({ name, emailPart, password }) 
+            body: JSON.stringify({ name, email, password }) 
         }); 
         
         const data = await res.json(); 
+        
         if(data.success) { 
-            alert("Registered! Please Login."); 
-            toggleReg(false);
+            alert("✅ Registration Successful! Please Login."); 
+            toggleReg(false); // Switch to Login view
         } else { 
-            alert(data.message); 
+            alert("❌ " + data.message); 
+            btn.innerText = "Register";
         } 
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
