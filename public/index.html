@@ -331,152 +331,166 @@
         // ==========================================
     // 🟢 UPDATED ADMIN LOGIC (Paste this to fix Freeze & Add Arrows)
     // ==========================================
-
-    // 1. TOOLBAR (Includes Reagent Arrows)
+    // 🟢 1. FIXED TOOLBAR (Must be outside functions)
+    // ==========================================
     const toolbarHTML = `
         <div class="toolbar" style="background:#e2e8f0; padding:10px; border-radius:6px 6px 0 0; display:flex; gap:8px; flex-wrap:wrap; align-items:center; border:1px solid #ccc; border-bottom:none;">
             <select onchange="exec('fontName', this.value)" style="padding:5px; border-radius:4px;" title="Font">
-                <option value="Arial">Arial</option><option value="'Times New Roman'">Times New Roman</option><option value="Courier New">Courier</option><option value="Georgia">Georgia</option><option value="Verdana">Verdana</option>
+                <option value="Arial">Arial</option>
+                <option value="'Times New Roman'">Times New Roman</option>
+                <option value="Courier New">Courier</option>
+                <option value="Georgia">Georgia</option>
+                <option value="Verdana">Verdana</option>
             </select>
             <select onchange="exec('fontSize', this.value)" style="padding:5px; border-radius:4px;" title="Size">
-                <option value="3">Normal</option><option value="2">Small</option><option value="5">Large</option><option value="7">Huge</option>
+                <option value="3">Normal</option>
+                <option value="2">Small</option>
+                <option value="5">Large</option>
+                <option value="7">Huge</option>
             </select>
             <button class="tool-btn" onclick="exec('bold')" title="Bold"><b>B</b></button>
             <button class="tool-btn" onclick="exec('italic')" title="Italic"><i>I</i></button>
             <button class="tool-btn" onclick="exec('underline')" title="Underline"><u>U</u></button>
             <button class="tool-btn" onclick="exec('subscript')" title="Sub">X<sub>2</sub></button>
             <button class="tool-btn" onclick="exec('superscript')" title="Super">X<sup>2</sup></button>
-            <div style="background:white; border:1px solid #999; border-radius:4px; padding:0 2px;"><input type="color" onchange="exec('foreColor', this.value)" style="height:25px; width:25px; border:none; cursor:pointer;"></div>
-            
-            <select onchange="insChar(this.value); this.value='';" style="padding:5px; border-radius:4px; font-weight:bold; color:#0f172a; min-width:120px;" title="Chemistry Arrows">
+            <div style="background:white; border:1px solid #999; border-radius:4px; padding:0 2px;">
+                <input type="color" onchange="exec('foreColor', this.value)" style="height:25px; width:25px; border:none; cursor:pointer;">
+            </div>
+            <select onchange="insChar(this.value); this.value='';" style="padding:5px; border-radius:4px; font-weight:bold; color:#0f172a;" title="Chemistry Arrows">
                 <option value="">⚗️ Arrows</option>
                 <option value=" &rarr; ">&rarr; (Reaction)</option>
                 <option value=" &rightleftharpoons; ">&rightleftharpoons; (Equilibrium)</option>
                 <option value=" &longleftrightarrow; ">&longleftrightarrow; (Resonance)</option>
                 <option value=" &#10230; ">&#10230; (Long Reaction)</option>
                 <option value=" &#10234; ">&#10234; (Long Equilibrium)</option>
-                <option value=" &#10231; ">&#10231; (Long Resonance)</option>
-                <option value=" &#10233; ">&#10233; (Long Double)</option>
                 <option value=" &uarr; ">&uarr; (Gas)</option>
                 <option value=" &darr; ">&darr; (Ppt)</option>
                 <option value=" &#8710; ">&#8710; (Heat)</option>
             </select>
         </div>`;
 
-    // 2. ADMIN TAB SWITCHER
-    function showAdm(tab) {
-        const c = document.getElementById('adm-content');
-        
-        // A. CREATE / EDIT TEST
-        if (tab === 'create-test') {
-            c.innerHTML = `
-                <div class="create-test-layout" style="display: flex; gap: 20px; flex-wrap: wrap;">
-                    <div class="ct-left" style="flex: 3; min-width: 300px;">
-                        <h3 style="border-bottom: 2px solid var(--gold); padding-bottom: 10px;">${editingTestId ? 'Edit' : 'Create'} Test</h3>
-                        <div style="background:white; padding:15px; border:1px solid #ddd; border-radius:8px; margin-bottom:20px;">
-                            <input id="t-title" placeholder="Test Title">
-                            <div style="display:flex; gap:10px;">
-                                <input id="t-dur" type="number" placeholder="Mins" oninput="calcEndTime()">
-                                <input id="t-code" placeholder="Password (Optional)">
-                            </div>
-                            <select id="t-cat"><option>11th Class</option><option>12th Class</option><option>Organic</option><option>Physical</option><option>Inorganic</option><option>Full Syllabus</option></select>
-                            <div style="margin-top:10px; background:#f8fafc; padding:10px; border:1px solid #eee;">
-                                <label><input type="checkbox" id="t-live"> 🔴 Live Test?</label>
-                                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:5px;">
-                                    <div>Start: <input type="datetime-local" id="t-start" onchange="calcEndTime()" style="width:100%"></div>
-                                    <div>End: <input type="datetime-local" id="t-end" readonly style="background:#eee; width:100%"></div>
-                                </div>
-                            </div>
+// ==========================================
+// 🟢 2. COMPLETE ADMIN LOGIC (Replaces showAdm)
+// ==========================================
+function showAdm(tab) {
+    const c = document.getElementById('adm-content');
+    
+    // A. CREATE / EDIT TEST
+    if (tab === 'create-test') {
+        c.innerHTML = `
+            <div class="create-test-layout" style="display: flex; gap: 20px; flex-wrap: wrap;">
+                <div class="ct-left" style="flex: 3; min-width: 300px;">
+                    <h3 style="border-bottom: 2px solid var(--gold); padding-bottom: 10px;">${editingTestId ? 'Edit' : 'Create'} Test</h3>
+                    
+                    <div style="background:white; padding:15px; border:1px solid #ddd; border-radius:8px; margin-bottom:20px;">
+                        <input id="t-title" placeholder="Test Title">
+                        <div style="display:flex; gap:10px;">
+                            <input id="t-dur" type="number" placeholder="Duration (Mins)" oninput="calcEndTime()">
+                            <input id="t-code" placeholder="Password (Optional)">
                         </div>
-
-                        <div style="background:white; padding:15px; border:1px solid #ddd; border-radius:8px;">
-                            <h4>Add Question</h4>
-                            ${toolbarHTML}
-                            <div id="q-editor" class="editor" contenteditable="true" placeholder="Question text..." style="min-height:100px; border-radius:0 0 6px 6px; margin-bottom:10px;"></div>
-                            <div style="margin-bottom:15px;"><label class="btn-small" style="background:#e2e8f0; cursor:pointer;">📷 Q-Image <input type="file" onchange="encodeImg(this, 'q-prev')" style="display:none;"></label><img id="q-prev" style="height:60px; display:none; margin-top:5px;"></div>
-
-                            <div style="background:#f1f5f9; padding:10px; border-radius:6px; margin-bottom:10px;">
-                                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                                    <div><b>A:</b> <div id="op0" class="editor-small" contenteditable="true" style="background:white;"></div></div>
-                                    <div><b>B:</b> <div id="op1" class="editor-small" contenteditable="true" style="background:white;"></div></div>
-                                    <div><b>C:</b> <div id="op2" class="editor-small" contenteditable="true" style="background:white;"></div></div>
-                                    <div><b>D:</b> <div id="op3" class="editor-small" contenteditable="true" style="background:white;"></div></div>
-                                </div>
-                            </div>
-
-                            <div style="display:flex; gap:10px; align-items:center; margin-bottom:10px;">
-                                <select id="q-corr" style="width:auto; font-weight:bold; border:2px solid green;"><option value="0">Ans: A</option><option value="1">Ans: B</option><option value="2">Ans: C</option><option value="3">Ans: D</option></select>
-                                <input type="number" id="q-marks" placeholder="+Ve" value="4" style="width:80px" title="Marks">
-                                <input type="number" id="q-neg" placeholder="-Ve" value="0" style="width:80px" title="Negative">
-                            </div>
-
-                            <div style="border:1px solid #fbbf24; border-radius:6px; padding:10px; background:#fffbeb;">
-                                <div style="font-weight:bold; color:#b45309; margin-bottom:5px;">💡 Solution</div>
-                                <div id="q-sol" class="editor-small" contenteditable="true" style="background:white; min-height:60px;"></div>
-                                <label class="btn-small" style="background:#fcd34d; cursor:pointer; margin-top:5px;">📷 Sol-Image <input type="file" id="q-sol-file" onchange="encodeImg(this, 'sol-prev', true)" style="display:none;"></label><img id="sol-prev" style="height:60px; display:none; margin-top:5px;">
-                            </div>
-
-                            <div style="margin-top:15px; display:flex; gap:10px;">
-                                <button class="btn btn-gold" style="flex:1" onclick="saveDraftQ()">💾 Save Question</button>
-                                <button class="btn btn-red" onclick="clearQForm()">Clear</button>
+                        <select id="t-cat">
+                            <option>11th Class</option><option>12th Class</option>
+                            <option>Organic</option><option>Physical</option><option>Inorganic</option>
+                            <option>Full Syllabus</option>
+                        </select>
+                        <div style="margin-top:10px; background:#f8fafc; padding:10px; border:1px solid #eee;">
+                            <label><input type="checkbox" id="t-live"> 🔴 Live Test?</label>
+                            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:5px;">
+                                <div>Start: <input type="datetime-local" id="t-start" onchange="calcEndTime()" style="width:100%"></div>
+                                <div>End: <input type="datetime-local" id="t-end" readonly style="background:#eee; width:100%"></div>
                             </div>
                         </div>
                     </div>
-                    <div class="ct-right" style="flex: 1; min-width: 200px; background:white; padding:15px; border:1px solid #ddd; height:fit-content;">
-                        <h4 style="text-align:center; margin-top:0;">Palette</h4>
-                        <div id="create-palette" class="q-grid" style="display:grid; grid-template-columns: repeat(4, 1fr); gap:5px;"></div>
-                        <hr>
-                        <div style="text-align:center; margin-bottom:10px;">Total: <span id="q-count">0</span></div>
-                        <button class="btn btn-red" style="width:100%" onclick="pubTest()">${editingTestId ? 'UPDATE TEST' : 'PUBLISH'}</button>
+
+                    <div style="background:white; padding:15px; border:1px solid #ddd; border-radius:8px;">
+                        <h4>Add Question</h4>
+                        ${toolbarHTML} 
+                        <div id="q-editor" class="editor" contenteditable="true" placeholder="Type question here..." style="min-height:100px; border-radius:0 0 6px 6px; margin-bottom:10px;"></div>
+                        
+                        <div style="margin-bottom:15px;">
+                            <label class="btn-small" style="background:#e2e8f0; cursor:pointer;">📷 Q-Image <input type="file" onchange="encodeImg(this, 'q-prev')" style="display:none;"></label>
+                            <img id="q-prev" style="height:60px; display:none; margin-top:5px;">
+                        </div>
+
+                        <div style="background:#f1f5f9; padding:10px; border-radius:6px; margin-bottom:10px;">
+                            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                                <div><b>A:</b> <div id="op0" class="editor-small" contenteditable="true" style="background:white;"></div></div>
+                                <div><b>B:</b> <div id="op1" class="editor-small" contenteditable="true" style="background:white;"></div></div>
+                                <div><b>C:</b> <div id="op2" class="editor-small" contenteditable="true" style="background:white;"></div></div>
+                                <div><b>D:</b> <div id="op3" class="editor-small" contenteditable="true" style="background:white;"></div></div>
+                            </div>
+                        </div>
+
+                        <div style="display:flex; gap:10px; align-items:center; margin-bottom:10px;">
+                            <select id="q-corr" style="width:auto; font-weight:bold; border:2px solid green;">
+                                <option value="0">Ans: A</option><option value="1">Ans: B</option>
+                                <option value="2">Ans: C</option><option value="3">Ans: D</option>
+                            </select>
+                            <input type="number" id="q-marks" placeholder="+Ve" value="4" style="width:80px">
+                            <input type="number" id="q-neg" placeholder="-Ve" value="0" style="width:80px">
+                        </div>
+
+                        <div style="border:1px solid #fbbf24; border-radius:6px; padding:10px; background:#fffbeb;">
+                            <div style="font-weight:bold; color:#b45309; margin-bottom:5px;">💡 Solution</div>
+                            <div id="q-sol" class="editor-small" contenteditable="true" style="background:white; min-height:60px;"></div>
+                            <label class="btn-small" style="background:#fcd34d; cursor:pointer; margin-top:5px;">📷 Sol-Image <input type="file" id="q-sol-file" onchange="encodeImg(this, 'sol-prev', true)" style="display:none;"></label>
+                            <img id="sol-prev" style="height:60px; display:none; margin-top:5px;">
+                        </div>
+
+                        <div style="margin-top:15px; display:flex; gap:10px;">
+                            <button class="btn btn-gold" style="flex:1" onclick="saveDraftQ()">💾 Save Question</button>
+                            <button class="btn btn-red" onclick="clearQForm()">Clear</button>
+                        </div>
                     </div>
-                </div>`;
-            renderCreatePalette();
-        }
-        
-        // B. POST BLOG
-        else if (tab === 'blog') {
-            editingBlogId = null;
-            c.innerHTML = `<h3>Post Blog</h3>
-            <input id="b-title" placeholder="Blog Title">
-            <div style="margin:10px 0;">
-                <b>Cover:</b> 
-                <input type="file" onchange="encodeImg(this, 'b-cover-prev')">
-                <img id="b-cover-prev" style="height:100px; display:none;"></div>${toolbarHTML}
-                <div id="b-content" class="editor" contenteditable="true" style="min-height:300px; margin-top:0; border-radius:0 0 6px 6px;"></div>
-                <button class="btn btn-gold" style="width:100%; margin-top:15px;" onclick="postBlog()">PUBLISH BLOG</button>`;
-        }
-        
-        // C. OFFLINE RESULTS
-        else if (tab === 'offline') {
-            if(!editingOfflineId) offlineDraft = []; 
-            c.innerHTML = `<h3>Offline Result</h3>
-            <input id="off-title" placeholder="Test Title"><div class="input-group" style="grid-template-columns: 2fr 1fr 1fr 2fr auto;"><input id="off-name" placeholder="Name"><input id="off-total" placeholder="Total"><input id="off-obt" placeholder="Obt"><input id="off-link" placeholder="Drive Link"><button class="btn btn-gold" onclick="addOfflineStudent()">Add</button></div><div class="table-container"><table style="margin:0;"><thead><tr><th>Name</th><th>Mks</th><th>Link</th><th>Del</th></tr></thead><tbody id="off-preview-body"></tbody></table></div><button class="btn btn-red" style="width:100%" onclick="postOffline()">${editingOfflineId ? 'UPDATE' : 'UPLOAD'}</button>`;
-            if(editingOfflineId) renderOfflineDraft();
-        }
-        
-        // D. MANAGE
-        else if (tab === 'manage') {
-            c.innerHTML = `<h3>Manage Content</h3><div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:15px;"><button class="btn btn-gold btn-small" onclick="loadManageTests()">Tests</button><button class="btn btn-gold btn-small" onclick="loadManageBlogs()">Blogs</button><button class="btn btn-gold btn-small" onclick="loadManageLibrary()">Library</button><button class="btn btn-gold btn-small" onclick="loadManageOffline()">Offline</button><button class="btn btn-gold btn-small" onclick="loadManageStudents()">Students</button></div><div id="manage-area" class="table-container">Select a category above.</div>`;
-        }
-        
-        // E. UPLOAD
-        else if (tab === 'upload') {
-            c.innerHTML = `<h3>${editingMaterialId ? 'Edit' : 'Upload'} File</h3><input id="m-title" placeholder="Title"><input id="m-link" placeholder="Link"><input id="m-img" placeholder="Image URL"><select id="m-cat"><option>11th Class</option><option>12th Class</option><option>Notes</option><option>Test Series</option></select><input id="m-code" placeholder="Pass (Opt)"><button class="btn btn-gold" style="width:100%; margin-top:10px;" onclick="uploadMat()">${editingMaterialId ? 'UPDATE' : 'UPLOAD'}</button>`;
-        }
-        
-        // F. RESULTS
-        else if (tab === 'results') {
-            c.innerHTML = `<h3>Online Results</h3><input placeholder="Search..." onkeyup="filterTable(this)"><div class="table-container"><table><thead><tr><th>Student</th><th>Test</th><th>Score</th><th>Action</th></tr></thead><tbody id="adm-res-list"></tbody></table></div>`;
-            fetch('/api/admin/results/online').then(r=>r.json()).then(d => { document.getElementById('adm-res-list').innerHTML = d.map(r => `<tr><td>${r.studentName}</td><td>${r.testTitle}</td><td>${r.score}</td><td><button class="btn btn-gold btn-small" onclick="viewSheet('${r._id}')">View</button> <button class="btn btn-red btn-small" onclick="deleteItem('result','${r._id}')">Del</button></td></tr>`).join(''); });
-        }
-        
-        // H. ANNOUNCE
-        else if (tab === 'announce') {
-             c.innerHTML = `<h3>News</h3><input id="ann-text" placeholder="Text"><button class="btn btn-gold" onclick="postAnnounce()">Post</button><div id="ann-list" style="margin-top:20px;"></div>`;
-             fetch('/api/announcement').then(r=>r.json()).then(d => { document.getElementById('ann-list').innerHTML = d.list.map(t => `<div style="padding:10px; border-bottom:1px solid #eee; display:flex; justify-content:space-between;">${t} <button onclick="delAnnounce('${t}')">X</button></div>`).join(''); });
-        }
-        // --- REPLACE THE EXISTING 'else if(tab === 'results')' BLOCK WITH THIS ---
-else if(tab === 'results') {
+                </div>
+
+                <div class="ct-right" style="flex: 1; min-width: 200px; background:white; padding:15px; border:1px solid #ddd; height:fit-content;">
+                    <h4 style="text-align:center; margin-top:0;">Palette</h4>
+                    <div id="create-palette" class="q-grid" style="display:grid; grid-template-columns: repeat(4, 1fr); gap:5px;"></div>
+                    <hr>
+                    <div style="text-align:center; margin-bottom:10px;">Total: <span id="q-count">0</span></div>
+                    <button class="btn btn-red" style="width:100%" onclick="pubTest()">${editingTestId ? 'UPDATE TEST' : 'PUBLISH'}</button>
+                </div>
+            </div>`;
+        renderCreatePalette();
+    }
+    // B. POST BLOG
+    else if (tab === 'blog') {
+        editingBlogId = null;
+        c.innerHTML = `<h3>Post Blog</h3><input id="b-title" placeholder="Blog Title"><div style="margin:10px 0;"><b>Cover:</b> <input type="file" onchange="encodeImg(this, 'b-cover-prev')"><img id="b-cover-prev" style="height:100px; display:none;"></div>${toolbarHTML}<div id="b-content" class="editor" contenteditable="true" style="min-height:300px; margin-top:0; border-radius:0 0 6px 6px;"></div><button class="btn btn-gold" style="width:100%; margin-top:15px;" onclick="postBlog()">PUBLISH BLOG</button>`;
+    }
+    // C. OFFLINE RESULTS
+    else if (tab === 'offline') {
+        if(!editingOfflineId) offlineDraft = []; 
+        c.innerHTML = `<h3>Offline Result</h3><input id="off-title" placeholder="Test Title"><div class="input-group" style="grid-template-columns: 2fr 1fr 1fr 2fr auto;"><input id="off-name" placeholder="Name"><input id="off-total" placeholder="Total"><input id="off-obt" placeholder="Obt"><input id="off-link" placeholder="Drive Link"><button class="btn btn-gold" onclick="addOfflineStudent()">Add</button></div><div class="table-container"><table style="margin:0;"><thead><tr><th>Name</th><th>Mks</th><th>Link</th><th>Del</th></tr></thead><tbody id="off-preview-body"></tbody></table></div><button class="btn btn-red" style="width:100%" onclick="postOffline()">${editingOfflineId ? 'UPDATE' : 'UPLOAD'}</button>`;
+        if(editingOfflineId) renderOfflineDraft();
+    }
+    // D. MANAGE
+    else if (tab === 'manage') {
+        c.innerHTML = `<h3>Manage Content</h3><div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:15px;"><button class="btn btn-gold btn-small" onclick="loadManageTests()">Tests</button><button class="btn btn-gold btn-small" onclick="loadManageBlogs()">Blogs</button><button class="btn btn-gold btn-small" onclick="loadManageLibrary()">Library</button><button class="btn btn-gold btn-small" onclick="loadManageOffline()">Offline</button><button class="btn btn-gold btn-small" onclick="loadManageStudents()">Students</button></div><div id="manage-area" class="table-container">Select a category above.</div>`;
+    }
+    // E. UPLOAD
+    else if (tab === 'upload') {
+        c.innerHTML = `<h3>${editingMaterialId ? 'Edit' : 'Upload'} File</h3><input id="m-title" placeholder="Title"><input id="m-link" placeholder="Link"><input id="m-img" placeholder="Image URL"><select id="m-cat"><option>11th Class</option><option>12th Class</option><option>Notes</option><option>Test Series</option></select><input id="m-code" placeholder="Pass (Opt)"><button class="btn btn-gold" style="width:100%; margin-top:10px;" onclick="uploadMat()">${editingMaterialId ? 'UPDATE' : 'UPLOAD'}</button>`;
+    }
+    // F. STUDENTS
+    else if (tab === 'students') {
+        c.innerHTML = `<h3>Registered Students</h3><div class="table-container"><table><thead><tr><th>Name</th><th>Email</th><th>Password</th><th>Date Joined</th><th>Action</th></tr></thead><tbody id="stu-list"></tbody></table></div>`;
+        fetch('/api/admin/students').then(r => r.json()).then(d => { 
+            document.getElementById('stu-list').innerHTML = d.map(s => `<tr><td>${s.name}</td><td>${s.email}</td><td style="font-family:monospace; color:#ef4444;">${s.password}</td><td>${new Date(s.joinedAt).toLocaleDateString()}</td><td><button class="btn btn-red btn-small" onclick="deleteItem('student', '${s._id}')">Delete</button></td></tr>`).join(''); 
+        });
+    }
+    // G. RESULTS
+    else if (tab === 'results') {
+        c.innerHTML = `<h3>Online Test Analysis</h3><input placeholder="Search Student or Test..." onkeyup="filterTable(this)"><div style="overflow-x:auto;"><table><thead><tr><th>Student</th><th>Test</th><th>Score</th><th>Type</th><th>Date</th><th>Action</th></tr></thead><tbody id="adm-res-list"></tbody></table></div>`;
+        fetch('/api/admin/results/online').then(r=>r.json()).then(d => { document.getElementById('adm-res-list').innerHTML = d.map(r => `<tr><td>${r.studentName || ''}</td><td>${r.testTitle || ''}</td><td>${r.score ?? ''}</td><td>${r.type || ''}</td><td>${r.date ? new Date(r.date).toLocaleString() : ''}</td><td><button class="btn btn-gold btn-small" onclick="viewSheet('${r._id}')">View</button> <button class="btn btn-red btn-small" onclick="deleteItem('result','${r._id}')">Del</button></td></tr>`).join(''); });
+    }
+    // H. ANNOUNCE
+    else if (tab === 'announce') {
+         c.innerHTML = `<h3>News</h3><input id="ann-text" placeholder="Text"><button class="btn btn-gold" onclick="postAnnounce()">Post</button><div id="ann-list" style="margin-top:20px;"></div>`;
+         fetch('/api/announcement').then(r=>r.json()).then(d => { document.getElementById('ann-list').innerHTML = d.list.map(t => `<div style="padding:10px; border-bottom:1px solid #eee; display:flex; justify-content:space-between;">${t} <button onclick="delAnnounce('${t}')">X</button></div>`).join(''); });
+    }
+}
     c.innerHTML = `
         <h3>Online Test Analysis</h3>
         <input placeholder="Search Student or Test..." onkeyup="filterTable(this)">
@@ -494,26 +508,26 @@ else if(tab === 'results') {
                 </thead>
                 <tbody id="adm-res-list"></tbody>
             </table>
-        </div>`;
-    
-    fetch('/api/admin/results/online').then(r => r.json()).then(d => {
-        document.getElementById('adm-res-list').innerHTML = d.map(r => `
-            <tr>
-                <td>${r.studentName}<br><small style="color:#666;">${r.studentEmail}</small></td>
-                <td>${r.testTitle}</td>
-                <td>${r.score}/${r.totalMarks} <br><small>(${r.percentage.toFixed(1)}%)</small></td>
-                <td>${r.testType}</td>
-                <td>${new Date(r.date).toLocaleDateString()}</td>
-                <td style="display:flex; gap:5px;">
-                    <button class="btn btn-gold" style="padding:5px 10px; font-size:0.8rem;" onclick="viewSheet('${r._id}')">View</button>
-                    <button class="btn btn-red" style="padding:5px 10px; font-size:0.8rem;" onclick="deleteResult('${r._id}')">Del</button>
-                </td>
-            </tr>`).join('');
-    });}
-    
-
-
-
+        </div>
+    `;
+    fetch('/api/admin/results/online')
+      .then(r => r.json())
+      .then(list => {
+        document.getElementById('adm-res-list').innerHTML = list.map(item =>
+          `<tr>
+             <td>${item.studentName || ''}</td>
+             <td>${item.testTitle || ''}</td>
+             <td>${item.score ?? ''}</td>
+             <td>${item.type || ''}</td>
+             <td>${item.date ? new Date(item.date).toLocaleString() : ''}</td>
+             <td>
+               <button class="btn btn-gold btn-small" onclick="viewSheet('${item._id}')">View</button>
+               <button class="btn btn-red btn-small" onclick="deleteItem('result','${item._id}')">Del</button>
+             </td>
+           </tr>`).join('');
+      });
+}
+// ...existing code...
     //////////////////////////////////////////////////////////////////////// STUDENT ACCOUNT///////////////////////////////////////////////////////////////
     // Paste this inside index.html replacing the existing 'else if(tab==="students")' block
         else if(tab==='students') {
@@ -549,7 +563,7 @@ else if(tab === 'results') {
 
     // --- HELPERS & CRUD ---
     function initCreateTest() { editingTestId=null; draftQ=[]; showAdm('create-test'); }
-    }
+    
     function initUpload() { editingMaterialId=null; showAdm('upload'); }
     
     // Manage Lists
@@ -583,26 +597,45 @@ else if(tab === 'results') {
         }
     }
 
-// Replace your existing deleteItem function with this one
+//////////////////////////////////////////////////////////DELETE FUNCTIONS/BUTTON ////////////////////////////////////////////////////////////
 
     async function deleteItem(type, id) { 
-        if(!confirm("Are you sure? This cannot be undone.")) return; 
+        if(!confirm("Are you sure you want to delete this?")) return; 
         
         await fetch(`/api/admin/${type}/${id}`, { method: 'DELETE' }); 
-        alert("Deleted!"); 
+        alert("Deleted successfully!"); 
         
         // Refresh the correct section based on what was deleted
-        if(type === 'blog') showAdm('blog'); // or loadManageBlogs() if in manage
-        if(type === 'offline-result') showAdm('offline');
-        if(type === 'result') showAdm('results');
-        if(type === 'test') loadManageTests(); // Assuming manage view
-        if(type === 'material') loadManageLibrary(); // Assuming manage view
-        
-        // NEW: Refresh students list
-        if(type === 'student') showAdm('students'); 
+        if(type === 'student') {
+            showAdm('students');
+        } 
+        else if(type === 'result') {
+            // Fix: Check if we are in the main Results tab or Manage tab
+            if(document.getElementById('adm-res-list')) {
+                showAdm('results'); // Refresh Online Results Tab
+            } else {
+                loadManageOnline(); // Refresh Manage Tab
+            }
+        } 
+        else if(type === 'offline-result') {
+            // Refresh Offline list if visible, otherwise manage list
+            if(document.getElementById('manage-area') && document.getElementById('manage-area').style.display !== 'none') {
+                loadManageOffline();
+            } else {
+                showAdm('offline');
+            }
+        } 
+        else if(type === 'test') loadManageTests();
+        else if(type === 'blog') loadManageBlogs();
+        else if(type === 'material') loadManageLibrary();
     }
-
-    async function uploadMat() { const body = { title: document.getElementById('m-title').value, link: document.getElementById('m-link').value, image: document.getElementById('m-img').value, category: document.getElementById('m-cat').value, accessCode: document.getElementById('m-code').value }; const method = editingMaterialId ? 'PUT' : 'POST'; const url = editingMaterialId ? `/api/admin/material/${editingMaterialId}` : '/api/admin/material'; await fetch(url, { method, headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) }); alert("Done!"); editingMaterialId = null; showAdm('upload'); }
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    async function uploadMat() { const body = { title: document.getElementById('m-title').value, 
+    link: document.getElementById('m-link').value, image: document.getElementById('m-img').value, 
+    category: document.getElementById('m-cat').value, 
+    accessCode: document.getElementById('m-code').value }; 
+    const method = editingMaterialId ? 'PUT' : 'POST'; 
+    const url = editingMaterialId ? `/api/admin/material/${editingMaterialId}` : '/api/admin/material'; await fetch(url, { method, headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) }); alert("Done!"); editingMaterialId = null; showAdm('upload'); }
     function addOfflineStudent() { 
     const name = document.getElementById('off-name').value; 
     const total = document.getElementById('off-total').value; 
