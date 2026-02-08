@@ -9,14 +9,12 @@ app.use(express.json({ limit: '100mb' }));
 app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
 
-
 // --- 1. DATABASE CONNECTION ---
 const dbLink = "mongodb+srv://ankitprogrammer25:a32x05sYvukG178G@cluster0.0dhqpzv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 
 mongoose.connect(dbLink)
     .then(() => console.log('✅ MongoDB Connected'))
     .catch(err => console.log('❌ DB Connection Error:', err.message));
-
 
 // --- 2. SCHEMAS ---
 const StudentSchema = new mongoose.Schema({
@@ -64,8 +62,6 @@ const Blog = mongoose.model('Blog', BlogSchema);
 const ConfigSchema = new mongoose.Schema({ type: String, list: [String] });
 const Config = mongoose.model('Config', ConfigSchema);
 
-
-
 // --- 3. ROUTES ---
 
 // --- AUTH ---
@@ -91,10 +87,7 @@ app.post('/api/login', async (req, res) => {
     } catch (e) { res.json({ success: false }); }
 });
 
-
-
 // --- ADMIN API ---
-
 // STUDENTS
 app.get('/api/admin/students', async (req, res) => res.json(await Student.find().sort({ joinedAt: -1 })));
 app.get('/api/admin/student/:id', async (req, res) => res.json(await Student.findById(req.params.id)));
@@ -103,6 +96,7 @@ app.delete('/api/admin/student/:id', async (req, res) => { await Student.findByI
 
 // RESULTS
 app.get('/api/admin/results/online', async (req, res) => res.json(await Result.find().sort({ date: -1 })));
+app.delete('/api/admin/result/:id', async (req, res) => { await Result.findByIdAndDelete(req.params.id); res.json({ success: true }); });
 
 // MATERIAL
 app.post('/api/admin/material', async (req, res) => { await new Material(req.body).save(); res.json({ success: true }); });
@@ -216,7 +210,14 @@ app.post('/api/test/start', async (req, res) => {
         if(now > new Date(t.endTime)) return res.json({ success: false, message: "Expired" });
     }
     if(!t.accessCode || t.accessCode === "" || t.accessCode === code) {
-        const safeQ = t.questions.map(q => ({ text: q.text, image: q.image, options: q.options, marks: q.marks, negative: q.negative }));
+        // Send marks and negative marks to frontend
+        const safeQ = t.questions.map(q => ({ 
+            text: q.text, 
+            image: q.image, 
+            options: q.options, 
+            marks: q.marks || 4, 
+            negative: q.negative !== undefined ? q.negative : 0 // Default to 0 if undefined
+        }));
         res.json({ success: true, test: {...t._doc, questions: safeQ} });
     } else res.json({ success: false, message: "Wrong Password" });
 });
@@ -227,10 +228,14 @@ app.post('/api/test/submit', async (req, res) => {
         const t = await Test.findById(testId);
         let score = 0, total = 0;
         t.questions.forEach((q, i) => {
-            total += q.marks;
-            if (answers[i] === q.correct) score += q.marks;
-            else if (answers[i] !== null) score -= q.negative;
+            const marks = q.marks || 4;
+            const neg = q.negative !== undefined ? q.negative : 0;
+            total += marks;
+            
+            if (answers[i] === q.correct) score += marks;
+            else if (answers[i] !== null) score -= neg;
         });
+        
         const pct = (score / total) * 100;
         const r = new Result({ 
             studentName, studentEmail, testTitle: t.title, testId: t._id, testType: t.isLive ? 'live' : 'practice', 
