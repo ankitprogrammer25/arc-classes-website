@@ -327,259 +327,154 @@
         if(id==='tests') loadTests(false); if(id==='live') loadTests(true); if(id==='results') loadResults('practice');
     }
 
-    ///////////////////////////////////// --- ADMIN PANEL FUNCTIONS ---/////////////////////////////////////////////////////////////////////
+    
+        // ==========================================
+    // 🟢 UPDATED ADMIN LOGIC (Paste this to fix Freeze & Add Arrows)
+    // ==========================================
+
+    // 1. TOOLBAR (Includes Reagent Arrows)
+    const toolbarHTML = `
+        <div class="toolbar" style="background:#e2e8f0; padding:10px; border-radius:6px 6px 0 0; display:flex; gap:8px; flex-wrap:wrap; align-items:center; border:1px solid #ccc; border-bottom:none;">
+            <select onchange="exec('fontName', this.value)" style="padding:5px; border-radius:4px;" title="Font">
+                <option value="Arial">Arial</option><option value="'Times New Roman'">Times New Roman</option><option value="Courier New">Courier</option><option value="Georgia">Georgia</option><option value="Verdana">Verdana</option>
+            </select>
+            <select onchange="exec('fontSize', this.value)" style="padding:5px; border-radius:4px;" title="Size">
+                <option value="3">Normal</option><option value="2">Small</option><option value="5">Large</option><option value="7">Huge</option>
+            </select>
+            <button class="tool-btn" onclick="exec('bold')" title="Bold"><b>B</b></button>
+            <button class="tool-btn" onclick="exec('italic')" title="Italic"><i>I</i></button>
+            <button class="tool-btn" onclick="exec('underline')" title="Underline"><u>U</u></button>
+            <button class="tool-btn" onclick="exec('subscript')" title="Sub">X<sub>2</sub></button>
+            <button class="tool-btn" onclick="exec('superscript')" title="Super">X<sup>2</sup></button>
+            <div style="background:white; border:1px solid #999; border-radius:4px; padding:0 2px;"><input type="color" onchange="exec('foreColor', this.value)" style="height:25px; width:25px; border:none; cursor:pointer;"></div>
+            
+            <select onchange="insChar(this.value); this.value='';" style="padding:5px; border-radius:4px; font-weight:bold; color:#0f172a; min-width:120px;" title="Chemistry Arrows">
+                <option value="">⚗️ Arrows</option>
+                <option value=" &rarr; ">&rarr; (Reaction)</option>
+                <option value=" &rightleftharpoons; ">&rightleftharpoons; (Equilibrium)</option>
+                <option value=" &longleftrightarrow; ">&longleftrightarrow; (Resonance)</option>
+                <option value=" &#10230; ">&#10230; (Long Reaction)</option>
+                <option value=" &#10234; ">&#10234; (Long Equilibrium)</option>
+                <option value=" &#10231; ">&#10231; (Long Resonance)</option>
+                <option value=" &#10233; ">&#10233; (Long Double)</option>
+                <option value=" &uarr; ">&uarr; (Gas)</option>
+                <option value=" &darr; ">&darr; (Ppt)</option>
+                <option value=" &#8710; ">&#8710; (Heat)</option>
+            </select>
+        </div>`;
+
+    // 2. ADMIN TAB SWITCHER
     function showAdm(tab) {
         const c = document.getElementById('adm-content');
+        
+        // A. CREATE / EDIT TEST
         if (tab === 'create-test') {
-        // Enhanced Toolbar for Test Editor
-        const testToolbar = `
-            <div class="toolbar" style="background:#e2e8f0; padding:10px; border-radius:6px 6px 0 0; display:flex; gap:8px; flex-wrap:wrap; align-items:center; border:1px solid #ccc; border-bottom:none;">
-                <select onchange="exec('fontName', this.value)" style="padding:5px; border-radius:4px; border:1px solid #ccc;" title="Font Type">
-                    <option value="Arial">Arial</option>
-                    <option value="'Segoe UI'">Segoe UI</option>
-                    <option value="Georgia">Georgia</option>
-                    <option value="'Times New Roman'">Times New Roman</option>
-                    <option value="Verdana">Verdana</option>
-                    <option value="Courier New">Courier</option>
-                </select>
-
-                <select onchange="exec('fontSize', this.value)" style="padding:5px; border-radius:4px; border:1px solid #ccc;" title="Font Size">
-                    <option value="3">Size (Normal)</option>
-                    <option value="1">Tiny</option>
-                    <option value="2">Small</option>
-                    <option value="4">Medium</option>
-                    <option value="5">Large</option>
-                    <option value="6">X-Large</option>
-                    <option value="7">Huge</option>
-                </select>
-                
-                <button class="tool-btn" onclick="exec('bold')" title="Bold"><b>B</b></button>
-                <button class="tool-btn" onclick="exec('italic')" title="Italic"><i>I</i></button>
-                <button class="tool-btn" onclick="exec('underline')" title="Underline"><u>U</u></button>
-                
-                <div style="display:flex; align-items:center; background:white; border:1px solid #94a3b8; border-radius:4px; padding:0 5px;" title="Text Color">
-                    <span style="font-weight:bold; font-size:0.8rem; margin-right:3px;">A</span>
-                    <input type="color" onchange="exec('foreColor', this.value)" style="height:25px; width:25px; cursor:pointer; border:none; background:none; padding:0;">
-                </div>
-
-                <button class="tool-btn" onclick="exec('subscript')" title="Subscript">X<sub>2</sub></button>
-                <button class="tool-btn" onclick="exec('superscript')" title="Superscript">X<sup>2</sup></button>
-
-                <select onchange="insChar(this.value); this.value='';" style="padding:5px; border-radius:4px; border:1px solid #ccc; color:#0f172a; font-weight:bold; width:140px;" title="Chemistry Arrows">
-                    <option value="">⚗️ Chem Arrows</option>
-                    <option value=" &rarr; ">&rarr; (Reaction)</option>
-                    <option value=" &rightleftharpoons; ">&rightleftharpoons; (Equilibrium)</option>
-                    <option value=" &longleftrightarrow; ">&longleftrightarrow; (Resonance)</option>
-                    <option value=" &Longleftrightarrow; ">&Longleftrightarrow; (Long Double)</option>
-                    <option value=" &longleftrightarrow; ">&longleftrightarrow; (Long Resonance)</option>
-                    <option value=" &longrightarrow; ">&longrightarrow; (Long Reaction)</option>
-                    <option value=" &uarr; ">&uarr; (Gas Evolved)</option>
-                    <option value=" &darr; ">&darr; (Precipitate)</option>
-                    <option value=" &#8710; ">&#8710; (Heat/Delta)</option>
-                    <option value=" &larr; ">&larr; (Backward)</option>
-                    <option value=" &#8652; ">&#8652; (Right w/ Stroke)</option>
-                    <option value=" &#8644; ">&#8644; (Equilibrium 2)</option>
-                    <option value=" &#8658; ">&#8658; (Implies)</option>
-                </select>
-            </div>
-        `;
-
-        c.innerHTML = `
-            <div class="create-test-layout" style="display: flex; gap: 20px; flex-wrap: wrap;">
-                <div class="ct-left" style="flex: 3; min-width: 300px;">
-                    <h3 style="color:var(--primary); border-bottom: 2px solid var(--gold); padding-bottom: 10px;">Create / Edit Test</h3>
-                    
-                    <div style="background:white; padding:15px; border-radius:8px; border:1px solid #ddd; margin-bottom:20px;">
-                        <label><b>Test Configuration</b></label>
-                        <input id="t-title" placeholder="Enter Test Title">
-                        <div style="display:flex; gap:10px;">
-                            <input id="t-dur" type="number" placeholder="Duration (mins)" oninput="calcEndTime()">
-                            <input id="t-code" placeholder="Password (Optional)">
-                        </div>
-                        <select id="t-cat">
-                            <option>11th Class</option><option>12th Class</option><option>Organic Chemistry Topic</option>
-                            <option>Physical Chemistry Topic</option><option>Inorganic Chemistry Topic</option><option>Full Syllabus Test</option>
-                        </select>
-                        <div style="margin-top:10px; padding:10px; background:#f8fafc; border-radius:6px; border:1px solid #e2e8f0;">
-                            <label style="display:flex; align-items:center; gap:10px; cursor:pointer;">
-                                <input type="checkbox" id="t-live" style="width:20px; height:20px;"> <b>🔴 Enable Live Scheduled Mode</b>
-                            </label>
-                            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:10px;">
-                                <div>Start: <input type="datetime-local" id="t-start" onchange="calcEndTime()" style="width:100%"></div>
-                                <div>End: <input type="datetime-local" id="t-end" readonly style="width:100%; background:#e2e8f0;"></div>
+            c.innerHTML = `
+                <div class="create-test-layout" style="display: flex; gap: 20px; flex-wrap: wrap;">
+                    <div class="ct-left" style="flex: 3; min-width: 300px;">
+                        <h3 style="border-bottom: 2px solid var(--gold); padding-bottom: 10px;">${editingTestId ? 'Edit' : 'Create'} Test</h3>
+                        <div style="background:white; padding:15px; border:1px solid #ddd; border-radius:8px; margin-bottom:20px;">
+                            <input id="t-title" placeholder="Test Title">
+                            <div style="display:flex; gap:10px;">
+                                <input id="t-dur" type="number" placeholder="Mins" oninput="calcEndTime()">
+                                <input id="t-code" placeholder="Password (Optional)">
                             </div>
-                        </div>
-                    </div>
-
-                    <div style="background:white; padding:15px; border-radius:8px; border:1px solid #ddd;">
-                        <h4 style="margin-top:0;">Add / Edit Question</h4>
-                        
-                        ${testToolbar}
-                        
-                        <div id="q-editor" class="editor" contenteditable="true" placeholder="Question..." style="min-height:100px; margin-bottom:10px; border-radius: 0 0 6px 6px;"></div>
-                        <div style="margin-bottom:15px;">
-                            <label class="btn-small" style="background:#e2e8f0; cursor:pointer;">📷 Upload Question Image <input type="file" onchange="encodeImg(this, 'q-prev')" accept="image/*" style="display:none;"></label>
-                            <img id="q-prev" style="height:80px; display:none; margin-top:5px; border:1px solid #ccc;">
-                        </div>
-
-                        <div style="background:#f1f5f9; padding:15px; border-radius:8px; margin-bottom:15px;">
-                            <label><b>Options</b></label>
-                            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-top:10px;">
-                                <div><b>A:</b> <div id="op0" class="editor-small" contenteditable="true" style="background:white;"></div></div>
-                                <div><b>B:</b> <div id="op1" class="editor-small" contenteditable="true" style="background:white;"></div></div>
-                                <div><b>C:</b> <div id="op2" class="editor-small" contenteditable="true" style="background:white;"></div></div>
-                                <div><b>D:</b> <div id="op3" class="editor-small" contenteditable="true" style="background:white;"></div></div>
-                            </div>
-                        </div>
-
-                        <div style="display:flex; gap:10px; align-items:center; margin-bottom:15px;">
-                            <select id="q-corr" style="width:auto; font-weight:bold; border:2px solid var(--green);">
-                                <option value="0">Correct: A</option><option value="1">Correct: B</option>
-                                <option value="2">Correct: C</option><option value="3">Correct: D</option>
-                            </select>
-                            
-                            <div style="flex:1">
-                                <span style="font-size:0.8rem; font-weight:bold; color:green;">+ Marks</span>
-                                <input type="number" id="q-marks" placeholder="+Ve" value="1" style="margin:0;">
-                            </div>
-
-                            <div style="flex:1">
-                                <span style="font-size:0.8rem; font-weight:bold; color:red;">- Negative</span>
-                                <input type="number" id="q-neg" placeholder="-Ve" value="0" style="margin:0;">
-                            </div>
-                        </div>
-
-                        <div style="border:1px solid #fbbf24; border-radius:8px; overflow:hidden;">
-                            <div style="background:#fffbeb; padding:8px 15px; font-weight:bold; color:#b45309;">💡 Solution</div>
-                            <div style="padding:15px; background:white;">
-                                <div id="q-sol" class="editor-small" contenteditable="true" style="min-height:60px;"></div>
-                                <div style="margin-top:10px;">
-                                    <label class="btn-small" style="background:#fffbeb; border:1px solid #fbbf24; cursor:pointer; color:#b45309;">📷 Upload Solution Image <input type="file" id="q-sol-file" onchange="encodeImg(this, 'sol-prev', true)" accept="image/*" style="display:none;"></label>
-                                    <img id="sol-prev" style="height:80px; display:none; margin-top:5px; border:1px solid #ccc;">
+                            <select id="t-cat"><option>11th Class</option><option>12th Class</option><option>Organic</option><option>Physical</option><option>Inorganic</option><option>Full Syllabus</option></select>
+                            <div style="margin-top:10px; background:#f8fafc; padding:10px; border:1px solid #eee;">
+                                <label><input type="checkbox" id="t-live"> 🔴 Live Test?</label>
+                                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:5px;">
+                                    <div>Start: <input type="datetime-local" id="t-start" onchange="calcEndTime()" style="width:100%"></div>
+                                    <div>End: <input type="datetime-local" id="t-end" readonly style="background:#eee; width:100%"></div>
                                 </div>
                             </div>
                         </div>
 
-                        <div style="display:flex; gap:10px; margin-top:20px;">
-                            <button class="btn btn-gold" style="flex:1;" onclick="saveDraftQ()">💾 Save</button>
-                            <button class="btn btn-red" onclick="clearQForm()">❌ Clear</button>
+                        <div style="background:white; padding:15px; border:1px solid #ddd; border-radius:8px;">
+                            <h4>Add Question</h4>
+                            ${toolbarHTML}
+                            <div id="q-editor" class="editor" contenteditable="true" placeholder="Question text..." style="min-height:100px; border-radius:0 0 6px 6px; margin-bottom:10px;"></div>
+                            <div style="margin-bottom:15px;"><label class="btn-small" style="background:#e2e8f0; cursor:pointer;">📷 Q-Image <input type="file" onchange="encodeImg(this, 'q-prev')" style="display:none;"></label><img id="q-prev" style="height:60px; display:none; margin-top:5px;"></div>
+
+                            <div style="background:#f1f5f9; padding:10px; border-radius:6px; margin-bottom:10px;">
+                                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                                    <div><b>A:</b> <div id="op0" class="editor-small" contenteditable="true" style="background:white;"></div></div>
+                                    <div><b>B:</b> <div id="op1" class="editor-small" contenteditable="true" style="background:white;"></div></div>
+                                    <div><b>C:</b> <div id="op2" class="editor-small" contenteditable="true" style="background:white;"></div></div>
+                                    <div><b>D:</b> <div id="op3" class="editor-small" contenteditable="true" style="background:white;"></div></div>
+                                </div>
+                            </div>
+
+                            <div style="display:flex; gap:10px; align-items:center; margin-bottom:10px;">
+                                <select id="q-corr" style="width:auto; font-weight:bold; border:2px solid green;"><option value="0">Ans: A</option><option value="1">Ans: B</option><option value="2">Ans: C</option><option value="3">Ans: D</option></select>
+                                <input type="number" id="q-marks" placeholder="+Ve" value="4" style="width:80px" title="Marks">
+                                <input type="number" id="q-neg" placeholder="-Ve" value="0" style="width:80px" title="Negative">
+                            </div>
+
+                            <div style="border:1px solid #fbbf24; border-radius:6px; padding:10px; background:#fffbeb;">
+                                <div style="font-weight:bold; color:#b45309; margin-bottom:5px;">💡 Solution</div>
+                                <div id="q-sol" class="editor-small" contenteditable="true" style="background:white; min-height:60px;"></div>
+                                <label class="btn-small" style="background:#fcd34d; cursor:pointer; margin-top:5px;">📷 Sol-Image <input type="file" id="q-sol-file" onchange="encodeImg(this, 'sol-prev', true)" style="display:none;"></label><img id="sol-prev" style="height:60px; display:none; margin-top:5px;">
+                            </div>
+
+                            <div style="margin-top:15px; display:flex; gap:10px;">
+                                <button class="btn btn-gold" style="flex:1" onclick="saveDraftQ()">💾 Save Question</button>
+                                <button class="btn btn-red" onclick="clearQForm()">Clear</button>
+                            </div>
                         </div>
                     </div>
-                </div>
-
-                <div class="ct-right" style="flex: 1; min-width: 250px; background:white; padding:15px; border-radius:8px; border:1px solid #ddd; height:fit-content;">
-                    <h4 style="margin-top:0; text-align:center;">Questions</h4>
-                    <div id="create-palette" class="q-grid" style="display:grid; grid-template-columns: repeat(4, 1fr); gap:8px;"></div>
-                    <hr style="margin:20px 0;">
-                    <div style="text-align:center; font-weight:bold; margin-bottom:10px;">Total: <span id="q-count">0</span></div>
-                    <button class="btn btn-red" style="width:100%;" onclick="pubTest()">🚀 PUBLISH</button>
-                </div>
-            </div>
-        `;
-        renderCreatePalette();
-    } else if(tab === 'blog') {
-            editingBlogId = null;
-            
-            // Enhanced Toolbar for Blog
-            const blogToolbar = `
-                <div class="toolbar" style="background:#e2e8f0; padding:10px; border-radius:6px 6px 0 0; display:flex; gap:8px; flex-wrap:wrap; align-items:center; border:1px solid #ccc; border-bottom:none;">
-                    <select onchange="exec('fontName', this.value)" style="padding:5px; border-radius:4px; border:1px solid #ccc;" title="Font Type">
-                        <option value="Arial">Arial</option>
-                        <option value="'Segoe UI'">Segoe UI</option>
-                        <option value="Georgia">Georgia</option>
-                        <option value="'Times New Roman'">Times New Roman</option>
-                        <option value="Verdana">Verdana</option>
-                        <option value="Courier New">Courier</option>
-                    </select>
-
-                    <select onchange="exec('fontSize', this.value)" style="padding:5px; border-radius:4px; border:1px solid #ccc;" title="Font Size">
-                        <option value="3">Size (Normal)</option>
-                        <option value="1">Tiny</option>
-                        <option value="2">Small</option>
-                        <option value="4">Medium</option>
-                        <option value="5">Large</option>
-                        <option value="6">X-Large</option>
-                        <option value="7">Huge</option>
-                    </select>
-                    
-                    <button class="tool-btn" onclick="exec('bold')" title="Bold"><b>B</b></button>
-                    <button class="tool-btn" onclick="exec('italic')" title="Italic"><i>I</i></button>
-                    <button class="tool-btn" onclick="exec('underline')" title="Underline"><u>U</u></button>
-                    
-                    <div style="display:flex; align-items:center; background:white; border:1px solid #94a3b8; border-radius:4px; padding:0 5px;" title="Text Color">
-                        <span style="font-weight:bold; font-size:0.8rem; margin-right:3px;">A</span>
-                        <input type="color" onchange="exec('foreColor', this.value)" style="height:25px; width:25px; cursor:pointer; border:none; background:none; padding:0;">
+                    <div class="ct-right" style="flex: 1; min-width: 200px; background:white; padding:15px; border:1px solid #ddd; height:fit-content;">
+                        <h4 style="text-align:center; margin-top:0;">Palette</h4>
+                        <div id="create-palette" class="q-grid" style="display:grid; grid-template-columns: repeat(4, 1fr); gap:5px;"></div>
+                        <hr>
+                        <div style="text-align:center; margin-bottom:10px;">Total: <span id="q-count">0</span></div>
+                        <button class="btn btn-red" style="width:100%" onclick="pubTest()">${editingTestId ? 'UPDATE TEST' : 'PUBLISH'}</button>
                     </div>
-
-                    <button class="tool-btn" onclick="exec('subscript')" title="Subscript">X<sub>2</sub></button>
-                    <button class="tool-btn" onclick="exec('superscript')" title="Superscript">X<sup>2</sup></button>
-
-                    <select onchange="insChar(this.value); this.value='';" style="padding:5px; border-radius:4px; border:1px solid #ccc; color:#0f172a; font-weight:bold; width:140px;" title="Chemistry Arrows">
-                        <option value="">⚗️ Chem Arrows</option>
-                        <option value=" &rarr; ">&rarr; (Reaction)</option>
-                        <option value=" &rightleftharpoons; ">&rightleftharpoons; (Equilibrium)</option>
-                        <option value=" &longleftrightarrow; ">&longleftrightarrow; (Resonance)</option>
-                        <option value=" &uarr; ">&uarr; (Gas Evolved)</option>
-                        <option value=" &darr; ">&darr; (Precipitate)</option>
-                        <option value=" &#8710; ">&#8710; (Heat/Delta)</option>
-                        <option value=" &larr; ">&larr; (Backward)</option>
-                        <option value=" &#8652; ">&#8652; (Right w/ Stroke)</option>
-                        <option value=" &#8644; ">&#8644; (Equilibrium 2)</option>
-                        <option value=" &#8658; ">&#8658; (Implies)</option>
-                    </select>
-                </div>
-            `;
-
-            c.innerHTML = `
-                <h3>Post Blog</h3>
-                <input id="b-title" placeholder="Blog Title">
-                <div style="margin:10px 0;">
-                    <b>Cover Image:</b> 
-                    <input type="file" onchange="encodeImg(this, 'b-cover-prev')" accept="image/*">
-                    <img id="b-cover-prev" style="height:100px; display:none; margin-top:5px; border-radius:6px;">
-                </div>
-                
-                ${blogToolbar}
-                
-                <div style="background:#f1f5f9; padding:5px 10px; border-left:1px solid #ccc; border-right:1px solid #ccc; display:flex; align-items:center; gap:10px;">
-                    <button class="tool-btn" onclick="document.getElementById('b-inline-img').click()">🖼️ Insert Image Inside Content</button>
-                    <input type="file" id="b-inline-img" style="display:none" onchange="insertInlineImg(this)">
-                    <small style="color:#666;">(Click to place cursor in editor first)</small>
-                </div>
-                
-                <div id="b-content" class="editor" contenteditable="true" style="min-height:400px; border-radius:0 0 6px 6px;"></div>
-                
-                <button class="btn btn-gold" onclick="postBlog()" style="width:100%; margin-top:15px; font-size:1.1rem;">
-                    ${editingBlogId ? 'UPDATE BLOG' : 'POST BLOG'}
-                </button>
-            `;
-        } else if(tab === 'offline') {
-    offlineDraft = []; 
-    c.innerHTML = `
-        <h3>Offline Result</h3>
-        <input id="off-title" placeholder="Test Title">
-        <div class="input-group" style="grid-template-columns: 2fr 1fr 1fr 2fr auto;">
-            <input id="off-name" placeholder="Name">
-            <input id="off-total" type="number" placeholder="Total marks">
-            <input id="off-obt" type="number" placeholder="Obtained marks">
-            <input id="off-link" placeholder="Answer Sheet Drive Link">
-            <button class="btn btn-gold" onclick="addOfflineStudent()">Add</button>
-        </div>
-        <div class="table-container">
-            <table style="margin:0;">
-                <thead><tr><th>Student</th><th>Mks</th><th>Link</th><th>Act</th></tr></thead>
-                <tbody id="off-preview-body"></tbody>
-            </table>
-        </div>
-        <button class="btn btn-red" style="width:100%" onclick="postOffline()">Upload</button>
-    `;
-        } else if(tab === 'announce') {
+                </div>`;
+            renderCreatePalette();
+        }
+        
+        // B. POST BLOG
+        else if (tab === 'blog') {
+            editingBlogId = null;
+            c.innerHTML = `<h3>Post Blog</h3>
+            <input id="b-title" placeholder="Blog Title">
+            <div style="margin:10px 0;">
+                <b>Cover:</b> 
+                <input type="file" onchange="encodeImg(this, 'b-cover-prev')">
+                <img id="b-cover-prev" style="height:100px; display:none;"></div>${toolbarHTML}
+                <div id="b-content" class="editor" contenteditable="true" style="min-height:300px; margin-top:0; border-radius:0 0 6px 6px;"></div>
+                <button class="btn btn-gold" style="width:100%; margin-top:15px;" onclick="postBlog()">PUBLISH BLOG</button>`;
+        }
+        
+        // C. OFFLINE RESULTS
+        else if (tab === 'offline') {
+            if(!editingOfflineId) offlineDraft = []; 
+            c.innerHTML = `<h3>Offline Result</h3>
+            <input id="off-title" placeholder="Test Title"><div class="input-group" style="grid-template-columns: 2fr 1fr 1fr 2fr auto;"><input id="off-name" placeholder="Name"><input id="off-total" placeholder="Total"><input id="off-obt" placeholder="Obt"><input id="off-link" placeholder="Drive Link"><button class="btn btn-gold" onclick="addOfflineStudent()">Add</button></div><div class="table-container"><table style="margin:0;"><thead><tr><th>Name</th><th>Mks</th><th>Link</th><th>Del</th></tr></thead><tbody id="off-preview-body"></tbody></table></div><button class="btn btn-red" style="width:100%" onclick="postOffline()">${editingOfflineId ? 'UPDATE' : 'UPLOAD'}</button>`;
+            if(editingOfflineId) renderOfflineDraft();
+        }
+        
+        // D. MANAGE
+        else if (tab === 'manage') {
+            c.innerHTML = `<h3>Manage Content</h3><div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:15px;"><button class="btn btn-gold btn-small" onclick="loadManageTests()">Tests</button><button class="btn btn-gold btn-small" onclick="loadManageBlogs()">Blogs</button><button class="btn btn-gold btn-small" onclick="loadManageLibrary()">Library</button><button class="btn btn-gold btn-small" onclick="loadManageOffline()">Offline</button><button class="btn btn-gold btn-small" onclick="loadManageStudents()">Students</button></div><div id="manage-area" class="table-container">Select a category above.</div>`;
+        }
+        
+        // E. UPLOAD
+        else if (tab === 'upload') {
+            c.innerHTML = `<h3>${editingMaterialId ? 'Edit' : 'Upload'} File</h3><input id="m-title" placeholder="Title"><input id="m-link" placeholder="Link"><input id="m-img" placeholder="Image URL"><select id="m-cat"><option>11th Class</option><option>12th Class</option><option>Notes</option><option>Test Series</option></select><input id="m-code" placeholder="Pass (Opt)"><button class="btn btn-gold" style="width:100%; margin-top:10px;" onclick="uploadMat()">${editingMaterialId ? 'UPDATE' : 'UPLOAD'}</button>`;
+        }
+        
+        // F. RESULTS
+        else if (tab === 'results') {
+            c.innerHTML = `<h3>Online Results</h3><input placeholder="Search..." onkeyup="filterTable(this)"><div class="table-container"><table><thead><tr><th>Student</th><th>Test</th><th>Score</th><th>Action</th></tr></thead><tbody id="adm-res-list"></tbody></table></div>`;
+            fetch('/api/admin/results/online').then(r=>r.json()).then(d => { document.getElementById('adm-res-list').innerHTML = d.map(r => `<tr><td>${r.studentName}</td><td>${r.testTitle}</td><td>${r.score}</td><td><button class="btn btn-gold btn-small" onclick="viewSheet('${r._id}')">View</button> <button class="btn btn-red btn-small" onclick="deleteItem('result','${r._id}')">Del</button></td></tr>`).join(''); });
+        }
+        
+        // H. ANNOUNCE
+        else if (tab === 'announce') {
              c.innerHTML = `<h3>News</h3><input id="ann-text" placeholder="Text"><button class="btn btn-gold" onclick="postAnnounce()">Post</button><div id="ann-list" style="margin-top:20px;"></div>`;
              fetch('/api/announcement').then(r=>r.json()).then(d => { document.getElementById('ann-list').innerHTML = d.list.map(t => `<div style="padding:10px; border-bottom:1px solid #eee; display:flex; justify-content:space-between;">${t} <button onclick="delAnnounce('${t}')">X</button></div>`).join(''); });
-        } else if(tab === 'upload') {
-            c.innerHTML = `<h3>Upload Material</h3><input id="m-title" placeholder="Title"><input id="m-link" placeholder="Link (PDF/Drive)"><input id="m-img" placeholder="Image URL"><select id="m-cat"><option>11th Class</option><option>12th Class</option><option>Organic</option><option>Physical</option><option>Inorganic</option><option>Test Series</option><option>Notes</option></select><input id="m-code" placeholder="Password (Optional)"><button class="btn btn-gold" style="width:100%; margin-top:10px;" onclick="uploadMat()">${editingMaterialId ? 'UPDATE' : 'UPLOAD'}</button>`;
-        } 
-        
+        }
         // --- REPLACE THE EXISTING 'else if(tab === 'results')' BLOCK WITH THIS ---
 else if(tab === 'results') {
     c.innerHTML = `
