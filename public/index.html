@@ -3,117 +3,163 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ARC Classes | Ankit Sir</title>
+    <title>ARC Classes | The Complete Learning Hub</title>
     <style>
-        :root { --primary: #0a192f; --gold: #ffd700; --light: #e6f1ff; }
-        body { margin: 0; font-family: sans-serif; background: var(--primary); color: var(--light); }
+        :root { --primary: #0a192f; --gold: #ffd700; --light: #e6f1ff; --card-bg: #112240; }
+        body { margin: 0; font-family: 'Segoe UI', sans-serif; background: var(--primary); color: var(--light); }
         
-        /* LAYOUT */
-        .container { max-width: 800px; margin: 0 auto; padding: 20px; }
-        .section { display: none; }
-        .active-section { display: block; animation: fadeIn 0.5s; }
-        
-        /* HEADER & NAV */
-        header { background: #112240; padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--gold); }
-        .logo { font-size: 24px; font-weight: bold; color: var(--gold); }
-        nav button { background: none; border: none; color: white; margin-left: 10px; cursor: pointer; font-size: 16px; }
+        /* HEADER */
+        header { background: #020c1b; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--gold); position: sticky; top: 0; z-index: 1000; }
+        .logo { font-size: 24px; font-weight: bold; color: var(--gold); letter-spacing: 1px; }
+        nav button { background: none; border: none; color: white; margin-left: 15px; cursor: pointer; font-size: 16px; transition: 0.3s; }
         nav button:hover { color: var(--gold); }
         
-        /* FORMS */
-        .form-box { background: #112240; padding: 30px; border-radius: 10px; max-width: 400px; margin: 50px auto; border: 1px solid var(--gold); }
-        input, select, textarea { width: 100%; padding: 10px; margin: 10px 0; background: #0a192f; border: 1px solid #333; color: white; box-sizing: border-box; }
-        button.btn { width: 100%; padding: 12px; cursor: pointer; font-weight: bold; border: none; border-radius: 5px; margin-top: 10px; }
-        .btn-gold { background: var(--gold); color: black; }
-        .btn-red { background: #ff4444; color: white; }
-        .btn-green { background: #00C851; color: white; }
+        /* LAYOUT */
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .section { display: none; animation: fadeIn 0.5s; }
+        .active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* CARDS (For Schedule/Results) */
-        .card { background: #112240; padding: 15px; margin-bottom: 10px; border-left: 4px solid var(--gold); display: flex; justify-content: space-between; align-items: center; }
-        .card a { color: var(--gold); text-decoration: none; }
+        /* CARDS & GRID */
+        .grid-menu { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-top: 20px; }
+        .menu-card { background: var(--card-bg); padding: 20px; border-radius: 10px; text-align: center; cursor: pointer; border: 1px solid #333; transition: 0.3s; }
+        .menu-card:hover { border-color: var(--gold); transform: translateY(-5px); }
+        .menu-card h3 { margin: 10px 0 0; color: var(--gold); }
+        .menu-card span { font-size: 30px; }
+
+        /* FORMS */
+        .form-box { background: var(--card-bg); padding: 30px; border-radius: 10px; max-width: 400px; margin: 50px auto; border: 1px solid var(--gold); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        input, select, textarea { width: 100%; padding: 12px; margin: 10px 0; background: #0a192f; border: 1px solid #333; color: white; border-radius: 5px; box-sizing: border-box; }
+        button.btn { width: 100%; padding: 12px; cursor: pointer; font-weight: bold; border: none; border-radius: 5px; margin-top: 10px; font-size: 16px; transition: 0.3s; }
+        .btn-gold { background: var(--gold); color: black; }
+        .btn-gold:hover { background: #e6c200; }
+        .btn-red { background: #ff4444; color: white; }
         
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        /* LIST ITEMS */
+        .item-card { background: var(--card-bg); padding: 15px; margin-bottom: 10px; border-left: 4px solid var(--gold); display: flex; justify-content: space-between; align-items: center; border-radius: 4px; }
+        .item-card a { color: #64ffda; text-decoration: none; font-weight: bold; }
+        
+        /* ADMIN PANEL */
+        .admin-controls button { margin: 5px; padding: 10px 20px; background: #233554; color: white; border: 1px solid var(--gold); cursor: pointer; border-radius: 5px; }
+        .admin-controls button:hover { background: var(--gold); color: black; }
     </style>
 </head>
 <body>
 
     <header>
         <div class="logo">ARC CLASSES</div>
-        <nav id="nav-menu">
-            </nav>
+        <nav id="nav-menu"></nav>
     </header>
 
     <div class="container">
 
-        <div id="login" class="section active-section">
+        <div id="login-section" class="section active">
             <div class="form-box">
-                <h2 style="text-align:center; color:var(--gold);">Login</h2>
+                <h2 style="text-align:center; color:var(--gold);">Welcome Back</h2>
+                <div style="display:flex; margin-bottom:15px; border-bottom:1px solid #333;">
+                    <div style="flex:1; text-align:center; padding:10px; cursor:pointer; background:var(--gold); color:black;" id="tab-student" onclick="toggleRole('student')">Student</div>
+                    <div style="flex:1; text-align:center; padding:10px; cursor:pointer; background:#333;" id="tab-admin" onclick="toggleRole('admin')">Teacher</div>
+                </div>
                 
-                <div style="display:flex; margin-bottom:15px;">
-                    <button onclick="setRole('student')" id="tab-student" class="btn btn-gold">Student</button>
-                    <button onclick="setRole('admin')" id="tab-admin" class="btn" style="background:#333; color:white;">Teacher</button>
-                </div>
-
-                <input id="l-user" placeholder="Username (e.g. rahul123)">
-                <input id="l-pass" type="password" placeholder="Password">
-                <button onclick="doLogin()" class="btn btn-gold">Login</button>
+                <form onsubmit="event.preventDefault(); doLogin();">
+                    <input id="l-user" placeholder="Username / Email" required>
+                    <input id="l-pass" type="password" placeholder="Password" required>
+                    <button class="btn btn-gold">Secure Login</button>
+                </form>
             </div>
         </div>
 
-        <div id="home" class="section">
-            <h2>📢 Updates & Schedule</h2>
-            <div id="student-schedule-list">Loading...</div>
-            
-            <h2>🏆 Results</h2>
-            <div id="student-result-list">Loading...</div>
-
-            <h2>📝 Blogs</h2>
-            <div id="student-blog-list">Loading...</div>
+        <div id="student-home" class="section">
+            <h2 style="color:white;">Student Dashboard</h2>
+            <div class="grid-menu">
+                <div class="menu-card" onclick="show('view-schedule')"><span>📅</span><h3>Schedule</h3></div>
+                <div class="menu-card" onclick="show('view-library')"><span>📚</span><h3>Library</h3></div>
+                <div class="menu-card" onclick="show('view-test')"><span>✍️</span><h3>Live Test</h3></div>
+                <div class="menu-card" onclick="show('view-results')"><span>🏆</span><h3>Results</h3></div>
+            </div>
         </div>
 
-        <div id="admin" class="section">
-            <h2>Admin Panel</h2>
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:20px;">
-                <button onclick="showAdminSection('adm-create')" class="btn btn-gold">➕ Create Student</button>
-                <button onclick="showAdminSection('adm-schedule')" class="btn btn-gold">📅 Manage Schedule</button>
-                <button onclick="showAdminSection('adm-results')" class="btn btn-gold">🏆 Manage Results</button>
-                <button onclick="showAdminSection('adm-blogs')" class="btn btn-gold">📝 Manage Blogs</button>
+        <div id="admin-home" class="section">
+            <h2 style="color:var(--gold);">Teacher Panel</h2>
+            <div class="admin-controls">
+                <button onclick="show('adm-create')">➕ Create Student</button>
+                <button onclick="show('adm-schedule')">📅 Manage Schedule</button>
+                <button onclick="show('adm-library')">📚 Manage Library</button>
+                <button onclick="show('adm-results')">🏆 Upload Result</button>
+                <button onclick="show('adm-test')">✍️ Set Live Test</button>
             </div>
+            <div id="admin-content-area" style="margin-top:20px;">
+                <p style="text-align:center; color:#8892b0;">Select an option above to manage content.</p>
+            </div>
+        </div>
 
-            <div id="adm-create" class="admin-sub" style="display:none;">
-                <div class="form-box" style="margin:0;">
-                    <h3>Create New Student</h3>
-                    <input id="new-name" placeholder="Full Name">
-                    <input id="new-user" placeholder="Username">
-                    <input id="new-pass" placeholder="Password">
-                    <input id="new-batch" placeholder="Batch (e.g. 2026)">
-                    <button onclick="createStudent()" class="btn btn-green">Create User</button>
-                </div>
-            </div>
+        <div id="view-schedule" class="section">
+            <button onclick="goBack()" class="btn" style="width:auto; background:#333; color:white;">⬅ Back</button>
+            <h2>Class Schedule</h2>
+            <div id="schedule-list">Loading...</div>
+        </div>
+        
+        <div id="adm-schedule" class="section">
+            <button onclick="goBack()" class="btn" style="width:auto; background:#333; color:white;">⬅ Back</button>
+            <h3>Add New Class</h3>
+            <input id="sch-title" placeholder="Topic / Subject">
+            <input id="sch-date" type="date">
+            <input id="sch-link" placeholder="Zoom/Meet Link (Optional)">
+            <button onclick="addSchedule()" class="btn btn-gold">Publish Schedule</button>
+        </div>
 
-            <div id="adm-schedule" class="admin-sub" style="display:none;">
-                <h3>Manage Schedule</h3>
-                <input id="sch-title" placeholder="Topic / Title">
-                <input id="sch-date" type="date">
-                <input id="sch-link" placeholder="Link (Zoom/Drive) - Optional">
-                <button onclick="addPost('schedule')" class="btn btn-green">Add Schedule</button>
-                <div id="admin-schedule-list" style="margin-top:20px;"></div>
-            </div>
+        <div id="view-library" class="section">
+            <button onclick="goBack()" class="btn" style="width:auto; background:#333; color:white;">⬅ Back</button>
+            <h2>Study Library</h2>
+            <div id="library-list">Loading...</div>
+        </div>
 
-            <div id="adm-results" class="admin-sub" style="display:none;">
-                <h3>Upload Results</h3>
-                <input id="res-title" placeholder="Exam Name">
-                <input id="res-link" placeholder="Google Drive Link">
-                <button onclick="addPost('result')" class="btn btn-green">Publish Result</button>
-                <div id="admin-result-list" style="margin-top:20px;"></div>
+        <div id="adm-library" class="section">
+            <button onclick="goBack()" class="btn" style="width:auto; background:#333; color:white;">⬅ Back</button>
+            <h3>Upload Material</h3>
+            <input id="lib-title" placeholder="Material Title">
+            <input id="lib-link" placeholder="Google Drive / PDF Link">
+            <button onclick="addLibrary()" class="btn btn-gold">Add to Library</button>
+        </div>
+
+        <div id="view-results" class="section">
+            <button onclick="goBack()" class="btn" style="width:auto; background:#333; color:white;">⬅ Back</button>
+            <h2>Exam Results</h2>
+            <div id="result-list">Loading...</div>
+        </div>
+        
+        <div id="adm-results" class="section">
+            <button onclick="goBack()" class="btn" style="width:auto; background:#333; color:white;">⬅ Back</button>
+            <h3>Publish Result</h3>
+            <input id="res-title" placeholder="Test Name">
+            <input id="res-link" placeholder="Result Link (Drive/Sheet)">
+            <button onclick="addResult()" class="btn btn-gold">Publish</button>
+        </div>
+
+        <div id="adm-create" class="section">
+            <button onclick="goBack()" class="btn" style="width:auto; background:#333; color:white;">⬅ Back</button>
+            <div class="form-box" style="margin-top:20px;">
+                <h3>Create New Student</h3>
+                <input id="new-name" placeholder="Full Name">
+                <input id="new-user" placeholder="Username (e.g. rahul123)">
+                <input id="new-pass" placeholder="Password">
+                <button onclick="createStudent()" class="btn btn-gold">Create Account</button>
             </div>
-            
-            <div id="adm-blogs" class="admin-sub" style="display:none;">
-                <h3>Write Blog</h3>
-                <input id="blog-title" placeholder="Blog Title">
-                <textarea id="blog-content" rows="5" placeholder="Write content here..."></textarea>
-                <button onclick="addPost('blog')" class="btn btn-green">Publish Blog</button>
-                <div id="admin-blog-list" style="margin-top:20px;"></div>
-            </div>
+        </div>
+
+        <div id="view-test" class="section">
+            <button onclick="goBack()" class="btn" style="width:auto; background:#333; color:white;">⬅ Back</button>
+            <h2>Live Test</h2>
+            <p>If a test is active, it will appear here.</p>
+            <div id="test-container">No Active Test.</div>
+        </div>
+
+        <div id="adm-test" class="section">
+            <button onclick="goBack()" class="btn" style="width:auto; background:#333; color:white;">⬅ Back</button>
+            <h3>Set Live Test</h3>
+            <input id="test-title" placeholder="Test Title">
+            <textarea id="test-json" rows="5" placeholder='Enter Questions as JSON: [{"q":"2+2?", "opt":["3","4"], "ans":"4"}]'></textarea>
+            <button onclick="setTest()" class="btn btn-gold">Activate Test</button>
         </div>
 
     </div>
@@ -122,157 +168,179 @@
         let currentRole = 'student';
         let currentUser = null;
 
-        // --- NAVIGATION ---
+        // --- NAVIGATION SYSTEM ---
         function show(id) {
-            document.querySelectorAll('.section').forEach(s => s.classList.remove('active-section'));
-            document.getElementById(id).classList.add('active-section');
-            updateNav();
+            document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            
+            // Auto-load data if viewing lists
+            if(id === 'view-schedule') loadData('schedule', 'schedule-list');
+            if(id === 'view-library') loadData('library', 'library-list');
+            if(id === 'view-results') loadData('results', 'result-list');
+            if(id === 'view-test') loadTest();
+        }
+
+        function goBack() {
+            if(currentUser.role === 'admin') show('admin-home');
+            else show('student-home');
+        }
+
+        function toggleRole(role) {
+            currentRole = role;
+            document.getElementById('tab-student').style.background = role === 'student' ? '#ffd700' : '#333';
+            document.getElementById('tab-student').style.color = role === 'student' ? 'black' : 'white';
+            document.getElementById('tab-admin').style.background = role === 'admin' ? '#ffd700' : '#333';
+            document.getElementById('tab-admin').style.color = role === 'admin' ? 'black' : 'white';
+        }
+
+        // --- AUTH SYSTEM ---
+        async function doLogin() {
+            const u = document.getElementById('l-user').value;
+            const p = document.getElementById('l-pass').value;
+
+            try {
+                const res = await fetch('/api/login', {
+                    method:'POST', headers:{'Content-Type':'application/json'},
+                    body: JSON.stringify({ username:u, password:p, role:currentRole })
+                });
+                const data = await res.json();
+                
+                if(data.success) {
+                    currentUser = data;
+                    localStorage.setItem('arcUser', JSON.stringify(data));
+                    updateNav();
+                    if(data.role === 'admin') show('admin-home');
+                    else show('student-home');
+                } else {
+                    alert(data.message);
+                }
+            } catch(e) { alert("Connection Error"); }
         }
 
         function updateNav() {
             const nav = document.getElementById('nav-menu');
-            if (!currentUser) {
+            if(currentUser) {
+                nav.innerHTML = `<span style="color:white; margin-right:10px;">Hi, ${currentUser.name}</span> <button onclick="logout()">Logout</button>`;
+            } else {
                 nav.innerHTML = '';
-            } else if (currentUser.role === 'admin') {
-                nav.innerHTML = `<button onclick="show('admin')">Dashboard</button><button onclick="logout()">Logout</button>`;
-            } else {
-                nav.innerHTML = `<button onclick="show('home')">Home</button><button onclick="logout()">Logout</button>`;
-            }
-        }
-
-        // --- LOGIN LOGIC ---
-        function setRole(role) {
-            currentRole = role;
-            document.getElementById('tab-student').style.background = role === 'student' ? '#ffd700' : '#333';
-            document.getElementById('tab-admin').style.background = role === 'admin' ? '#ffd700' : '#333';
-        }
-
-        async function doLogin() {
-            const username = document.getElementById('l-user').value;
-            const password = document.getElementById('l-pass').value;
-
-            // Admin Logic (Frontend Check for speed, verified on backend)
-            if(currentRole === 'admin' && username === 'admin' && password === 'admin123') {
-                loginSuccess({ name: 'Ankit Sir', role: 'admin' });
-                return;
-            }
-
-            // Student Logic (Fetch)
-            try {
-                const res = await fetch('/api/login', {
-                    method: 'POST', headers: {'Content-Type':'application/json'},
-                    body: JSON.stringify({ username, password, role: currentRole })
-                });
-                const data = await res.json();
-                if(data.success) loginSuccess(data);
-                else alert(data.message);
-            } catch(e) { alert("Server Connection Error"); }
-        }
-
-        function loginSuccess(user) {
-            currentUser = user;
-            localStorage.setItem('arcUser', JSON.stringify(user));
-            if(user.role === 'admin') {
-                show('admin');
-                loadAdminData();
-            } else {
-                show('home');
-                loadStudentData();
             }
         }
 
         function logout() {
-            localStorage.removeItem('arcUser');
             currentUser = null;
+            localStorage.removeItem('arcUser');
             location.reload();
         }
 
         // --- ADMIN FUNCTIONS ---
-        function showAdminSection(id) {
-            document.querySelectorAll('.admin-sub').forEach(d => d.style.display = 'none');
-            document.getElementById(id).style.display = 'block';
-        }
-
         async function createStudent() {
             const name = document.getElementById('new-name').value;
             const username = document.getElementById('new-user').value;
             const password = document.getElementById('new-pass').value;
-            const batch = document.getElementById('new-batch').value;
-
+            
             const res = await fetch('/api/create-student', {
                 method:'POST', headers:{'Content-Type':'application/json'},
-                body: JSON.stringify({ name, username, password, batch })
+                body: JSON.stringify({ name, username, password })
             });
             const data = await res.json();
             alert(data.message);
-            if(data.success) document.getElementById('new-name').value = ''; // Clear form
         }
 
-        async function addPost(type) {
-            let title, content, date;
+        async function addSchedule() {
+            const title = document.getElementById('sch-title').value;
+            const date = document.getElementById('sch-date').value;
+            const link = document.getElementById('sch-link').value;
             
-            if(type === 'schedule') {
-                title = document.getElementById('sch-title').value;
-                date = document.getElementById('sch-date').value;
-                content = document.getElementById('sch-link').value;
-            } else if (type === 'result') {
-                title = document.getElementById('res-title').value;
-                content = document.getElementById('res-link').value;
-                date = new Date().toLocaleDateString();
-            } else {
-                title = document.getElementById('blog-title').value;
-                content = document.getElementById('blog-content').value;
-                date = new Date().toLocaleDateString();
-            }
-
-            await fetch('/api/posts', {
+            await fetch('/api/schedule', {
                 method:'POST', headers:{'Content-Type':'application/json'},
-                body: JSON.stringify({ type, title, content, date })
+                body: JSON.stringify({ title, date, link })
             });
-            alert("Added!");
-            loadAdminData(); // Refresh lists
+            alert("Schedule Added!");
         }
 
-        async function deletePost(id) {
-            if(!confirm("Delete this?")) return;
-            await fetch('/api/posts/' + id, { method: 'DELETE' });
-            loadAdminData();
+        async function addLibrary() {
+            const title = document.getElementById('lib-title').value;
+            const link = document.getElementById('lib-link').value;
+            
+            await fetch('/api/library', {
+                method:'POST', headers:{'Content-Type':'application/json'},
+                body: JSON.stringify({ title, link, category: 'Note' })
+            });
+            alert("Added to Library!");
+        }
+
+        async function addResult() {
+            const title = document.getElementById('res-title').value;
+            const link = document.getElementById('res-link').value;
+            
+            await fetch('/api/results', {
+                method:'POST', headers:{'Content-Type':'application/json'},
+                body: JSON.stringify({ title, link, date: new Date().toLocaleDateString() })
+            });
+            alert("Result Published!");
+        }
+
+        async function setTest() {
+            const title = document.getElementById('test-title').value;
+            const questions = JSON.parse(document.getElementById('test-json').value);
+            
+            await fetch('/api/test', {
+                method:'POST', headers:{'Content-Type':'application/json'},
+                body: JSON.stringify({ title, questions })
+            });
+            alert("Test Activated!");
         }
 
         // --- DATA LOADING ---
-        async function loadAdminData() {
-            // Load all lists for admin
-            loadList('schedule', 'admin-schedule-list', true);
-            loadList('result', 'admin-result-list', true);
-            loadList('blog', 'admin-blog-list', true);
-        }
-
-        async function loadStudentData() {
-            loadList('schedule', 'student-schedule-list', false);
-            loadList('result', 'student-result-list', false);
-            loadList('blog', 'student-blog-list', false);
-        }
-
-        async function loadList(type, elementId, isAdmin) {
-            const res = await fetch('/api/posts/' + type);
+        async function loadData(endpoint, divId) {
+            const res = await fetch('/api/' + endpoint);
             const data = await res.json();
-            const el = document.getElementById(elementId);
+            const div = document.getElementById(divId);
             
-            el.innerHTML = data.map(item => `
-                <div class="card">
+            if(data.length === 0) {
+                div.innerHTML = "<p>No data available.</p>";
+                return;
+            }
+
+            div.innerHTML = data.map(item => `
+                <div class="item-card">
                     <div>
-                        <strong>${item.title}</strong> <small>(${item.date})</small><br>
-                        ${item.type === 'blog' ? item.content.substring(0,50)+'...' : `<a href="${item.content}" target="_blank">Open Link</a>`}
+                        <strong style="font-size:18px;">${item.title}</strong><br>
+                        <small style="color:#8892b0;">${item.date || ''}</small>
                     </div>
-                    ${isAdmin ? `<button class="btn-red" style="width:auto; padding:5px;" onclick="deletePost('${item._id}')">Delete</button>` : ''}
+                    ${item.link ? `<a href="${item.link}" target="_blank">OPEN 🔗</a>` : ''}
                 </div>
             `).join('');
         }
+        
+        async function loadTest() {
+            const res = await fetch('/api/test');
+            const data = await res.json();
+            const container = document.getElementById('test-container');
+            
+            if(!data) {
+                container.innerHTML = "<h3>No Active Test Right Now.</h3>";
+                return;
+            }
+            
+            // Simple render of JSON questions (Can be improved later)
+            container.innerHTML = `<h3>${data.title}</h3>` + 
+                data.questions.map((q, i) => `
+                <div style="background:#112240; padding:15px; margin-bottom:10px; border-radius:5px;">
+                    <p><strong>Q${i+1}:</strong> ${q.q}</p>
+                    ${q.opt.map(o => `<label style="display:block; margin:5px 0;"><input type="radio" name="q${i}"> ${o}</label>`).join('')}
+                </div>
+            `).join('') + `<button class="btn btn-gold">Submit Test</button>`;
+        }
 
-        // Check Login on Load
+        // --- INIT ---
         const saved = localStorage.getItem('arcUser');
-        if(saved) loginSuccess(JSON.parse(saved));
-
+        if(saved) {
+            currentUser = JSON.parse(saved);
+            updateNav();
+            if(currentUser.role === 'admin') show('admin-home');
+            else show('student-home');
+        }
     </script>
 </body>
 </html>
