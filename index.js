@@ -10,7 +10,6 @@ app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // --- 1. DATABASE CONNECTION ---
-// Replace with your actual connection string
 const dbLink = "mongodb+srv://ankitprogrammer25:a32x05sYvukG178G@cluster0.0dhqpzv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 
 mongoose.connect(dbLink)
@@ -29,16 +28,9 @@ const MaterialSchema = new mongoose.Schema({
 });
 const Material = mongoose.model('Material', MaterialSchema);
 
-// Updated Question Schema with Rich Text & Solutions
 const QuestionSchema = new mongoose.Schema({
-    text: String, // HTML content
-    image: String, 
-    options: [String], // HTML content array
-    correct: Number, 
-    marks: Number, 
-    negative: Number, 
-    topic: String, 
-    solution: String, // HTML content
+    text: String, image: String, options: [String], correct: Number, 
+    marks: Number, negative: Number, topic: String, solution: String,
     solutionImage: String 
 });
 
@@ -49,16 +41,9 @@ const TestSchema = new mongoose.Schema({
 });
 const Test = mongoose.model('Test', TestSchema);
 
-// Updated Offline Result Schema
 const OfflineResultSchema = new mongoose.Schema({
     title: String, date: { type: Date, default: Date.now },
-    records: [{ 
-        studentName: String, 
-        totalMarks: Number, 
-        obtainedMarks: Number, 
-        rank: Number, 
-        copyLink: String // Link to checked sheet
-    }]
+    records: [{ studentName: String, totalMarks: Number, obtainedMarks: Number, rank: Number, copyLink: String }]
 });
 const OfflineResult = mongoose.model('OfflineResult', OfflineResultSchema);
 
@@ -103,54 +88,55 @@ app.post('/api/login', async (req, res) => {
 });
 
 // --- ADMIN API ---
+// STUDENTS
 app.get('/api/admin/students', async (req, res) => res.json(await Student.find().sort({ joinedAt: -1 })));
+app.get('/api/admin/student/:id', async (req, res) => res.json(await Student.findById(req.params.id)));
+app.put('/api/admin/student/:id', async (req, res) => { await Student.findByIdAndUpdate(req.params.id, req.body); res.json({ success: true }); });
+app.delete('/api/admin/student/:id', async (req, res) => { await Student.findByIdAndDelete(req.params.id); res.json({ success: true }); });
+
+// RESULTS
 app.get('/api/admin/results/online', async (req, res) => res.json(await Result.find().sort({ date: -1 })));
 
-// Material
+// MATERIAL
 app.post('/api/admin/material', async (req, res) => { await new Material(req.body).save(); res.json({ success: true }); });
 app.put('/api/admin/material/:id', async (req, res) => { await Material.findByIdAndUpdate(req.params.id, req.body); res.json({ success: true }); });
+app.delete('/api/admin/material/:id', async (req, res) => { await Material.findByIdAndDelete(req.params.id); res.json({ success: true }); });
 
-// Test Publishing (Auto Calculate End Time)
-app.post('/api/admin/test', async (req, res) => { 
-    try {
-        let testData = req.body;
-        // Auto-calculate End Time if Live
-        if(testData.isLive && testData.startTime && testData.duration) {
-            const start = new Date(testData.startTime);
-            const end = new Date(start.getTime() + (testData.duration * 60000));
-            testData.endTime = end;
-        }
-        // Update if ID exists (Editing mode), else Create
-        if(testData._id) {
-            await Test.findByIdAndUpdate(testData._id, testData);
-        } else {
-            await new Test(testData).save();
-        }
-        res.json({ success: true });
-    } catch(e) { res.json({ success: false, message: e.message }); }
-});
-
-// Get Single Test for Editing
+// TEST
 app.get('/api/admin/test/:id', async (req, res) => { res.json(await Test.findById(req.params.id)); });
+app.post('/api/admin/test', async (req, res) => { await new Test(req.body).save(); res.json({ success: true }); });
+app.put('/api/admin/test/:id', async (req, res) => { await Test.findByIdAndUpdate(req.params.id, req.body); res.json({ success: true }); });
+app.delete('/api/admin/test/:id', async (req, res) => { await Test.findByIdAndDelete(req.params.id); res.json({ success: true }); });
 
-// Blog
+// BLOG
 app.post('/api/admin/blog', async (req, res) => { await new Blog(req.body).save(); res.json({ success: true }); });
 app.put('/api/admin/blog/:id', async (req, res) => { await Blog.findByIdAndUpdate(req.params.id, req.body); res.json({ success: true }); });
+app.delete('/api/admin/blog/:id', async (req, res) => { await Blog.findByIdAndDelete(req.params.id); res.json({ success: true }); });
 
-// Offline Result (Auto Ranking)
+// OFFLINE RESULTS
+app.get('/api/admin/offline-result/:id', async (req, res) => { res.json(await OfflineResult.findById(req.params.id)); });
 app.post('/api/admin/offline-result', async (req, res) => { 
     try {
         const { title, records } = req.body;
-        // Sort by Obtained Marks Descending
         records.sort((a, b) => b.obtainedMarks - a.obtainedMarks);
-        // Assign Rank
         records.forEach((rec, index) => { rec.rank = index + 1; });
         await new OfflineResult({ title, records }).save(); 
         res.json({ success: true });
     } catch(e) { res.json({ success: false }); }
 });
+app.put('/api/admin/offline-result/:id', async (req, res) => { 
+    try {
+        const { title, records } = req.body;
+        records.sort((a, b) => b.obtainedMarks - a.obtainedMarks);
+        records.forEach((rec, index) => { rec.rank = index + 1; });
+        await OfflineResult.findByIdAndUpdate(req.params.id, { title, records }); 
+        res.json({ success: true });
+    } catch(e) { res.json({ success: false }); }
+});
+app.delete('/api/admin/offline-result/:id', async (req, res) => { await OfflineResult.findByIdAndDelete(req.params.id); res.json({ success: true }); });
 
-// Announcements
+
+// ANNOUNCEMENTS
 app.get('/api/announcement', async (req, res) => { 
     const c = await Config.findOne({ type: 'announce_list' });
     res.json({ list: c ? c.list : ["Welcome to ARC Classes"] });
@@ -159,19 +145,11 @@ app.post('/api/admin/announcement/add', async (req, res) => {
     await Config.findOneAndUpdate({ type: 'announce_list' }, { $push: { list: req.body.text } }, { upsert: true });
     res.json({ success: true });
 });
-app.delete('/api/admin/announcement', async (req, res) => {
+app.post('/api/admin/announcement/delete', async (req, res) => {
     const c = await Config.findOne({ type: 'announce_list' });
     if(c) { c.list = c.list.filter(t => t !== req.body.text); await c.save(); }
     res.json({ success: true });
 });
-
-// --- DELETE ROUTES (Manage Content) ---
-app.delete('/api/admin/blog/:id', async (req, res) => { await Blog.findByIdAndDelete(req.params.id); res.json({ success: true }); });
-app.delete('/api/admin/offline-result/:id', async (req, res) => { await OfflineResult.findByIdAndDelete(req.params.id); res.json({ success: true }); });
-app.delete('/api/admin/result/:id', async (req, res) => { await Result.findByIdAndDelete(req.params.id); res.json({ success: true }); });
-app.delete('/api/admin/test/:id', async (req, res) => { await Test.findByIdAndDelete(req.params.id); res.json({ success: true }); });
-app.delete('/api/admin/material/:id', async (req, res) => { await Material.findByIdAndDelete(req.params.id); res.json({ success: true }); });
-app.delete('/api/admin/student/:id', async (req, res) => { await Student.findByIdAndDelete(req.params.id); res.json({ success: true }); });
 
 // --- STUDENT API ---
 app.get('/api/materials', async (req, res) => res.json(await Material.find()));
@@ -195,15 +173,20 @@ app.post('/api/result-details', async (req, res) => {
         
         const allResults = await Result.find({ testId: result.testId }).sort({ score: -1 });
         const rank = allResults.findIndex(r => r._id.toString() === result._id.toString()) + 1;
-        const leaderboard = allResults.map((r, i) => ({ rank: i + 1, name: r.studentName, score: r.score, total: r.totalMarks }));
+
+        const leaderboard = allResults.map((r, i) => ({
+            rank: i + 1,
+            name: r.studentName,
+            score: r.score,
+            total: r.totalMarks
+        }));
 
         const test = await Test.findById(result.testId);
-        if(!test) return res.json({ success: true, result, rank, leaderboard, questions: [], message: "Test deleted." });
+        if(!test) return res.json({ success: true, result, rank, leaderboard, questions: [], message: "Test was deleted by teacher." });
         
-        // Include Solution and Solution Image in response
         const detailedQuestions = test.questions.map((q, i) => ({
             text: q.text, image: q.image, options: q.options, correct: q.correct, 
-            solution: q.solution, solutionImage: q.solutionImage, // Sent to frontend
+            solution: q.solution, solutionImage: q.solutionImage,
             studentAnswer: result.answers[i], timeSpent: result.timeTaken ? result.timeTaken[i] : 0,
             status: result.answers[i] === q.correct ? 'Correct' : (result.answers[i] === null ? 'Skipped' : 'Wrong')
         }));
@@ -226,7 +209,6 @@ app.post('/api/test/start', async (req, res) => {
         if(now > new Date(t.endTime)) return res.json({ success: false, message: "Expired" });
     }
     if(!t.accessCode || t.accessCode === "" || t.accessCode === code) {
-        // Send questions WITHOUT solution or correct answer during test
         const safeQ = t.questions.map(q => ({ text: q.text, image: q.image, options: q.options, marks: q.marks, negative: q.negative }));
         res.json({ success: true, test: {...t._doc, questions: safeQ} });
     } else res.json({ success: false, message: "Wrong Password" });
