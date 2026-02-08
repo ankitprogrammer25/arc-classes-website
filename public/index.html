@@ -2,13 +2,16 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ARC CLASSES</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root { --primary: #0f172a; --gold: #fbbf24; --light: #f8fafc; --red: #ef4444; --green: #22c55e; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--light); margin: 0; color: #333; display: flex; flex-direction: column; min-height: 100vh; }
         
+        /* Stop background scrolling when modal is open */
+        body.modal-open { overflow: hidden; height: 100vh; }
+
         /* RESPONSIVE NAVBAR */
         nav { background: var(--primary); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
         .logo { 
@@ -51,24 +54,35 @@
         .btn-red { background: var(--red); color: white; }
         .btn-small { padding: 5px 10px; font-size: 0.8rem; }
 
-        /* BLOG & MODAL FIXES */
-        .modal { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); display:none; justify-content:center; align-items:center; z-index: 2000; padding: 10px; box-sizing: border-box; }
+        /* MODAL FIXES */
+        .modal { 
+            position: fixed; top:0; left:0; width:100%; height:100%; 
+            background:rgba(0,0,0,0.85); display:none; 
+            justify-content:center; align-items:flex-start; /* Align top for better mobile scrolling */
+            z-index: 2000; padding: 10px; box-sizing: border-box; 
+            overflow-y: auto; /* Allow modal container to scroll if needed */
+        }
+        
         .modal-content { 
             background:white; width: 100%; max-width: 800px; 
-            max-height: 85vh; overflow-y: auto; 
+            max-height: 90vh; /* Leave some space */
+            overflow-y: auto; /* Internal Scroll */
             padding: 20px; border-radius: 12px; position: relative; 
-            margin-top: 20px;
+            margin-top: 20px; margin-bottom: 20px;
+            overscroll-behavior: contain; /* CRITICAL FIX: PREVENTS PULL-TO-REFRESH */
+            -webkit-overflow-scrolling: touch; /* Smooth scroll on iOS */
         }
 
         .close-corner { 
             position: absolute; top: 10px; right: 10px; 
-            background: #eee; width: 35px; height: 35px; 
+            background: #f1f5f9; width: 40px; height: 40px; 
             border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            font-size: 1.5rem; cursor: pointer; color: #333; font-weight: bold; z-index: 10;
+            font-size: 1.5rem; cursor: pointer; color: #333; font-weight: bold; z-index: 20;
+            border: 1px solid #ddd;
         }
         .close-corner:hover { background: var(--red); color: white; }
 
-        /* EXAM LAYOUT - MOBILE OPTIMIZED */
+        /* EXAM LAYOUT */
         .exam-layout { display: flex; gap: 20px; height: calc(100vh - 140px); flex-direction: column; }
         @media(min-width: 900px) { .exam-layout { flex-direction: row; } }
 
@@ -76,7 +90,6 @@
         .palette-panel { flex: 1; background: white; padding: 15px; border-radius: 12px; display: flex; flex-direction: column; max-height: 200px; overflow-y: auto; }
         @media(min-width: 900px) { .palette-panel { max-height: none; } }
 
-        /* Mobile Timer Box */
         .timer-box {
             background: #fee2e2; color: var(--red); font-weight: bold; font-size: 1.2rem;
             text-align: center; padding: 10px; border-radius: 8px; margin-bottom: 10px;
@@ -92,11 +105,16 @@
         .mcq-label input { margin-right: 15px; margin-top: 5px; width: 20px; height: 20px; flex-shrink: 0; }
 
         /* Tables & Utility */
-        .table-container { overflow-x: auto; margin-bottom: 20px; border: 1px solid #eee; border-radius: 8px; }
+        .table-container { overflow-x: auto; margin-bottom: 20px; border: 1px solid #eee; border-radius: 8px; overscroll-behavior-x: contain; }
         table { width: 100%; border-collapse: collapse; min-width: 500px; }
         th, td { padding: 10px; border: 1px solid #ddd; text-align: left; }
         th { background: var(--primary); color: white; }
         img { max-width: 100%; height: auto; }
+        
+        /* Analysis Styling */
+        .badge { padding: 4px 8px; border-radius: 4px; color: white; font-size: 0.8rem; font-weight: bold; }
+        .bg-green { background: var(--green); } .bg-red { background: var(--red); }
+        .review-row { border-bottom: 1px solid #eee; padding: 15px 0; }
         
         .form-box { width: 100%; max-width: 400px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
         footer { background: var(--primary); color: white; text-align: center; padding: 20px; margin-top: auto; border-top: 4px solid var(--gold); }
@@ -236,23 +254,32 @@
 
 <div id="review-modal" class="modal">
     <div class="modal-content">
-        <div class="close-corner" onclick="document.getElementById('review-modal').style.display='none'">&times;</div>
+        <div class="close-corner" onclick="closeModal('review-modal')">&times;</div>
         <h2 style="margin-top:0;">Analysis</h2>
         <div id="review-stats" style="text-align:center; margin-bottom:15px; font-weight:bold; font-size:1rem; display:flex; justify-content:space-around; flex-wrap:wrap;"></div>
+        <div style="display:flex; flex-wrap:wrap; gap:20px; justify-content:center; margin-bottom:20px;">
+            <div style="flex:1; min-width:250px; max-width:300px; height:250px;">
+                <canvas id="resultChart"></canvas>
+            </div>
+            <div id="leaderboard-container" style="flex:1; min-width:250px; max-height:250px; overflow-y:auto; border:1px solid #eee; padding:10px; border-radius:8px;">
+            </div>
+        </div>
+        <hr>
+        <h3>Answer Sheet</h3>
         <div id="review-body"></div>
     </div>
 </div>
 
 <div id="alert-modal" class="modal">
     <div class="modal-content" style="text-align:center; padding: 30px; max-width: 350px;">
-        <div class="close-corner" onclick="document.getElementById('alert-modal').style.display='none'">&times;</div>
+        <div class="close-corner" onclick="closeModal('alert-modal')">&times;</div>
         <h3 id="alert-msg" class="blink-red"></h3>
     </div>
 </div>
 
 <div id="blog-modal" class="modal">
     <div class="modal-content">
-        <div class="close-corner" onclick="document.getElementById('blog-modal').style.display='none'">&times;</div>
+        <div class="close-corner" onclick="closeModal('blog-modal')">&times;</div>
         <h2 id="bm-title" style="margin-top:0; padding-right: 40px; color:var(--primary);"></h2>
         <p id="bm-date" style="color:#777; font-size:0.9rem;"></p>
         <img id="bm-img" style="width:100%; max-height:300px; object-fit:contain; margin-bottom:20px; display:none; background:#f0f0f0;">
@@ -263,23 +290,30 @@
 <script>
     function toggleMenu() { document.getElementById('nav-menu').classList.toggle('active'); }
     
-    // --- KEY FIX: RESTORE SESSION ON LOAD ---
+    // MODAL HELPERS TO FIX SCROLLING
+    function openModal(id) {
+        document.getElementById(id).style.display = 'flex';
+        document.body.classList.add('modal-open'); // Lock background scroll
+    }
+    function closeModal(id) {
+        document.getElementById(id).style.display = 'none';
+        document.body.classList.remove('modal-open'); // Unlock background
+    }
+
+    // --- RESTORE SESSION ON LOAD ---
     window.onload = function() {
         const lastSection = localStorage.getItem('arc_last_section') || 'home';
         
-        // 1. Restore Login
         if(user) {
             document.getElementById('nav-login').style.display = 'none';
             document.getElementById('nav-logout').style.display = 'block';
             if(user.role === 'admin') document.getElementById('nav-admin').style.display = 'block';
         }
 
-        // 2. Check for Active Test Session
         const session = JSON.parse(localStorage.getItem('arc_test_session'));
         if (session && user) {
             const now = Date.now();
             if (session.endTime > now) {
-                // RESTORE TEST
                 currentTest = session.test;
                 answers = session.answers;
                 timeTaken = session.timeTaken;
@@ -288,20 +322,16 @@
                 show('exam');
                 renderQ();
                 
-                // Restore Palette Status
                 const pBtns = document.getElementById('palette').children;
                 answers.forEach((ans, i) => { if(ans !== null) pBtns[i].classList.add('done'); });
                 
-                // RESUME TIMER
                 startTimer(session.endTime);
-                return; // Stop here, don't go to other tabs
+                return; 
             } else {
-                // Test expired while closed
                 localStorage.removeItem('arc_test_session');
             }
         }
 
-        // 3. Normal Navigation
         if(user) show(lastSection); else show('home');
     };
 
@@ -310,8 +340,8 @@
     let offlineDraft = []; 
     let loginMode = 'student';
     let tempImg = "", tempSolImg = "";
+    let resultChartInstance = null; // Chart Instance variable
     
-    // --- HELPER TO SAVE STATE ---
     function saveSession(endTime) {
         if(!currentTest) return;
         const sessionData = {
@@ -328,7 +358,6 @@
         localStorage.removeItem('arc_test_session');
     }
 
-    // Load Data
     loadAnnouncements();
     loadBlogs();
 
@@ -349,7 +378,7 @@
     function toLocalISOString(date) { const localDate = new Date(date - date.getTimezoneOffset() * 60000); return localDate.toISOString().slice(0, 16); }
     function calcEndTime() { const startVal = document.getElementById('t-start').value; const durVal = document.getElementById('t-dur').value; if (startVal && durVal) { const start = new Date(startVal); const dur = parseInt(durVal); const end = new Date(start.getTime() + dur * 60000); document.getElementById('t-end').value = toLocalISOString(end); } }
     
-    // Admin & Login functions (unchanged logic)
+    // Admin & Login
     function showAdm(tab) {
         const c = document.getElementById('adm-content');
         if(tab === 'create-test') {
@@ -381,46 +410,48 @@
     async function delAnnounce(text) { await fetch('/api/admin/announcement/delete', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({text}) }); showAdm('announce'); }
     async function loadAnnouncements() { try { const res = await fetch('/api/announcement'); const data = await res.json(); document.getElementById('anno-marquee').innerHTML = (data.list && data.list.length > 0) ? data.list.join(' &nbsp;|&nbsp; ') : "Welcome"; } catch(e) {} }
     async function loadBlogs() { const res = await fetch('/api/blogs'); const blogs = await res.json(); allBlogs = blogs; document.getElementById('blog-grid').innerHTML = blogs.map(b => `<div class="card" onclick="viewBlog('${b._id}')"><img src="${b.image || 'https://via.placeholder.com/300'}" alt="cover" style="height:150px; object-fit:cover;"><div style="padding:10px;"><h4 style="margin:0;">${b.title}</h4><small>${new Date(b.date).toLocaleDateString()}</small></div></div>`).join(''); }
-    function viewBlog(id) { const blog = allBlogs.find(b => b._id === id); if(!blog) return; document.getElementById('bm-title').innerText = blog.title; document.getElementById('bm-date').innerText = new Date(blog.date).toLocaleDateString(); document.getElementById('bm-content').innerHTML = blog.content; const img = document.getElementById('bm-img'); if(blog.image) { img.src = blog.image; img.style.display='block'; } else img.style.display='none'; document.getElementById('blog-modal').style.display = 'flex'; }
+    
+    // UPDATED: View Blog with Scroll Fix
+    function viewBlog(id) { 
+        const blog = allBlogs.find(b => b._id === id); if(!blog) return; 
+        document.getElementById('bm-title').innerText = blog.title; 
+        document.getElementById('bm-date').innerText = new Date(blog.date).toLocaleDateString(); 
+        document.getElementById('bm-content').innerHTML = blog.content; 
+        const img = document.getElementById('bm-img'); 
+        if(blog.image) { img.src = blog.image; img.style.display='block'; } else img.style.display='none'; 
+        openModal('blog-modal');
+    }
+
     async function loadTests(isLive) { const res = await fetch('/api/tests'); const tests = await res.json(); const now = new Date(); const filteredTests = tests.filter(t => { const tEnd = t.endTime ? new Date(t.endTime) : null; if (isLive) { return t.isLive && tEnd && tEnd > now; } else { return !t.isLive || (t.isLive && tEnd && tEnd <= now); } }); document.getElementById(isLive?'live-list':'test-list').innerHTML = filteredTests.map(t => `<div class="card" style="border-left: 5px solid ${isLive ? 'red' : 'gold'}"><h3>${t.title} ${t.accessCode ? '🔒' : ''}</h3><p>${t.duration} Mins</p>${isLive ? `<p style="color:var(--red); font-weight:bold; font-size:0.9rem;">Start: ${new Date(t.startTime).toLocaleString()}</p>` : ''}<button class="btn btn-gold" onclick="startTest('${t._id}', ${t.accessCode ? true : false}, '${t.startTime}')">Start</button></div>`).join(''); }
 
-    // --- UPDATED TIMER LOGIC ---
-    // Now accepts "targetTime" (Timestamp) instead of Duration
     function startTimer(targetTime) { 
         clearInterval(timer); 
         timer = setInterval(() => { 
             const now = Date.now(); 
             const remaining = Math.floor((targetTime - now) / 1000); 
             if(remaining < 0) { clearInterval(timer); submitTest(true); return; } 
-            
             const m = Math.floor(remaining / 60); 
             const s = remaining % 60; 
-            const timeStr = `${m}:${s < 10 ? '0'+s : s}`;
-            document.getElementById('mobile-timer').innerText = timeStr;
+            document.getElementById('mobile-timer').innerText = `${m}:${s < 10 ? '0'+s : s}`;
         }, 1000); 
     }
 
     async function startTest(id, hasCode, startTimeStr) { 
-        if (startTimeStr && new Date() < new Date(startTimeStr)) { document.getElementById('alert-msg').innerText = "Test Locked"; document.getElementById('alert-modal').style.display = 'flex'; return; }
+        if (startTimeStr && new Date() < new Date(startTimeStr)) { document.getElementById('alert-msg').innerText = "Test Locked"; openModal('alert-modal'); return; }
         let code = ""; if(hasCode) { code = prompt("Enter Password:"); if(!code) return; } 
-        
         const res = await fetch('/api/test/start', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ id, code, studentEmail: user.email }) }); 
         const data = await res.json(); 
-        
         if(data.success) { 
             currentTest = data.test; 
             answers = new Array(currentTest.questions.length).fill(null); 
             timeTaken = new Array(currentTest.questions.length).fill(0); 
             qIndex = 0; 
-            
-            // CALCULATE END TIME & SAVE SESSION
             const endTime = Date.now() + (currentTest.duration * 60 * 1000);
             saveSession(endTime);
-
             show('exam'); 
             startTimer(endTime); 
             renderQ(); 
-        } else alert(data.message); 
+        } else { document.getElementById('alert-msg').innerText = data.message; openModal('alert-modal'); }
     }
 
     function renderQ() { 
@@ -431,26 +462,16 @@
         document.getElementById('q-text').innerHTML = q.text; 
         const img = document.getElementById('q-img'); 
         if(q.image) { img.src = q.image; img.style.display = 'block'; } else img.style.display = 'none'; 
-        
-        document.getElementById('q-opts').innerHTML = q.options.map((o, i) => 
-            `<label class="mcq-label"><input type="radio" name="opt" value="${i}" ${answers[qIndex] === i ? 'checked' : ''}> <div>${o}</div></label>`
-        ).join(''); 
-        
-        document.getElementById('palette').innerHTML = answers.map((a, i) => 
-            `<div class="p-btn ${a !== null ? 'done' : (i === qIndex ? 'active' : '')}" onclick="gotoQ(${i})">${i+1}</div>`
-        ).join(''); 
+        document.getElementById('q-opts').innerHTML = q.options.map((o, i) => `<label class="mcq-label"><input type="radio" name="opt" value="${i}" ${answers[qIndex] === i ? 'checked' : ''}> <div>${o}</div></label>`).join(''); 
+        document.getElementById('palette').innerHTML = answers.map((a, i) => `<div class="p-btn ${a !== null ? 'done' : (i === qIndex ? 'active' : '')}" onclick="gotoQ(${i})">${i+1}</div>`).join(''); 
     }
 
     function saveNext() { 
         const sel = document.querySelector('input[name="opt"]:checked'); 
         answers[qIndex] = sel ? parseInt(sel.value) : null; 
-        
-        // Save to Storage
         saveSession();
-
         const btn = document.querySelectorAll('.p-btn')[qIndex]; 
         if(answers[qIndex] !== null) btn.classList.add('done'); 
-        
         if(qIndex < currentTest.questions.length - 1) { qIndex++; renderQ(); } 
         else { alert("Last Question"); } 
     }
@@ -461,19 +482,70 @@
     async function submitTest(auto = false) { 
         if(!auto && !confirm("Submit?")) return; 
         clearInterval(timer); 
-        
         const res = await fetch('/api/test/submit', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ testId: currentTest._id, answers, timeTaken, studentName: user.name, studentEmail: user.email }) }); 
         const data = await res.json(); 
-        
         if(data.success) { 
-            clearSession(); // Clean up storage on submit
+            clearSession(); 
             document.getElementById('exam').classList.remove('active'); 
             show('results'); 
             viewSheet(data.resultId); 
         } 
     }
 
-    async function viewSheet(id) { const res = await fetch('/api/result-details', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ resultId: id }) }); const data = await res.json(); const r = data.result; document.getElementById('review-stats').innerHTML = `<span>Score: ${r.score}/${r.totalMarks}</span><span>Rank: #${data.rank}</span><span>${r.percentage.toFixed(0)}%</span>`; document.getElementById('review-body').innerHTML = data.questions.map((q, i) => `<div style="border-bottom:1px solid #eee; padding:10px 0;"><p><strong>Q${i+1}:</strong> ${q.text}</p>${q.image ? `<img src="${q.image}" style="height:100px">` : ''}<p>Status: <b>${q.status}</b></p>${q.solution?`<div style="background:#f0f9ff; padding:5px;">💡 ${q.solution}</div>`:''}</div>`).join(''); document.getElementById('review-modal').style.display = 'flex'; }
+    // --- UPDATED: RESTORED CHART & LEADERBOARD & SCROLL FIX ---
+    async function viewSheet(id) { 
+        const res = await fetch('/api/result-details', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ resultId: id }) }); 
+        const data = await res.json(); 
+        const r = data.result; 
+
+        // 1. Stats
+        document.getElementById('review-stats').innerHTML = `<span>Score: ${r.score}/${r.totalMarks}</span><span>Rank: #${data.rank}</span><span>${r.percentage.toFixed(0)}%</span>`; 
+        
+        // 2. Count Correct/Wrong/Skip for Chart
+        let cor = 0, wrg = 0, skp = 0;
+        data.questions.forEach(q => { if(q.status==='Correct') cor++; else if(q.status==='Wrong') wrg++; else skp++; });
+
+        // 3. Render Chart
+        if(resultChartInstance) resultChartInstance.destroy();
+        const ctx = document.getElementById('resultChart').getContext('2d');
+        resultChartInstance = new Chart(ctx, {
+            type: 'doughnut',
+            data: { labels: ['Correct', 'Wrong', 'Skipped'], datasets: [{ data: [cor, wrg, skp], backgroundColor: ['#22c55e', '#ef4444', '#cbd5e1'] }] },
+            options: { responsive: true, maintainAspectRatio: false }
+        });
+
+        // 4. Render Leaderboard
+        document.getElementById('leaderboard-container').innerHTML = `
+            <table style="font-size:0.9rem; margin:0; width:100%;">
+                <tr style="background:#f1f5f9;"><th>#</th><th>Name</th><th>Score</th></tr>
+                ${data.leaderboard.map(rec => `
+                    <tr style="${rec.rank === data.rank ? 'background:#e0f2fe; font-weight:bold;' : ''}">
+                        <td>${rec.rank}</td><td>${rec.name}</td><td>${rec.score}</td>
+                    </tr>`).join('')}
+            </table>`;
+
+        // 5. Render Answer Sheet
+        document.getElementById('review-body').innerHTML = data.questions.map((q, i) => `
+            <div class="review-row">
+                <p><strong>Q${i+1}:</strong> ${q.text}</p>
+                ${q.image ? `<img src="${q.image}" style="max-height:150px">` : ''}
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:5px; margin-top:5px;">
+                    ${q.options.map((opt, idx) => `
+                        <div style="padding:5px; border:1px solid #ddd; border-radius:4px; 
+                            ${idx === q.correct ? 'background:#dcfce7; border-color:green;' : ''} 
+                            ${idx === q.studentAnswer && idx !== q.correct ? 'background:#fee2e2; border-color:red;' : ''}">
+                            ${opt}
+                        </div>`).join('')}
+                </div>
+                <div style="margin-top:5px;">
+                    <span class="badge ${q.status==='Correct'?'bg-green':'bg-red'}">${q.status}</span>
+                </div>
+                ${q.solution ? `<div style="background:#f0f9ff; padding:10px; margin-top:5px; border-radius:6px; font-size:0.9rem;"><strong>💡 Solution:</strong> ${q.solution}</div>` : ''}
+            </div>`).join('');
+        
+        openModal('review-modal');
+    }
+
     async function loadResults(type) { const res = await fetch('/api/student/results/online', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ email: user.email }) }); const data = await res.json(); document.getElementById('result-list').innerHTML = `<table style="min-width:400px;"><tr><th>Date</th><th>Test</th><th>Score</th><th>Act</th></tr>${data.results.filter(r => r.testType === type).map(r => `<tr><td>${new Date(r.date).toLocaleDateString()}</td><td>${r.testTitle}</td><td>${r.score}</td><td><button class="btn btn-gold btn-small" onclick="viewSheet('${r._id}')">View</button></td></tr>`).join('')}</table>`; }
     async function loadOfflineResults() { const res = await fetch('/api/results/offline'); const data = await res.json(); document.getElementById('result-list').innerHTML = data.map(r => `<h4>${r.title}</h4><table><tr><th>Rank</th><th>Name</th><th>Mks</th></tr>${r.records.map(rec => `<tr><td>#${rec.rank}</td><td>${rec.studentName}</td><td>${rec.obtainedMarks}</td></tr>`).join('')}</table>`).join(''); }
     
