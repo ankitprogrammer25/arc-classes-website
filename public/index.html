@@ -327,7 +327,7 @@
         if(id==='tests') loadTests(false); if(id==='live') loadTests(true); if(id==='results') loadResults('practice');
     }
 
-    // --- ADMIN PANEL FUNCTIONS ---
+    ///////////////////////////////////// --- ADMIN PANEL FUNCTIONS ---/////////////////////////////////////////////////////////////////////
     function showAdm(tab) {
         const c = document.getElementById('adm-content');
         if (tab === 'create-test') {
@@ -578,7 +578,9 @@
              fetch('/api/announcement').then(r=>r.json()).then(d => { document.getElementById('ann-list').innerHTML = d.list.map(t => `<div style="padding:10px; border-bottom:1px solid #eee; display:flex; justify-content:space-between;">${t} <button onclick="delAnnounce('${t}')">X</button></div>`).join(''); });
         } else if(tab === 'upload') {
             c.innerHTML = `<h3>Upload Material</h3><input id="m-title" placeholder="Title"><input id="m-link" placeholder="Link (PDF/Drive)"><input id="m-img" placeholder="Image URL"><select id="m-cat"><option>11th Class</option><option>12th Class</option><option>Organic</option><option>Physical</option><option>Inorganic</option><option>Test Series</option><option>Notes</option></select><input id="m-code" placeholder="Password (Optional)"><button class="btn btn-gold" style="width:100%; margin-top:10px;" onclick="uploadMat()">${editingMaterialId ? 'UPDATE' : 'UPLOAD'}</button>`;
-        } // --- REPLACE THE EXISTING 'else if(tab === 'results')' BLOCK WITH THIS ---
+        } 
+        
+        // --- REPLACE THE EXISTING 'else if(tab === 'results')' BLOCK WITH THIS ---
 else if(tab === 'results') {
     c.innerHTML = `
         <h3>Online Test Analysis</h3>
@@ -614,7 +616,10 @@ else if(tab === 'results') {
             </tr>`).join('');
     });}
     
-    // STUDENT ACCOUNT
+
+
+
+    //////////////////////////////////////////////////////////////////////// STUDENT ACCOUNT///////////////////////////////////////////////////////////////
     // Paste this inside index.html replacing the existing 'else if(tab==="students")' block
         else if(tab==='students') {
             c.innerHTML = `
@@ -1018,10 +1023,6 @@ function renderOfflineDraft() {
             document.getElementById('t-end').value = localEnd;
         }
     }
-
-    function showAdm(tab) {
-        const c = document.getElementById('adm-content');
-        c.innerHTML = '';}
 
     // --- PASTE THIS NEW FUNCTION IN index.html SCRIPT SECTION ---
     async function deleteResult(id) {
