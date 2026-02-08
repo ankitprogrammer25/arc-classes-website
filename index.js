@@ -63,6 +63,15 @@ const Blog = mongoose.model('Blog', BlogSchema);
 const ConfigSchema = new mongoose.Schema({ type: String, list: [String] });
 const Config = mongoose.model('Config', ConfigSchema);
 
+// //////////////////////////////--- SCHEDULE TEST list-----////////////////////////////////////////
+const ScheduleSchema = new mongoose.Schema({
+    cls: String,        // Class (e.g., 11th, 12th)
+    topic: String,      // Test Topic
+    password: String,   // Optional Password
+    time: Date,         // Scheduled Time
+    date: { type: Date, default: Date.now } // Created Date
+});
+const Schedule = mongoose.model('Schedule', ScheduleSchema);
 // --- 3. ROUTES ---
 
 // --- AUTH ---
@@ -88,7 +97,13 @@ app.post('/api/login', async (req, res) => {
     } catch (e) { res.json({ success: false }); }
 });
 
-// --- ADMIN API ---
+// ////////////////////////////////////////////////--- ADMIN API ---///////////////////////////////////////////////////
+// SCHEDULE ROUTES
+app.get('/api/schedule', async (req, res) => res.json(await Schedule.find().sort({ time: 1 })));
+app.post('/api/admin/schedule', async (req, res) => { await new Schedule(req.body).save(); res.json({ success: true }); });
+app.put('/api/admin/schedule/:id', async (req, res) => { await Schedule.findByIdAndUpdate(req.params.id, req.body); res.json({ success: true }); });
+app.delete('/api/admin/schedule/:id', async (req, res) => { await Schedule.findByIdAndDelete(req.params.id); res.json({ success: true }); });
+
 // STUDENTS
 app.get('/api/admin/students', async (req, res) => res.json(await Student.find().sort({ joinedAt: -1 })));
 app.get('/api/admin/student/:id', async (req, res) => res.json(await Student.findById(req.params.id)));

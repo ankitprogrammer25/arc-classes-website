@@ -490,20 +490,40 @@
             fetch('/api/admin/results/online').then(r=>r.json()).then(d => { document.getElementById('adm-res-list').innerHTML = d.map(r => `<tr><td>${r.studentName}</td><td>${r.testTitle}</td><td>${r.score}</td><td><button class="btn btn-gold btn-small" onclick="viewSheet('${r._id}')">View</button> <button class="btn btn-red btn-small" onclick="deleteItem('result','${r._id}')">Del</button></td></tr>`).join(''); });
         }
         else if (tab === 'add-schedule') {
-    c.innerHTML = `
-        <h3>${editingScheduleId ? 'Edit' : 'Add'} Test Schedule</h3>
-        <select id="s-cls">
-            <option>11th Class</option><option>12th Class</option><option>Dropper</option>
-        </select>
-        <input id="s-topic" placeholder="Test Topic">
-        <input id="s-pass" placeholder="Password (Optional)">
-        <label>Test Time:</label>
-        <input type="datetime-local" id="s-time">
-        <button class="btn btn-gold" style="width:100%; margin-top:15px;" onclick="saveSchedule()">
-            ${editingScheduleId ? 'UPDATE SCHEDULE' : 'ADD SCHEDULE'}
-        </button>
-    `;
-}
+            c.innerHTML = `
+                <div style="max-width:500px; margin:auto;">
+                    <h3 style="border-bottom:2px solid var(--gold); padding-bottom:10px;">
+                        ${editingScheduleId ? 'Edit' : 'Add'} Test Schedule
+                    </h3>
+                    
+                    <label><b>Class:</b></label>
+                    <select id="s-cls">
+                        <option>11th Class</option>
+                        <option>12th Class</option>
+                        <option>Organic Topic</option>
+                        <option>Inrganic Topic</option>
+                        <option>Physical Topic</option>
+                    </select>
+
+                    <label><b>Topic:</b></label>
+                    <input id="s-topic" placeholder="e.g. Haloalkanes Full Test">
+
+                    <label><b>Password (Optional):</b></label>
+                    <input id="s-pass" placeholder="Leave empty if none">
+
+                    <label><b>Test Time:</b></label>
+                    <input type="datetime-local" id="s-time">
+
+                    <button class="btn btn-gold" style="width:100%; margin-top:15px;" onclick="saveSchedule()">
+                        ${editingScheduleId ? 'UPDATE SCHEDULE' : 'ADD SCHEDULE'}
+                    </button>
+                    
+                    <button class="btn btn-red" style="width:100%; margin-top:10px;" onclick="showAdm('manage')">
+                        Cancel
+                    </button>
+                </div>
+            `;
+        }
         else if (tab === 'announce') {
              c.innerHTML = `<h3>News</h3><input id="ann-text" placeholder="Text"><button class="btn btn-gold" onclick="postAnnounce()">Post</button><div id="ann-list" style="margin-top:20px;"></div>`;
              fetch('/api/announcement').then(r=>r.json()).then(d => { document.getElementById('ann-list').innerHTML = d.list.map(t => `<div style="padding:10px; border-bottom:1px solid #eee; display:flex; justify-content:space-between;">${t} <button onclick="delAnnounce('${t}')">X</button></div>`).join(''); });
@@ -530,18 +550,26 @@
         } 
     }
 
-    async function deleteItem(type, id) { 
-        if(!confirm("Permanently delete?")) return; 
-        await fetch(`/api/admin/${type}/${id}`, { method: 'DELETE' }); 
-        alert("Deleted."); 
-        if(type==='student') showAdm('students');
-        else if(type==='result') { if(document.getElementById('adm-res-list')) showAdm('results'); else loadManageOnline(); }
-        else if(type==='offline-result') { if(document.getElementById('manage-area') && document.getElementById('manage-area').style.display !== 'none') loadManageOffline(); else showAdm('offline'); }
-        else if(type==='test') loadManageTests();
-        else if(type==='blog') loadManageBlogs();
-        else if(type === 'schedule') loadManageSchedule();
-        else if(type==='material') loadManageLibrary();
+    async function deleteItem(type, id) {
+    if(!confirm("Permanently delete?")) return;
+    
+    await fetch(`/api/admin/${type}/${id}`, { method: 'DELETE' });
+    alert("Deleted.");
+    
+    if(type === 'student') showAdm('students');
+    else if(type === 'result') { 
+        if(document.getElementById('adm-res-list')) showAdm('results'); 
+        else loadManageOnline(); 
     }
+    else if(type === 'offline-result') { 
+        if(document.getElementById('manage-area') && document.getElementById('manage-area').style.display !== 'none') loadManageOffline(); 
+        else showAdm('offline'); 
+    }
+    else if(type === 'schedule') loadManageSchedule();
+    else if(type === 'test') loadManageTests();
+    else if(type === 'blog') loadManageBlogs();
+    else if(type === 'material') loadManageLibrary();
+}
 
     function initCreateTest() { editingTestId = null; draftQ = []; showAdm('create-test'); renderCreatePalette(); }
     function initUpload() { editingMaterialId = null; showAdm('upload'); } 
@@ -702,14 +730,20 @@ async function doLogin() {
     function clearQForm() { editQIndex = -1; document.getElementById('q-editor').innerHTML = ""; [0,1,2,3].forEach(i => document.getElementById('op'+i).innerHTML = ""); document.getElementById('q-sol').innerHTML = ""; document.getElementById('q-marks').value = "4"; document.getElementById('q-neg').value = "0"; document.getElementById('q-prev').style.display = 'none'; tempImg = ""; document.getElementById('sol-prev').style.display = 'none'; tempSolImg = ""; document.getElementById('q-sol-file').value = ""; renderCreatePalette(); }
 
     //////////////////////////////////////////////////////////SCHEDULE HELPER///////////////////////////////
-    let editingScheduleId = null;
+    // ==========================================
+    // 🟢 SCHEDULE FUNCTIONS (Paste at the bottom of script)
+    // ==========================================
 
-    // 1. Load Schedule for Students
+    // 1. Load Schedule for Students (Student Panel)
     async function loadSchedule() {
         const res = await fetch('/api/schedule');
         const data = await res.json();
         const list = document.getElementById('schedule-list');
         if(list) {
+            if(data.length === 0) {
+                list.innerHTML = "<tr><td colspan='4' style='text-align:center;'>No upcoming tests scheduled.</td></tr>";
+                return;
+            }
             list.innerHTML = data.map(s => `
                 <tr>
                     <td><span class="badge bg-green">${s.cls}</span></td>
@@ -721,59 +755,83 @@ async function doLogin() {
         }
     }
 
-    // 2. Admin: Load Schedule List for Management
+    // 2. Load Schedule List for Admin (Manage Tab)
     async function loadManageSchedule() {
         const res = await fetch('/api/schedule');
         const data = await res.json();
         document.getElementById('manage-area').innerHTML = `
-            <button class="btn btn-gold btn-small" style="margin-bottom:10px;" onclick="initAddSchedule()">+ Add New Schedule</button>
+            <div style="margin-bottom:15px;">
+                <button class="btn btn-gold btn-small" onclick="initAddSchedule()">+ Add New Schedule</button>
+            </div>
             <table>
-                <tr><th>Topic</th><th>Time</th><th>Action</th></tr>
-                ${data.map(s => `
-                    <tr>
-                        <td>${s.topic} (${s.cls})</td>
-                        <td>${new Date(s.time).toLocaleString()}</td>
-                        <td>
-                            <button class="btn-small" onclick="editSchedule('${s._id}')">Edit</button> 
-                            <button class="btn-small btn-red" onclick="deleteItem('schedule','${s._id}')">Del</button>
-                        </td>
-                    </tr>`).join('')}
+                <thead>
+                    <tr><th>Topic</th><th>Time</th><th>Action</th></tr>
+                </thead>
+                <tbody>
+                    ${data.map(s => `
+                        <tr>
+                            <td>
+                                <b>${s.topic}</b><br>
+                                <small style="color:#666;">${s.cls}</small>
+                            </td>
+                            <td>${new Date(s.time).toLocaleString()}</td>
+                            <td>
+                                <button class="btn-small" style="background:#e2e8f0;" onclick="editSchedule('${s._id}')">Edit</button> 
+                                <button class="btn-small btn-red" onclick="deleteItem('schedule','${s._id}')">Del</button>
+                            </td>
+                        </tr>`).join('')}
+                </tbody>
             </table>`;
     }
 
-    // 3. Admin: Init Add/Edit
-    function initAddSchedule() { editingScheduleId = null; showAdm('add-schedule'); }
+    // 3. Initialize Add Mode
+    function initAddSchedule() { 
+        editingScheduleId = null; 
+        showAdm('add-schedule'); 
+    }
     
+    // 4. Edit Mode
     async function editSchedule(id) {
-        const res = await fetch('/api/schedule'); // Reuse list fetch to find item
+        const res = await fetch('/api/schedule'); 
         const data = await res.json();
         const s = data.find(item => item._id === id);
         if(s) {
             editingScheduleId = id;
             showAdm('add-schedule');
-            document.getElementById('s-cls').value = s.cls;
-            document.getElementById('s-topic').value = s.topic;
-            document.getElementById('s-pass').value = s.password || "";
-            // Format date for input
-            const d = new Date(s.time);
-            d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
-            document.getElementById('s-time').value = d.toISOString().slice(0, 16);
+            
+            // Wait for DOM update then fill values
+            setTimeout(() => {
+                document.getElementById('s-cls').value = s.cls;
+                document.getElementById('s-topic').value = s.topic;
+                document.getElementById('s-pass').value = s.password || "";
+                
+                // Format date for datetime-local input
+                const d = new Date(s.time);
+                d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+                document.getElementById('s-time').value = d.toISOString().slice(0, 16);
+            }, 50);
         }
     }
 
-    // 4. Admin: Save Function
+    // 5. Save (Create/Update) Function
     async function saveSchedule() {
+        const topic = document.getElementById('s-topic').value;
+        const time = document.getElementById('s-time').value;
+        
+        if(!topic || !time) return alert("Please fill Topic and Time");
+
         const body = {
             cls: document.getElementById('s-cls').value,
-            topic: document.getElementById('s-topic').value,
+            topic: topic,
             password: document.getElementById('s-pass').value,
-            time: document.getElementById('s-time').value
+            time: time
         };
+
         const method = editingScheduleId ? 'PUT' : 'POST';
         const url = editingScheduleId ? `/api/admin/schedule/${editingScheduleId}` : '/api/admin/schedule';
         
         await fetch(url, { method, headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
-        alert("Saved!");
+        alert("Schedule Saved!");
         showAdm('manage');
         loadManageSchedule();
     }
