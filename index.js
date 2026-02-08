@@ -10,6 +10,7 @@ app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // --- 1. DATABASE CONNECTION ---
+// Replace with your actual connection string if different
 const dbLink = "mongodb+srv://ankitprogrammer25:a32x05sYvukG178G@cluster0.0dhqpzv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 
 mongoose.connect(dbLink)
@@ -216,7 +217,7 @@ app.post('/api/test/start', async (req, res) => {
             image: q.image, 
             options: q.options, 
             marks: q.marks || 4, 
-            negative: q.negative !== undefined ? q.negative : 0 // Default to 0 if undefined
+            negative: q.negative !== undefined ? q.negative : 0 
         }));
         res.json({ success: true, test: {...t._doc, questions: safeQ} });
     } else res.json({ success: false, message: "Wrong Password" });
@@ -233,7 +234,7 @@ app.post('/api/test/submit', async (req, res) => {
             total += marks;
             
             if (answers[i] === q.correct) score += marks;
-            else if (answers[i] !== null) score -= neg;
+            else if (answers[i] !== null && answers[i] !== -1) score -= neg; // Ensure null/skipped doesn't deduct
         });
         
         const pct = (score / total) * 100;
