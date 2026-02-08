@@ -631,33 +631,85 @@ function insChar(val) {
     function encodeImg(input, previewId, isSolution = false) { if (input.files && input.files[0]) { const reader = new FileReader(); reader.onload = function (e) { const result = e.target.result; if (isSolution) tempSolImg = result; else tempImg = result; if (previewId) { const img = document.getElementById(previewId); img.src = result; img.style.display = 'block'; } }; reader.readAsDataURL(input.files[0]); } }
     function insertInlineImg(input) { if(input.files && input.files[0]) { const reader = new FileReader(); reader.onload = function(e) { document.getElementById('b-content').focus(); document.execCommand('insertImage', false, e.target.result); }; reader.readAsDataURL(input.files[0]); } }
     
-    function switchTab(mode) { loginMode = mode; document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); document.getElementById('tab-'+mode).classList.add('active'); document.getElementById('student-input').style.display = mode === 'student' ? 'block' : 'none'; document.getElementById('teacher-input').style.display = mode === 'student' ? 'none' : 'block'; document.getElementById('login-title').innerText = mode === 'student' ? 'Student Login' : 'Teacher Login'; document.getElementById('reg-link').style.display = mode === 'student' ? 'block' : 'none'; }
-  
-    /////////////////////////////////////////////////////////////////////////////LOGIN PAGE/////////////////////////////
+function switchTab(mode) { 
+        loginMode = mode; 
+        
+        // 1. Highlight the correct tab
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); 
+        document.getElementById('tab-'+mode).classList.add('active'); 
+        
+        // 2. Show/Hide Inputs
+        document.getElementById('student-input').style.display = mode === 'student' ? 'block' : 'none'; 
+        document.getElementById('teacher-input').style.display = mode === 'student' ? 'none' : 'block'; 
+        
+        // 3. Update Title
+        document.getElementById('login-title').innerText = mode === 'student' ? 'Student Login' : 'Teacher Login'; 
+        
+        // 4. HIDE OTP BUTTONS FOR TEACHER (Crucial Fix)
+        if(mode === 'teacher') {
+            document.getElementById('btn-login-otp').style.display = 'none'; // Hide OTP button
+            document.getElementById('reg-link').style.display = 'none';      // Hide Register link
+            document.getElementById('otp-login-section').style.display = 'none'; // Hide OTP input
+            document.getElementById('l-pass').style.display = 'block';       // Show Password input
+            document.getElementById('btn-login-pass').style.display = 'block'; // Show Login button
+            document.getElementById('btn-login-pass').innerText = "Teacher Login";
+        } else {
+            // Restore Student View
+            document.getElementById('btn-login-otp').style.display = 'block'; 
+            document.getElementById('reg-link').style.display = 'block';
+            document.getElementById('l-pass').style.display = 'block';
+            document.getElementById('btn-login-pass').style.display = 'block';
+            document.getElementById('btn-login-pass').innerText = "Login with Password";
+        }
+    }  
+    
 async function doLogin() { 
-        let email = loginMode === 'student' ? document.getElementById('l-email').value : document.getElementById('l-admin-email').value;
+        // 1. Check which tab is active (Teacher or Student)
+        const isTeacher = document.getElementById('tab-teacher').classList.contains('active');
+        const role = isTeacher ? 'admin' : 'student'; // Force 'admin' role if on Teacher tab
+
+        // 2. Get Email & Password
+        let email = isTeacher ? document.getElementById('l-admin-email').value : document.getElementById('l-email').value;
         const password = document.getElementById('l-pass').value;
         
-        // Standard Password Login
-        const res = await fetch('/api/login', { 
-            method: 'POST', 
-            headers: {'Content-Type':'application/json'}, 
-            body: JSON.stringify({ email, password, role: loginMode }) 
-        });
+        // 3. Fix Student Email (Auto-append domain)
+        if(!isTeacher && email && !email.includes('@')) email += '@arcstudent.com';
 
-        const data = await res.json();
-        
-        if(data.success) {
-            localStorage.setItem('arc_user', JSON.stringify({name: data.name, email: data.email, role: data.role}));
-            document.getElementById('nav-login').style.display = 'none';
-            document.getElementById('nav-logout').style.display = 'block';
-            if(data.role === 'admin') document.getElementById('nav-admin').style.display = 'block';
-            show('home');
-        } else {
-            alert("Invalid Password");
-        } 
-    }
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        if(!email || !password) return alert("Please fill all fields");
+
+        // 4. Send Login Request
+        try {
+            const res = await fetch('/api/login', { 
+                method: 'POST', 
+                headers: {'Content-Type':'application/json'}, 
+                body: JSON.stringify({ email, password, role }) 
+            });
+            
+            const data = await res.json();
+            
+            if(data.success) {
+                // Save User Data
+                const userObj = { name: data.name, email: data.email, role: data.role };
+                localStorage.setItem('arc_user', JSON.stringify(userObj));
+                
+                alert("Login Successful!");
+                
+                // Redirect based on Role
+                if (data.role === 'admin') {
+                    show('admin'); // Go directly to Admin Panel
+                } else {
+                    show('home');  // Go to Home for students
+                }
+                
+                // Refresh to update menu (Logout button)
+                setTimeout(() => location.reload(), 500); 
+            } else {
+                alert("Login Failed: " + (data.message || "Invalid Credentials"));
+            }
+        } catch(e) {
+            alert("Connection Error. Please check your internet.");
+        }
+    }  
     //////////////////////////////////////EMAIL OTP VERIFICATION FOR REGISTRATION (STUDENTS ONLY)//////////////////////////////////////
 async function doReg() {
         if(!isEmailVerified) return alert("Please verify email with OTP first.");
