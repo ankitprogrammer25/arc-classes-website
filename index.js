@@ -101,7 +101,7 @@ app.post('/api/send-otp', (req, res) => {
     otpStore[email] = { code: otp, expire: Date.now() + 300000 };
 
     const mailOptions = {
-        from: 'ARC Classes <your-email@gmail.com>',
+        from: 'ARC Classes <arcclasses25kashipur@gmail.com>',
         to: email,
         subject: 'Your Login OTP - ARC Classes',
         text: `Your OTP is: ${otp}. Do not share this with anyone.`
@@ -109,9 +109,10 @@ app.post('/api/send-otp', (req, res) => {
 
     transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
-            console.log(error);
+            console.log("❌ EMAIL ERROR:", error); 
             return res.json({ success: false, message: "Error sending email" });
         }
+        console.log("✅ Email Sent: " + info.response);
         res.json({ success: true, message: "OTP sent!" });
     });
 });
