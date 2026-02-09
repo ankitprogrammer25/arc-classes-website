@@ -10,7 +10,6 @@ app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // --- 1. DATABASE CONNECTION ---
-// Replace with your actual connection string if different
 const dbLink = "mongodb+srv://ankitprogrammer25:a32x05sYvukG178G@cluster0.0dhqpzv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 
 mongoose.connect(dbLink)
@@ -41,6 +40,13 @@ const TestSchema = new mongoose.Schema({
     questions: [QuestionSchema], date: { type: Date, default: Date.now }
 });
 const Test = mongoose.model('Test', TestSchema);
+
+// --- ADDED MISSING SCHEDULE SCHEMA ---
+const ScheduleSchema = new mongoose.Schema({
+    cls: String, topic: String, password: String, time: Date
+});
+const Schedule = mongoose.model('Schedule', ScheduleSchema);
+// -------------------------------------
 
 const OfflineResultSchema = new mongoose.Schema({
     title: String, date: { type: Date, default: Date.now },
@@ -114,6 +120,25 @@ app.delete('/api/admin/test/:id', async (req, res) => { await Test.findByIdAndDe
 app.post('/api/admin/blog', async (req, res) => { await new Blog(req.body).save(); res.json({ success: true }); });
 app.put('/api/admin/blog/:id', async (req, res) => { await Blog.findByIdAndUpdate(req.params.id, req.body); res.json({ success: true }); });
 app.delete('/api/admin/blog/:id', async (req, res) => { await Blog.findByIdAndDelete(req.params.id); res.json({ success: true }); });
+
+// --- ADDED MISSING SCHEDULE ROUTES ---
+app.get('/api/schedule', async (req, res) => res.json(await Schedule.find().sort({ time: 1 })));
+
+app.post('/api/admin/schedule', async (req, res) => { 
+    await new Schedule(req.body).save(); 
+    res.json({ success: true }); 
+});
+
+app.put('/api/admin/schedule/:id', async (req, res) => { 
+    await Schedule.findByIdAndUpdate(req.params.id, req.body); 
+    res.json({ success: true }); 
+});
+
+app.delete('/api/admin/schedule/:id', async (req, res) => { 
+    await Schedule.findByIdAndDelete(req.params.id); 
+    res.json({ success: true }); 
+});
+// -------------------------------------
 
 // OFFLINE RESULTS
 app.get('/api/admin/offline-result/:id', async (req, res) => { res.json(await OfflineResult.findById(req.params.id)); });
