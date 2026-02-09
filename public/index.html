@@ -2,420 +2,791 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ARC Classes | The Complete Learning Hub</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ARC CLASSES</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        :root { --primary: #0a192f; --gold: #ffd700; --light: #e6f1ff; --card-bg: #112240; }
-        body { margin: 0; font-family: 'Segoe UI', sans-serif; background: var(--primary); color: var(--light); }
+        :root { --primary: #0f172a; --gold: #fbbf24; --light: #f8fafc; --red: #ef4444; --green: #22c55e; }
         
-        /* HEADER */
-        header { background: #020c1b; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--gold); position: sticky; top: 0; z-index: 1000; }
-        .logo { font-size: 24px; font-weight: bold; color: var(--gold); letter-spacing: 1px; }
-        nav button { background: none; border: none; color: white; margin-left: 15px; cursor: pointer; font-size: 16px; transition: 0.3s; }
-        nav button:hover { color: var(--gold); }
-        
-        /* LAYOUT */
-        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
-        .section { display: none; animation: fadeIn 0.5s; }
-        .active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* CARDS & GRID */
-        .grid-menu { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-top: 20px; }
-        .menu-card { background: var(--card-bg); padding: 20px; border-radius: 10px; text-align: center; cursor: pointer; border: 1px solid #333; transition: 0.3s; }
-        .menu-card:hover { border-color: var(--gold); transform: translateY(-5px); }
-        .menu-card h3 { margin: 10px 0 0; color: var(--gold); }
-        .menu-card span { font-size: 30px; }
-
-        /* FORMS */
-        .form-box { background: var(--card-bg); padding: 30px; border-radius: 10px; max-width: 400px; margin: 50px auto; border: 1px solid var(--gold); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        input, select, textarea { width: 100%; padding: 12px; margin: 10px 0; background: #0a192f; border: 1px solid #333; color: white; border-radius: 5px; box-sizing: border-box; }
-        button.btn { width: 100%; padding: 12px; cursor: pointer; font-weight: bold; border: none; border-radius: 5px; margin-top: 10px; font-size: 16px; transition: 0.3s; }
-        .btn-gold { background: var(--gold); color: black; }
-        .btn-gold:hover { background: #e6c200; }
-        
-        /* LIST ITEMS */
-        .item-card { background: var(--card-bg); padding: 15px; margin-bottom: 10px; border-left: 4px solid var(--gold); display: flex; justify-content: space-between; align-items: center; border-radius: 4px; }
-        .item-card a { color: #64ffda; text-decoration: none; font-weight: bold; }
-        
-        /* ADMIN PANEL */
-        .admin-controls button { margin: 5px; padding: 10px 20px; background: #233554; color: white; border: 1px solid var(--gold); cursor: pointer; border-radius: 5px; }
-        .admin-controls button:hover { background: var(--gold); color: black; }
-
-        /* ERROR MODAL (BLINKING) */
-        #error-modal {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85); z-index: 2000; justify-content: center; align-items: center;
+        /* 1. LAYOUT & RESET */
+        html, body { 
+            overscroll-behavior-y: none; /* Prevents Pull-to-Refresh */
+            font-family: 'Segoe UI', sans-serif; 
+            background: var(--light); 
+            margin: 0; 
+            color: #333; 
+            display: flex; 
+            flex-direction: column; 
+            min-height: 100vh; 
         }
-        .modal-content {
-            background: #220000; border: 2px solid red; padding: 30px; border-radius: 10px; text-align: center; max-width: 80%;
+        body.modal-open { overflow: hidden; height: 100vh; }
+
+        /* 2. NAVBAR & MENU */
+        nav { background: var(--primary); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
+        .logo { 
+            font-size: 1.5rem; font-weight: 900; 
+            background: linear-gradient(90deg, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff);
+            background-size: 400%; -webkit-background-clip: text; background-clip: text; color: transparent; 
+            animation: rainbow 8s linear infinite; cursor: pointer;
         }
-        .blink-text {
-            color: red; font-size: 18px; font-weight: bold; animation: blinker 1s linear infinite; margin-bottom: 20px; display: block;
+        @keyframes rainbow { 0% { background-position: 0%; } 100% { background-position: 400%; } }
+
+        .menu-toggle { display: none; color: white; font-size: 1.8rem; cursor: pointer; }
+        .menu { display: flex; align-items: center; gap: 20px; }
+        .menu a { color: white; text-decoration: none; font-weight: 600; cursor: pointer; transition: 0.3s; }
+        .menu a:hover { color: var(--gold); }
+        
+        @media (max-width: 768px) {
+            .menu { display: none; flex-direction: column; position: absolute; top: 60px; left: 0; width: 100%; background: var(--primary); padding: 20px 0; border-top: 1px solid #333; }
+            .menu.active { display: flex; }
+            .menu-toggle { display: block; }
         }
+
+        .blink { animation: blinker 1.5s linear infinite; }
         @keyframes blinker { 50% { opacity: 0; } }
+
+        /* 3. COMMON COMPONENTS */
+        .section { display: none; padding: 20px; max-width: 1200px; margin: auto; width: 100%; box-sizing: border-box; flex: 1; }
+        .section.active { display: block; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border: 1px solid #eee; display: flex; flex-direction: column; cursor: pointer; transition: 0.2s; }
+        .card:hover { transform: translateY(-3px); }
+        
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+        
+        input, select, textarea { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
+        .btn { padding: 10px 20px; border:none; border-radius:6px; cursor:pointer; font-weight:bold; transition: 0.2s; white-space: nowrap; }
+        .btn-gold { background: var(--gold); color: var(--primary); }
+        .btn-red { background: var(--red); color: white; }
+        .btn-small { padding: 5px 10px; font-size: 0.8rem; }
+
+        /* 4. MODALS (Scroll Fixes) */
+        .modal { 
+            position: fixed; top:0; left:0; width:100%; height:100%; 
+            background:rgba(0,0,0,0.85); display:none; 
+            justify-content:center; align-items:flex-start;
+            z-index: 2000; padding: 10px; box-sizing: border-box; 
+            overflow-y: auto; overscroll-behavior: contain; 
+        }
+        .modal-content { 
+            background:white; width: 100%; max-width: 800px; 
+            max-height: 90vh; overflow-y: auto; 
+            padding: 20px; border-radius: 12px; position: relative; 
+            margin-top: 20px; margin-bottom: 20px;
+            overscroll-behavior: contain; -webkit-overflow-scrolling: touch;
+        }
+        .close-corner { 
+            position: absolute; top: 10px; right: 10px; 
+            background: #f1f5f9; width: 40px; height: 40px; 
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; cursor: pointer; color: #333; font-weight: bold; z-index: 20;
+            border: 1px solid #ddd;
+        }
+
+        /* 5. EXAM & ADMIN LAYOUT */
+        .exam-layout { display: flex; gap: 20px; height: calc(100vh - 140px); flex-direction: column; }
+        @media(min-width: 900px) { .exam-layout { flex-direction: row; } }
+        .question-panel { flex: 3; background: white; padding: 15px; border-radius: 12px; overflow-y: auto; display: flex; flex-direction: column; position: relative; }
+        .palette-panel { flex: 1; background: white; padding: 15px; border-radius: 12px; display: flex; flex-direction: column; max-height: 200px; overflow-y: auto; }
+        @media(min-width: 900px) { .palette-panel { max-height: none; } }
+        
+        .timer-box { background: #fee2e2; color: var(--red); font-weight: bold; font-size: 1.2rem; text-align: center; padding: 10px; border-radius: 8px; margin-bottom: 10px; border: 1px solid var(--red); }
+        .p-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(35px, 1fr)); gap: 5px; }
+        .p-btn { width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; border: 1px solid #ddd; cursor: pointer; border-radius: 50%; font-weight: bold; font-size: 0.9rem; }
+        .p-btn.done { background: var(--green); color: white; border-color: var(--green); }
+        .p-btn.active { border: 2px solid var(--primary); }
+        .mcq-label { display: flex; align-items: flex-start; padding: 12px; margin-bottom: 10px; border: 1px solid #eee; border-radius: 8px; cursor: pointer; }
+        .mcq-label input { margin-right: 15px; margin-top: 5px; width: 20px; height: 20px; flex-shrink: 0; }
+
+        .table-container { overflow-x: auto; margin-bottom: 20px; border: 1px solid #eee; border-radius: 8px; overscroll-behavior-x: contain; }
+        table { width: 100%; border-collapse: collapse; min-width: 500px; }
+        th, td { padding: 10px; border: 1px solid #ddd; text-align: left; }
+        th { background: var(--primary); color: white; }
+        .badge { padding: 4px 8px; border-radius: 4px; color: white; font-size: 0.8rem; font-weight: bold; }
+        .bg-green { background: var(--green); } .bg-red { background: var(--red); }
+        .form-box { width: 100%; max-width: 400px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        footer { background: var(--primary); color: white; text-align: center; padding: 20px; margin-top: auto; border-top: 4px solid var(--gold); }
     </style>
 </head>
 <body>
 
-    <div id="error-modal">
-        <div class="modal-content">
-            <span class="blink-text">Please fill the correct details or ask Ankit sir for details</span>
-            <button class="btn btn-gold" onclick="closeError()">OK</button>
+<nav>
+    <div class="logo" onclick="show('home')">ARC CLASSES</div>
+    <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+    <div class="menu" id="nav-menu">
+        <a onclick="show('home')">Home</a>
+        <a onclick="show('library')">Library</a>
+        <a onclick="show('tests')">Practice Tests</a>
+        <a onclick="show('live')"><span class="blink">🔴</span> Live Test</a>
+        <a onclick="show('schedule')">📅 Upcoming Test Schedule</a>
+        <a onclick="show('results')" id="nav-results">Results</a>
+        <a onclick="show('login')" id="nav-login">Login</a>
+        <a onclick="show('admin')" id="nav-admin" style="display:none; background: var(--red); padding: 5px 10px; border-radius: 4px;">TEACHER</a>
+        <a onclick="logout()" id="nav-logout" style="display:none">Logout</a>
+    </div>
+</nav>
+
+<div class="anno-bar" style="background: var(--gold); color: var(--primary); padding: 8px 0; font-weight: bold; display: flex; overflow: hidden; white-space: nowrap;">
+    <div class="anno-label" style="background: var(--primary); color: white; padding: 0 15px; z-index: 10;">🔔</div>
+    <marquee id="anno-marquee" onmouseover="this.stop()" onmouseout="this.start()">Loading...</marquee>
+</div>
+
+<div id="home" class="section active">
+    <div style="text-align:center; padding: 40px 10px;">
+        <h1 style="color:var(--primary); font-size: clamp(2rem, 5vw, 3rem);">Analyze. Revise. Conquer.</h1>
+        <p>Your Trajectory to the Top.</p>
+        <button class="btn btn-gold" onclick="show('tests')">Start Practice</button>
+    </div>
+    <h3 style="margin-left: 10px;">Latest Blogs</h3>
+    <div id="blog-grid" class="grid"></div>
+</div>
+
+<div id="login" class="section">
+    <div class="form-box">
+        <div style="display: flex; border-bottom: 2px solid #eee; margin-bottom: 20px;">
+            <div class="tab active" style="flex:1; text-align:center; padding:10px; cursor:pointer; border-bottom:3px solid var(--gold);" onclick="switchTab('student')" id="tab-student">Student</div>
+            <div class="tab" style="flex:1; text-align:center; padding:10px; cursor:pointer;" onclick="switchTab('teacher')" id="tab-teacher">Teacher</div>
+        </div>
+        <h2 id="login-title" style="text-align:center;">Student Login</h2>
+        <form onsubmit="event.preventDefault(); doLogin()">
+            <div id="student-input">
+                <input id="l-email" placeholder="username" required>
+                <div style="text-align:right; font-size:0.8rem; color:#777;">@arcstudent.com</div>
+            </div>
+            <div id="teacher-input" style="display:none;"><input id="l-admin-email" placeholder="admin@arc.com"></div>
+            <input id="l-pass" type="password" placeholder="Password" required>
+            <button type="submit" class="btn btn-gold" style="width:100%">Login</button>
+        </form>
+        <p id="reg-link" style="text-align:center; cursor:pointer; margin-top:15px; color:blue;" onclick="document.getElementById('reg-box').style.display='block'; document.querySelector('.form-box').style.display='none';">New Student? Register</p>
+    </div>
+    <div id="reg-box" class="form-box" style="display:none; margin-top:20px;">
+        <h2 style="text-align:center;">Register</h2>
+        <input id="r-name" placeholder="Full Name">
+        <div style="display:flex; align-items:center; border:1px solid #ccc; border-radius:6px; background:white; margin:10px 0;">
+            <input id="r-prefix" placeholder="username" style="border:none; margin:0;"> 
+            <div style="padding:10px; background:#f1f5f9; color:#64748b; border-left:1px solid #ccc;">@arcstudent.com</div>
+        </div>
+        <input id="r-pass" type="password" placeholder="Password">
+        <button class="btn btn-gold" style="width:100%" onclick="doReg()">Register</button>
+        <p style="text-align:center; cursor:pointer; margin-top:15px; color:blue;" onclick="document.getElementById('reg-box').style.display='none'; document.querySelector('.form-box').style.display='block';">Back to Login</p>
+    </div>
+</div>
+
+<div id="admin" class="section">
+    <div style="display:flex; justify-content:space-between; align-items:center;"><h2>👨‍🏫 Panel</h2><span style="color:var(--red);">Admin</span></div>
+    <div style="display:flex; gap:5px; flex-wrap:wrap; margin-bottom:15px;">
+        <button class="btn btn-gold btn-small" onclick="initCreateTest()">➕ Test</button>
+        <button class="btn btn-gold btn-small" onclick="initUpload()">📂 File</button>
+        <button class="btn btn-gold btn-small" onclick="showAdm('blog')">✍️ Blog</button>
+        <button class="btn btn-gold btn-small" onclick="showAdm('announce')">📢 News</button>
+        <button class="btn btn-gold btn-small" onclick="showAdm('results')">📈 Online</button>
+        <button class="btn btn-gold btn-small" onclick="showAdm('offline')">📊 Offline</button>
+        <button class="btn btn-gold btn-small" onclick="showAdm('students')">👥 Students</button>
+        <button class="btn btn-red btn-small" onclick="showAdm('manage')">🛠️ Manage</button>
+    </div>
+    <div id="adm-content" style="background:white; padding:15px; border-radius:10px; border:1px solid #ddd; min-height:300px; overflow-x:auto;">Select option.</div>
+</div>
+
+<div id="library" class="section">
+    <h2>📚 Library</h2>
+    <div id="lib-cats" class="grid">
+        <div class="card" onclick="loadLib('11th Class')" style="text-align:center; background:#e0f2fe; border-bottom:4px solid var(--primary);"><b>11th Class</b></div>
+        <div class="card" onclick="loadLib('12th Class')" style="text-align:center; background:#e0f2fe; border-bottom:4px solid var(--primary);"><b>12th Class</b></div>
+        <div class="card" onclick="loadLib('Organic')" style="text-align:center; background:#ffedd5; border-bottom:4px solid var(--gold);"><b>Organic</b></div>
+        <div class="card" onclick="loadLib('Physical')" style="text-align:center; background:#ffedd5; border-bottom:4px solid var(--gold);"><b>Physical</b></div>
+        <div class="card" onclick="loadLib('Inorganic')" style="text-align:center; background:#ffedd5; border-bottom:4px solid var(--gold);"><b>Inorganic</b></div>
+        <div class="card" onclick="loadLib('Test Series')" style="text-align:center; background:#dcfce7; border-bottom:4px solid var(--green);"><b>Test Series</b></div>
+        <div class="card" onclick="loadLib('Notes')" style="text-align:center; background:#f3f4f6; border-bottom:4px solid #999;"><b>Notes</b></div>
+    </div>
+    <button id="lib-back" class="btn btn-red" style="display:none; margin-bottom:15px;" onclick="resetLib()">Back</button>
+    <div id="lib-content" class="grid"></div>
+</div>
+
+<div id="tests" class="section"><h2>📝 Practice Tests</h2><div id="test-list" class="grid"></div></div>
+<div id="live" class="section"><h2>🔴 Live Tests</h2><div id="live-list" class="grid"></div></div>
+
+<div id="schedule" class="section">
+    <h2 style="text-align:center; color:var(--primary);">📅 Upcoming Test Schedule</h2>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Class</th>
+                    <th>Topic</th>
+                    <th>Time</th>
+                    <th>Password</th>
+                </tr>
+            </thead>
+            <tbody id="schedule-list"></tbody>
+        </table>
+    </div>
+</div>
+
+<div id="exam" class="section" style="padding:10px; height: 100vh;">
+    <div class="exam-layout">
+        <div class="question-panel">
+            <div id="mobile-timer" class="timer-box">00:00</div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                <h3 id="q-no" style="margin:0;">Q1</h3>
+                <span id="q-marks" style="color:var(--green); font-weight:bold; font-size:0.9rem;"></span>
+            </div>
+            <div id="q-text" style="font-size:1.1rem; margin-bottom:15px; flex-grow:1;"></div>
+            <img id="q-img" style="max-height:200px; display:none; margin:10px auto;">
+            <div id="q-opts" style="margin-top:10px;"></div>
+            <div style="margin-top:20px; display:flex; gap:10px; justify-content: space-between;">
+                <button class="btn btn-red" onclick="clearAns()">Clear</button>
+                <button class="btn btn-gold" onclick="saveNext()">Save & Next ➡</button>
+            </div>
+        </div>
+        <div class="palette-panel">
+            <div style="font-size:0.9rem; text-align:center; margin-bottom:5px;">Palette</div>
+            <div id="palette" class="p-grid"></div>
+            <button class="btn btn-red" style="width:100%; margin-top:20px;" onclick="submitTest()">SUBMIT TEST</button>
         </div>
     </div>
+</div>
 
-    <header>
-        <div class="logo">ARC CLASSES</div>
-        <nav id="nav-menu"></nav>
-    </header>
-
-    <div class="container">
-
-        <div id="login-section" class="section active">
-            <div class="form-box">
-                <h2 style="text-align:center; color:var(--gold);">Welcome Back</h2>
-                <div style="display:flex; margin-bottom:15px; border-bottom:1px solid #333;">
-                    <div style="flex:1; text-align:center; padding:10px; cursor:pointer;" id="tab-student" onclick="toggleRole('student')">Student</div>
-                    <div style="flex:1; text-align:center; padding:10px; cursor:pointer;" id="tab-admin" onclick="toggleRole('admin')">Teacher</div>
-                </div>
-                
-                <form onsubmit="event.preventDefault(); doLogin();">
-                    <input id="l-user" placeholder="Username" required>
-                    <input id="l-pass" type="password" placeholder="Password" required>
-                    <button class="btn btn-gold">Secure Login</button>
-                </form>
-            </div>
-        </div>
-
-        <div id="student-home" class="section">
-            <h2 style="color:white;">Student Dashboard</h2>
-            <div class="grid-menu">
-                <div class="menu-card" onclick="show('view-schedule')"><span>📅</span><h3>Schedule</h3></div>
-                <div class="menu-card" onclick="show('view-library')"><span>📚</span><h3>Library</h3></div>
-                <div class="menu-card" onclick="show('view-test')"><span>✍️</span><h3>Live Test</h3></div>
-                <div class="menu-card" onclick="show('view-results')"><span>🏆</span><h3>Results</h3></div>
-            </div>
-        </div>
-
-        <div id="admin-home" class="section">
-            <h2 style="color:var(--gold);">Teacher Panel</h2>
-            <div class="admin-controls">
-                <button onclick="show('adm-create')">➕ Register Student</button>
-                <button onclick="show('adm-schedule')">📅 Manage Schedule</button>
-                <button onclick="show('adm-library')">📚 Manage Library</button>
-                <button onclick="show('adm-results')">🏆 Upload Result</button>
-                <button onclick="show('adm-test')">✍️ Set Live Test</button>
-            </div>
-            <div style="margin-top:20px; text-align:center; color:#8892b0;">
-                <p>Use the buttons above to manage the academy.</p>
-            </div>
-        </div>
-
-        <div id="view-schedule" class="section">
-            <button onclick="goBack()" class="btn" style="width:auto; background:#333; color:white;">⬅ Back</button>
-            <h2>Class Schedule</h2>
-            <div id="schedule-list">Loading...</div>
-        </div>
-
-        <div id="view-library" class="section">
-            <button onclick="goBack()" class="btn" style="width:auto; background:#333; color:white;">⬅ Back</button>
-            <h2>Study Library</h2>
-            <div id="library-list">Loading...</div>
-        </div>
-
-        <div id="view-results" class="section">
-            <button onclick="goBack()" class="btn" style="width:auto; background:#333; color:white;">⬅ Back</button>
-            <h2>Exam Results</h2>
-            <div id="result-list">Loading...</div>
-        </div>
-
-        <div id="view-test" class="section">
-            <button onclick="goBack()" class="btn" style="width:auto; background:#333; color:white;">⬅ Back</button>
-            <h2>Live Test</h2>
-            <div id="test-container">No Active Test.</div>
-        </div>
-
-        <div id="adm-create" class="section">
-            <button onclick="goBack()" class="btn" style="width:auto; background:#333; color:white;">⬅ Back</button>
-            <div class="form-box" style="margin-top:20px;">
-                <h3 style="color:var(--gold);">Register New Student</h3>
-                <input id="new-user" placeholder="Student Username">
-                <input id="new-email" type="email" placeholder="Coaching Email">
-                <input id="new-mobile" type="tel" placeholder="Mobile Number">
-                <input id="new-pass" placeholder="Password">
-                <button onclick="createStudent()" class="btn btn-gold">Create Account</button>
-            </div>
-        </div>
-
-        <div id="adm-schedule" class="section">
-            <button onclick="goBack()" class="btn" style="width:auto; background:#333; color:white;">⬅ Back</button>
-            <h3>Add New Class</h3>
-            <input id="sch-title" placeholder="Topic / Subject">
-            <input id="sch-date" type="date">
-            <input id="sch-link" placeholder="Zoom/Meet Link (Optional)">
-            <button onclick="addSchedule()" class="btn btn-gold">Publish Schedule</button>
-        </div>
-
-        <div id="adm-library" class="section">
-            <button onclick="goBack()" class="btn" style="width:auto; background:#333; color:white;">⬅ Back</button>
-            <h3>Upload Material</h3>
-            <input id="lib-title" placeholder="Material Title">
-            <input id="lib-link" placeholder="Google Drive / PDF Link">
-            <button onclick="addLibrary()" class="btn btn-gold">Add to Library</button>
-        </div>
-
-        <div id="adm-results" class="section">
-            <button onclick="goBack()" class="btn" style="width:auto; background:#333; color:white;">⬅ Back</button>
-            <h3>Publish Result</h3>
-            <input id="res-title" placeholder="Test Name">
-            <input id="res-link" placeholder="Result Link (Drive/Sheet)">
-            <button onclick="addResult()" class="btn btn-gold">Publish</button>
-        </div>
-
-        <div id="adm-test" class="section">
-            <button onclick="goBack()" class="btn" style="width:auto; background:#333; color:white;">⬅ Back</button>
-            <h3>Set Live Test</h3>
-            <input id="test-title" placeholder="Test Title">
-            <textarea id="test-json" rows="5" placeholder='Format: [{"q":"2+2?", "opt":["3","4"], "ans":"4"}]'></textarea>
-            <button onclick="setTest()" class="btn btn-gold">Activate Test</button>
-        </div>
-
+<div id="results" class="section">
+    <h2>🏆 Results</h2>
+    <div style="margin-bottom:20px; display:flex; gap:10px; overflow-x:auto;">
+        <button class="btn btn-gold btn-small" onclick="loadResults('practice')">Practice</button>
+        <button class="btn btn-gold btn-small" onclick="loadResults('live')">Live Tests</button>
+        <button class="btn btn-gold btn-small" onclick="loadOfflineResults()">Offline</button>
     </div>
+    <div id="result-list" class="table-container"></div>
+</div>
 
-    <script>
-        let currentRole = 'student';
-        let currentUser = null;
+<footer>&copy; 2026 ARC Classes.</footer>
 
-        // --- INIT ---
-        window.onload = function() {
-            // Apply visual state for initial role
-            toggleRole('student'); 
-            
-            const saved = localStorage.getItem('arcUser');
-            if(saved) {
-                currentUser = JSON.parse(saved);
-                updateNav();
-                if(currentUser.role === 'admin') show('admin-home');
-                else show('student-home');
-            }
-        };
+<div id="review-modal" class="modal">
+    <div class="modal-content">
+        <div class="close-corner" onclick="closeModal('review-modal')">&times;</div>
+        <h2 style="margin-top:0;">Analysis</h2>
+        <div id="review-stats" style="text-align:center; margin-bottom:15px; font-weight:bold; font-size:1rem; display:flex; justify-content:space-around; flex-wrap:wrap;"></div>
+        <div style="display:flex; flex-wrap:wrap; gap:20px; justify-content:center; margin-bottom:20px;">
+            <div style="flex:1; min-width:250px; max-width:300px; height:250px;"><canvas id="resultChart"></canvas></div>
+            <div id="leaderboard-container" style="flex:1; min-width:250px; max-height:250px; overflow-y:auto; border:1px solid #eee; padding:10px; border-radius:8px;"></div>
+        </div>
+        <hr>
+        <h3>Answer Sheet</h3>
+        <div id="review-body"></div>
+    </div>
+</div>
 
-        // --- NAVIGATION SYSTEM ---
-        function show(id) {
-            // Hide all sections
-            document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
-            // Show target section
-            const target = document.getElementById(id);
-            if(target) {
-                target.classList.add('active');
-            } else {
-                console.error("Section not found:", id);
-                return;
-            }
-            
-            // Auto-load data if viewing lists
-            if(id === 'view-schedule') loadData('schedule', 'schedule-list');
-            if(id === 'view-library') loadData('library', 'library-list');
-            if(id === 'view-results') loadData('results', 'result-list');
-            if(id === 'view-test') loadTest();
-        }
+<div id="alert-modal" class="modal">
+    <div class="modal-content" style="text-align:center; padding: 30px; max-width: 350px;">
+        <div class="close-corner" onclick="closeModal('alert-modal')">&times;</div>
+        <h3 id="alert-msg" class="blink-red"></h3>
+    </div>
+</div>
 
-        function goBack() {
-            if(currentUser && currentUser.role === 'admin') show('admin-home');
-            else show('student-home');
-        }
+<div id="blog-modal" class="modal">
+    <div class="modal-content">
+        <div class="close-corner" onclick="closeModal('blog-modal')">&times;</div>
+        <h2 id="bm-title" style="margin-top:0; padding-right: 40px; color:var(--primary);"></h2>
+        <p id="bm-date" style="color:#777; font-size:0.9rem;"></p>
+        <img id="bm-img" style="width:100%; max-height:300px; object-fit:contain; margin-bottom:20px; display:none; background:#f0f0f0;">
+        <div id="bm-content" style="line-height:1.6; padding-bottom:20px;"></div>
+    </div>
+</div>
 
-        function toggleRole(role) {
-            currentRole = role;
-            const btnStudent = document.getElementById('tab-student');
-            const btnAdmin = document.getElementById('tab-admin');
+<script>
+    function toggleMenu() { document.getElementById('nav-menu').classList.toggle('active'); }
+    function openModal(id) { document.getElementById(id).style.display = 'flex'; document.body.classList.add('modal-open'); }
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; document.body.classList.remove('modal-open'); }
 
-            if(role === 'student') {
-                btnStudent.style.background = '#ffd700';
-                btnStudent.style.color = 'black';
-                btnAdmin.style.background = '#333';
-                btnAdmin.style.color = 'white';
-            } else {
-                btnAdmin.style.background = '#ffd700';
-                btnAdmin.style.color = 'black';
-                btnStudent.style.background = '#333';
-                btnStudent.style.color = 'white';
-            }
-        }
 
-        // --- ERROR MODAL ---
-        function showError() {
-            document.getElementById('error-modal').style.display = 'flex';
-        }
-        function closeError() {
-            document.getElementById('error-modal').style.display = 'none';
-        }
 
-        // --- AUTH SYSTEM ---
-        async function doLogin() {
-            const u = document.getElementById('l-user').value;
-            const p = document.getElementById('l-pass').value;
-
-            try {
-                const res = await fetch('/api/login', {
-                    method:'POST', headers:{'Content-Type':'application/json'},
-                    body: JSON.stringify({ username:u, password:p, role:currentRole })
-                });
-                const data = await res.json();
-                
-                if(data.success) {
-                    currentUser = data;
-                    localStorage.setItem('arcUser', JSON.stringify(data));
-                    updateNav();
-                    if(data.role === 'admin') show('admin-home');
-                    else show('student-home');
-                } else {
-                    // TRIGGER BLINKING ERROR POPUP
-                    showError();
-                }
-            } catch(e) { 
-                alert("Connection Error. Please check your internet."); 
-            }
-        }
-
-        function updateNav() {
-            const nav = document.getElementById('nav-menu');
-            if(currentUser) {
-                nav.innerHTML = `<span style="color:white; margin-right:10px;">Hi, ${currentUser.name}</span> <button onclick="logout()">Logout</button>`;
-            } else {
-                nav.innerHTML = '';
-            }
-        }
-
-        function logout() {
-            currentUser = null;
-            localStorage.removeItem('arcUser');
-            location.reload();
-        }
-
-        // --- ADMIN FUNCTIONS ---
-        async function createStudent() {
-            const username = document.getElementById('new-user').value;
-            const email = document.getElementById('new-email').value;
-            const mobile = document.getElementById('new-mobile').value;
-            const password = document.getElementById('new-pass').value;
-            
-            if(!username || !password) {
-                alert("Please fill all fields");
-                return;
-            }
-
-            const res = await fetch('/api/create-student', {
-                method:'POST', headers:{'Content-Type':'application/json'},
-                body: JSON.stringify({ username, email, mobile, password })
-            });
-            const data = await res.json();
-            alert(data.message);
-            if(data.success) {
-                // Clear fields
-                document.getElementById('new-user').value = "";
-                document.getElementById('new-email').value = "";
-                document.getElementById('new-mobile').value = "";
-                document.getElementById('new-pass').value = "";
-            }
-        }
-
-        async function addSchedule() {
-            const title = document.getElementById('sch-title').value;
-            const date = document.getElementById('sch-date').value;
-            const link = document.getElementById('sch-link').value;
-            
-            await fetch('/api/schedule', {
-                method:'POST', headers:{'Content-Type':'application/json'},
-                body: JSON.stringify({ title, date, link })
-            });
-            alert("Schedule Added!");
-        }
-
-        async function addLibrary() {
-            const title = document.getElementById('lib-title').value;
-            const link = document.getElementById('lib-link').value;
-            
-            await fetch('/api/library', {
-                method:'POST', headers:{'Content-Type':'application/json'},
-                body: JSON.stringify({ title, link, category: 'Note' })
-            });
-            alert("Added to Library!");
-        }
-
-        async function addResult() {
-            const title = document.getElementById('res-title').value;
-            const link = document.getElementById('res-link').value;
-            
-            await fetch('/api/results', {
-                method:'POST', headers:{'Content-Type':'application/json'},
-                body: JSON.stringify({ title, link, date: new Date().toLocaleDateString() })
-            });
-            alert("Result Published!");
-        }
-
-        async function setTest() {
-            const title = document.getElementById('test-title').value;
-            const val = document.getElementById('test-json').value;
-            try {
-                const questions = JSON.parse(val);
-                await fetch('/api/test', {
-                    method:'POST', headers:{'Content-Type':'application/json'},
-                    body: JSON.stringify({ title, questions })
-                });
-                alert("Test Activated!");
-            } catch(e) {
-                alert("Invalid JSON format");
-            }
-        }
-
-        // --- DATA LOADING ---
-        async function loadData(endpoint, divId) {
-            const div = document.getElementById(divId);
-            div.innerHTML = "Loading...";
-            try {
-                const res = await fetch('/api/' + endpoint);
-                const data = await res.json();
-                
-                if(data.length === 0) {
-                    div.innerHTML = "<p>No data available.</p>";
-                    return;
-                }
-
-                div.innerHTML = data.map(item => `
-                    <div class="item-card">
-                        <div>
-                            <strong style="font-size:18px;">${item.title}</strong><br>
-                            <small style="color:#8892b0;">${item.date || ''}</small>
-                        </div>
-                        ${item.link ? `<a href="${item.link}" target="_blank">OPEN 🔗</a>` : ''}
-                    </div>
-                `).join('');
-            } catch(e) { div.innerHTML = "Error loading data."; }
-        }
+    
+    window.onload = function() {
+        loadMaterials(); loadAnnouncements(); loadBlogs();
+        const lastSection = localStorage.getItem('arc_last_section') || 'home';
         
-        async function loadTest() {
-            const container = document.getElementById('test-container');
-            container.innerHTML = "Loading...";
-            try {
-                const res = await fetch('/api/test');
-                const data = await res.json();
-                
-                if(!data) {
-                    container.innerHTML = "<h3>No Active Test Right Now.</h3>";
-                    return;
-                }
-                
-                container.innerHTML = `<h3>${data.title}</h3>` + 
-                    data.questions.map((q, i) => `
-                    <div style="background:#112240; padding:15px; margin-bottom:10px; border-radius:5px;">
-                        <p><strong>Q${i+1}:</strong> ${q.q}</p>
-                        ${q.opt.map(o => `<label style="display:block; margin:5px 0;"><input type="radio" name="q${i}"> ${o}</label>`).join('')}
-                    </div>
-                `).join('') + `<button class="btn btn-gold">Submit Test</button>`;
-            } catch(e) { container.innerHTML = "Error loading test."; }
+        if(user) {
+            document.getElementById('nav-login').style.display = 'none';
+            document.getElementById('nav-logout').style.display = 'block';
+            if(user.role === 'admin') document.getElementById('nav-admin').style.display = 'block';
         }
-    </script>
+
+        const session = JSON.parse(localStorage.getItem('arc_test_session'));
+        if (session && user) {
+            const now = Date.now();
+            
+            // 1. Restore Data Essential for Submission
+            currentTest = session.test;
+            answers = session.answers;
+            timeTaken = session.timeTaken;
+            
+            if (session.endTime > now) {
+                // CASE A: Time Remaining -> RESUME TEST
+                qIndex = session.qIndex;
+                show('exam'); 
+                renderQ();
+                const pBtns = document.getElementById('palette').children;
+                // Highlight answered questions
+                if(pBtns.length > 0) {
+                     answers.forEach((ans, i) => { if(ans !== null && pBtns[i]) pBtns[i].classList.add('done'); });
+                }
+                startTimer(session.endTime);
+                return; // Stop here, don't show home
+            } else {
+                // CASE B: Time Expired While Away -> AUTO SUBMIT IMMEDIATELY
+                // Don't just delete; send what we have to the server
+                alert("Time expired while you were away. Submitting test now...");
+                submitTest(true); 
+                return;
+            }
+        }
+        if(user) show(lastSection); else show('home');
+    };
+
+
+
+
+    let user = JSON.parse(localStorage.getItem('arc_user'));
+    let currentTest = null, answers = [], timeTaken = [], timer = null, qIndex = 0, draftQ = [], allBlogs = [], allMats = [];
+    let offlineDraft = [], loginMode = 'student', tempImg = "", tempSolImg = "", resultChartInstance = null;
+    let editingBlogId = null, editingTestId = null, editingMaterialId = null, editingOfflineId = null;
+    let editQIndex = -1;
+    let intervalSec = 0; // Tracks seconds spent on current question
+    let testEndTime = null; // Stores exact test end timestamp
+
+    function saveSession(endTime) { 
+        if(!currentTest) return; 
+        const finalEndTime = endTime || testEndTime || JSON.parse(localStorage.getItem('arc_test_session'))?.endTime;
+        localStorage.setItem('arc_test_session', JSON.stringify({ test: currentTest, answers: answers, timeTaken: timeTaken, qIndex: qIndex, endTime: finalEndTime })); 
+    }
+    function clearSession() { localStorage.removeItem('arc_test_session'); }
+
+    function show(id) {
+        if((id==='tests' || id==='live' || id==='results') && !user) return show('login');
+        if(id === 'schedule') loadSchedule();
+        if(id==='admin' && (!user || user.role !== 'admin')) return alert("Access Denied");
+        localStorage.setItem('arc_last_section', id);
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        window.scrollTo(0,0);
+        document.getElementById('nav-menu').classList.remove('active');
+        if(id==='tests') loadTests(false); if(id==='live') loadTests(true); if(id==='results') loadResults('practice');
+    }
+
+    // --- ADMIN TOOLBAR ---
+    const toolbarHTML = `
+        <div class="toolbar" style="background:#e2e8f0; padding:10px; border-radius:6px 6px 0 0; display:flex; gap:8px; flex-wrap:wrap; align-items:center; border:1px solid #ccc; border-bottom:none;">
+            <select onchange="exec('fontName', this.value)" style="padding:5px; border-radius:4px;" title="Font">
+                <option value="Arial">Arial</option><option value="'Times New Roman'">Times New Roman</option><option value="Courier New">Courier</option><option value="Georgia">Georgia</option><option value="Verdana">Verdana</option>
+            </select>
+            <select onchange="exec('fontSize', this.value)" style="padding:5px; border-radius:4px;" title="Size">
+                <option value="3">Normal</option><option value="2">Small</option><option value="5">Large</option><option value="7">Huge</option>
+            </select>
+            <button class="tool-btn" onclick="exec('bold')" title="Bold"><b>B</b></button>
+            <button class="tool-btn" onclick="exec('italic')" title="Italic"><i>I</i></button>
+            <button class="tool-btn" onclick="exec('underline')" title="Underline"><u>U</u></button>
+            <button class="tool-btn" onclick="exec('subscript')" title="Sub">X<sub>2</sub></button>
+            <button class="tool-btn" onclick="exec('superscript')" title="Super">X<sup>2</sup></button>
+            <div style="background:white; border:1px solid #999; border-radius:4px; padding:0 2px;"><input type="color" onchange="exec('foreColor', this.value)" style="height:25px; width:25px; border:none; cursor:pointer;"></div>
+            <select onchange="insChar(this.value); this.value='';" style="padding:5px; border-radius:4px; font-weight:bold; color:#0f172a;" title="Chemistry Arrows">
+                <option value="">⚗️ Arrows</option>
+                <option value=" &rarr; ">&rarr; (Reaction)</option>
+                <option value=" &rightleftharpoons; ">&rightleftharpoons; (Equilibrium)</option>
+                <option value=" &longleftrightarrow; ">&longleftrightarrow; (Resonance)</option>
+                <option value=" &#10230; ">&#10230; (Long Reaction)</option>
+                <option value=" &#10234; ">&#10234; (Long Equilibrium)</option>
+                <option value=" &#10231; ">&#10231; (Long Resonance)</option>
+                <option value=" &#10233; ">&#10233; (Long Double)</option>
+                <option value=" &uarr; ">&uarr; (Gas)</option>
+                <option value=" &darr; ">&darr; (Ppt)</option>
+                <option value=" &#8710; ">&#8710; (Heat)</option>
+            </select>
+        </div>`;
+
+    function showAdm(tab) {
+        const c = document.getElementById('adm-content');
+        
+        if (tab === 'create-test') {
+            c.innerHTML = `
+                <div class="create-test-layout" style="display: flex; gap: 20px; flex-wrap: wrap;">
+                    <div class="ct-left" style="flex: 3; min-width: 300px;">
+                        <h3 style="border-bottom: 2px solid var(--gold); padding-bottom: 10px;">${editingTestId ? 'Edit' : 'Create'} Test</h3>
+                        <div style="background:white; padding:15px; border:1px solid #ddd; border-radius:8px; margin-bottom:20px;">
+                            <input id="t-title" placeholder="Test Title">
+                            <div style="display:flex; gap:10px;">
+                                <input id="t-dur" type="number" placeholder="Mins" oninput="calcEndTime()">
+                                <input id="t-code" placeholder="Password (Optional)">
+                            </div>
+                            <select id="t-cat"><option>11th Class</option><option>12th Class</option><option>Organic</option><option>Physical</option><option>Inorganic</option><option>Full Syllabus</option></select>
+                            <div style="margin-top:10px; background:#f8fafc; padding:10px; border:1px solid #eee;">
+                                <label><input type="checkbox" id="t-live"> 🔴 Live Test?</label>
+                                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:5px;">
+                                    <div>Start: <input type="datetime-local" id="t-start" onchange="calcEndTime()" style="width:100%"></div>
+                                    <div>End: <input type="datetime-local" id="t-end" readonly style="background:#eee; width:100%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="background:white; padding:15px; border:1px solid #ddd; border-radius:8px;">
+                            <h4>Add Question</h4>
+                            ${toolbarHTML} 
+                            <div id="q-editor" class="editor" contenteditable="true" placeholder="Question text..." style="min-height:100px; border-radius:0 0 6px 6px; margin-bottom:10px;"></div>
+                            <div style="margin-bottom:15px;"><label class="btn-small" style="background:#e2e8f0; cursor:pointer;">📷 Q-Image <input type="file" onchange="encodeImg(this, 'q-prev')" style="display:none;"></label><img id="q-prev" style="height:60px; display:none; margin-top:5px;"></div>
+                            <div style="background:#f1f5f9; padding:10px; border-radius:6px; margin-bottom:10px;">
+                                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                                    <div><b>A:</b> <div id="op0" class="editor-small" contenteditable="true" style="background:white;"></div></div>
+                                    <div><b>B:</b> <div id="op1" class="editor-small" contenteditable="true" style="background:white;"></div></div>
+                                    <div><b>C:</b> <div id="op2" class="editor-small" contenteditable="true" style="background:white;"></div></div>
+                                    <div><b>D:</b> <div id="op3" class="editor-small" contenteditable="true" style="background:white;"></div></div>
+                                </div>
+                            </div>
+                            <div style="display:flex; gap:10px; align-items:center; margin-bottom:10px;">
+                                <select id="q-corr" style="width:auto; font-weight:bold; border:2px solid green;"><option value="0">Ans: A</option><option value="1">Ans: B</option><option value="2">Ans: C</option><option value="3">Ans: D</option></select>
+                                <input type="number" id="q-marks" placeholder="+Ve" value="4" style="width:80px" title="Marks">
+                                <input type="number" id="q-neg" placeholder="-Ve" value="0" style="width:80px" title="Negative">
+                            </div>
+                            <div style="border:1px solid #fbbf24; border-radius:6px; padding:10px; background:#fffbeb;">
+                                <div style="font-weight:bold; color:#b45309; margin-bottom:5px;">💡 Solution</div>
+                                <div id="q-sol" class="editor-small" contenteditable="true" style="background:white; min-height:60px;"></div>
+                                <label class="btn-small" style="background:#fcd34d; cursor:pointer; margin-top:5px;">📷 Sol-Image <input type="file" id="q-sol-file" onchange="encodeImg(this, 'sol-prev', true)" style="display:none;"></label><img id="sol-prev" style="height:60px; display:none; margin-top:5px;">
+                            </div>
+                            <div style="margin-top:15px; display:flex; gap:10px;">
+                                <button class="btn btn-gold" style="flex:1" onclick="saveDraftQ()">💾 Save Question</button>
+                                <button class="btn btn-red" onclick="clearQForm()">Clear</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ct-right" style="flex: 1; min-width: 200px; background:white; padding:15px; border:1px solid #ddd; height:fit-content;">
+                        <h4 style="text-align:center; margin-top:0;">Palette</h4>
+                        <div id="create-palette" class="q-grid" style="display:grid; grid-template-columns: repeat(4, 1fr); gap:5px;"></div>
+                        <hr>
+                        <div style="text-align:center; margin-bottom:10px;">Total: <span id="q-count">0</span></div>
+                        <button class="btn btn-red" style="width:100%" onclick="pubTest()">${editingTestId ? 'UPDATE TEST' : 'PUBLISH'}</button>
+                    </div>
+                </div>`;
+            renderCreatePalette();
+        }
+        else if (tab === 'blog') {
+            editingBlogId = null;
+            c.innerHTML = `<h3>Post Blog</h3><input id="b-title" placeholder="Blog Title"><div style="margin:10px 0;"><b>Cover:</b> <input type="file" onchange="encodeImg(this, 'b-cover-prev')"><img id="b-cover-prev" style="height:100px; display:none;"></div>${toolbarHTML}<div id="b-content" class="editor" contenteditable="true" style="min-height:300px; margin-top:0; border-radius:0 0 6px 6px;"></div><button class="btn btn-gold" style="width:100%; margin-top:15px;" onclick="postBlog()">PUBLISH BLOG</button>`;
+        }
+        else if (tab === 'offline') {
+            if(!editingOfflineId) offlineDraft = []; 
+            c.innerHTML = `<h3>Offline Result</h3><input id="off-title" placeholder="Test Title"><div class="input-group" style="grid-template-columns: 2fr 1fr 1fr 2fr auto;"><input id="off-name" placeholder="Name"><input id="off-total" placeholder="Total"><input id="off-obt" placeholder="Obt"><input id="off-link" placeholder="Drive Link"><button class="btn btn-gold" onclick="addOfflineStudent()">Add</button></div><div class="table-container"><table style="margin:0;"><thead><tr><th>Name</th><th>Mks</th><th>Link</th><th>Del</th></tr></thead><tbody id="off-preview-body"></tbody></table></div><button class="btn btn-red" style="width:100%" onclick="postOffline()">${editingOfflineId ? 'UPDATE' : 'UPLOAD'}</button>`;
+            if(editingOfflineId) renderOfflineDraft();
+        }
+        else if (tab === 'manage') {
+            c.innerHTML = `<h3>Manage Content</h3><div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:15px;">
+                <button class="btn btn-gold btn-small" onclick="loadManageTests()">Tests</button>
+                <button class="btn btn-gold btn-small" onclick="loadManageBlogs()">Blogs</button>
+                <button class="btn btn-gold btn-small" onclick="loadManageLibrary()">Library</button>
+                <button class="btn btn-gold btn-small" onclick="loadManageOffline()">Offline</button>
+                <button class="btn btn-gold btn-small" onclick="loadManageSchedule()">Schedule</button>
+                <button class="btn btn-gold btn-small" onclick="loadManageStudents()">Students</button>
+                </div><div id="manage-area" class="table-container">Select a category above.</div>`;
+        }
+        else if (tab === 'upload') {
+            c.innerHTML = `<h3>${editingMaterialId ? 'Edit' : 'Upload'} File</h3><input id="m-title" placeholder="Title"><input id="m-link" placeholder="Link"><input id="m-img" placeholder="Image URL"><select id="m-cat"><option>11th Class</option><option>12th Class</option><option>Notes</option><option>Test Series</option></select><input id="m-code" placeholder="Pass (Opt)"><button class="btn btn-gold" style="width:100%; margin-top:10px;" onclick="uploadMat()">${editingMaterialId ? 'UPDATE' : 'UPLOAD'}</button>`;
+        }
+        else if (tab === 'students') {
+            c.innerHTML = `<h3>Registered Students</h3><div class="table-container"><table><thead><tr><th>Name</th><th>Email</th><th>Password</th><th>Action</th></tr></thead><tbody id="stu-list"></tbody></table></div>`;
+            fetch('/api/admin/students').then(r=>r.json()).then(d => { document.getElementById('stu-list').innerHTML = d.map(s => `<tr><td>${s.name}</td><td>${s.email}</td><td style="color:red; font-family:monospace;">${s.password}</td><td><button class="btn btn-gold btn-small" onclick="editStudent('${s._id}')">Edit</button> <button class="btn btn-red btn-small" onclick="deleteItem('student','${s._id}')">Del</button></td></tr>`).join(''); });
+        }
+        else if (tab === 'results') {
+            c.innerHTML = `<h3>Online Results</h3><input placeholder="Search..." onkeyup="filterTable(this)"><div class="table-container"><table><thead><tr><th>Student</th><th>Test</th><th>Score</th><th>Action</th></tr></thead><tbody id="adm-res-list"></tbody></table></div>`;
+            fetch('/api/admin/results/online').then(r=>r.json()).then(d => { document.getElementById('adm-res-list').innerHTML = d.map(r => `<tr><td>${r.studentName}</td><td>${r.testTitle}</td><td>${r.score}</td><td><button class="btn btn-gold btn-small" onclick="viewSheet('${r._id}')">View</button> <button class="btn btn-red btn-small" onclick="deleteItem('result','${r._id}')">Del</button></td></tr>`).join(''); });
+        }
+        else if (tab === 'add-schedule') {
+    c.innerHTML = `
+        <h3>${editingScheduleId ? 'Edit' : 'Add'} Test Schedule</h3>
+        <select id="s-cls">
+            <option>11th Class</option><option>12th Class</option><option>Dropper</option>
+        </select>
+        <input id="s-topic" placeholder="Test Topic">
+        <input id="s-pass" placeholder="Password (Optional)">
+        <label>Test Time:</label>
+        <input type="datetime-local" id="s-time">
+        <button class="btn btn-gold" style="width:100%; margin-top:15px;" onclick="saveSchedule()">
+            ${editingScheduleId ? 'UPDATE SCHEDULE' : 'ADD SCHEDULE'}
+        </button>
+    `;
+}
+        else if (tab === 'announce') {
+             c.innerHTML = `<h3>News</h3><input id="ann-text" placeholder="Text"><button class="btn btn-gold" onclick="postAnnounce()">Post</button><div id="ann-list" style="margin-top:20px;"></div>`;
+             fetch('/api/announcement').then(r=>r.json()).then(d => { document.getElementById('ann-list').innerHTML = d.list.map(t => `<div style="padding:10px; border-bottom:1px solid #eee; display:flex; justify-content:space-between;">${t} <button onclick="delAnnounce('${t}')">X</button></div>`).join(''); });
+        }
+    }
+
+    // --- HELPER FUNCTIONS ---
+    async function loadManageTests() { const res = await fetch('/api/tests'); const data = await res.json(); document.getElementById('manage-area').innerHTML = `<table><tr><th>Title</th><th>Action</th></tr>${data.map(t => `<tr><td>${t.title}</td><td><button onclick="editTest('${t._id}')">Edit</button> <button style="color:red" onclick="deleteItem('test','${t._id}')">Del</button></td></tr>`).join('')}</table>`; }
+    async function loadManageBlogs() { const res = await fetch('/api/blogs'); const data = await res.json(); document.getElementById('manage-area').innerHTML = `<table><tr><th>Title</th><th>Action</th></tr>${data.map(b => `<tr><td>${b.title}</td><td><button onclick="editBlog('${b._id}')">Edit</button> <button style="color:red" onclick="deleteItem('blog','${b._id}')">Del</button></td></tr>`).join('')}</table>`; }
+    async function loadManageLibrary() { const res = await fetch('/api/materials'); const data = await res.json(); document.getElementById('manage-area').innerHTML = `<table><tr><th>Title</th><th>Action</th></tr>${data.map(m => `<tr><td>${m.title}</td><td><button onclick="editMaterial('${m._id}')">Edit</button> <button style="color:red" onclick="deleteItem('material','${m._id}')">Del</button></td></tr>`).join('')}</table>`; }
+    async function loadManageOffline() { const res = await fetch('/api/results/offline'); const data = await res.json(); document.getElementById('manage-area').innerHTML = `<table><tr><th>Title</th><th>Action</th></tr>${data.map(r => `<tr><td>${r.title}</td><td><button onclick="editOffline('${r._id}')">Edit</button> <button style="color:red" onclick="deleteItem('offline-result','${r._id}')">Del</button></td></tr>`).join('')}</table>`; }
+    async function loadManageStudents() { showAdm('students'); }
+
+    // --- GLOBAL EDIT STUDENT (OUTSIDE showAdm) ---
+    async function editStudent(id) { 
+        const res = await fetch(`/api/admin/student/${id}`); 
+        const s = await res.json(); 
+        const newName = prompt("Name:", s.name); 
+        const newPass = prompt("Pass:", s.password); 
+        if(newName && newPass) { 
+            await fetch(`/api/admin/student/${id}`, { method: 'PUT', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ name: newName, password: newPass }) }); 
+            alert("Updated!"); 
+            showAdm('students'); 
+        } 
+    }
+
+    async function deleteItem(type, id) { 
+        if(!confirm("Permanently delete?")) return; 
+        await fetch(`/api/admin/${type}/${id}`, { method: 'DELETE' }); 
+        alert("Deleted."); 
+        if(type==='student') showAdm('students');
+        else if(type==='result') { if(document.getElementById('adm-res-list')) showAdm('results'); else loadManageOnline(); }
+        else if(type==='offline-result') { if(document.getElementById('manage-area') && document.getElementById('manage-area').style.display !== 'none') loadManageOffline(); else showAdm('offline'); }
+        else if(type==='test') loadManageTests();
+        else if(type==='blog') loadManageBlogs();
+        else if(type === 'schedule') loadManageSchedule();
+        else if(type==='material') loadManageLibrary();
+    }
+
+    function initCreateTest() { editingTestId = null; draftQ = []; showAdm('create-test'); renderCreatePalette(); }
+    function initUpload() { editingMaterialId = null; showAdm('upload'); } 
+    function toLocalISOString(date) { const localDate = new Date(date - date.getTimezoneOffset() * 60000); return localDate.toISOString().slice(0, 16); }
+    function calcEndTime() { const startVal = document.getElementById('t-start').value; const durVal = document.getElementById('t-dur').value; if (startVal && durVal) { const start = new Date(startVal); const end = new Date(start.getTime() + parseInt(durVal) * 60000); document.getElementById('t-end').value = toLocalISOString(end); } }
+    
+    async function editTest(id) { const res = await fetch(`/api/admin/test/${id}`); const test = await res.json(); initCreateTest(); document.getElementById('t-title').value = test.title; document.getElementById('t-dur').value = test.duration; document.getElementById('t-code').value = test.accessCode || ""; document.getElementById('t-cat').value = test.category; document.getElementById('t-live').checked = test.isLive; if(test.startTime) document.getElementById('t-start').value = toLocalISOString(new Date(test.startTime)); if(test.endTime) document.getElementById('t-end').value = toLocalISOString(new Date(test.endTime)); draftQ = test.questions || []; renderCreatePalette(); editingTestId = id; document.querySelector("button[onclick='pubTest()']").innerText = "UPDATE TEST"; }
+    async function editBlog(id) { const blog = allBlogs.find(b => b._id === id); if(!blog) return; showAdm('blog'); document.getElementById('b-title').value = blog.title; document.getElementById('b-content').innerHTML = blog.content; if(blog.image) { document.getElementById('b-cover-prev').src = blog.image; document.getElementById('b-cover-prev').style.display = 'block'; tempImg = blog.image; } editingBlogId = id; }
+    async function editMaterial(id) { if(!allMats.length) await loadMaterials(); const mat = allMats.find(m => m._id === id); if(!mat) return; editingMaterialId = id; showAdm('upload'); document.getElementById('m-title').value = mat.title; document.getElementById('m-link').value = mat.link; document.getElementById('m-img').value = mat.image; document.getElementById('m-cat').value = mat.category; document.getElementById('m-code').value = mat.accessCode || ""; }
+    async function editOffline(id) { const res = await fetch(`/api/admin/offline-result/${id}`); const data = await res.json(); editingOfflineId = id; offlineDraft = data.records; showAdm('offline'); document.getElementById('off-title').value = data.title; renderOfflineDraft(); }
+
+    async function uploadMat() { const body = { title: document.getElementById('m-title').value, link: document.getElementById('m-link').value, image: document.getElementById('m-img').value, category: document.getElementById('m-cat').value, accessCode: document.getElementById('m-code').value }; const method = editingMaterialId ? 'PUT' : 'POST'; const url = editingMaterialId ? `/api/admin/material/${editingMaterialId}` : '/api/admin/material'; await fetch(url, { method, headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) }); alert(editingMaterialId ? "Updated!" : "Uploaded!"); editingMaterialId = null; showAdm('upload'); }
+    function addOfflineStudent() { const name = document.getElementById('off-name').value; const total = document.getElementById('off-total').value; const obt = document.getElementById('off-obt').value; const link = document.getElementById('off-link').value; if(!name || !total || !obt) return alert("Fill details"); offlineDraft.push({ studentName: name, totalMarks: total, obtainedMarks: obt, copyLink: link }); renderOfflineDraft(); document.getElementById('off-name').value = ""; document.getElementById('off-obt').value = ""; document.getElementById('off-link').value = ""; }
+    function renderOfflineDraft() { document.getElementById('off-preview-body').innerHTML = offlineDraft.map((s, i) => `<tr><td>${s.studentName}</td><td>${s.totalMarks}</td><td>${s.obtainedMarks}</td><td>${s.copyLink?'Yes':'No'}</td><td><button style="color:red" onclick="offlineDraft.splice(${i},1); renderOfflineDraft()">X</button></td></tr>`).join(''); }
+    async function postOffline() { if(offlineDraft.length === 0) return alert("No Data"); const method = editingOfflineId?'PUT':'POST'; const url = editingOfflineId?`/api/admin/offline-result/${editingOfflineId}`:'/api/admin/offline-result'; await fetch(url, { method, headers: {'Content-Type':'application/json'}, body: JSON.stringify({ title: document.getElementById('off-title').value, records: offlineDraft }) }); alert("Saved!"); offlineDraft = []; editingOfflineId = null; showAdm('offline'); }
+    
+    function exec(cmd, val=null) { document.execCommand(cmd, false, val); }
+    function insChar(char) { document.execCommand('insertText', false, char); }
+    function encodeImg(input, previewId, isSolution = false) { if (input.files && input.files[0]) { const reader = new FileReader(); reader.onload = function (e) { const result = e.target.result; if (isSolution) tempSolImg = result; else tempImg = result; if (previewId) { const img = document.getElementById(previewId); img.src = result; img.style.display = 'block'; } }; reader.readAsDataURL(input.files[0]); } }
+    function insertInlineImg(input) { if(input.files && input.files[0]) { const reader = new FileReader(); reader.onload = function(e) { document.getElementById('b-content').focus(); document.execCommand('insertImage', false, e.target.result); }; reader.readAsDataURL(input.files[0]); } }
+    
+    function switchTab(mode) { loginMode = mode; document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); document.getElementById('tab-'+mode).classList.add('active'); document.getElementById('student-input').style.display = mode === 'student' ? 'block' : 'none'; document.getElementById('teacher-input').style.display = mode === 'student' ? 'none' : 'block'; document.getElementById('login-title').innerText = mode === 'student' ? 'Student Login' : 'Teacher Login'; document.getElementById('reg-link').style.display = mode === 'student' ? 'block' : 'none'; }
+  
+
+
+
+async function doLogin() { 
+        let email = loginMode === 'student' ? document.getElementById('l-email').value : document.getElementById('l-admin-email').value;
+        const password = document.getElementById('l-pass').value;
+        
+        // Auto-append domain if missing for students
+        if(loginMode === 'student' && !email.includes('@')) email += '@arcstudent.com';
+
+        const res = await fetch('/api/login', { 
+            method: 'POST', 
+            headers: {'Content-Type':'application/json'}, 
+            body: JSON.stringify({ email, password, role: loginMode }) 
+        });
+        
+        const data = await res.json();
+        
+        if(data.success) {
+            // 1. Save User Data
+            const userData = {name: data.name, email: data.email, role: data.role};
+            localStorage.setItem('arc_user', JSON.stringify(userData));
+            user = userData; // Update the global user variable immediately
+
+            // 2. Update Navigation Bar (Hide Login, Show Logout)
+            document.getElementById('nav-login').style.display = 'none';
+            document.getElementById('nav-logout').style.display = 'block';
+            if(user.role === 'admin') {
+                document.getElementById('nav-admin').style.display = 'block';
+            }
+
+            // 3. Go to Home Page (INSTEAD OF RELOADING)
+            alert("Login Successful!");
+            show('home'); 
+
+        } else {
+            alert("Invalid Email or Password");
+        } 
+    }
+
+
+
+    async function doReg() { const res = await fetch('/api/register', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ name: document.getElementById('r-name').value, emailPart: document.getElementById('r-prefix').value, password: document.getElementById('r-pass').value }) }); const data = await res.json(); if(data.success) { alert("Registered!"); location.reload(); } else alert(data.message); }
+    function logout() { localStorage.removeItem('arc_user'); localStorage.removeItem('arc_last_section'); clearSession(); location.reload(); }
+    
+    async function pubTest() { const body = { title: document.getElementById('t-title').value, duration: parseInt(document.getElementById('t-dur').value), accessCode: document.getElementById('t-code').value, category: document.getElementById('t-cat').value, isLive: document.getElementById('t-live').checked, startTime: document.getElementById('t-start').value ? new Date(document.getElementById('t-start').value) : null, endTime: document.getElementById('t-end').value ? new Date(document.getElementById('t-end').value) : null, questions: draftQ }; const method = editingTestId ? 'PUT' : 'POST'; const url = editingTestId ? `/api/admin/test/${editingTestId}` : '/api/admin/test'; try { await fetch(url, { method, headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) }); alert(editingTestId ? "Updated!" : "Published!"); editingTestId = null; draftQ = []; initCreateTest(); } catch(e) { alert("Error: " + e.message); } }
+    async function postBlog() { const method = editingBlogId ? 'PUT' : 'POST'; const url = editingBlogId ? `/api/admin/blog/${editingBlogId}` : '/api/admin/blog'; await fetch(url, { method, headers:{'Content-Type':'application/json'}, body: JSON.stringify({ title: document.getElementById('b-title').value, content: document.getElementById('b-content').innerHTML, image: tempImg }) }); alert("Saved!"); tempImg = ""; editingBlogId = null; }
+    async function postAnnounce() { await fetch('/api/admin/announcement/add', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({text: document.getElementById('ann-text').value}) }); showAdm('announce'); loadAnnouncements(); }
+    async function delAnnounce(text) { await fetch('/api/admin/announcement/delete', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({text}) }); showAdm('announce'); }
+    function filterTable(inp) { const filter = inp.value.toUpperCase(); const tr = document.getElementById('adm-res-list').getElementsByTagName('tr'); for (let i=0; i<tr.length; i++) { const txt = tr[i].innerText; tr[i].style.display = txt.toUpperCase().indexOf(filter) > -1 ? "" : "none"; } }
+    
+    async function loadAnnouncements() { try { const res = await fetch('/api/announcement'); const data = await res.json(); document.getElementById('anno-marquee').innerHTML = (data.list && data.list.length > 0) ? data.list.join(' &nbsp;|&nbsp; ') : "Welcome"; } catch(e) {} }
+    async function loadBlogs() { const res = await fetch('/api/blogs'); const blogs = await res.json(); allBlogs = blogs; document.getElementById('blog-grid').innerHTML = blogs.map(b => `<div class="card blog-card" onclick="viewBlog('${b._id}')"><img src="${b.image || 'https://via.placeholder.com/300'}" alt="cover"><div class="blog-content-preview"><h3 class="blog-title">${b.title}</h3><small>${new Date(b.date).toLocaleDateString()}</small></div></div>`).join(''); }
+    function viewBlog(id) { const blog = allBlogs.find(b => b._id === id); if(!blog) return; document.getElementById('bm-title').innerText = blog.title; document.getElementById('bm-date').innerText = new Date(blog.date).toLocaleDateString(); document.getElementById('bm-content').innerHTML = blog.content; const img = document.getElementById('bm-img'); if(blog.image) { img.src = blog.image; img.style.display='block'; } else img.style.display='none'; openModal('blog-modal'); }
+    
+    async function loadTests(isLive) { const res = await fetch('/api/tests'); const tests = await res.json(); const now = new Date(); const filteredTests = tests.filter(t => { const tEnd = t.endTime ? new Date(t.endTime) : null; if (isLive) { return t.isLive && tEnd && tEnd > now; } else { return !t.isLive || (t.isLive && tEnd && tEnd <= now); } }); document.getElementById(isLive?'live-list':'test-list').innerHTML = filteredTests.map(t => `<div class="card" style="border-left: 5px solid ${isLive ? 'red' : 'gold'}"><h3>${t.title} ${t.accessCode ? '🔒' : ''}</h3><p>${t.duration} Mins</p>${isLive ? `<p style="color:red">Start: ${new Date(t.startTime).toLocaleString()}</p>` : ''}<button class="btn btn-gold" onclick="startTest('${t._id}', ${t.accessCode ? true : false}, '${t.startTime}')">Start</button></div>`).join(''); }
+    
+    function startTimer(durationOrTimestamp) { 
+        clearInterval(timer); 
+        const now = Date.now();
+        if (durationOrTimestamp < 1000000) { testEndTime = now + (durationOrTimestamp * 60 * 1000); } 
+        else { testEndTime = durationOrTimestamp; }
+        saveSession(testEndTime);
+
+        timer = setInterval(() => { 
+            const currentNow = Date.now(); 
+            const remaining = Math.floor((testEndTime - currentNow) / 1000); 
+            if(remaining < 0) { clearInterval(timer); submitTest(true); return; } 
+            intervalSec++; 
+            const m = Math.floor(remaining / 60); 
+            const s = remaining % 60; 
+            const td = document.getElementById('mobile-timer');
+            if(td) { td.innerText = `${m}:${s < 10 ? '0'+s : s}`; td.style.color = remaining < 60 ? "red" : "inherit"; }
+        }, 1000); 
+    }
+
+    async function startTest(id, hasCode, startTimeStr) { if (startTimeStr) { const now = new Date(); const start = new Date(startTimeStr); if (now < start) { document.getElementById('alert-msg').innerText = "Test Locked"; openModal('alert-modal'); return; } } let code = ""; if(hasCode) { code = prompt("Enter Password:"); if(!code) return; } const res = await fetch('/api/test/start', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ id, code, studentEmail: user.email }) }); const data = await res.json(); if(data.success) { currentTest = data.test; answers = new Array(currentTest.questions.length).fill(null); timeTaken = new Array(currentTest.questions.length).fill(0); qIndex = 0; startTimer(currentTest.duration); show('exam'); renderQ(); } else { document.getElementById('alert-msg').innerText = data.message; openModal('alert-modal'); } }
+    
+    function renderQ() { const q = currentTest.questions[qIndex]; 
+        document.getElementById('q-no').innerText = `Q${qIndex + 1}`; 
+        const m = q.marks || 4; 
+        const n = q.negative || 0; 
+        document.getElementById('q-marks').innerText = `+${m} / -${n}`; 
+        document.getElementById('q-text').innerHTML = q.text; 
+        const img = document.getElementById('q-img'); 
+        if(q.image) { img.src = q.image; img.style.display = 'block'; 
+        } else img.style.display = 'none'; document.getElementById('q-opts').innerHTML = q.options.map((o, i) => `<label class="mcq-label"><input type="radio" name="opt" value="${i}" ${answers[qIndex] === i ? 'checked' : ''}> <div>${o}</div></label>`).join(''); document.getElementById('palette').innerHTML = answers.map((a, i) => `<div class="p-btn ${a !== null ? 'done' : (i === qIndex ? 'active' : '')}" onclick="gotoQ(${i})">${i+1}</div>`).join(''); }
+    
+    function saveNext() { 
+        const sel = document.querySelector('input[name="opt"]:checked'); 
+        answers[qIndex] = sel ? parseInt(sel.value) : null; 
+        timeTaken[qIndex] = (timeTaken[qIndex] || 0) + intervalSec; 
+        intervalSec = 0; // Reset question timer
+        saveSession(); 
+        
+        // Update palette visual
+        const pBtns = document.getElementById('palette').children;
+        if(answers[qIndex] !== null) pBtns[qIndex].classList.add('done');
+        
+        if(qIndex < currentTest.questions.length - 1) { 
+            qIndex++; 
+            renderQ(); 
+        } else { 
+            alert("This is the last question."); 
+        } 
+    }
+
+    function clearAns() { answers[qIndex] = null; saveSession(); renderQ(); }
+    function gotoQ(i) { timeTaken[qIndex] = (timeTaken[qIndex] || 0) + intervalSec; intervalSec = 0; qIndex = i; renderQ(); }
+    async function submitTest(auto = false) { if(!auto && !confirm("Submit?")) return; clearInterval(timer); const res = await fetch('/api/test/submit', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ testId: currentTest._id, answers, timeTaken, studentName: user.name, studentEmail: user.email }) }); const data = await res.json(); if(data.success) { clearSession(); document.getElementById('exam').classList.remove('active'); show('results'); viewSheet(data.resultId); } }
+    
+    async function viewSheet(id) { 
+        const res = await fetch('/api/result-details', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ resultId: id }) }); 
+        const data = await res.json(); if(!data.success) return alert(data.message); const r = data.result; 
+        let correct = 0, wrong = 0, skipped = 0;
+        data.questions.forEach(q => { if(q.status === 'Correct') correct++; else if(q.status === 'Wrong') wrong++; else skipped++; });
+        document.getElementById('review-stats').innerHTML = `<span>Score: ${r.score}/${r.totalMarks}</span> | <span>Rank: #${data.rank}</span> | <span>${r.percentage.toFixed(1)}%</span>`; 
+        let html = `<div style="display:flex; flex-wrap:wrap; gap:20px; justify-content:center; margin-bottom:30px;"><div style="flex:1; min-width:300px; max-width:400px;"><canvas id="resultChart"></canvas></div><div style="flex:1; min-width:300px; max-height:300px; overflow-y:auto; border:1px solid #eee; padding:10px; border-radius:8px;"><h3 style="text-align:center; margin-top:0;">Leaderboard</h3><table style="width:100%; font-size:0.9rem;"><tr style="background:#f1f5f9;"><th>#</th><th>Student</th><th>Score</th></tr>${data.leaderboard.map(rec => `<tr style="${rec.rank === data.rank ? 'background:#e0f2fe; font-weight:bold;' : ''}"><td>#${rec.rank}</td><td>${rec.name}</td><td>${rec.score}</td></tr>`).join('')}</table></div></div><hr><h3>Sheet</h3>`;
+        html += data.questions.map((q, i) => `<div class="review-row"><p><strong>Q${i+1}:</strong> ${q.text}</p>${q.image ? `<img src="${q.image}" style="height:100px">` : ''}<div style="display:grid; grid-template-columns: 1fr 1fr; gap:5px;">${q.options.map((opt, idx) => `<div style="padding:5px; border:1px solid #ddd; ${idx === q.correct ? 'background:#dcfce7; border-color:green;' : ''} ${idx === q.studentAnswer && idx !== q.correct ? 'background:#fee2e2; border-color:red;' : ''}"> ${opt} </div>`).join('')}</div><p style="margin-top:5px; font-size:0.9rem;">Status: <span class="badge ${q.status==='Correct'?'bg-green':'bg-red'}">${q.status}</span></p>${q.solution || q.solutionImage ? `<div style="background:#f0f9ff; padding:10px; margin-top:5px;"><strong>💡 Solution:</strong><br>${q.solution}${q.solutionImage ? `<br><img src="${q.solutionImage}" style="max-height:150px; margin-top:10px;">` : ''}</div>` : ''}</div>`).join('');
+        document.getElementById('review-body').innerHTML = html; openModal('review-modal');
+        const ctx = document.getElementById('resultChart').getContext('2d');
+        if(resultChartInstance) resultChartInstance.destroy();
+        resultChartInstance = new Chart(ctx, { type: 'pie', data: { labels: ['Correct', 'Wrong', 'Skipped'], datasets: [{ data: [correct, wrong, skipped], backgroundColor: ['#22c55e', '#ef4444', '#cbd5e1'] }] } });
+    }
+    
+    async function loadResults(type) { const res = await fetch('/api/student/results/online', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ email: user.email }) }); const data = await res.json(); document.getElementById('result-list').innerHTML = `<table><tr><th>Date</th><th>Test</th><th>Score</th><th>Action</th></tr>${data.results.filter(r => r.testType === type).map(r => `<tr><td>${new Date(r.date).toLocaleDateString()}</td><td>${r.testTitle}</td><td>${r.score}</td><td><button class="btn btn-gold btn-small" onclick="viewSheet('${r._id}')">View</button></td></tr>`).join('')}</table>`; }
+    async function loadOfflineResults() { const res = await fetch('/api/results/offline'); const data = await res.json(); document.getElementById('result-list').innerHTML = data.map(r => `<h3>${r.title}</h3><table><tr><th>Rank</th><th>Student</th><th>Marks</th><th>Sheet</th></tr>${r.records.map(rec => `<tr><td>#${rec.rank}</td><td>${rec.studentName}</td><td>${rec.obtainedMarks}</td><td>${rec.copyLink ? `<a href="${rec.copyLink}" target="_blank" style="color:blue">View</a>` : '-'}</td></tr>`).join('')}</table>`).join(''); }
+    
+    async function loadMaterials() { try { const res = await fetch('/api/materials'); allMats = await res.json(); } catch(e) {} }
+    function loadLib(cat) { document.getElementById('lib-cats').style.display = 'none'; document.getElementById('lib-back').style.display = 'block'; renderLib(cat); }
+    function renderLib(cat) { const items = allMats.filter(m => m.category === cat || (cat === '11th Class' && m.category.includes('11'))); document.getElementById('lib-content').innerHTML = items.length ? items.map(m => `<div class="card"><img src="${m.image||''}" style="height:150px; background:#ddd; object-fit:cover;"><h4>${m.title} ${m.accessCode?'🔒':''}</h4><button class="btn btn-gold" onclick="openMat('${m._id}')">Open</button></div>`).join('') : "<p>No items found.</p>"; }
+    function resetLib() { document.getElementById('lib-cats').style.display = 'grid'; document.getElementById('lib-back').style.display = 'none'; document.getElementById('lib-content').innerHTML = ''; }
+    async function openMat(id) { const code = prompt("Password:"); const res = await fetch('/api/material/unlock', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id, code}) }); const data = await res.json(); if(data.success) window.open(data.link); else alert("Wrong Password"); }
+    
+    function renderCreatePalette() { const p = document.getElementById('create-palette'); if(!p) return; p.innerHTML = draftQ.map((q, i) => `<div class="q-btn ${i === editQIndex ? 'active' : ''}" onclick="loadDraftQ(${i})">${i+1}</div>`).join('') + `<div class="q-btn" onclick="clearQForm()" style="color:green; font-size:1.2rem;">+</div>`; document.getElementById('q-count').innerText = draftQ.length; }
+    function saveDraftQ() { const qData = { text: document.getElementById('q-editor').innerHTML, options: [0,1,2,3].map(i => document.getElementById('op'+i).innerHTML), correct: parseInt(document.getElementById('q-corr').value), marks: parseFloat(document.getElementById('q-marks').value) || 4, negative: parseFloat(document.getElementById('q-neg').value) || 0, solution: document.getElementById('q-sol').innerHTML, image: tempImg, solutionImage: tempSolImg }; if(editQIndex > -1) { if(!qData.image) qData.image = draftQ[editQIndex].image; if(!qData.solutionImage) qData.solutionImage = draftQ[editQIndex].solutionImage; draftQ[editQIndex] = qData; } else { draftQ.push(qData); } clearQForm(); }
+    function loadDraftQ(index) { editQIndex = index; const q = draftQ[index]; document.getElementById('q-editor').innerHTML = q.text; [0,1,2,3].forEach(i => document.getElementById('op'+i).innerHTML = q.options[i]); document.getElementById('q-corr').value = q.correct; document.getElementById('q-marks').value = q.marks !== undefined ? q.marks : 4; document.getElementById('q-neg').value = q.negative !== undefined ? q.negative : 0; document.getElementById('q-sol').innerHTML = q.solution || ""; if(q.image) { document.getElementById('q-prev').src = q.image; document.getElementById('q-prev').style.display = 'block'; tempImg = q.image; } else { document.getElementById('q-prev').style.display = 'none'; tempImg = ""; } if(q.solutionImage) { document.getElementById('sol-prev').src = q.solutionImage; document.getElementById('sol-prev').style.display = 'block'; tempSolImg = q.solutionImage; } else { document.getElementById('sol-prev').style.display = 'none'; tempSolImg = ""; } renderCreatePalette(); }
+    function clearQForm() { editQIndex = -1; document.getElementById('q-editor').innerHTML = ""; [0,1,2,3].forEach(i => document.getElementById('op'+i).innerHTML = ""); document.getElementById('q-sol').innerHTML = ""; document.getElementById('q-marks').value = "4"; document.getElementById('q-neg').value = "0"; document.getElementById('q-prev').style.display = 'none'; tempImg = ""; document.getElementById('sol-prev').style.display = 'none'; tempSolImg = ""; document.getElementById('q-sol-file').value = ""; renderCreatePalette(); }
+
+
+
+
+    let editingScheduleId = null;
+
+    // 1. Load Schedule for Students
+    async function loadSchedule() {
+        const res = await fetch('/api/schedule');
+        const data = await res.json();
+        const list = document.getElementById('schedule-list');
+        if(list) {
+            list.innerHTML = data.map(s => `
+                <tr>
+                    <td><span class="badge bg-green">${s.cls}</span></td>
+                    <td><b>${s.topic}</b></td>
+                    <td>${new Date(s.time).toLocaleString()}</td>
+                    <td style="font-family:monospace; color:var(--red);">${s.password || '-'}</td>
+                </tr>
+            `).join('');
+        }
+    }
+
+    // 2. Admin: Load Schedule List for Management
+    async function loadManageSchedule() {
+        const res = await fetch('/api/schedule');
+        const data = await res.json();
+        document.getElementById('manage-area').innerHTML = `
+            <button class="btn btn-gold btn-small" style="margin-bottom:10px;" onclick="initAddSchedule()">+ Add New Schedule</button>
+            <table>
+                <tr><th>Topic</th><th>Time</th><th>Action</th></tr>
+                ${data.map(s => `
+                    <tr>
+                        <td>${s.topic} (${s.cls})</td>
+                        <td>${new Date(s.time).toLocaleString()}</td>
+                        <td>
+                            <button class="btn-small" onclick="editSchedule('${s._id}')">Edit</button> 
+                            <button class="btn-small btn-red" onclick="deleteItem('schedule','${s._id}')">Del</button>
+                        </td>
+                    </tr>`).join('')}
+            </table>`;
+    }
+
+    // 3. Admin: Init Add/Edit
+    function initAddSchedule() { editingScheduleId = null; showAdm('add-schedule'); }
+    
+    async function editSchedule(id) {
+        const res = await fetch('/api/schedule'); // Reuse list fetch to find item
+        const data = await res.json();
+        const s = data.find(item => item._id === id);
+        if(s) {
+            editingScheduleId = id;
+            showAdm('add-schedule');
+            document.getElementById('s-cls').value = s.cls;
+            document.getElementById('s-topic').value = s.topic;
+            document.getElementById('s-pass').value = s.password || "";
+            // Format date for input
+            const d = new Date(s.time);
+            d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+            document.getElementById('s-time').value = d.toISOString().slice(0, 16);
+        }
+    }
+
+    // 4. Admin: Save Function
+    async function saveSchedule() {
+        const body = {
+            cls: document.getElementById('s-cls').value,
+            topic: document.getElementById('s-topic').value,
+            password: document.getElementById('s-pass').value,
+            time: document.getElementById('s-time').value
+        };
+        const method = editingScheduleId ? 'PUT' : 'POST';
+        const url = editingScheduleId ? `/api/admin/schedule/${editingScheduleId}` : '/api/admin/schedule';
+        
+        await fetch(url, { method, headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
+        alert("Saved!");
+        showAdm('manage');
+        loadManageSchedule();
+    }
+
+</script>
 </body>
 </html>
