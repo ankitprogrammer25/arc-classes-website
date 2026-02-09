@@ -118,7 +118,7 @@
         <a onclick="show('home')">Home</a>
         <a onclick="show('library')">Library</a>
         <a onclick="show('tests')">Practice Tests</a>
-        <a onclick="show('live')"><span class="blink">🔴</span> Live Test</a>
+        <a onclick="show('live')"><span class="blink">🔴</span> Live or Upcoming Tests</a>
         <a onclick="show('schedule')">📅 Upcoming Test Schedule</a>
         <a onclick="show('results')" id="nav-results">Results</a>
         <a onclick="show('login')" id="nav-login">Login</a>
@@ -193,18 +193,18 @@
     <div id="lib-cats" class="grid">
         <div class="card" onclick="loadLib('11th Class')" style="text-align:center; background:#e0f2fe; border-bottom:4px solid var(--primary);"><b>11th Class</b></div>
         <div class="card" onclick="loadLib('12th Class')" style="text-align:center; background:#e0f2fe; border-bottom:4px solid var(--primary);"><b>12th Class</b></div>
-        <div class="card" onclick="loadLib('Organic')" style="text-align:center; background:#ffedd5; border-bottom:4px solid var(--gold);"><b>Organic</b></div>
-        <div class="card" onclick="loadLib('Physical')" style="text-align:center; background:#ffedd5; border-bottom:4px solid var(--gold);"><b>Physical</b></div>
-        <div class="card" onclick="loadLib('Inorganic')" style="text-align:center; background:#ffedd5; border-bottom:4px solid var(--gold);"><b>Inorganic</b></div>
-        <div class="card" onclick="loadLib('Test Series')" style="text-align:center; background:#dcfce7; border-bottom:4px solid var(--green);"><b>Test Series</b></div>
-        <div class="card" onclick="loadLib('Notes')" style="text-align:center; background:#f3f4f6; border-bottom:4px solid #999;"><b>Notes</b></div>
+        <div class="card" onclick="loadLib('Organic')" style="text-align:center; background:#ffedd5; border-bottom:4px solid var(--gold);"><b>Organic Topic Notes</b></div>
+        <div class="card" onclick="loadLib('Physical')" style="text-align:center; background:#ffedd5; border-bottom:4px solid var(--gold);"><b>Physical Topic Notes</b></div>
+        <div class="card" onclick="loadLib('Inorganic')" style="text-align:center; background:#ffedd5; border-bottom:4px solid var(--gold);"><b>Inorganic Topic Notes</b></div>
+        <div class="card" onclick="loadLib('Test Series')" style="text-align:center; background:#dcfce7; border-bottom:4px solid var(--green);"><b>Test Series PDF</b></div>
+        <div class="card" onclick="loadLib('Notes')" style="text-align:center; background:#f3f4f6; border-bottom:4px solid #999;"><b>Coaching Notes</b></div>
     </div>
     <button id="lib-back" class="btn btn-red" style="display:none; margin-bottom:15px;" onclick="resetLib()">Back</button>
     <div id="lib-content" class="grid"></div>
 </div>
 
 <div id="tests" class="section"><h2>📝 Practice Tests</h2><div id="test-list" class="grid"></div></div>
-<div id="live" class="section"><h2>🔴 Live Tests</h2><div id="live-list" class="grid"></div></div>
+<div id="live" class="section"><h2>🔴 Live or upcoming Tests</h2><div id="live-list" class="grid"></div></div>
 
 <div id="schedule" class="section">
     <h2 style="text-align:center; color:var(--primary);">📅 Upcoming Test Schedule</h2>
@@ -250,14 +250,14 @@
 <div id="results" class="section">
     <h2>🏆 Results</h2>
     <div style="margin-bottom:20px; display:flex; gap:10px; overflow-x:auto;">
-        <button class="btn btn-gold btn-small" onclick="loadResults('practice')">Practice</button>
-        <button class="btn btn-gold btn-small" onclick="loadResults('live')">Live Tests</button>
-        <button class="btn btn-gold btn-small" onclick="loadOfflineResults()">Offline</button>
+        <button class="btn btn-gold btn-small" onclick="loadResults('practice')">Practice Test Results</button>
+        <button class="btn btn-gold btn-small" onclick="loadResults('live')">Live Test Results</button>
+        <button class="btn btn-gold btn-small" onclick="loadOfflineResults()">Offline Test Results</button>
     </div>
     <div id="result-list" class="table-container"></div>
 </div>
 
-<footer>&copy; 2026 ARC Classes.</footer>
+<footer>&copy; 2026 ARC Classes. All Rights Reserved.</footer>
 
 <div id="review-modal" class="modal">
     <div class="modal-content">
@@ -298,7 +298,7 @@
 
 
 
-    
+
     window.onload = function() {
         loadMaterials(); loadAnnouncements(); loadBlogs();
         const lastSection = localStorage.getItem('arc_last_section') || 'home';
