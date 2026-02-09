@@ -42,6 +42,7 @@
             .menu-toggle { display: block; }
         }
 
+        /* BLINK ANIMATION */
         .blink { animation: blinker 1.5s linear infinite; }
         @keyframes blinker { 50% { opacity: 0; } }
 
@@ -215,7 +216,7 @@
                     <th>Class</th>
                     <th>Topic</th>
                     <th>Time</th>
-                    <th>Password</th>
+                    <th>Status</th>
                 </tr>
             </thead>
             <tbody id="schedule-list"></tbody>
@@ -257,7 +258,7 @@
     <div id="result-list" class="table-container"></div>
 </div>
 
-<footer>&copy; 2026 ARC Classes.</footer>
+<footer>&copy; 2026 ARC Classes. All Rights Reserved</footer>
 
 <div id="review-modal" class="modal">
     <div class="modal-content">
@@ -705,7 +706,16 @@ async function doLogin() {
         let correct = 0, wrong = 0, skipped = 0;
         data.questions.forEach(q => { if(q.status === 'Correct') correct++; else if(q.status === 'Wrong') wrong++; else skipped++; });
         document.getElementById('review-stats').innerHTML = `<span>Score: ${r.score}/${r.totalMarks}</span> | <span>Rank: #${data.rank}</span> | <span>${r.percentage.toFixed(1)}%</span>`; 
-        let html = `<div style="display:flex; flex-wrap:wrap; gap:20px; justify-content:center; margin-bottom:30px;"><div style="flex:1; min-width:300px; max-width:400px;"><canvas id="resultChart"></canvas></div><div style="flex:1; min-width:300px; max-height:300px; overflow-y:auto; border:1px solid #eee; padding:10px; border-radius:8px;"><h3 style="text-align:center; margin-top:0;">Leaderboard</h3><table style="width:100%; font-size:0.9rem;"><tr style="background:#f1f5f9;"><th>#</th><th>Student</th><th>Score</th></tr>${data.leaderboard.map(rec => `<tr style="${rec.rank === data.rank ? 'background:#e0f2fe; font-weight:bold;' : ''}"><td>#${rec.rank}</td><td>${rec.name}</td><td>${rec.score}</td></tr>`).join('')}</table></div></div><hr><h3>Sheet</h3>`;
+        let html = `<div style="display:flex; flex-wrap:wrap; gap:20px; justify-content:center; margin-bottom:30px;">
+            <div style="flex:1; min-width:300px; max-width:400px;"><canvas id="resultChart"></canvas></div>
+            <div style="flex:1; min-width:300px; max-height:300px; overflow-y:auto; border:1px solid #eee; padding:10px; border-radius:8px;">
+            <h3 style="text-align:center; margin-top:0;">Leaderboard</h3>
+            <table style="width:100%; font-size:0.9rem;">
+                <tr style="background:#f1f5f9;">
+                    <th>Rank</th><th>Student</th><th>Score</th>
+                    </tr>${data.leaderboard.map(rec => `<tr style="${rec.rank === data.rank ? 'background:#e0f2fe; font-weight:bold;' : ''}">
+                        <td>#${rec.rank}</td><td>${rec.name}</td>
+                        <td>${rec.score}</td></tr>`).join('')}</table></div></div><hr><h3>Sheet</h3>`;
         html += data.questions.map((q, i) => `<div class="review-row"><p><strong>Q${i+1}:</strong> ${q.text}</p>${q.image ? `<img src="${q.image}" style="height:100px">` : ''}<div style="display:grid; grid-template-columns: 1fr 1fr; gap:5px;">${q.options.map((opt, idx) => `<div style="padding:5px; border:1px solid #ddd; ${idx === q.correct ? 'background:#dcfce7; border-color:green;' : ''} ${idx === q.studentAnswer && idx !== q.correct ? 'background:#fee2e2; border-color:red;' : ''}"> ${opt} </div>`).join('')}</div><p style="margin-top:5px; font-size:0.9rem;">Status: <span class="badge ${q.status==='Correct'?'bg-green':'bg-red'}">${q.status}</span></p>${q.solution || q.solutionImage ? `<div style="background:#f0f9ff; padding:10px; margin-top:5px;"><strong>💡 Solution:</strong><br>${q.solution}${q.solutionImage ? `<br><img src="${q.solutionImage}" style="max-height:150px; margin-top:10px;">` : ''}</div>` : ''}</div>`).join('');
         document.getElementById('review-body').innerHTML = html; openModal('review-modal');
         const ctx = document.getElementById('resultChart').getContext('2d');
@@ -759,7 +769,17 @@ async function doLogin() {
     function renderCreatePalette() { const p = document.getElementById('create-palette'); if(!p) return; p.innerHTML = draftQ.map((q, i) => `<div class="q-btn ${i === editQIndex ? 'active' : ''}" onclick="loadDraftQ(${i})">${i+1}</div>`).join('') + `<div class="q-btn" onclick="clearQForm()" style="color:green; font-size:1.2rem;">+</div>`; document.getElementById('q-count').innerText = draftQ.length; }
     function saveDraftQ() { const qData = { text: document.getElementById('q-editor').innerHTML, options: [0,1,2,3].map(i => document.getElementById('op'+i).innerHTML), correct: parseInt(document.getElementById('q-corr').value), marks: parseFloat(document.getElementById('q-marks').value) || 4, negative: parseFloat(document.getElementById('q-neg').value) || 0, solution: document.getElementById('q-sol').innerHTML, image: tempImg, solutionImage: tempSolImg }; if(editQIndex > -1) { if(!qData.image) qData.image = draftQ[editQIndex].image; if(!qData.solutionImage) qData.solutionImage = draftQ[editQIndex].solutionImage; draftQ[editQIndex] = qData; } else { draftQ.push(qData); } clearQForm(); }
     function loadDraftQ(index) { editQIndex = index; const q = draftQ[index]; document.getElementById('q-editor').innerHTML = q.text; [0,1,2,3].forEach(i => document.getElementById('op'+i).innerHTML = q.options[i]); document.getElementById('q-corr').value = q.correct; document.getElementById('q-marks').value = q.marks !== undefined ? q.marks : 4; document.getElementById('q-neg').value = q.negative !== undefined ? q.negative : 0; document.getElementById('q-sol').innerHTML = q.solution || ""; if(q.image) { document.getElementById('q-prev').src = q.image; document.getElementById('q-prev').style.display = 'block'; tempImg = q.image; } else { document.getElementById('q-prev').style.display = 'none'; tempImg = ""; } if(q.solutionImage) { document.getElementById('sol-prev').src = q.solutionImage; document.getElementById('sol-prev').style.display = 'block'; tempSolImg = q.solutionImage; } else { document.getElementById('sol-prev').style.display = 'none'; tempSolImg = ""; } renderCreatePalette(); }
-    function clearQForm() { editQIndex = -1; document.getElementById('q-editor').innerHTML = ""; [0,1,2,3].forEach(i => { document.getElementById('op'+i).innerHTML = ""; }); document.getElementById('q-sol').innerHTML = ""; document.getElementById('q-marks').value = "4"; document.getElementById('q-neg').value = "0"; document.getElementById('q-prev').style.display = 'none'; tempImg = ""; document.getElementById('sol-prev').style.display = 'none'; tempSolImg = ""; document.getElementById('q-sol-file').value = ""; renderCreatePalette(); }
+    
+    function clearQForm() { editQIndex = -1; 
+        document.getElementById('q-editor').innerHTML = "";
+         [0,1,2,3].forEach(i => document.getElementById('op'+i).innerHTML = ""); 
+         document.getElementById('q-sol').innerHTML = ""; 
+         document.getElementById('q-marks').value = "4"; 
+         document.getElementById('q-neg').value = "0"; 
+         document.getElementById('q-prev').style.display = 'none'; 
+         tempImg = ""; document.getElementById('sol-prev').style.display = 'none'; 
+         tempSolImg = ""; document.getElementById('q-sol-file').value = ""; 
+         renderCreatePalette(); }
 
     let editingScheduleId = null;
 
@@ -769,14 +789,35 @@ async function doLogin() {
         const data = await res.json();
         const list = document.getElementById('schedule-list');
         if(list) {
-            list.innerHTML = data.map(s => `
+            // UPDATED: Calculate Status (Upcoming/Live/Expired)
+            const now = new Date();
+            
+            list.innerHTML = data.map(s => {
+                const time = new Date(s.time);
+                const diff = (now - time) / 1000 / 60; // Diff in minutes
+                
+                let status = "";
+                let colorClass = "";
+                
+                if (diff < 0) {
+                    status = "Upcoming";
+                    colorClass = "color: blue;"; // Blue for Upcoming
+                } else if (diff >= 0 && diff <= 10) {
+                    status = "Live";
+                    colorClass = "color: var(--green);"; // Green for Live
+                } else {
+                    status = "Expired";
+                    colorClass = "color: var(--red);"; // Red for Expired
+                }
+
+                return `
                 <tr>
                     <td><span class="badge bg-green">${s.cls}</span></td>
                     <td><b>${s.topic}</b></td>
-                    <td>${new Date(s.time).toLocaleString()}</td>
-                    <td style="font-family:monospace; color:var(--red);">${s.password || '-'}</td>
+                    <td>${time.toLocaleString()}</td>
+                    <td style="font-weight:bold; ${colorClass}" class="blink">${status}</td>
                 </tr>
-            `).join('');
+            `}).join('');
         }
     }
 
