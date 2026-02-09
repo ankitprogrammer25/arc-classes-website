@@ -118,7 +118,7 @@
         <a onclick="show('home')">Home</a>
         <a onclick="show('library')">Library</a>
         <a onclick="show('tests')">Practice Tests</a>
-        <a onclick="show('live')"><span class="blink">🔴</span> Live or Upcoming Tests</a>
+        <a onclick="show('live')"><span class="blink">🔴</span> Live Test</a>
         <a onclick="show('schedule')">📅 Upcoming Test Schedule</a>
         <a onclick="show('results')" id="nav-results">Results</a>
         <a onclick="show('login')" id="nav-login">Login</a>
@@ -193,18 +193,18 @@
     <div id="lib-cats" class="grid">
         <div class="card" onclick="loadLib('11th Class')" style="text-align:center; background:#e0f2fe; border-bottom:4px solid var(--primary);"><b>11th Class</b></div>
         <div class="card" onclick="loadLib('12th Class')" style="text-align:center; background:#e0f2fe; border-bottom:4px solid var(--primary);"><b>12th Class</b></div>
-        <div class="card" onclick="loadLib('Organic')" style="text-align:center; background:#ffedd5; border-bottom:4px solid var(--gold);"><b>Organic Topic Notes</b></div>
-        <div class="card" onclick="loadLib('Physical')" style="text-align:center; background:#ffedd5; border-bottom:4px solid var(--gold);"><b>Physical Topic Notes</b></div>
-        <div class="card" onclick="loadLib('Inorganic')" style="text-align:center; background:#ffedd5; border-bottom:4px solid var(--gold);"><b>Inorganic Topic Notes</b></div>
-        <div class="card" onclick="loadLib('Test Series')" style="text-align:center; background:#dcfce7; border-bottom:4px solid var(--green);"><b>Test Series PDF</b></div>
-        <div class="card" onclick="loadLib('Notes')" style="text-align:center; background:#f3f4f6; border-bottom:4px solid #999;"><b>Coaching Notes</b></div>
+        <div class="card" onclick="loadLib('Organic')" style="text-align:center; background:#ffedd5; border-bottom:4px solid var(--gold);"><b>Organic</b></div>
+        <div class="card" onclick="loadLib('Physical')" style="text-align:center; background:#ffedd5; border-bottom:4px solid var(--gold);"><b>Physical</b></div>
+        <div class="card" onclick="loadLib('Inorganic')" style="text-align:center; background:#ffedd5; border-bottom:4px solid var(--gold);"><b>Inorganic</b></div>
+        <div class="card" onclick="loadLib('Test Series')" style="text-align:center; background:#dcfce7; border-bottom:4px solid var(--green);"><b>Test Series</b></div>
+        <div class="card" onclick="loadLib('Notes')" style="text-align:center; background:#f3f4f6; border-bottom:4px solid #999;"><b>Notes</b></div>
     </div>
     <button id="lib-back" class="btn btn-red" style="display:none; margin-bottom:15px;" onclick="resetLib()">Back</button>
     <div id="lib-content" class="grid"></div>
 </div>
 
 <div id="tests" class="section"><h2>📝 Practice Tests</h2><div id="test-list" class="grid"></div></div>
-<div id="live" class="section"><h2>🔴 Live or upcoming Tests</h2><div id="live-list" class="grid"></div></div>
+<div id="live" class="section"><h2>🔴 Live Tests</h2><div id="live-list" class="grid"></div></div>
 
 <div id="schedule" class="section">
     <h2 style="text-align:center; color:var(--primary);">📅 Upcoming Test Schedule</h2>
@@ -250,14 +250,14 @@
 <div id="results" class="section">
     <h2>🏆 Results</h2>
     <div style="margin-bottom:20px; display:flex; gap:10px; overflow-x:auto;">
-        <button class="btn btn-gold btn-small" onclick="loadResults('practice')">Practice Test Results</button>
-        <button class="btn btn-gold btn-small" onclick="loadResults('live')">Live Test Results</button>
-        <button class="btn btn-gold btn-small" onclick="loadOfflineResults()">Offline Test Results</button>
+        <button class="btn btn-gold btn-small" onclick="loadResults('practice')">Practice</button>
+        <button class="btn btn-gold btn-small" onclick="loadResults('live')">Live Tests</button>
+        <button class="btn btn-gold btn-small" onclick="loadOfflineResults()">Offline</button>
     </div>
     <div id="result-list" class="table-container"></div>
 </div>
 
-<footer>&copy; 2026 ARC Classes. All Rights Reserved.</footer>
+<footer>&copy; 2026 ARC Classes.</footer>
 
 <div id="review-modal" class="modal">
     <div class="modal-content">
@@ -298,7 +298,7 @@
 
 
 
-
+    
     window.onload = function() {
         loadMaterials(); loadAnnouncements(); loadBlogs();
         const lastSection = localStorage.getItem('arc_last_section') || 'home';
@@ -706,7 +706,7 @@ async function doLogin() {
     function renderCreatePalette() { const p = document.getElementById('create-palette'); if(!p) return; p.innerHTML = draftQ.map((q, i) => `<div class="q-btn ${i === editQIndex ? 'active' : ''}" onclick="loadDraftQ(${i})">${i+1}</div>`).join('') + `<div class="q-btn" onclick="clearQForm()" style="color:green; font-size:1.2rem;">+</div>`; document.getElementById('q-count').innerText = draftQ.length; }
     function saveDraftQ() { const qData = { text: document.getElementById('q-editor').innerHTML, options: [0,1,2,3].map(i => document.getElementById('op'+i).innerHTML), correct: parseInt(document.getElementById('q-corr').value), marks: parseFloat(document.getElementById('q-marks').value) || 4, negative: parseFloat(document.getElementById('q-neg').value) || 0, solution: document.getElementById('q-sol').innerHTML, image: tempImg, solutionImage: tempSolImg }; if(editQIndex > -1) { if(!qData.image) qData.image = draftQ[editQIndex].image; if(!qData.solutionImage) qData.solutionImage = draftQ[editQIndex].solutionImage; draftQ[editQIndex] = qData; } else { draftQ.push(qData); } clearQForm(); }
     function loadDraftQ(index) { editQIndex = index; const q = draftQ[index]; document.getElementById('q-editor').innerHTML = q.text; [0,1,2,3].forEach(i => document.getElementById('op'+i).innerHTML = q.options[i]); document.getElementById('q-corr').value = q.correct; document.getElementById('q-marks').value = q.marks !== undefined ? q.marks : 4; document.getElementById('q-neg').value = q.negative !== undefined ? q.negative : 0; document.getElementById('q-sol').innerHTML = q.solution || ""; if(q.image) { document.getElementById('q-prev').src = q.image; document.getElementById('q-prev').style.display = 'block'; tempImg = q.image; } else { document.getElementById('q-prev').style.display = 'none'; tempImg = ""; } if(q.solutionImage) { document.getElementById('sol-prev').src = q.solutionImage; document.getElementById('sol-prev').style.display = 'block'; tempSolImg = q.solutionImage; } else { document.getElementById('sol-prev').style.display = 'none'; tempSolImg = ""; } renderCreatePalette(); }
-    function clearQForm() { editQIndex = -1; document.getElementById('q-editor').innerHTML = ""; [0,1,2,3].forEach(i => document.getElementById('op'+i).innerHTML = ""); document.getElementById('q-sol').innerHTML = ""; document.getElementById('q-marks').value = "4"; document.getElementById('q-neg').value = "0"; document.getElementById('q-prev').style.display = 'none'; tempImg = ""; document.getElementById('sol-prev').style.display = 'none'; tempSolImg = ""; document.getElementById('q-sol-file').value = ""; renderCreatePalette(); }
+    function clearQForm() { editQIndex = -1; document.getElementById('q-editor').innerHTML = ""; [0,1,2,3].forEach(i => { document.getElementById('op'+i).innerHTML = ""; }); document.getElementById('q-sol').innerHTML = ""; document.getElementById('q-marks').value = "4"; document.getElementById('q-neg').value = "0"; document.getElementById('q-prev').style.display = 'none'; tempImg = ""; document.getElementById('sol-prev').style.display = 'none'; tempSolImg = ""; document.getElementById('q-sol-file').value = ""; renderCreatePalette(); }
 
 
 
@@ -776,7 +776,7 @@ async function doLogin() {
             cls: document.getElementById('s-cls').value,
             topic: document.getElementById('s-topic').value,
             password: document.getElementById('s-pass').value,
-            time: document.getElementById('s-time').value
+            time: new Date(document.getElementById('s-time').value)
         };
         const method = editingScheduleId ? 'PUT' : 'POST';
         const url = editingScheduleId ? `/api/admin/schedule/${editingScheduleId}` : '/api/admin/schedule';
