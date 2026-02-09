@@ -42,7 +42,6 @@
             .menu-toggle { display: block; }
         }
 
-        /* BLINK ANIMATION */
         .blink { animation: blinker 1.5s linear infinite; }
         @keyframes blinker { 50% { opacity: 0; } }
 
@@ -85,7 +84,25 @@
             border: 1px solid #ddd;
         }
 
-        /* 5. EXAM & ADMIN LAYOUT */
+        /* 5. SLIDER STYLES (NEW) */
+        .slider-container { overflow: hidden; white-space: nowrap; position: relative; width: 100%; padding: 20px 0; mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent); -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent); }
+        .slider-track { display: inline-flex; gap: 20px; animation: scroll 30s linear infinite; }
+        .slider-track:hover { animation-play-state: paused; }
+        @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        
+        .story-card {
+            background: white; border-radius: 12px; padding: 20px; 
+            min-width: 300px; max-width: 300px; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 1px solid #eee;
+            white-space: normal; display: flex; flex-direction: column; gap: 10px;
+        }
+        .story-header { display: flex; align-items: center; gap: 15px; }
+        .story-img { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid var(--gold); }
+        .story-info h4 { margin: 0; color: var(--primary); }
+        .story-info small { color: #666; font-style: italic; font-size: 0.85rem; }
+        .story-text { font-size: 0.95rem; color: #444; line-height: 1.5; font-style: italic; background: #f8fafc; padding: 10px; border-radius: 8px; }
+
+        /* 6. EXAM & ADMIN LAYOUT */
         .exam-layout { display: flex; gap: 20px; height: calc(100vh - 140px); flex-direction: column; }
         @media(min-width: 900px) { .exam-layout { flex-direction: row; } }
         .question-panel { flex: 3; background: white; padding: 15px; border-radius: 12px; overflow-y: auto; display: flex; flex-direction: column; position: relative; }
@@ -119,9 +136,9 @@
         <a onclick="show('home')">Home</a>
         <a onclick="show('library')">Library</a>
         <a onclick="show('tests')">Practice Tests</a>
-        <a onclick="show('live')"><span class="blink">🔴</span> Live Test</a>
+        <a onclick="show('live')"><span class="blink">🔴</span> Live/Future Tests</a>
         <a onclick="show('schedule')">📅 Upcoming Test Schedule</a>
-        <a onclick="show('results')" id="nav-results">Results</a>
+        <a onclick="show('results')" id="nav-results">Test Results</a>
         <a onclick="show('login')" id="nav-login">Login</a>
         <a onclick="show('admin')" id="nav-admin" style="display:none; background: var(--red); padding: 5px 10px; border-radius: 4px;">TEACHER</a>
         <a onclick="logout()" id="nav-logout" style="display:none">Logout</a>
@@ -139,8 +156,23 @@
         <p>Your Trajectory to the Top.</p>
         <button class="btn btn-gold" onclick="show('tests')">Start Practice</button>
     </div>
+    
     <h3 style="margin-left: 10px;">Latest Blogs</h3>
     <div id="blog-grid" class="grid"></div>
+
+    <div style="margin-top: 50px; background: #eef2ff; padding: 30px 0; border-top: 1px solid #dae1f5; border-bottom: 1px solid #dae1f5;">
+        <div style="max-width:1200px; margin:auto; padding: 0 20px; display:flex; flex-wrap:wrap; gap:10px; justify-content:space-between; align-items:center;">
+            <div>
+                <h2 style="color:var(--primary); margin:0;">🌟 Hall of Fame</h2>
+                <p style="margin:5px 0 0; color:#666;">Our students making us proud.</p>
+            </div>
+            <button class="btn btn-gold btn-small" onclick="openModal('story-modal')">✍️ Add Your Story</button>
+        </div>
+        <div class="slider-container" style="margin-top:20px;">
+            <div id="story-track" class="slider-track">
+                </div>
+        </div>
+    </div>
 </div>
 
 <div id="login" class="section">
@@ -170,7 +202,9 @@
         </div>
         <input id="r-pass" type="password" placeholder="Password">
         <button class="btn btn-gold" style="width:100%" onclick="doReg()">Register</button>
-        <p style="text-align:center; cursor:pointer; margin-top:15px; color:blue;" onclick="document.getElementById('reg-box').style.display='none'; document.querySelector('.form-box').style.display='block';">Back to Login</p>
+        <p style="text-align:center; 
+        cursor:pointer; margin-top:15px; color:blue;" onclick="document.getElementById('reg-box').style.display='none'; 
+        document.querySelector('.form-box').style.display='block';">Back to Login</p>
     </div>
 </div>
 
@@ -192,13 +226,13 @@
 <div id="library" class="section">
     <h2>📚 Library</h2>
     <div id="lib-cats" class="grid">
-        <div class="card" onclick="loadLib('11th Class')" style="text-align:center; background:#e0f2fe; border-bottom:4px solid var(--primary);"><b>11th Class</b></div>
-        <div class="card" onclick="loadLib('12th Class')" style="text-align:center; background:#e0f2fe; border-bottom:4px solid var(--primary);"><b>12th Class</b></div>
-        <div class="card" onclick="loadLib('Organic')" style="text-align:center; background:#ffedd5; border-bottom:4px solid var(--gold);"><b>Organic</b></div>
-        <div class="card" onclick="loadLib('Physical')" style="text-align:center; background:#ffedd5; border-bottom:4px solid var(--gold);"><b>Physical</b></div>
-        <div class="card" onclick="loadLib('Inorganic')" style="text-align:center; background:#ffedd5; border-bottom:4px solid var(--gold);"><b>Inorganic</b></div>
-        <div class="card" onclick="loadLib('Test Series')" style="text-align:center; background:#dcfce7; border-bottom:4px solid var(--green);"><b>Test Series</b></div>
-        <div class="card" onclick="loadLib('Notes')" style="text-align:center; background:#f3f4f6; border-bottom:4px solid #999;"><b>Notes</b></div>
+        <div class="card" onclick="loadLib('11th Class')" style="text-align:center; background:#e0f2fe; border-bottom:4px solid var(--primary);"><b>11th Class Books</b></div>
+        <div class="card" onclick="loadLib('12th Class')" style="text-align:center; background:#e0f2fe; border-bottom:4px solid var(--primary);"><b>12th Class Books</b></div>
+        <div class="card" onclick="loadLib('Organic')" style="text-align:center; background:#ffedd5; border-bottom:4px solid var(--gold);"><b>Organic Chemistry Topics</b></div>
+        <div class="card" onclick="loadLib('Physical')" style="text-align:center; background:#ffedd5; border-bottom:4px solid var(--gold);"><b>Physical Chemistry Topics</b></div>
+        <div class="card" onclick="loadLib('Inorganic')" style="text-align:center; background:#ffedd5; border-bottom:4px solid var(--gold);"><b>Inorganic Chemistry Topics</b></div>
+        <div class="card" onclick="loadLib('Test Series')" style="text-align:center; background:#dcfce7; border-bottom:4px solid var(--green);"><b>Test Series Files</b></div>
+        <div class="card" onclick="loadLib('Notes')" style="text-align:center; background:#f3f4f6; border-bottom:4px solid #999;"><b>Coaching Notes</b></div>
     </div>
     <button id="lib-back" class="btn btn-red" style="display:none; margin-bottom:15px;" onclick="resetLib()">Back</button>
     <div id="lib-content" class="grid"></div>
@@ -251,14 +285,34 @@
 <div id="results" class="section">
     <h2>🏆 Results</h2>
     <div style="margin-bottom:20px; display:flex; gap:10px; overflow-x:auto;">
-        <button class="btn btn-gold btn-small" onclick="loadResults('practice')">Practice</button>
-        <button class="btn btn-gold btn-small" onclick="loadResults('live')">Live Tests</button>
-        <button class="btn btn-gold btn-small" onclick="loadOfflineResults()">Offline</button>
+        <button class="btn btn-gold btn-small" onclick="loadResults('practice')">Practice Test Results</button>
+        <button class="btn btn-gold btn-small" onclick="loadResults('live')">Live Test Results</button>
+        <button class="btn btn-gold btn-small" onclick="loadOfflineResults()">Offline Test Results</button>
     </div>
     <div id="result-list" class="table-container"></div>
 </div>
 
-<footer>&copy; 2026 ARC Classes. All Rights Reserved</footer>
+<footer>&copy; 2026 ARC Classes. All Rights Reserved. </footer>
+
+<div id="story-modal" class="modal">
+    <div class="modal-content">
+        <div class="close-corner" onclick="closeModal('story-modal')">&times;</div>
+        <h2 style="color:var(--primary); margin-top:0;">Add Your Story</h2>
+        <p style="color:#666; font-size:0.9rem;">Share your achievements with our juniors!</p>
+        
+        <input id="st-name" placeholder="Your Name">
+        <input id="st-status" placeholder="Current Status (e.g. Graduated, Post Graduate, Graduating from, MBBS Student)">
+        <textarea id="st-exp" rows="4" placeholder="Your learning experience at ARC Classes..."></textarea>
+        
+        <div style="margin:15px 0; border:1px solid #ccc; padding:10px; border-radius:6px;">
+             <b>Your Photo:</b>
+             <input type="file" onchange="encodeImg(this, 'st-prev')" style="margin-top:5px;">
+             <img id="st-prev" style="width:60px; height:60px; border-radius:50%; margin-top:10px; display:none; object-fit:cover; border:2px solid var(--gold);">
+        </div>
+
+        <button class="btn btn-gold" style="width:100%" onclick="submitStory()">Submit Story</button>
+    </div>
+</div>
 
 <div id="review-modal" class="modal">
     <div class="modal-content">
@@ -298,7 +352,9 @@
     function closeModal(id) { document.getElementById(id).style.display = 'none'; document.body.classList.remove('modal-open'); }
 
     window.onload = function() {
-        loadMaterials(); loadAnnouncements(); loadBlogs();
+        loadMaterials(); loadAnnouncements(); loadBlogs(); 
+        loadStories(); // Load Stories on startup
+        
         const lastSection = localStorage.getItem('arc_last_section') || 'home';
         
         if(user) {
@@ -310,27 +366,19 @@
         const session = JSON.parse(localStorage.getItem('arc_test_session'));
         if (session && user) {
             const now = Date.now();
-            
-            // 1. Restore Data Essential for Submission
             currentTest = session.test;
             answers = session.answers;
             timeTaken = session.timeTaken;
-            
             if (session.endTime > now) {
-                // CASE A: Time Remaining -> RESUME TEST
                 qIndex = session.qIndex;
-                show('exam'); 
-                renderQ();
+                show('exam'); renderQ();
                 const pBtns = document.getElementById('palette').children;
-                // Highlight answered questions
                 if(pBtns.length > 0) {
                      answers.forEach((ans, i) => { if(ans !== null && pBtns[i]) pBtns[i].classList.add('done'); });
                 }
                 startTimer(session.endTime);
-                return; // Stop here, don't show home
+                return; 
             } else {
-                // CASE B: Time Expired While Away -> AUTO SUBMIT IMMEDIATELY
-                // Don't just delete; send what we have to the server
                 alert("Time expired while you were away. Submitting test now...");
                 submitTest(true); 
                 return;
@@ -344,8 +392,8 @@
     let offlineDraft = [], loginMode = 'student', tempImg = "", tempSolImg = "", resultChartInstance = null;
     let editingBlogId = null, editingTestId = null, editingMaterialId = null, editingOfflineId = null;
     let editQIndex = -1;
-    let intervalSec = 0; // Tracks seconds spent on current question
-    let testEndTime = null; // Stores exact test end timestamp
+    let intervalSec = 0; 
+    let testEndTime = null; 
 
     function saveSession(endTime) { 
         if(!currentTest) return; 
@@ -478,7 +526,6 @@
                 </div><div id="manage-area" class="table-container">Select a category above.</div>`;
         }
         else if (tab === 'upload') {
-            // CHANGED: Replaced text input with file input and preview
             c.innerHTML = `<h3>${editingMaterialId ? 'Edit' : 'Upload'} File</h3>
             <input id="m-title" placeholder="Title">
             <input id="m-link" placeholder="Link (e.g., Drive/OneDrive)">
@@ -551,6 +598,7 @@
         else if(type==='blog') loadManageBlogs();
         else if(type === 'schedule') loadManageSchedule();
         else if(type==='material') loadManageLibrary();
+        else if(type === 'story') { loadStories(); } // Reload stories after delete
     }
 
     function initCreateTest() { editingTestId = null; draftQ = []; showAdm('create-test'); renderCreatePalette(); }
@@ -561,7 +609,6 @@
     async function editTest(id) { const res = await fetch(`/api/admin/test/${id}`); const test = await res.json(); initCreateTest(); document.getElementById('t-title').value = test.title; document.getElementById('t-dur').value = test.duration; document.getElementById('t-code').value = test.accessCode || ""; document.getElementById('t-cat').value = test.category; document.getElementById('t-live').checked = test.isLive; if(test.startTime) document.getElementById('t-start').value = toLocalISOString(new Date(test.startTime)); if(test.endTime) document.getElementById('t-end').value = toLocalISOString(new Date(test.endTime)); draftQ = test.questions || []; renderCreatePalette(); editingTestId = id; document.querySelector("button[onclick='pubTest()']").innerText = "UPDATE TEST"; }
     async function editBlog(id) { const blog = allBlogs.find(b => b._id === id); if(!blog) return; showAdm('blog'); document.getElementById('b-title').value = blog.title; document.getElementById('b-content').innerHTML = blog.content; if(blog.image) { document.getElementById('b-cover-prev').src = blog.image; document.getElementById('b-cover-prev').style.display = 'block'; tempImg = blog.image; } editingBlogId = id; }
     
-    // CHANGED: Updated editMaterial to handle image preview and global tempImg variable
     async function editMaterial(id) { 
         if(!allMats.length) await loadMaterials(); 
         const mat = allMats.find(m => m._id === id); 
@@ -576,7 +623,7 @@
         if(mat.image) {
             document.getElementById('m-prev').src = mat.image;
             document.getElementById('m-prev').style.display = 'block';
-            tempImg = mat.image; // Set global variable for update
+            tempImg = mat.image; 
         } else {
             tempImg = "";
         }
@@ -584,12 +631,11 @@
     
     async function editOffline(id) { const res = await fetch(`/api/admin/offline-result/${id}`); const data = await res.json(); editingOfflineId = id; offlineDraft = data.records; showAdm('offline'); document.getElementById('off-title').value = data.title; renderOfflineDraft(); }
 
-    // CHANGED: Updated uploadMat to use tempImg global variable (set by file input)
     async function uploadMat() { 
         const body = { 
             title: document.getElementById('m-title').value, 
             link: document.getElementById('m-link').value, 
-            image: tempImg, // Use global variable from encodeImg
+            image: tempImg, 
             category: document.getElementById('m-cat').value, 
             accessCode: document.getElementById('m-code').value 
         }; 
@@ -598,7 +644,7 @@
         await fetch(url, { method, headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) }); 
         alert(editingMaterialId ? "Updated!" : "Uploaded!"); 
         editingMaterialId = null; 
-        tempImg = ""; // Reset global variable
+        tempImg = ""; 
         showAdm('upload'); 
     }
 
@@ -706,16 +752,7 @@ async function doLogin() {
         let correct = 0, wrong = 0, skipped = 0;
         data.questions.forEach(q => { if(q.status === 'Correct') correct++; else if(q.status === 'Wrong') wrong++; else skipped++; });
         document.getElementById('review-stats').innerHTML = `<span>Score: ${r.score}/${r.totalMarks}</span> | <span>Rank: #${data.rank}</span> | <span>${r.percentage.toFixed(1)}%</span>`; 
-        let html = `<div style="display:flex; flex-wrap:wrap; gap:20px; justify-content:center; margin-bottom:30px;">
-            <div style="flex:1; min-width:300px; max-width:400px;"><canvas id="resultChart"></canvas></div>
-            <div style="flex:1; min-width:300px; max-height:300px; overflow-y:auto; border:1px solid #eee; padding:10px; border-radius:8px;">
-            <h3 style="text-align:center; margin-top:0;">Leaderboard</h3>
-            <table style="width:100%; font-size:0.9rem;">
-                <tr style="background:#f1f5f9;">
-                    <th>Rank</th><th>Student</th><th>Score</th>
-                    </tr>${data.leaderboard.map(rec => `<tr style="${rec.rank === data.rank ? 'background:#e0f2fe; font-weight:bold;' : ''}">
-                        <td>#${rec.rank}</td><td>${rec.name}</td>
-                        <td>${rec.score}</td></tr>`).join('')}</table></div></div><hr><h3>Sheet</h3>`;
+        let html = `<div style="display:flex; flex-wrap:wrap; gap:20px; justify-content:center; margin-bottom:30px;"><div style="flex:1; min-width:300px; max-width:400px;"><canvas id="resultChart"></canvas></div><div style="flex:1; min-width:300px; max-height:300px; overflow-y:auto; border:1px solid #eee; padding:10px; border-radius:8px;"><h3 style="text-align:center; margin-top:0;">Leaderboard</h3><table style="width:100%; font-size:0.9rem;"><tr style="background:#f1f5f9;"><th>#</th><th>Student</th><th>Score</th></tr>${data.leaderboard.map(rec => `<tr style="${rec.rank === data.rank ? 'background:#e0f2fe; font-weight:bold;' : ''}"><td>#${rec.rank}</td><td>${rec.name}</td><td>${rec.score}</td></tr>`).join('')}</table></div></div><hr><h3>Sheet</h3>`;
         html += data.questions.map((q, i) => `<div class="review-row"><p><strong>Q${i+1}:</strong> ${q.text}</p>${q.image ? `<img src="${q.image}" style="height:100px">` : ''}<div style="display:grid; grid-template-columns: 1fr 1fr; gap:5px;">${q.options.map((opt, idx) => `<div style="padding:5px; border:1px solid #ddd; ${idx === q.correct ? 'background:#dcfce7; border-color:green;' : ''} ${idx === q.studentAnswer && idx !== q.correct ? 'background:#fee2e2; border-color:red;' : ''}"> ${opt} </div>`).join('')}</div><p style="margin-top:5px; font-size:0.9rem;">Status: <span class="badge ${q.status==='Correct'?'bg-green':'bg-red'}">${q.status}</span></p>${q.solution || q.solutionImage ? `<div style="background:#f0f9ff; padding:10px; margin-top:5px;"><strong>💡 Solution:</strong><br>${q.solution}${q.solutionImage ? `<br><img src="${q.solutionImage}" style="max-height:150px; margin-top:10px;">` : ''}</div>` : ''}</div>`).join('');
         document.getElementById('review-body').innerHTML = html; openModal('review-modal');
         const ctx = document.getElementById('resultChart').getContext('2d');
@@ -728,8 +765,6 @@ async function doLogin() {
     
     async function loadMaterials() { try { const res = await fetch('/api/materials'); allMats = await res.json(); } catch(e) {} }
     function loadLib(cat) { document.getElementById('lib-cats').style.display = 'none'; document.getElementById('lib-back').style.display = 'block'; renderLib(cat); }
-    
-    // CHANGED: Updated renderLib to create the requested "image box" grid view
     function renderLib(cat) { 
         const items = allMats.filter(m => m.category === cat || (cat === '11th Class' && m.category.includes('11'))); 
         document.getElementById('lib-content').innerHTML = items.length ? items.map(m => `
@@ -739,113 +774,45 @@ async function doLogin() {
                  <button class="btn btn-gold" onclick="openMat('${m._id}')">Open</button>
             </div>`).join('') : "<p>No items found.</p>"; 
     }
-    
     function resetLib() { document.getElementById('lib-cats').style.display = 'grid'; document.getElementById('lib-back').style.display = 'none'; document.getElementById('lib-content').innerHTML = ''; }
-    
-    async function openMat(id) {
-        const code = prompt("Password:");
-        if (code === null) return; // User cancelled
-
-        // Open window immediately to bypass pop-up blockers
-        const newWindow = window.open('', '_blank');
-        newWindow.document.write('<h2 style="font-family:sans-serif; text-align:center; margin-top:50px;">Verifying password and loading file... Please wait.</h2>');
-
-        try {
-            const res = await fetch('/api/material/unlock', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id, code}) });
-            const data = await res.json();
-            if(data.success) {
-                // Redirect the pre-opened window to the link
-                newWindow.location.href = data.link;
-            } else {
-                newWindow.close(); // Close the loading tab
-                alert("Wrong Password or Invalid Link");
-            }
-        } catch (e) {
-            newWindow.close();
-            alert("Error opening file.");
-        }
-    }
+    async function openMat(id) { const code = prompt("Password:"); const res = await fetch('/api/material/unlock', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id, code}) }); const data = await res.json(); if(data.success) window.open(data.link); else alert("Wrong Password"); }
     
     function renderCreatePalette() { const p = document.getElementById('create-palette'); if(!p) return; p.innerHTML = draftQ.map((q, i) => `<div class="q-btn ${i === editQIndex ? 'active' : ''}" onclick="loadDraftQ(${i})">${i+1}</div>`).join('') + `<div class="q-btn" onclick="clearQForm()" style="color:green; font-size:1.2rem;">+</div>`; document.getElementById('q-count').innerText = draftQ.length; }
     function saveDraftQ() { const qData = { text: document.getElementById('q-editor').innerHTML, options: [0,1,2,3].map(i => document.getElementById('op'+i).innerHTML), correct: parseInt(document.getElementById('q-corr').value), marks: parseFloat(document.getElementById('q-marks').value) || 4, negative: parseFloat(document.getElementById('q-neg').value) || 0, solution: document.getElementById('q-sol').innerHTML, image: tempImg, solutionImage: tempSolImg }; if(editQIndex > -1) { if(!qData.image) qData.image = draftQ[editQIndex].image; if(!qData.solutionImage) qData.solutionImage = draftQ[editQIndex].solutionImage; draftQ[editQIndex] = qData; } else { draftQ.push(qData); } clearQForm(); }
     function loadDraftQ(index) { editQIndex = index; const q = draftQ[index]; document.getElementById('q-editor').innerHTML = q.text; [0,1,2,3].forEach(i => document.getElementById('op'+i).innerHTML = q.options[i]); document.getElementById('q-corr').value = q.correct; document.getElementById('q-marks').value = q.marks !== undefined ? q.marks : 4; document.getElementById('q-neg').value = q.negative !== undefined ? q.negative : 0; document.getElementById('q-sol').innerHTML = q.solution || ""; if(q.image) { document.getElementById('q-prev').src = q.image; document.getElementById('q-prev').style.display = 'block'; tempImg = q.image; } else { document.getElementById('q-prev').style.display = 'none'; tempImg = ""; } if(q.solutionImage) { document.getElementById('sol-prev').src = q.solutionImage; document.getElementById('sol-prev').style.display = 'block'; tempSolImg = q.solutionImage; } else { document.getElementById('sol-prev').style.display = 'none'; tempSolImg = ""; } renderCreatePalette(); }
-    
-    function clearQForm() { editQIndex = -1; 
-        document.getElementById('q-editor').innerHTML = "";
-         [0,1,2,3].forEach(i => document.getElementById('op'+i).innerHTML = ""); 
-         document.getElementById('q-sol').innerHTML = ""; 
-         document.getElementById('q-marks').value = "4"; 
-         document.getElementById('q-neg').value = "0"; 
-         document.getElementById('q-prev').style.display = 'none'; 
-         tempImg = ""; document.getElementById('sol-prev').style.display = 'none'; 
-         tempSolImg = ""; document.getElementById('q-sol-file').value = ""; 
-         renderCreatePalette(); }
+    function clearQForm() { editQIndex = -1; document.getElementById('q-editor').innerHTML = ""; 
+    [0,1,2,3].forEach(i => document.getElementById('op'+i).innerHTML = ""); document.getElementById('q-sol').innerHTML = ""; document.getElementById('q-marks').value = "4"; document.getElementById('q-neg').value = "0"; document.getElementById('q-prev').style.display = 'none'; tempImg = ""; document.getElementById('sol-prev').style.display = 'none'; tempSolImg = ""; document.getElementById('q-sol-file').value = ""; renderCreatePalette(); }
 
     let editingScheduleId = null;
 
-    // 1. Load Schedule for Students
     async function loadSchedule() {
         const res = await fetch('/api/schedule');
         const data = await res.json();
         const list = document.getElementById('schedule-list');
         if(list) {
-            // UPDATED: Calculate Status (Upcoming/Live/Expired)
             const now = new Date();
-            
             list.innerHTML = data.map(s => {
                 const time = new Date(s.time);
-                const diff = (now - time) / 1000 / 60; // Diff in minutes
-                
-                let status = "";
-                let colorClass = "";
-                
-                if (diff < 0) {
-                    status = "Upcoming";
-                    colorClass = "color: blue;"; // Blue for Upcoming
-                } else if (diff >= 0 && diff <= 10) {
-                    status = "Live";
-                    colorClass = "color: var(--green);"; // Green for Live
-                } else {
-                    status = "Expired";
-                    colorClass = "color: var(--red);"; // Red for Expired
-                }
-
-                return `
-                <tr>
-                    <td><span class="badge bg-green">${s.cls}</span></td>
-                    <td><b>${s.topic}</b></td>
-                    <td>${time.toLocaleString()}</td>
-                    <td style="font-weight:bold; ${colorClass}" class="blink">${status}</td>
-                </tr>
-            `}).join('');
+                const diff = (now - time) / 1000 / 60; 
+                let status = "", colorClass = "";
+                if (diff < 0) { status = "Upcoming"; colorClass = "color: blue;"; } 
+                else if (diff >= 0 && diff <= 10) { status = "Live"; colorClass = "color: var(--green);"; } 
+                else { status = "Expired"; colorClass = "color: var(--red);"; }
+                return `<tr><td><span class="badge bg-green">${s.cls}</span></td><td><b>${s.topic}</b></td><td>${time.toLocaleString()}</td><td style="font-weight:bold; ${colorClass}" class="blink">${status}</td></tr>`;
+            }).join('');
         }
     }
 
-    // 2. Admin: Load Schedule List for Management
     async function loadManageSchedule() {
         const res = await fetch('/api/schedule');
         const data = await res.json();
-        document.getElementById('manage-area').innerHTML = `
-            <button class="btn btn-gold btn-small" style="margin-bottom:10px;" onclick="initAddSchedule()">+ Add New Schedule</button>
-            <table>
-                <tr><th>Topic</th><th>Time</th><th>Action</th></tr>
-                ${data.map(s => `
-                    <tr>
-                        <td>${s.topic} (${s.cls})</td>
-                        <td>${new Date(s.time).toLocaleString()}</td>
-                        <td>
-                            <button class="btn-small" onclick="editSchedule('${s._id}')">Edit</button> 
-                            <button class="btn-small btn-red" onclick="deleteItem('schedule','${s._id}')">Del</button>
-                        </td>
-                    </tr>`).join('')}
-            </table>`;
+        document.getElementById('manage-area').innerHTML = `<button class="btn btn-gold btn-small" style="margin-bottom:10px;" onclick="initAddSchedule()">+ Add New Schedule</button><table><tr><th>Topic</th><th>Time</th><th>Action</th></tr>${data.map(s => `<tr><td>${s.topic} (${s.cls})</td><td>${new Date(s.time).toLocaleString()}</td><td><button class="btn-small" onclick="editSchedule('${s._id}')">Edit</button> <button class="btn-small btn-red" onclick="deleteItem('schedule','${s._id}')">Del</button></td></tr>`).join('')}</table>`;
     }
 
-    // 3. Admin: Init Add/Edit
     function initAddSchedule() { editingScheduleId = null; showAdm('add-schedule'); }
     
     async function editSchedule(id) {
-        const res = await fetch('/api/schedule'); // Reuse list fetch to find item
+        const res = await fetch('/api/schedule'); 
         const data = await res.json();
         const s = data.find(item => item._id === id);
         if(s) {
@@ -854,28 +821,74 @@ async function doLogin() {
             document.getElementById('s-cls').value = s.cls;
             document.getElementById('s-topic').value = s.topic;
             document.getElementById('s-pass').value = s.password || "";
-            // Format date for input
             const d = new Date(s.time);
             d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
             document.getElementById('s-time').value = d.toISOString().slice(0, 16);
         }
     }
 
-    // 4. Admin: Save Function
     async function saveSchedule() {
-        const body = {
-            cls: document.getElementById('s-cls').value,
-            topic: document.getElementById('s-topic').value,
-            password: document.getElementById('s-pass').value,
-            time: new Date(document.getElementById('s-time').value)
-        };
+        const body = { cls: document.getElementById('s-cls').value, topic: document.getElementById('s-topic').value, password: document.getElementById('s-pass').value, time: new Date(document.getElementById('s-time').value) };
         const method = editingScheduleId ? 'PUT' : 'POST';
         const url = editingScheduleId ? `/api/admin/schedule/${editingScheduleId}` : '/api/admin/schedule';
-        
         await fetch(url, { method, headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
         alert("Saved!");
         showAdm('manage');
         loadManageSchedule();
+    }
+
+    // --- NEW FUNCTIONS FOR SUCCESS STORIES ---
+    async function loadStories() {
+        const res = await fetch('/api/stories');
+        const data = await res.json();
+        const track = document.getElementById('story-track');
+        if(!track || data.length === 0) return;
+
+        // Create card HTML function
+        const createCard = (s) => `
+            <div class="story-card">
+                <div class="story-header">
+                    <img src="${s.image || 'https://via.placeholder.com/50'}" class="story-img">
+                    <div class="story-info">
+                        <h4>${s.name}</h4>
+                        <small>${s.status}</small>
+                    </div>
+                    ${(user && user.role === 'admin') ? `<button onclick="deleteItem('story', '${s._id}')" style="margin-left:auto; color:red; border:none; background:none; cursor:pointer;">X</button>` : ''}
+                </div>
+                <div class="story-text">"${s.experience}"</div>
+            </div>`;
+
+        // We duplicate the list to ensure the marquee loop is smooth
+        const cardsHTML = data.map(createCard).join('');
+        // To make seamless loop, we add the cards twice
+        track.innerHTML = cardsHTML + cardsHTML + cardsHTML; 
+    }
+
+    async function submitStory() {
+        const body = {
+            name: document.getElementById('st-name').value,
+            status: document.getElementById('st-status').value,
+            experience: document.getElementById('st-exp').value,
+            image: tempImg
+        };
+        
+        if(!body.name || !body.experience) return alert("Please fill Name and Experience.");
+
+        const res = await fetch('/api/story', { 
+            method: 'POST', 
+            headers: {'Content-Type':'application/json'}, 
+            body: JSON.stringify(body) 
+        });
+        
+        const data = await res.json();
+        if(data.success) {
+            alert("Story Submitted! It will appear on the homepage.");
+            closeModal('story-modal');
+            tempImg = "";
+            loadStories(); // Refresh list
+        } else {
+            alert("Error submitting story.");
+        }
     }
 
 </script>

@@ -41,12 +41,10 @@ const TestSchema = new mongoose.Schema({
 });
 const Test = mongoose.model('Test', TestSchema);
 
-// --- ADDED MISSING SCHEDULE SCHEMA ---
 const ScheduleSchema = new mongoose.Schema({
     cls: String, topic: String, password: String, time: Date
 });
 const Schedule = mongoose.model('Schedule', ScheduleSchema);
-// -------------------------------------
 
 const OfflineResultSchema = new mongoose.Schema({
     title: String, date: { type: Date, default: Date.now },
@@ -65,6 +63,13 @@ const BlogSchema = new mongoose.Schema({
     title: String, content: String, image: String, date: { type: Date, default: Date.now }
 });
 const Blog = mongoose.model('Blog', BlogSchema);
+
+// --- NEW SCHEMA FOR SUCCESS STORIES ---
+const SuccessStorySchema = new mongoose.Schema({
+    name: String, status: String, experience: String, image: String, date: { type: Date, default: Date.now }
+});
+const SuccessStory = mongoose.model('SuccessStory', SuccessStorySchema);
+// -------------------------------------
 
 const ConfigSchema = new mongoose.Schema({ type: String, list: [String] });
 const Config = mongoose.model('Config', ConfigSchema);
@@ -121,24 +126,27 @@ app.post('/api/admin/blog', async (req, res) => { await new Blog(req.body).save(
 app.put('/api/admin/blog/:id', async (req, res) => { await Blog.findByIdAndUpdate(req.params.id, req.body); res.json({ success: true }); });
 app.delete('/api/admin/blog/:id', async (req, res) => { await Blog.findByIdAndDelete(req.params.id); res.json({ success: true }); });
 
-// --- ADDED MISSING SCHEDULE ROUTES ---
+// SCHEDULE
 app.get('/api/schedule', async (req, res) => res.json(await Schedule.find().sort({ time: 1 })));
+app.post('/api/admin/schedule', async (req, res) => { await new Schedule(req.body).save(); res.json({ success: true }); });
+app.put('/api/admin/schedule/:id', async (req, res) => { await Schedule.findByIdAndUpdate(req.params.id, req.body); res.json({ success: true }); });
+app.delete('/api/admin/schedule/:id', async (req, res) => { await Schedule.findByIdAndDelete(req.params.id); res.json({ success: true }); });
 
-app.post('/api/admin/schedule', async (req, res) => { 
-    await new Schedule(req.body).save(); 
-    res.json({ success: true }); 
+// --- SUCCESS STORIES ROUTES (New) ---
+app.get('/api/stories', async (req, res) => res.json(await SuccessStory.find().sort({ date: -1 })));
+
+app.post('/api/story', async (req, res) => {
+    try {
+        await new SuccessStory(req.body).save();
+        res.json({ success: true });
+    } catch(e) { res.json({ success: false }); }
 });
 
-app.put('/api/admin/schedule/:id', async (req, res) => { 
-    await Schedule.findByIdAndUpdate(req.params.id, req.body); 
-    res.json({ success: true }); 
+app.delete('/api/admin/story/:id', async (req, res) => {
+    await SuccessStory.findByIdAndDelete(req.params.id);
+    res.json({ success: true });
 });
-
-app.delete('/api/admin/schedule/:id', async (req, res) => { 
-    await Schedule.findByIdAndDelete(req.params.id); 
-    res.json({ success: true }); 
-});
-// -------------------------------------
+// ------------------------------------
 
 // OFFLINE RESULTS
 app.get('/api/admin/offline-result/:id', async (req, res) => { res.json(await OfflineResult.findById(req.params.id)); });
@@ -161,7 +169,6 @@ app.put('/api/admin/offline-result/:id', async (req, res) => {
     } catch(e) { res.json({ success: false }); }
 });
 app.delete('/api/admin/offline-result/:id', async (req, res) => { await OfflineResult.findByIdAndDelete(req.params.id); res.json({ success: true }); });
-
 
 // ANNOUNCEMENTS
 app.get('/api/announcement', async (req, res) => { 
