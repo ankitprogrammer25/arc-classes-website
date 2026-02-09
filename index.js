@@ -5,248 +5,137 @@ const cors = require('cors');
 const path = require('path');
 
 const app = express();
-app.use(express.json({ limit: '100mb' }));
+app.use(express.json({ limit: '50mb' }));
 app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// --- 1. DATABASE CONNECTION ---
-// Replace with your actual connection string if different
-const dbLink = "mongodb+srv://ankitprogrammer25:a32x05sYvukG178G@cluster0.0dhqpzv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+// ==========================================
+// 🟢 DATABASE CONNECTION
+// ==========================================
+const DB_LINK = "mongodb://ankitprogrammer25:a32x05sYvukG178G@cluster0-shard-00-00.0dhqpzv.mongodb.net:27017,cluster0-shard-00-01.0dhqpzv.mongodb.net:27017,cluster0-shard-00-02.0dhqpzv.mongodb.net:27017/arc_database?ssl=true&replicaSet=atlas-0dhqpzv-shard-0&authSource=admin&retryWrites=true&w=majority";
 
-mongoose.connect(dbLink)
-    .then(() => console.log('✅ MongoDB Connected'))
-    .catch(err => console.log('❌ DB Connection Error:', err.message));
+console.log("⏳ Connecting to Database...");
 
-// --- 2. SCHEMAS ---
-const StudentSchema = new mongoose.Schema({
-    name: String, email: { type: String, unique: true }, password: String, joinedAt: { type: Date, default: Date.now },
-});
-const Student = mongoose.model('Student', StudentSchema);
+mongoose.connect(DB_LINK)
+    .then(() => console.log("✅ MongoDB Connected Successfully!"))
+    .catch(err => console.log("❌ DB Connection Failed:", err.message));
 
-const MaterialSchema = new mongoose.Schema({
-    title: String, description: String, link: String, category: String, 
-    image: String, accessCode: String, date: { type: Date, default: Date.now }
-});
-const Material = mongoose.model('Material', MaterialSchema);
+// ==========================================
+// 📌 SCHEMAS
+// ==========================================
 
-const QuestionSchema = new mongoose.Schema({
-    text: String, image: String, options: [String], correct: Number, 
-    marks: Number, negative: Number, topic: String, solution: String,
-    solutionImage: String 
-});
+// 1. Student User (UPDATED as per requirements)
+const Student = mongoose.model('Student', new mongoose.Schema({
+    username: { type: String, unique: true }, // Used for login
+    email: String,
+    mobile: String,
+    password: String
+}));
 
-const TestSchema = new mongoose.Schema({
-    title: String, instructions: String, duration: Number, accessCode: String, category: String,
-    isLive: Boolean, startTime: Date, endTime: Date,
-    questions: [QuestionSchema], date: { type: Date, default: Date.now }
-});
-const Test = mongoose.model('Test', TestSchema);
+// 2. Schedule
+const Schedule = mongoose.model('Schedule', new mongoose.Schema({
+    title: String,
+    date: String,
+    link: String
+}));
 
-const OfflineResultSchema = new mongoose.Schema({
-    title: String, date: { type: Date, default: Date.now },
-    records: [{ studentName: String, totalMarks: Number, obtainedMarks: Number, rank: Number, copyLink: String }]
-});
-const OfflineResult = mongoose.model('OfflineResult', OfflineResultSchema);
+// 3. Results
+const Result = mongoose.model('Result', new mongoose.Schema({
+    title: String,
+    link: String,
+    date: String
+}));
 
-const ResultSchema = new mongoose.Schema({
-    studentName: String, studentEmail: String, testTitle: String, testId: String, testType: String,
-    score: Number, totalMarks: Number, percentage: Number, rank: Number, feedback: String,
-    answers: [Number], timeTaken: [Number], date: { type: Date, default: Date.now }
-});
-const Result = mongoose.model('Result', ResultSchema);
+// 4. Library
+const Material = mongoose.model('Material', new mongoose.Schema({
+    title: String,
+    category: String,
+    link: String
+}));
 
-const BlogSchema = new mongoose.Schema({
-    title: String, content: String, image: String, date: { type: Date, default: Date.now }
-});
-const Blog = mongoose.model('Blog', BlogSchema);
+// 5. Live Test
+const Test = mongoose.model('Test', new mongoose.Schema({
+    title: String,
+    questions: Array,
+    active: Boolean
+}));
 
-const ConfigSchema = new mongoose.Schema({ type: String, list: [String] });
-const Config = mongoose.model('Config', ConfigSchema);
+// ==========================================
+// 🚀 API ROUTES
+// ==========================================
 
-// --- 3. ROUTES ---
-
-// --- AUTH ---
-app.post('/api/register', async (req, res) => {
-    try {
-        const { name, emailPart, password } = req.body; 
-        const fullEmail = emailPart + "@arcstudent.com";
-        if(await Student.findOne({ email: fullEmail })) return res.json({ success: false, message: "Username Taken" });
-        await new Student({ name, email: fullEmail, password }).save(); 
-        res.json({ success: true });
-    } catch (e) { res.json({ success: false, message: "Error" }); }
-});
-
+// --- AUTHENTICATION ---
 app.post('/api/login', async (req, res) => {
-    try {
-        const { email, password } = req.body; 
-        if (email === 'admin@arc.com' && password === 'admin123') {
-            return res.json({ success: true, name: "ARC Admin", email: "admin@arc.com", role: 'admin' });
+    const { username, password, role } = req.body;
+
+    // 1. Admin Login
+    if (role === 'admin') {
+        if (username === 'admin' && password === 'admin123') {
+            return res.json({ success: true, name: 'Ankit Sir', role: 'admin' });
         }
-        const student = await Student.findOne({ email });
-        if (!student || student.password !== password) return res.json({ success: false });
-        res.json({ success: true, name: student.name, email: student.email, role: 'student' });
-    } catch (e) { res.json({ success: false }); }
-});
+        return res.json({ success: false, message: 'Invalid Admin Password' });
+    }
 
-// --- ADMIN API ---
-// STUDENTS
-app.get('/api/admin/students', async (req, res) => res.json(await Student.find().sort({ joinedAt: -1 })));
-app.get('/api/admin/student/:id', async (req, res) => res.json(await Student.findById(req.params.id)));
-app.put('/api/admin/student/:id', async (req, res) => { await Student.findByIdAndUpdate(req.params.id, req.body); res.json({ success: true }); });
-app.delete('/api/admin/student/:id', async (req, res) => { await Student.findByIdAndDelete(req.params.id); res.json({ success: true }); });
-
-// RESULTS
-app.get('/api/admin/results/online', async (req, res) => res.json(await Result.find().sort({ date: -1 })));
-app.delete('/api/admin/result/:id', async (req, res) => { await Result.findByIdAndDelete(req.params.id); res.json({ success: true }); });
-
-// MATERIAL
-app.post('/api/admin/material', async (req, res) => { await new Material(req.body).save(); res.json({ success: true }); });
-app.put('/api/admin/material/:id', async (req, res) => { await Material.findByIdAndUpdate(req.params.id, req.body); res.json({ success: true }); });
-app.delete('/api/admin/material/:id', async (req, res) => { await Material.findByIdAndDelete(req.params.id); res.json({ success: true }); });
-
-// TEST
-app.get('/api/admin/test/:id', async (req, res) => { res.json(await Test.findById(req.params.id)); });
-app.post('/api/admin/test', async (req, res) => { await new Test(req.body).save(); res.json({ success: true }); });
-app.put('/api/admin/test/:id', async (req, res) => { await Test.findByIdAndUpdate(req.params.id, req.body); res.json({ success: true }); });
-app.delete('/api/admin/test/:id', async (req, res) => { await Test.findByIdAndDelete(req.params.id); res.json({ success: true }); });
-
-// BLOG
-app.post('/api/admin/blog', async (req, res) => { await new Blog(req.body).save(); res.json({ success: true }); });
-app.put('/api/admin/blog/:id', async (req, res) => { await Blog.findByIdAndUpdate(req.params.id, req.body); res.json({ success: true }); });
-app.delete('/api/admin/blog/:id', async (req, res) => { await Blog.findByIdAndDelete(req.params.id); res.json({ success: true }); });
-
-// OFFLINE RESULTS
-app.get('/api/admin/offline-result/:id', async (req, res) => { res.json(await OfflineResult.findById(req.params.id)); });
-app.post('/api/admin/offline-result', async (req, res) => { 
+    // 2. Student Login
     try {
-        const { title, records } = req.body;
-        records.sort((a, b) => b.obtainedMarks - a.obtainedMarks);
-        records.forEach((rec, index) => { rec.rank = index + 1; });
-        await new OfflineResult({ title, records }).save(); 
-        res.json({ success: true });
-    } catch(e) { res.json({ success: false }); }
+        // Find student by username and password
+        const user = await Student.findOne({ username, password });
+        if (user) {
+            // We use username as the display name since 'name' field was removed
+            res.json({ success: true, name: user.username, role: 'student' });
+        } else {
+            res.json({ success: false, message: 'Wrong Credentials' });
+        }
+    } catch (e) { 
+        res.json({ success: false, message: 'Server Error' }); 
+    }
 });
-app.put('/api/admin/offline-result/:id', async (req, res) => { 
+
+// --- ADMIN: CREATE STUDENT ---
+app.post('/api/create-student', async (req, res) => {
     try {
-        const { title, records } = req.body;
-        records.sort((a, b) => b.obtainedMarks - a.obtainedMarks);
-        records.forEach((rec, index) => { rec.rank = index + 1; });
-        await OfflineResult.findByIdAndUpdate(req.params.id, { title, records }); 
-        res.json({ success: true });
-    } catch(e) { res.json({ success: false }); }
-});
-app.delete('/api/admin/offline-result/:id', async (req, res) => { await OfflineResult.findByIdAndDelete(req.params.id); res.json({ success: true }); });
+        // Updated to accept new fields
+        const { username, email, mobile, password } = req.body;
+        
+        const exists = await Student.findOne({ username });
+        if(exists) return res.json({ success: false, message: "Username already taken!" });
 
+        await new Student({ username, email, mobile, password }).save();
+        res.json({ success: true, message: "Student Registered Successfully!" });
+    } catch (e) { 
+        res.json({ success: false, message: "Error Creating Student" }); 
+    }
+});
 
-// ANNOUNCEMENTS
-app.get('/api/announcement', async (req, res) => { 
-    const c = await Config.findOne({ type: 'announce_list' });
-    res.json({ list: c ? c.list : ["Welcome to ARC Classes"] });
-});
-app.post('/api/admin/announcement/add', async (req, res) => {
-    await Config.findOneAndUpdate({ type: 'announce_list' }, { $push: { list: req.body.text } }, { upsert: true });
-    res.json({ success: true });
-});
-app.post('/api/admin/announcement/delete', async (req, res) => {
-    const c = await Config.findOne({ type: 'announce_list' });
-    if(c) { c.list = c.list.filter(t => t !== req.body.text); await c.save(); }
+// --- SCHEDULE ROUTES ---
+app.get('/api/schedule', async (req, res) => res.json(await Schedule.find().sort({_id:-1})));
+app.post('/api/schedule', async (req, res) => {
+    await new Schedule(req.body).save();
     res.json({ success: true });
 });
 
-// --- STUDENT API ---
-app.get('/api/materials', async (req, res) => res.json(await Material.find()));
-app.get('/api/tests', async (req, res) => {
-    const tests = await Test.find({}, 'title duration category date accessCode isLive startTime endTime');
-    res.json(tests);
-});
-app.get('/api/blogs', async (req, res) => res.json(await Blog.find().sort({ date: -1 })));
-app.post('/api/student/results/online', async (req, res) => res.json({ success: true, results: await Result.find({ studentEmail: req.body.email }).sort({ date: -1 }) }));
-app.get('/api/results/offline', async (req, res) => res.json(await OfflineResult.find()));
-
-app.post('/api/material/unlock', async (req, res) => {
-    const f = await Material.findById(req.body.id);
-    if(f && (!f.accessCode || f.accessCode === req.body.code)) res.json({ success: true, link: f.link }); else res.json({ success: false });
+// --- RESULT ROUTES ---
+app.get('/api/results', async (req, res) => res.json(await Result.find().sort({_id:-1})));
+app.post('/api/results', async (req, res) => {
+    await new Result(req.body).save();
+    res.json({ success: true });
 });
 
-app.post('/api/result-details', async (req, res) => {
-    try {
-        const result = await Result.findById(req.body.resultId);
-        if(!result) return res.json({ success: false, message: "Result Not Found" });
-        
-        const allResults = await Result.find({ testId: result.testId }).sort({ score: -1 });
-        const rank = allResults.findIndex(r => r._id.toString() === result._id.toString()) + 1;
-
-        const leaderboard = allResults.map((r, i) => ({
-            rank: i + 1,
-            name: r.studentName,
-            score: r.score,
-            total: r.totalMarks
-        }));
-
-        const test = await Test.findById(result.testId);
-        if(!test) return res.json({ success: true, result, rank, leaderboard, questions: [], message: "Test was deleted by teacher." });
-        
-        const detailedQuestions = test.questions.map((q, i) => ({
-            text: q.text, image: q.image, options: q.options, correct: q.correct, 
-            solution: q.solution, solutionImage: q.solutionImage,
-            studentAnswer: result.answers[i], timeSpent: result.timeTaken ? result.timeTaken[i] : 0,
-            status: result.answers[i] === q.correct ? 'Correct' : (result.answers[i] === null ? 'Skipped' : 'Wrong')
-        }));
-        
-        res.json({ success: true, result, rank, leaderboard, questions: detailedQuestions });
-    } catch(e) { res.json({ success: false, message: e.message }); }
+// --- LIBRARY ROUTES ---
+app.get('/api/library', async (req, res) => res.json(await Material.find().sort({_id:-1})));
+app.post('/api/library', async (req, res) => {
+    await new Material(req.body).save();
+    res.json({ success: true });
 });
 
-app.post('/api/test/start', async (req, res) => {
-    const { id, code, studentEmail } = req.body; 
-    if (studentEmail !== 'admin@arc.com') {
-        const s = await Student.findOne({ email: studentEmail });
-        if(!s) return res.json({ success: false, message: "Login first" });
-    }
-    const t = await Test.findById(id);
-    
-    if(t.isLive && studentEmail !== 'admin@arc.com') {
-        const now = new Date();
-        if(now < new Date(t.startTime)) return res.json({ success: false, message: "Not Started" });
-        if(now > new Date(t.endTime)) return res.json({ success: false, message: "Expired" });
-    }
-    if(!t.accessCode || t.accessCode === "" || t.accessCode === code) {
-        // Send marks and negative marks to frontend
-        const safeQ = t.questions.map(q => ({ 
-            text: q.text, 
-            image: q.image, 
-            options: q.options, 
-            marks: q.marks || 4, 
-            negative: q.negative !== undefined ? q.negative : 0 
-        }));
-        res.json({ success: true, test: {...t._doc, questions: safeQ} });
-    } else res.json({ success: false, message: "Wrong Password" });
-});
-
-app.post('/api/test/submit', async (req, res) => {
-    try {
-        const { testId, answers, timeTaken, studentName, studentEmail } = req.body; 
-        const t = await Test.findById(testId);
-        let score = 0, total = 0;
-        t.questions.forEach((q, i) => {
-            const marks = q.marks || 4;
-            const neg = q.negative !== undefined ? q.negative : 0;
-            total += marks;
-            
-            if (answers[i] === q.correct) score += marks;
-            else if (answers[i] !== null && answers[i] !== -1) score -= neg; // Ensure null/skipped doesn't deduct
-        });
-        
-        const pct = (score / total) * 100;
-        const r = new Result({ 
-            studentName, studentEmail, testTitle: t.title, testId: t._id, testType: t.isLive ? 'live' : 'practice', 
-            score, totalMarks: total, percentage: pct, rank: 0, feedback: pct>80?"Excellent":"Keep Improving", 
-            answers, timeTaken 
-        });
-        await r.save();
-        res.json({ success: true, score, resultId: r._id });
-    } catch(e) { res.json({ success: false }); }
+// --- LIVE TEST ROUTES ---
+app.get('/api/test', async (req, res) => res.json(await Test.findOne({ active: true })));
+app.post('/api/test', async (req, res) => {
+    await Test.updateMany({}, { active: false });
+    const newTest = new Test({ ...req.body, active: true });
+    await newTest.save();
+    res.json({ success: true });
 });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(`🚀 Server Running on Port ${PORT}`));
