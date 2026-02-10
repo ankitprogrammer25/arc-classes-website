@@ -3,6 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const path = require('path');
+const fetch = require('node-fetch');
 
 const app = express();
 app.use(express.json({ limit: '100mb' }));
@@ -280,5 +281,25 @@ app.post('/api/test/submit', async (req, res) => {
     } catch(e) { res.json({ success: false }); }
 });
 
+// ==========================================
+// 🔔 RENDER KEEPER (Self-Ping)
+// ==========================================
+// This forces the server to ping itself every 10 minutes to stay awake
+const RENDER_EXTERNAL_URL = "https://arc-classes-ankit.onrender.com"; // REPLACE THIS WITH YOUR ACTUAL RENDER URL
+
+function keepAlive() {
+    // 1. Pings the server itself
+    fetch(RENDER_EXTERNAL_URL + '/api/schedule')
+        .then(() => console.log("⏰ Self-Ping Successful"))
+        .catch(err => console.error("Self-Ping Failed:", err.message));
+
+    // 2. Schedule next ping in 10 minutes (Render sleeps after 15 mins)
+    setTimeout(keepAlive, 2 * 60 * 1000); 
+}
+
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+
+app.listen(PORT, () => {
+    console.log(`🚀 Server running on port ${PORT}`);
+    keepAlive(); // <--- NOW IT STARTS ONLY WHEN SERVER IS READY
+});
