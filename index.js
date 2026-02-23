@@ -97,7 +97,6 @@ const RefTool = mongoose.model('RefTool', RefToolSchema);
 
 // --- 3. ROUTES ---
 
-// --- AUTH ---
 app.post('/api/register', async (req, res) => {
     try {
         const { name, emailPart, password, phone } = req.body; 
@@ -321,7 +320,6 @@ app.get('/api/potd/today', async (req, res) => {
     res.json({ success: !!potd, potd });
 });
 
-// 🆕 BULLETPROOF ANALYTICS ROUTE
 app.post('/api/student/analytics', async (req, res) => {
     try {
         const results = await Result.find({ studentEmail: req.body.email });
