@@ -349,15 +349,15 @@
 </div>
 
 <div id="ref-modal" class="modal">
-    <div class="modal-content" style="max-width: 900px; padding:20px; background:#f8fafc;">
-        <div class="close-corner" onclick="closeModal('ref-modal')">&times;</div>
-        <h2 style="margin-top:0; text-align:center; color:var(--primary);">🧪 Reference Tools</h2>
+    <div class="modal-content" style="max-width: 900px; padding:20px; background: linear-gradient(135deg, #1e293b, #0f172a); color: white; border: 2px solid var(--gold); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+        <div class="close-corner" onclick="closeModal('ref-modal')" style="background:var(--red); color:white; border:none; display:flex; align-items:center; justify-content:center;">&times;</div>
+        <h2 style="margin-top:0; text-align:center; color:var(--gold);">🧪 Quick Reference Tools</h2>
         
-        <div id="ref-btn-container" style="display:flex; justify-content:center; gap:10px; margin-bottom:20px; overflow-x:auto; padding-bottom:5px;">
-        </div>
+        <div id="ref-btn-container" style="display:flex; justify-content:center; gap:10px; margin-bottom:20px; overflow-x:auto; padding-bottom:10px;">
+            </div>
         
-        <div id="ref-img-display" style="width:100%; overflow:auto; background:white; text-align:center; border:1px solid #e2e8f0; padding:15px; border-radius:12px; min-height:200px; display:flex; align-items:center; justify-content:center;">
-            Loading...
+        <div id="ref-img-display" style="width:100%; overflow:auto; background:rgba(255,255,255,0.05); text-align:center; border:1px solid rgba(255,255,255,0.2); padding:15px; border-radius:12px; min-height:300px; display:flex; align-items:center; justify-content:center;">
+            <p style="color:#aaa;">Loading tools...</p>
         </div>
     </div>
 </div>
@@ -621,8 +621,6 @@
                 document.getElementById('admin-video-list').innerHTML = `<table><tr><th>Title</th><th>Cat</th><th>Action</th></tr>${d.map(v=>`<tr><td>${v.title}</td><td>${v.category}</td><td><button class="btn-red btn-small" onclick="deleteItem('video','${v._id}')">Del</button></td></tr>`).join('')}</table>`;
             });
         }
-        
-        // 🆕 UPDATED: ADMIN POTD MANAGEMENT WITH LIST
         else if (tab === 'potd') {
             const today = new Date().toLocaleDateString('en-CA');
             c.innerHTML = `<h3>Set Problem of the Day</h3>
@@ -650,7 +648,7 @@
             </div>`;
 
             fetch('/api/admin/potds').then(r=>r.json()).then(d => {
-                window.allPOTDs = d; // Store globally for editing
+                window.allPOTDs = d; 
                 document.getElementById('potd-list').innerHTML = d.map((p, i) => `<tr>
                     <td>${p.dateStr}</td>
                     <td>${p.text.replace(/<[^>]*>?/gm, '').substring(0, 30)}...</td>
@@ -692,8 +690,6 @@
                 document.getElementById('admin-rt-list').innerHTML = `<table><tr><th>Title</th><th>Image</th><th>Action</th></tr>${d.map(rt=>`<tr><td>${rt.title}</td><td><img src="${rt.image}" style="height:40px; border-radius:4px;"></td><td><button class="btn-red btn-small" onclick="deleteItem('reftool','${rt._id}')">Del</button></td></tr>`).join('')}</table>`;
             });
         }
-
-        // 🆕 UPDATED: ADMIN STUDENTS - PHONE & APPROVAL
         else if (tab === 'students') {
             c.innerHTML = `<h3>Registered Students</h3><div class="table-container"><table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Status</th><th>Action</th></tr></thead><tbody id="stu-list"></tbody></table></div>`;
             fetch('/api/admin/students').then(r=>r.json()).then(d => { 
@@ -747,7 +743,6 @@
         } 
     }
 
-    // 🆕 NEW: APPROVE STUDENT
     async function approveStudent(id) {
         await fetch(`/api/admin/student/${id}`, { method: 'PUT', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ status: 'Approved' }) });
         alert("Student Approved! They can now log in.");
@@ -768,7 +763,7 @@
         else if(type === 'story') loadStories();
         else if(type === 'video') showAdm('video'); 
         else if(type === 'reftool') { showAdm('reftool'); loadRefToolsStudent(); } 
-        else if(type === 'potd') { showAdm('potd'); loadPOTD(); } // 🆕 Added POTD delete reload
+        else if(type === 'potd') { showAdm('potd'); loadPOTD(); } 
     }
 
     function initCreateTest() { editingTestId = null; draftQ = []; showAdm('create-test'); renderCreatePalette(); }
@@ -821,7 +816,6 @@
     
     function switchTab(mode) { loginMode = mode; document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); document.getElementById('tab-'+mode).classList.add('active'); document.getElementById('student-input').style.display = mode === 'student' ? 'block' : 'none'; document.getElementById('teacher-input').style.display = mode === 'student' ? 'none' : 'block'; document.getElementById('login-title').innerText = mode === 'student' ? 'Student Login' : 'Teacher Login'; document.getElementById('reg-link').style.display = mode === 'student' ? 'block' : 'none'; }
   
-    // 🆕 UPDATED: REGISTRATION LOGIC WITH PHONE
     async function doReg() { 
         const phone = document.getElementById('r-phone').value;
         if(phone.length !== 10) return alert("Please enter a valid 10-digit phone number.");
@@ -857,7 +851,6 @@
             if(user.role === 'admin') document.getElementById('nav-admin').style.display = 'block';
             show('home'); 
         } else { 
-            // 🆕 SHOW REVIEW MESSAGE
             alert(data.message || "Invalid Email or Password"); 
         } 
     }
@@ -1123,7 +1116,6 @@
         alert("POTD Set/Updated!"); tempImg = ""; tempSolImg = ""; showAdm('potd');
     }
 
-    // 🆕 NEW: EDIT POTD FUNCTION
     function editPOTD(index) {
         if(!window.allPOTDs || !window.allPOTDs[index]) return;
         const p = window.allPOTDs[index];
@@ -1153,7 +1145,7 @@
             tempSolImg = ""; 
         }
 
-        window.scrollTo(0, 0); // Scroll up to the form
+        window.scrollTo(0, 0); 
     }
 
     async function loadAnalytics() {
@@ -1167,7 +1159,9 @@
 
         const accuracyData = topics.map(t => {
             const stat = data.stats[t];
-            return stat.total > 0 ? ((stat.correct / stat.total) * 100).toFixed(1) : 0;
+            let pct = stat.total > 0 ? ((stat.obtained / stat.total) * 100) : 0;
+            if (pct < 0) pct = 0; 
+            return pct.toFixed(1);
         });
 
         openModal('analytics-modal');
@@ -1180,31 +1174,37 @@
             data: {
                 labels: topics,
                 datasets: [{
-                    label: 'Accuracy (%)',
+                    label: 'Score Percentage (%)',
                     data: accuracyData,
                     backgroundColor: 'rgba(59, 130, 246, 0.8)',
                     borderColor: 'rgba(37, 99, 235, 1)',
                     borderWidth: 1,
-                    borderRadius: 6
+                    borderRadius: 4
                 }]
             },
             options: { 
                 responsive: true,
                 maintainAspectRatio: false,
                 scales: { 
-                    y: { beginAtZero: true, max: 100, title: { display: true, text: 'Accuracy (%)' } },
-                    x: { title: { display: true, text: 'Topics' } }
+                    y: { beginAtZero: true, max: 100, title: { display: true, text: 'Score Percentage (%)' } },
+                    x: { title: { display: true, text: 'Tests Given' } }
                 },
                 plugins: { legend: { display: false } }
             }
         });
 
         let weakestTopic = "", minAcc = 101;
-        topics.forEach((t, i) => { if(accuracyData[i] < minAcc && data.stats[t].total >= 1) { minAcc = accuracyData[i]; weakestTopic = t; } });
+        topics.forEach((t, i) => { 
+            let acc = parseFloat(accuracyData[i]);
+            if(acc < minAcc && data.stats[t].total > 0) { 
+                minAcc = acc; 
+                weakestTopic = t; 
+            } 
+        });
         
         const adviceDiv = document.getElementById('analytics-advice');
         if(weakestTopic) {
-            adviceDiv.innerHTML = `📉 Based on your data, your weakest area is <b>${weakestTopic}</b> (Accuracy: ${minAcc}%). We strongly recommend watching the video lectures and practicing more questions in this topic.`;
+            adviceDiv.innerHTML = `📉 Based on your history, your weakest test performance is <b>${weakestTopic}</b> (Score: ${minAcc}%). We strongly recommend revising this section!`;
         } else {
             adviceDiv.innerHTML = `📈 Great job! Keep giving tests so we can build a stronger profile of your weak areas.`;
         }
@@ -1218,7 +1218,7 @@
         if(btnContainer) {
             btnContainer.innerHTML = allRefTools.map((rt, i) => `<button class="btn ${i===0?'btn-red':'btn-gold'} btn-small ref-btn-dynamic" onclick="showRefImg(${i}, this)">${rt.title}</button>`).join('');
             if(allRefTools.length > 0) showRefImg(0, btnContainer.firstChild);
-            else document.getElementById('ref-img-display').innerHTML = "<p style='color:#666;'>No reference tools have been uploaded by the teacher yet.</p>";
+            else document.getElementById('ref-img-display').innerHTML = "<p style='color:#aaa;'>No reference tools have been uploaded by the teacher yet.</p>";
         }
     }
 
@@ -1226,7 +1226,7 @@
         document.querySelectorAll('.ref-btn-dynamic').forEach(b => { b.classList.remove('btn-red'); b.classList.add('btn-gold'); });
         if(btnElem) { btnElem.classList.remove('btn-gold'); btnElem.classList.add('btn-red'); }
         const rt = allRefTools[idx];
-        document.getElementById('ref-img-display').innerHTML = `<img src="${rt.image}" style="max-width:100%; border-radius:8px; box-shadow:0 4px 10px rgba(0,0,0,0.1);">`;
+        document.getElementById('ref-img-display').innerHTML = `<img src="${rt.image}" style="max-width:100%; border-radius:8px; box-shadow:0 4px 10px rgba(0,0,0,0.5);">`;
     }
 
     async function uploadRefTool() {

@@ -19,12 +19,8 @@ mongoose.connect(dbLink)
 
 // --- 2. SCHEMAS ---
 const StudentSchema = new mongoose.Schema({
-    name: String, 
-    email: { type: String, unique: true }, 
-    password: String, 
-    phone: String,                               // 🆕 ADDED
-    status: { type: String, default: 'Pending' }, // 🆕 ADDED
-    joinedAt: { type: Date, default: Date.now },
+    name: String, email: { type: String, unique: true }, password: String, 
+    phone: String, status: { type: String, default: 'Pending' }, joinedAt: { type: Date, default: Date.now },
 });
 const Student = mongoose.model('Student', StudentSchema);
 
@@ -107,7 +103,7 @@ app.post('/api/register', async (req, res) => {
         const { name, emailPart, password, phone } = req.body; 
         const fullEmail = emailPart + "@arcstudent.com";
         if(await Student.findOne({ email: fullEmail })) return res.json({ success: false, message: "Username Taken" });
-        await new Student({ name, email: fullEmail, password, phone, status: 'Pending' }).save(); // 🆕 ADDED PENDING STATUS & PHONE
+        await new Student({ name, email: fullEmail, password, phone, status: 'Pending' }).save(); 
         res.json({ success: true });
     } catch (e) { res.json({ success: false, message: "Error" }); }
 });
@@ -121,7 +117,6 @@ app.post('/api/login', async (req, res) => {
         const student = await Student.findOne({ email });
         if (!student || student.password !== password) return res.json({ success: false, message: "Invalid Email or Password" });
         
-        // 🆕 CHECK IF STUDENT IS PENDING
         if (student.status === 'Pending') {
             return res.json({ success: false, message: "Your registration is under review." });
         }
@@ -206,7 +201,6 @@ app.delete('/api/admin/doubt/:id', async (req, res) => { await Doubt.findByIdAnd
 app.post('/api/admin/video', async (req, res) => { await new Video(req.body).save(); res.json({ success: true }); });
 app.delete('/api/admin/video/:id', async (req, res) => { await Video.findByIdAndDelete(req.params.id); res.json({ success: true }); });
 
-// 🆕 UPDATED: Admin POTD Routes (GET & DELETE ADDED)
 app.get('/api/admin/potds', async (req, res) => res.json(await POTD.find().sort({ dateStr: -1 })));
 app.post('/api/admin/potd', async (req, res) => {
     const { dateStr } = req.body;
@@ -327,24 +321,18 @@ app.get('/api/potd/today', async (req, res) => {
     res.json({ success: !!potd, potd });
 });
 
+// 🆕 BULLETPROOF ANALYTICS ROUTE
 app.post('/api/student/analytics', async (req, res) => {
     try {
         const results = await Result.find({ studentEmail: req.body.email });
         let topicStats = {};
-        
+
         for (let r of results) {
-            const test = await Test.findById(r.testId);
-            if (!test) continue;
+            const topic = r.testTitle || 'Unknown Test';
+            if (!topicStats[topic]) topicStats[topic] = { total: 0, obtained: 0 };
             
-            r.answers.forEach((ans, i) => {
-                if (i >= test.questions.length) return;
-                const q = test.questions[i];
-                const topic = q.topic && q.topic.trim() !== "" ? q.topic.trim() : 'General Chemistry';
-                
-                if (!topicStats[topic]) topicStats[topic] = { total: 0, correct: 0 };
-                topicStats[topic].total += 1;
-                if (ans === q.correct) topicStats[topic].correct += 1;
-            });
+            topicStats[topic].total += (r.totalMarks || 0);
+            topicStats[topic].obtained += (r.score || 0);
         }
         res.json({ success: true, stats: topicStats });
     } catch(e) { res.json({ success: false }); }
