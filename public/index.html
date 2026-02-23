@@ -117,6 +117,35 @@
         .potd-box { background: linear-gradient(135deg, #1e293b, #0f172a); color: white; padding: 25px; border-radius: 15px; margin-bottom: 30px; border: 2px solid var(--gold); box-shadow: 0 10px 20px rgba(0,0,0,0.15); }
         .doubt-card { border-left: 5px solid var(--red); margin-bottom: 15px; }
         .doubt-card.answered { border-left-color: var(--green); }
+
+        /* 🆕 --- LAMP LOGIN CSS --- */
+        .desk-scene {
+            position: relative; width: 100%; max-width: 500px; height: 500px; margin: 40px auto; 
+            background: #1e1e24; overflow: hidden; border-radius: 12px; box-shadow: inset 0 0 50px rgba(0,0,0,0.5);
+            transition: background 0.5s;
+        }
+        .desk-scene.is-on { background: #2a2a35; }
+        .lamp-container { position: absolute; top: 0; left: 50%; transform: translateX(-50%); z-index: 10; width: 200px; }
+        .lamp-shade { width: 140px; height: 70px; background: linear-gradient(to bottom, #444, #222); border-radius: 70px 70px 0 0; margin: auto; position: relative; z-index: 2; }
+        .lamp-bulb-area { width: 120px; height: 30px; background: #1a1a1a; border-radius: 0 0 60px 60px; margin: auto; transition: background 0.3s, box-shadow 0.3s; }
+        .desk-scene.is-on .lamp-bulb-area { background: #ffeb3b; box-shadow: 0 0 50px 20px rgba(255, 235, 59, 0.8); }
+        .pull-string-container { position: absolute; top: 70px; left: 50%; transform: translateX(-50%); z-index: 1; cursor: pointer; }
+        .string-line { width: 2px; height: 120px; background: #888; margin: auto; transition: height 0.2s; }
+        .string-handle { width: 14px; height: 20px; background: #d4af37; border-radius: 4px; margin: auto; box-shadow: 0 2px 5px rgba(0,0,0,0.3); transition: transform 0.2s; }
+        .pull-string-container:active .string-line { height: 140px; }
+        .pull-string-container:active .string-handle { transform: translateY(20px); }
+        .paper-form-container {
+            position: absolute; top: 180px; left: 50%; transform: translateX(-50%); width: 85%; max-width: 380px;
+            padding: 30px 20px; background: #e0e0e0; border-radius: 4px; box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            background-image: radial-gradient(circle at 50% -100px, rgba(255,255,255,0) 0%, rgba(0,0,0,0.8) 80%);
+            color: #555; transition: all 0.5s ease-in-out; opacity: 0.4; filter: blur(2px); pointer-events: none;
+        }
+        .desk-scene.is-on .paper-form-container { opacity: 1; filter: blur(0); pointer-events: auto; background-color: #fffaf0; background-image: radial-gradient(circle at 50% -50px, rgba(255, 245, 200, 0.9) 10%, rgba(255, 255, 255, 0) 70%); color: #333; }
+        .paper-form-container h2 { margin-top: 0; text-align: center; }
+        .paper-form-container input { background: rgba(255,255,255,0.7); border: 1px solid #ccc; }
+        .desk-scene.is-on .paper-form-container input { background: white; }
+        .paper-form-container .tab { opacity: 0.6; }
+        .desk-scene.is-on .paper-form-container .tab.active { opacity: 1; border-bottom-color: var(--gold); }
     </style>
 </head>
 <body>
@@ -181,38 +210,48 @@
 </div>
 
 <div id="login" class="section">
-    <div class="form-box">
-        <div style="display: flex; border-bottom: 2px solid #eee; margin-bottom: 20px;">
-            <div class="tab active" style="flex:1; text-align:center; padding:10px; cursor:pointer; border-bottom:3px solid var(--gold);" onclick="switchTab('student')" id="tab-student">Student</div>
-            <div class="tab" style="flex:1; text-align:center; padding:10px; cursor:pointer;" onclick="switchTab('teacher')" id="tab-teacher">Teacher</div>
-        </div>
-        <h2 id="login-title" style="text-align:center;">Student Login</h2>
-        <form onsubmit="event.preventDefault(); doLogin()">
-            <div id="student-input">
-                <input id="l-email" placeholder="username" required>
-                <div style="text-align:right; font-size:0.8rem; color:#777;">@arcstudent.com</div>
+    <div class="desk-scene" id="deskScene">
+        <div class="lamp-container">
+            <div class="lamp-shade"></div>
+            <div class="lamp-bulb-area"></div>
+            <div class="pull-string-container" onclick="toggleLampString()">
+                <div class="string-line"></div>
+                <div class="string-handle"></div>
             </div>
-            <div id="teacher-input" style="display:none;"><input id="l-admin-email" placeholder="admin@arc.com"></div>
-            <input id="l-pass" type="password" placeholder="Password" required>
-            <button type="submit" class="btn btn-gold" style="width:100%">Login</button>
-        </form>
-        <p id="reg-link" style="text-align:center; cursor:pointer; margin-top:15px; color:blue;" onclick="document.getElementById('reg-box').style.display='block'; document.querySelector('.form-box').style.display='none';">New Student? Register</p>
-    </div>
-    
-    <div id="reg-box" class="form-box" style="display:none; margin-top:20px;">
-        <h2 style="text-align:center;">Register</h2>
-        <input id="r-name" placeholder="Full Name">
-        <div style="display:flex; align-items:center; border:1px solid #ccc; border-radius:6px; background:white; margin:10px 0;">
-            <input id="r-prefix" placeholder="username" style="border:none; margin:0;"> 
-            <div style="padding:10px; background:#f1f5f9; color:#64748b; border-left:1px solid #ccc;">@arcstudent.com</div>
         </div>
-        
-        <input id="r-phone" placeholder="10-digit Phone Number" maxlength="10" oninput="document.getElementById('phone-sec-msg').style.display='block'">
-        <div id="phone-sec-msg" style="color:var(--red); display:none; font-size:0.8rem; margin:-5px 0 10px 5px; font-weight:bold;">🔒 Your phone number is secured and only shared with the teacher.</div>
-        
-        <input id="r-pass" type="password" placeholder="Password">
-        <button class="btn btn-gold" style="width:100%" onclick="doReg()">Register</button>
-        <p style="text-align:center; cursor:pointer; margin-top:15px; color:blue;" onclick="document.getElementById('reg-box').style.display='none'; document.querySelector('.form-box').style.display='block';">Back to Login</p>
+
+        <div class="paper-form-container">
+            <div style="display: flex; border-bottom: 2px solid rgba(0,0,0,0.1); margin-bottom: 20px;">
+                <div class="tab active" style="flex:1; text-align:center; padding:10px; cursor:pointer; border-bottom:3px solid transparent;" onclick="switchTab('student')" id="tab-student">Student</div>
+                <div class="tab" style="flex:1; text-align:center; padding:10px; cursor:pointer; border-bottom:3px solid transparent;" onclick="switchTab('teacher')" id="tab-teacher">Teacher</div>
+            </div>
+            <h2 id="login-title" style="text-align:center;">Student Login</h2>
+            <p style="text-align:center; font-size: 0.9rem; margin-bottom: 15px; font-style: italic; color: #888;" id="lamp-hint">Customer: "Pull the string to turn on the light..."</p>
+            <form onsubmit="event.preventDefault(); doLogin()">
+                <div id="student-input">
+                    <input id="l-email" placeholder="username" required>
+                    <div style="text-align:right; font-size:0.8rem; color:#777;">@arcstudent.com</div>
+                </div>
+                <div id="teacher-input" style="display:none;"><input id="l-admin-email" placeholder="admin@arc.com"></div>
+                <input id="l-pass" type="password" placeholder="Password" required style="margin-top: 15px;">
+                <button type="submit" class="btn btn-gold" style="width:100%; margin-top: 20px;">Login</button>
+            </form>
+            <p id="reg-link" style="text-align:center; cursor:pointer; margin-top:15px; color:blue; font-size: 0.9rem;" onclick="showRegBoxFromLamp()">New Student? Register</p>
+        </div>
+
+        <div id="reg-box" class="form-box" style="display:none; margin:20px auto; position: relative; z-index: 20;">
+            <h2 style="text-align:center;">Register</h2>
+            <input id="r-name" placeholder="Full Name">
+            <div style="display:flex; align-items:center; border:1px solid #ccc; border-radius:6px; background:white; margin:10px 0;">
+                <input id="r-prefix" placeholder="username" style="border:none; margin:0;"> 
+                <div style="padding:10px; background:#f1f5f9; color:#64748b; border-left:1px solid #ccc;">@arcstudent.com</div>
+            </div>
+            <input id="r-phone" placeholder="10-digit Phone Number" maxlength="10" oninput="document.getElementById('phone-sec-msg').style.display='block'">
+            <div id="phone-sec-msg" style="color:var(--red); display:none; font-size:0.8rem; margin:-5px 0 10px 5px; font-weight:bold;">🔒 Your phone number is secured and only shared with the teacher.</div>
+            <input id="r-pass" type="password" placeholder="Password">
+            <button class="btn btn-gold" style="width:100%" onclick="doReg()">Register</button>
+            <p style="text-align:center; cursor:pointer; margin-top:15px; color:blue;" onclick="hideRegBoxFromLamp()">Back to Login</p>
+        </div>
     </div>
 </div>
 
@@ -354,7 +393,7 @@
         <h2 style="margin-top:0; text-align:center; color:var(--gold);">🧪 Quick Reference Tools</h2>
         
         <div id="ref-btn-container" style="display:flex; justify-content:center; gap:10px; margin-bottom:20px; overflow-x:auto; padding-bottom:10px;">
-            </div>
+        </div>
         
         <div id="ref-img-display" style="width:100%; overflow:auto; background:rgba(255,255,255,0.05); text-align:center; border:1px solid rgba(255,255,255,0.2); padding:15px; border-radius:12px; min-height:300px; display:flex; align-items:center; justify-content:center;">
             <p style="color:#aaa;">Loading tools...</p>
@@ -814,7 +853,7 @@
     function insChar(char) { document.execCommand('insertText', false, char); }
     function encodeImg(input, previewId, isSolution = false) { if (input.files && input.files[0]) { const reader = new FileReader(); reader.onload = function (e) { const result = e.target.result; if (isSolution) tempSolImg = result; else tempImg = result; if (previewId) { const img = document.getElementById(previewId); img.src = result; img.style.display = 'block'; } }; reader.readAsDataURL(input.files[0]); } }
     
-    function switchTab(mode) { loginMode = mode; document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); document.getElementById('tab-'+mode).classList.add('active'); document.getElementById('student-input').style.display = mode === 'student' ? 'block' : 'none'; document.getElementById('teacher-input').style.display = mode === 'student' ? 'none' : 'block'; document.getElementById('login-title').innerText = mode === 'student' ? 'Student Login' : 'Teacher Login'; document.getElementById('reg-link').style.display = mode === 'student' ? 'block' : 'none'; }
+    function switchTab(mode) { loginMode = mode; document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); document.getElementById('tab-'+mode).classList.add('active'); document.getElementById('student-input').style.display = mode === 'student' ? 'block' : 'none'; document.getElementById('teacher-input').style.display = mode === 'student' ? 'none' : 'block'; document.getElementById('login-title').innerText = mode === 'student' ? 'Student Login' : 'Teacher Login'; }
   
     async function doReg() { 
         const phone = document.getElementById('r-phone').value;
@@ -1241,6 +1280,32 @@
         tempImg = "";
         showAdm('reftool'); 
         loadRefToolsStudent(); 
+    }
+
+    // 🆕 LAMP INTERACTION JS
+    function toggleLampString() {
+        const desk = document.getElementById('deskScene');
+        const hint = document.getElementById('lamp-hint');
+        
+        desk.classList.toggle('is-on');
+        
+        if (desk.classList.contains('is-on')) {
+            hint.innerText = "Light is ON. Please enter credentials.";
+            hint.style.color = "#333";
+        } else {
+            hint.innerText = "Customer: \"Pull the string to turn on the light...\"";
+            hint.style.color = "#888";
+        }
+    }
+
+    function showRegBoxFromLamp() {
+         document.querySelector('.paper-form-container').style.display='none';
+         document.getElementById('reg-box').style.display='block';
+    }
+    
+    function hideRegBoxFromLamp() {
+         document.getElementById('reg-box').style.display='none';
+         document.querySelector('.paper-form-container').style.display='block';
     }
 
 </script>
