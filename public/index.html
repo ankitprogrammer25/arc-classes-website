@@ -118,9 +118,11 @@
         .doubt-card { border-left: 5px solid var(--red); margin-bottom: 15px; }
         .doubt-card.answered { border-left-color: var(--green); }
 
-        /* 🆕 --- LAMP LOGIN CSS --- */
+        /* 🆕 --- LAMP LOGIN DESK SCENE --- */
         .desk-scene {
-            position: relative; width: 100%; max-width: 500px; height: 500px; margin: 40px auto; 
+            position: relative; width: 100%; max-width: 500px; 
+            height: 650px; /* Increased to ensure bottom links are visible */
+            margin: 40px auto; 
             background: #1e1e24; overflow: hidden; border-radius: 12px; box-shadow: inset 0 0 50px rgba(0,0,0,0.5);
             transition: background 0.5s;
         }
@@ -129,23 +131,33 @@
         .lamp-shade { width: 140px; height: 70px; background: linear-gradient(to bottom, #444, #222); border-radius: 70px 70px 0 0; margin: auto; position: relative; z-index: 2; }
         .lamp-bulb-area { width: 120px; height: 30px; background: #1a1a1a; border-radius: 0 0 60px 60px; margin: auto; transition: background 0.3s, box-shadow 0.3s; }
         .desk-scene.is-on .lamp-bulb-area { background: #ffeb3b; box-shadow: 0 0 50px 20px rgba(255, 235, 59, 0.8); }
-        .pull-string-container { position: absolute; top: 70px; left: 50%; transform: translateX(-50%); z-index: 1; cursor: pointer; }
-        .string-line { width: 2px; height: 120px; background: #888; margin: auto; transition: height 0.2s; }
-        .string-handle { width: 14px; height: 20px; background: #d4af37; border-radius: 4px; margin: auto; box-shadow: 0 2px 5px rgba(0,0,0,0.3); transition: transform 0.2s; }
-        .pull-string-container:active .string-line { height: 140px; }
-        .pull-string-container:active .string-handle { transform: translateY(20px); }
+        
+        .pull-string-container { position: absolute; top: 70px; left: 50%; transform: translateX(-50%); z-index: 20; cursor: grab; padding: 10px;}
+        .pull-string-container:active { cursor: grabbing; }
+        .string-line { width: 2px; height: 120px; background: #888; margin: auto; }
+        .string-handle { width: 16px; height: 20px; background: #d4af37; border-radius: 4px; margin: auto; box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
+        
         .paper-form-container {
-            position: absolute; top: 180px; left: 50%; transform: translateX(-50%); width: 85%; max-width: 380px;
+            position: absolute; top: 180px; left: 50%; transform: translateX(-50%); 
+            width: 85%; max-width: 380px; min-height: 380px;
             padding: 30px 20px; background: #e0e0e0; border-radius: 4px; box-shadow: 0 10px 20px rgba(0,0,0,0.3);
             background-image: radial-gradient(circle at 50% -100px, rgba(255,255,255,0) 0%, rgba(0,0,0,0.8) 80%);
-            color: #555; transition: all 0.5s ease-in-out; opacity: 0.4; filter: blur(2px); pointer-events: none;
+            color: #555; transition: all 0.5s ease-in-out; opacity: 0.6; filter: blur(1px); 
         }
-        .desk-scene.is-on .paper-form-container { opacity: 1; filter: blur(0); pointer-events: auto; background-color: #fffaf0; background-image: radial-gradient(circle at 50% -50px, rgba(255, 245, 200, 0.9) 10%, rgba(255, 255, 255, 0) 70%); color: #333; }
-        .paper-form-container h2 { margin-top: 0; text-align: center; }
+        .desk-scene.is-on .paper-form-container { 
+            opacity: 1; filter: blur(0); pointer-events: auto; background-color: #fffaf0; 
+            background-image: radial-gradient(circle at 50% -50px, rgba(255, 245, 200, 0.9) 10%, rgba(255, 255, 255, 0) 70%); color: #333; 
+        }
         .paper-form-container input { background: rgba(255,255,255,0.7); border: 1px solid #ccc; }
         .desk-scene.is-on .paper-form-container input { background: white; }
-        .paper-form-container .tab { opacity: 0.6; }
-        .desk-scene.is-on .paper-form-container .tab.active { opacity: 1; border-bottom-color: var(--gold); }
+        
+        .off-message { display: block; text-align: center; color: #555; margin-top: 60px; font-weight: bold; border: 2px dashed #999; padding: 20px; border-radius: 8px; }
+        .desk-scene.is-on .off-message { display: none; }
+        
+        .on-form { display: none; }
+        .desk-scene.is-on .on-form { display: block; animation: fadeIn 0.5s; }
+        
+        #reg-link-container { position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); width: 100%; text-align: center; z-index: 10; }
     </style>
 </head>
 <body>
@@ -214,29 +226,40 @@
         <div class="lamp-container">
             <div class="lamp-shade"></div>
             <div class="lamp-bulb-area"></div>
-            <div class="pull-string-container" onclick="toggleLampString()">
-                <div class="string-line"></div>
+            <div class="pull-string-container" id="pull-string-btn" title="Drag string downwards">
+                <div class="string-line" id="string-line-el"></div>
                 <div class="string-handle"></div>
             </div>
         </div>
 
         <div class="paper-form-container">
-            <div style="display: flex; border-bottom: 2px solid rgba(0,0,0,0.1); margin-bottom: 20px;">
-                <div class="tab active" style="flex:1; text-align:center; padding:10px; cursor:pointer; border-bottom:3px solid transparent;" onclick="switchTab('student')" id="tab-student">Student</div>
-                <div class="tab" style="flex:1; text-align:center; padding:10px; cursor:pointer; border-bottom:3px solid transparent;" onclick="switchTab('teacher')" id="tab-teacher">Teacher</div>
+            <h2 id="login-title" style="text-align:center; margin-top:0;">Student Login</h2>
+            
+            <div class="off-message">
+                <span style="font-size: 2rem;">💡</span><br>
+                Switch on lamp to view<br>
+                <small style="font-weight:normal;">(Drag the string down)</small>
             </div>
-            <h2 id="login-title" style="text-align:center;">Student Login</h2>
-            <p style="text-align:center; font-size: 0.9rem; margin-bottom: 15px; font-style: italic; color: #888;" id="lamp-hint">Customer: "Pull the string to turn on the light..."</p>
-            <form onsubmit="event.preventDefault(); doLogin()">
-                <div id="student-input">
-                    <input id="l-email" placeholder="username" required>
-                    <div style="text-align:right; font-size:0.8rem; color:#777;">@arcstudent.com</div>
+
+            <div class="on-form">
+                <div style="display: flex; border-bottom: 2px solid rgba(0,0,0,0.1); margin-bottom: 20px;">
+                    <div class="tab active" style="flex:1; text-align:center; padding:10px; cursor:pointer; border-bottom:3px solid transparent;" onclick="switchTab('student')" id="tab-student">Student</div>
+                    <div class="tab" style="flex:1; text-align:center; padding:10px; cursor:pointer; border-bottom:3px solid transparent;" onclick="switchTab('teacher')" id="tab-teacher">Teacher</div>
                 </div>
-                <div id="teacher-input" style="display:none;"><input id="l-admin-email" placeholder="admin@arc.com"></div>
-                <input id="l-pass" type="password" placeholder="Password" required style="margin-top: 15px;">
-                <button type="submit" class="btn btn-gold" style="width:100%; margin-top: 20px;">Login</button>
-            </form>
-            <p id="reg-link" style="text-align:center; cursor:pointer; margin-top:15px; color:blue; font-size: 0.9rem;" onclick="showRegBoxFromLamp()">New Student? Register</p>
+                <form onsubmit="event.preventDefault(); doLogin()">
+                    <div id="student-input">
+                        <input id="l-email" placeholder="username" required>
+                        <div style="text-align:right; font-size:0.8rem; color:#777;">@arcstudent.com</div>
+                    </div>
+                    <div id="teacher-input" style="display:none;"><input id="l-admin-email" placeholder="admin@arc.com"></div>
+                    <input id="l-pass" type="password" placeholder="Password" required style="margin-top: 15px;">
+                    <button type="submit" class="btn btn-gold" style="width:100%; margin-top: 20px;">Login / Submit</button>
+                </form>
+            </div>
+        </div>
+
+        <div id="reg-link-container">
+            <p style="cursor:pointer; color:#8cb4ff; font-weight:bold; font-size: 1rem; margin:0;" onclick="showRegBoxFromLamp()">[ New Student? Register Now ]</p>
         </div>
 
         <div id="reg-box" class="form-box" style="display:none; margin:20px auto; position: relative; z-index: 20;">
@@ -1282,30 +1305,87 @@
         loadRefToolsStudent(); 
     }
 
-    // 🆕 LAMP INTERACTION JS
-    function toggleLampString() {
-        const desk = document.getElementById('deskScene');
-        const hint = document.getElementById('lamp-hint');
+
+    // ==========================================
+    // 🆕 INTERACTIVE "PULL THE STRING" DRAG GAME JS
+    // ==========================================
+    const pullStringBtn = document.getElementById('pull-string-btn');
+    const stringLineEl = document.getElementById('string-line-el');
+    let isDraggingString = false;
+    let stringStartY = 0;
+
+    if (pullStringBtn) {
+        // Listen for both mouse and touch events
+        pullStringBtn.addEventListener('mousedown', startPull);
+        pullStringBtn.addEventListener('touchstart', startPull, {passive: false});
+    }
+
+    function startPull(e) {
+        isDraggingString = true;
+        stringStartY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY;
         
-        desk.classList.toggle('is-on');
+        // Remove the smooth transition while actively dragging so it follows the finger instantly
+        stringLineEl.style.transition = 'none';
         
-        if (desk.classList.contains('is-on')) {
-            hint.innerText = "Light is ON. Please enter credentials.";
-            hint.style.color = "#333";
-        } else {
-            hint.innerText = "Customer: \"Pull the string to turn on the light...\"";
-            hint.style.color = "#888";
+        document.addEventListener('mousemove', pullMove);
+        document.addEventListener('touchmove', pullMove, {passive: false});
+        document.addEventListener('mouseup', endPull);
+        document.addEventListener('touchend', endPull);
+    }
+
+    function pullMove(e) {
+        if (!isDraggingString) return;
+        e.preventDefault(); // Stop mobile screen from scrolling while pulling the string
+        
+        let currentY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY;
+        let deltaY = currentY - stringStartY;
+        
+        // Only allow pulling down, and cap it at 60px stretch
+        if (deltaY < 0) deltaY = 0;
+        if (deltaY > 60) deltaY = 60; 
+        
+        // Update the visual height of the string
+        stringLineEl.style.height = (120 + deltaY) + 'px';
+    }
+
+    function endPull(e) {
+        if (!isDraggingString) return;
+        isDraggingString = false;
+        
+        document.removeEventListener('mousemove', pullMove);
+        document.removeEventListener('touchmove', pullMove);
+        document.removeEventListener('mouseup', endPull);
+        document.removeEventListener('touchend', endPull);
+        
+        let currentHeight = parseInt(stringLineEl.style.height || 120);
+        
+        // Add a smooth bouncy transition as the string snaps back up
+        stringLineEl.style.transition = 'height 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+        stringLineEl.style.height = '120px'; // Reset to default length
+        
+        // GAME LOGIC: Did they pull it down far enough?
+        // If pulled down past 140px, toggle the lamp!
+        if (currentHeight > 140) {
+            toggleLampString();
         }
     }
 
+    function toggleLampString() {
+        const desk = document.getElementById('deskScene');
+        desk.classList.toggle('is-on');
+    }
+
+    // Handlers for switching between login and registration inside the lamp view
     function showRegBoxFromLamp() {
          document.querySelector('.paper-form-container').style.display='none';
+         document.getElementById('reg-link-container').style.display='none';
          document.getElementById('reg-box').style.display='block';
     }
     
     function hideRegBoxFromLamp() {
          document.getElementById('reg-box').style.display='none';
          document.querySelector('.paper-form-container').style.display='block';
+         document.getElementById('reg-link-container').style.display='block';
     }
 
 </script>
