@@ -10,14 +10,9 @@
         
         /* 1. LAYOUT & RESET */
         html, body { 
-            overscroll-behavior-y: none; /* Prevents Pull-to-Refresh */
-            font-family: 'Segoe UI', sans-serif; 
-            background: var(--light); 
-            margin: 0; 
-            color: #333; 
-            display: flex; 
-            flex-direction: column; 
-            min-height: 100vh; 
+            overscroll-behavior-y: none; font-family: 'Segoe UI', sans-serif; 
+            background: var(--light); margin: 0; color: #333; 
+            display: flex; flex-direction: column; min-height: 100vh; 
         }
         body.modal-open { overflow: hidden; height: 100vh; }
 
@@ -36,7 +31,7 @@
         .menu a { color: white; text-decoration: none; font-weight: 600; cursor: pointer; transition: 0.3s; }
         .menu a:hover { color: var(--gold); }
         
-        @media (max-width: 768px) {
+        @media (max-width: 900px) {
             .menu { display: none; flex-direction: column; position: absolute; top: 60px; left: 0; width: 100%; background: var(--primary); padding: 20px 0; border-top: 1px solid #333; }
             .menu.active { display: flex; }
             .menu-toggle { display: block; }
@@ -84,18 +79,13 @@
             border: 1px solid #ddd;
         }
 
-        /* 5. SLIDER STYLES (NEW) */
+        /* 5. SLIDER STYLES */
         .slider-container { overflow: hidden; white-space: nowrap; position: relative; width: 100%; padding: 20px 0; mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent); -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent); }
         .slider-track { display: inline-flex; gap: 20px; animation: scroll 30s linear infinite; }
         .slider-track:hover { animation-play-state: paused; }
         @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
         
-        .story-card {
-            background: white; border-radius: 12px; padding: 20px; 
-            min-width: 300px; max-width: 300px; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 1px solid #eee;
-            white-space: normal; display: flex; flex-direction: column; gap: 10px;
-        }
+        .story-card { background: white; border-radius: 12px; padding: 20px; min-width: 300px; max-width: 300px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 1px solid #eee; white-space: normal; display: flex; flex-direction: column; gap: 10px; }
         .story-header { display: flex; align-items: center; gap: 15px; }
         .story-img { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid var(--gold); }
         .story-info h4 { margin: 0; color: var(--primary); }
@@ -125,6 +115,15 @@
         .bg-green { background: var(--green); } .bg-red { background: var(--red); }
         .form-box { width: 100%; max-width: 400px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
         footer { background: var(--primary); color: white; text-align: center; padding: 20px; margin-top: auto; border-top: 4px solid var(--gold); }
+        
+        /* 🆕 ADVANCED UI STYLES */
+        .floating-btn { position: fixed; bottom: 30px; right: 30px; background: var(--gold); color: var(--primary); border: none; padding: 15px 20px; border-radius: 50px; font-weight: bold; font-size: 1.1rem; box-shadow: 0 4px 15px rgba(0,0,0,0.2); cursor: pointer; z-index: 1500; display: flex; align-items: center; gap: 8px; transition: transform 0.2s; }
+        .floating-btn:hover { transform: scale(1.05); }
+        .video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 8px; margin-bottom: 10px; }
+        .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+        .potd-box { background: linear-gradient(135deg, #1e293b, #0f172a); color: white; padding: 25px; border-radius: 15px; margin-bottom: 30px; border: 2px solid var(--gold); box-shadow: 0 10px 20px rgba(0,0,0,0.15); }
+        .doubt-card { border-left: 5px solid var(--red); margin-bottom: 15px; }
+        .doubt-card.answered { border-left-color: var(--green); }
     </style>
 </head>
 <body>
@@ -135,11 +134,11 @@
     <div class="menu" id="nav-menu">
         <a onclick="show('home')">Home</a>
         <a onclick="show('library')">Library</a>
-        <a onclick="show('tests')">Practice Tests</a>
+        <a onclick="show('videos')">📹 Videos</a> <a onclick="show('tests')">Practice Tests</a>
         <a onclick="show('live')"><span class="blink">🔴</span> Live/Future Tests</a>
         <a onclick="show('schedule')">📅 Upcoming Test Schedule</a>
         <a onclick="show('results')" id="nav-results">Test Results</a>
-        <a onclick="show('login')" id="nav-login">Login</a>
+        <a onclick="show('doubts')" id="nav-doubts" style="display:none">🤔 Doubts</a> <a onclick="show('login')" id="nav-login">Login</a>
         <a onclick="show('admin')" id="nav-admin" style="display:none; background: var(--red); padding: 5px 10px; border-radius: 4px;">TEACHER</a>
         <a onclick="logout()" id="nav-logout" style="display:none">Logout</a>
     </div>
@@ -150,6 +149,8 @@
     <marquee id="anno-marquee" onmouseover="this.stop()" onmouseout="this.start()">Loading...</marquee>
 </div>
 
+<button class="floating-btn" onclick="openModal('ref-modal')">🧪 Ref Tools</button>
+
 <div id="home" class="section active">
     <div style="text-align:center; padding: 40px 10px;">
         <h1 style="color:var(--primary); font-size: clamp(2rem, 5vw, 3rem);">Analyze. Revise. Conquer.</h1>
@@ -157,6 +158,14 @@
         <button class="btn btn-gold" onclick="show('tests')">Start Practice</button>
     </div>
     
+    <div id="potd-container" style="display:none;">
+        <div class="potd-box">
+            <h2 style="margin-top:0; color:var(--gold);">🔥 Problem of the Day</h2>
+            <div id="potd-content" style="font-size: 1.1rem; line-height: 1.6;">Loading...</div>
+            <div id="potd-opts" style="margin-top:15px; display:grid; gap:10px;"></div>
+            <div id="potd-result" style="margin-top:15px; font-weight:bold; display:none; padding:10px; border-radius:6px; background:rgba(255,255,255,0.1);"></div>
+        </div>
+    </div>
     <h3 style="margin-left: 10px;">Latest Blogs</h3>
     <div id="blog-grid" class="grid"></div>
 
@@ -202,9 +211,7 @@
         </div>
         <input id="r-pass" type="password" placeholder="Password">
         <button class="btn btn-gold" style="width:100%" onclick="doReg()">Register</button>
-        <p style="text-align:center; 
-        cursor:pointer; margin-top:15px; color:blue;" onclick="document.getElementById('reg-box').style.display='none'; 
-        document.querySelector('.form-box').style.display='block';">Back to Login</p>
+        <p style="text-align:center; cursor:pointer; margin-top:15px; color:blue;" onclick="document.getElementById('reg-box').style.display='none'; document.querySelector('.form-box').style.display='block';">Back to Login</p>
     </div>
 </div>
 
@@ -213,8 +220,8 @@
     <div style="display:flex; gap:5px; flex-wrap:wrap; margin-bottom:15px;">
         <button class="btn btn-gold btn-small" onclick="initCreateTest()">➕ Test</button>
         <button class="btn btn-gold btn-small" onclick="initUpload()">📂 File</button>
-        <button class="btn btn-gold btn-small" onclick="showAdm('blog')">✍️ Blog</button>
-        <button class="btn btn-gold btn-small" onclick="showAdm('announce')">📢 News</button>
+        <button class="btn btn-gold btn-small" onclick="showAdm('video')">📹 Video</button> <button class="btn btn-gold btn-small" onclick="showAdm('blog')">✍️ Blog</button>
+        <button class="btn btn-gold btn-small" onclick="showAdm('potd')">🔥 POTD</button> <button class="btn btn-gold btn-small" onclick="showAdm('doubts')">🤔 Doubts</button> <button class="btn btn-gold btn-small" onclick="showAdm('announce')">📢 News</button>
         <button class="btn btn-gold btn-small" onclick="showAdm('results')">📈 Online</button>
         <button class="btn btn-gold btn-small" onclick="showAdm('offline')">📊 Offline</button>
         <button class="btn btn-gold btn-small" onclick="showAdm('students')">👥 Students</button>
@@ -236,6 +243,19 @@
     </div>
     <button id="lib-back" class="btn btn-red" style="display:none; margin-bottom:15px;" onclick="resetLib()">Back</button>
     <div id="lib-content" class="grid"></div>
+</div>
+
+<div id="videos" class="section">
+    <h2>📹 Video Lectures</h2>
+    <div id="video-list" class="grid"></div>
+</div>
+
+<div id="doubts" class="section">
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+        <h2 style="margin:0;">🤔 My Doubts</h2>
+        <button class="btn btn-gold" onclick="openModal('ask-doubt-modal')">➕ Ask a Doubt</button>
+    </div>
+    <div id="doubt-student-list" style="margin-top: 20px;"></div>
 </div>
 
 <div id="tests" class="section"><h2>📝 Practice Tests</h2><div id="test-list" class="grid"></div></div>
@@ -283,8 +303,11 @@
 </div>
 
 <div id="results" class="section">
-    <h2>🏆 Results</h2>
-    <div style="margin-bottom:20px; display:flex; gap:10px; overflow-x:auto;">
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+        <h2 style="margin:0;">🏆 Results</h2>
+        <button class="btn btn-primary" style="background:#0284c7; color:white;" onclick="loadAnalytics()">📊 View Topic Weakness Tracker</button>
+    </div>
+    <div style="margin:20px 0; display:flex; gap:10px; overflow-x:auto;">
         <button class="btn btn-gold btn-small" onclick="loadResults('practice')">Practice Test Results</button>
         <button class="btn btn-gold btn-small" onclick="loadResults('live')">Live Test Results</button>
         <button class="btn btn-gold btn-small" onclick="loadOfflineResults()">Offline Test Results</button>
@@ -294,22 +317,60 @@
 
 <footer>&copy; 2026 ARC Classes. All Rights Reserved. </footer>
 
+<div id="analytics-modal" class="modal">
+    <div class="modal-content" style="max-width: 600px;">
+        <div class="close-corner" onclick="closeModal('analytics-modal')">&times;</div>
+        <h2 style="text-align:center; color:var(--primary); margin-top:0;">Topic-Wise Weakness Tracker</h2>
+        <p style="text-align:center; color:#666; font-size:0.9rem;">Based on your past mock test performances.</p>
+        <div style="position: relative; height:400px; width:100%;">
+            <canvas id="topicRadarChart"></canvas>
+        </div>
+        <div id="analytics-advice" style="margin-top:20px; padding:15px; background:#f1f5f9; border-left:4px solid var(--red); border-radius:4px;"></div>
+    </div>
+</div>
+
+<div id="ask-doubt-modal" class="modal">
+    <div class="modal-content">
+        <div class="close-corner" onclick="closeModal('ask-doubt-modal')">&times;</div>
+        <h2 style="margin-top:0; color:var(--primary);">Ask a Doubt</h2>
+        <textarea id="d-text" rows="5" placeholder="Type your doubt here..." style="width:100%; padding:10px; border:1px solid #ccc; border-radius:6px;"></textarea>
+        <div style="margin:10px 0; border:1px solid #eee; padding:10px; border-radius:6px; background:#f8fafc;">
+             <b>Attach Image (Optional):</b><br>
+             <input type="file" onchange="encodeImg(this, 'd-img-prev')" style="margin-top:5px;">
+             <img id="d-img-prev" style="max-height:150px; margin-top:10px; display:none; border:1px solid #ddd;">
+        </div>
+        <button class="btn btn-gold" style="width:100%;" onclick="submitDoubt()">Submit Doubt</button>
+    </div>
+</div>
+
+<div id="ref-modal" class="modal">
+    <div class="modal-content" style="max-width: 900px; padding:10px;">
+        <div class="close-corner" onclick="closeModal('ref-modal')">&times;</div>
+        <h2 style="margin:10px; text-align:center; color:var(--primary);">🧪 Chemistry Reference Tools</h2>
+        <div style="display:flex; justify-content:center; gap:10px; margin-bottom:15px; overflow-x:auto;">
+            <button class="btn btn-gold btn-small" onclick="document.getElementById('ref-img').src='https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Periodic_table_large.svg/1200px-Periodic_table_large.svg.png'">Periodic Table</button>
+            <button class="btn btn-gold btn-small" onclick="document.getElementById('ref-img').src='https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Standard_reduction_potentials.png/800px-Standard_reduction_potentials.png'">Reduction Potentials</button>
+            <button class="btn btn-gold btn-small" onclick="document.getElementById('ref-img').src='https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Reactivity_series_of_metals.svg/400px-Reactivity_series_of_metals.svg.png'">Reactivity Series</button>
+        </div>
+        <div style="width:100%; overflow:auto; background:white; text-align:center; border:1px solid #ddd; padding:10px; border-radius:8px;">
+            <img id="ref-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Periodic_table_large.svg/1200px-Periodic_table_large.svg.png" style="max-width:100%; min-width:600px;">
+        </div>
+    </div>
+</div>
+
 <div id="story-modal" class="modal">
     <div class="modal-content">
         <div class="close-corner" onclick="closeModal('story-modal')">&times;</div>
         <h2 style="color:var(--primary); margin-top:0;">Add Your Story</h2>
         <p style="color:#666; font-size:0.9rem;">Share your achievements with our juniors!</p>
-        
         <input id="st-name" placeholder="Your Name">
         <input id="st-status" placeholder="Current Status (e.g. Graduated, Post Graduate, Graduating from, MBBS Student)">
         <textarea id="st-exp" rows="4" placeholder="Your learning experience at ARC Classes..."></textarea>
-        
         <div style="margin:15px 0; border:1px solid #ccc; padding:10px; border-radius:6px;">
              <b>Your Photo:</b>
              <input type="file" onchange="encodeImg(this, 'st-prev')" style="margin-top:5px;">
              <img id="st-prev" style="width:60px; height:60px; border-radius:50%; margin-top:10px; display:none; object-fit:cover; border:2px solid var(--gold);">
         </div>
-
         <button class="btn btn-gold" style="width:100%" onclick="submitStory()">Submit Story</button>
     </div>
 </div>
@@ -352,14 +413,16 @@
     function closeModal(id) { document.getElementById(id).style.display = 'none'; document.body.classList.remove('modal-open'); }
 
     window.onload = function() {
-        loadMaterials(); loadAnnouncements(); loadBlogs(); 
-        loadStories(); // Load Stories on startup
+        loadMaterials(); loadAnnouncements(); loadBlogs(); loadStories(); 
+        loadPOTD(); // 🆕 Load POTD
+        loadVideosList(); // 🆕 Load Videos
         
         const lastSection = localStorage.getItem('arc_last_section') || 'home';
         
         if(user) {
             document.getElementById('nav-login').style.display = 'none';
             document.getElementById('nav-logout').style.display = 'block';
+            document.getElementById('nav-doubts').style.display = 'block'; // 🆕 Show doubts nav
             if(user.role === 'admin') document.getElementById('nav-admin').style.display = 'block';
         }
 
@@ -394,6 +457,7 @@
     let editQIndex = -1;
     let intervalSec = 0; 
     let testEndTime = null; 
+    let topicRadarInstance = null; // 🆕 Tracker instance
 
     function saveSession(endTime) { 
         if(!currentTest) return; 
@@ -403,8 +467,9 @@
     function clearSession() { localStorage.removeItem('arc_test_session'); }
 
     function show(id) {
-        if((id==='tests' || id==='live' || id==='results') && !user) return show('login');
+        if((id==='tests' || id==='live' || id==='results' || id==='doubts') && !user) return show('login');
         if(id === 'schedule') loadSchedule();
+        if(id === 'doubts') loadStudentDoubts(); // 🆕
         if(id==='admin' && (!user || user.role !== 'admin')) return alert("Access Denied");
         localStorage.setItem('arc_last_section', id);
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
@@ -414,7 +479,6 @@
         if(id==='tests') loadTests(false); if(id==='live') loadTests(true); if(id==='results') loadResults('practice');
     }
 
-    // --- ADMIN TOOLBAR ---
     const toolbarHTML = `
         <div class="toolbar" style="background:#e2e8f0; padding:10px; border-radius:6px 6px 0 0; display:flex; gap:8px; flex-wrap:wrap; align-items:center; border:1px solid #ccc; border-bottom:none;">
             <select onchange="exec('fontName', this.value)" style="padding:5px; border-radius:4px;" title="Font">
@@ -471,6 +535,9 @@
                             <h4>Add Question</h4>
                             ${toolbarHTML} 
                             <div id="q-editor" class="editor" contenteditable="true" placeholder="Question text..." style="min-height:100px; border-radius:0 0 6px 6px; margin-bottom:10px;"></div>
+                            
+                            <input id="q-topic" placeholder="Chemistry Topic (e.g. Thermodynamics, GOC) for Tracker">
+
                             <div style="margin-bottom:15px;"><label class="btn-small" style="background:#e2e8f0; cursor:pointer;">📷 Q-Image <input type="file" onchange="encodeImg(this, 'q-prev')" style="display:none;"></label><img id="q-prev" style="height:60px; display:none; margin-top:5px;"></div>
                             <div style="background:#f1f5f9; padding:10px; border-radius:6px; margin-bottom:10px;">
                                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
@@ -538,6 +605,56 @@
             <input id="m-code" placeholder="Pass (Opt)">
             <button class="btn btn-gold" style="width:100%; margin-top:10px;" onclick="uploadMat()">${editingMaterialId ? 'UPDATE' : 'UPLOAD'}</button>`;
         }
+        // 🆕 ADDED VIDEO ADMIN UI
+        else if (tab === 'video') {
+            c.innerHTML = `<h3>Add Video Lecture</h3>
+            <input id="v-title" placeholder="Video Title">
+            <input id="v-link" placeholder="YouTube Embed Link (e.g. https://www.youtube.com/embed/...)">
+            <select id="v-cat"><option>Organic</option><option>Physical</option><option>Inorganic</option><option>Misc</option></select>
+            <button class="btn btn-gold" style="width:100%; margin-top:10px;" onclick="uploadVideo()">Add Video</button>
+            <hr><h4>Manage Videos</h4><div id="admin-video-list" class="table-container"></div>`;
+            fetch('/api/videos').then(r=>r.json()).then(d => { 
+                document.getElementById('admin-video-list').innerHTML = `<table><tr><th>Title</th><th>Cat</th><th>Action</th></tr>${d.map(v=>`<tr><td>${v.title}</td><td>${v.category}</td><td><button class="btn-red btn-small" onclick="deleteItem('video','${v._id}')">Del</button></td></tr>`).join('')}</table>`;
+            });
+        }
+        // 🆕 ADDED POTD ADMIN UI
+        else if (tab === 'potd') {
+            const today = new Date().toLocaleDateString('en-CA');
+            c.innerHTML = `<h3>Set Problem of the Day</h3>
+            <label>Date: <input type="date" id="potd-date" value="${today}"></label>
+            ${toolbarHTML}
+            <div id="potd-text" class="editor" contenteditable="true" style="min-height:80px; margin-top:10px;" placeholder="Question..."></div>
+            <label class="btn-small" style="background:#e2e8f0; cursor:pointer; display:inline-block; margin:10px 0;">📷 Add Image <input type="file" onchange="encodeImg(this, 'potd-img')" style="display:none;"></label><img id="potd-img" style="height:60px; display:none; margin-left:10px;">
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px;">
+                <input id="po0" placeholder="Option A"><input id="po1" placeholder="Option B">
+                <input id="po2" placeholder="Option C"><input id="po3" placeholder="Option D">
+            </div>
+            <select id="potd-corr" style="border:2px solid green; font-weight:bold; margin-bottom:10px;"><option value="0">Ans A</option><option value="1">Ans B</option><option value="2">Ans C</option><option value="3">Ans D</option></select>
+            <div style="background:#fffbeb; padding:10px; border:1px solid #fbbf24; border-radius:6px;">
+                <b>Solution:</b><div id="potd-sol" class="editor-small" contenteditable="true" style="background:white; min-height:50px;"></div>
+                <label class="btn-small" style="background:#fcd34d; cursor:pointer; margin-top:5px;">📷 Sol-Image <input type="file" onchange="encodeImg(this, 'potd-sol-img', true)" style="display:none;"></label><img id="potd-sol-img" style="height:50px; display:none;">
+            </div>
+            <button class="btn btn-gold" style="width:100%; margin-top:15px;" onclick="uploadPOTD()">Set POTD</button>`;
+        }
+        // 🆕 ADDED DOUBTS ADMIN UI
+        else if (tab === 'doubts') {
+            c.innerHTML = `<h3>Manage Student Doubts</h3><div id="admin-doubt-list">Loading...</div>`;
+            fetch('/api/admin/doubts').then(r=>r.json()).then(d => {
+                document.getElementById('admin-doubt-list').innerHTML = d.map(db => `
+                <div class="card doubt-card ${db.status === 'Answered' ? 'answered' : ''}">
+                    <div style="display:flex; justify-content:space-between;"><b>${db.studentName}</b> <span class="badge ${db.status === 'Answered' ? 'bg-green' : 'bg-red'}">${db.status}</span></div>
+                    <p>${db.text}</p>
+                    ${db.image ? `<a href="${db.image}" target="_blank"><img src="${db.image}" style="height:100px; border:1px solid #ccc;"></a>` : ''}
+                    <hr>
+                    ${db.status === 'Pending' ? `
+                        <textarea id="reply-text-${db._id}" placeholder="Type reply..."></textarea>
+                        <input type="file" onchange="encodeImg(this, 'reply-img-${db._id}')" style="margin:5px 0;">
+                        <img id="reply-img-${db._id}" style="height:80px; display:none;">
+                        <button class="btn btn-gold btn-small" onclick="replyDoubt('${db._id}')">Send Reply</button>
+                    ` : `<div style="background:#f0f9ff; padding:10px;"><b>Reply:</b> ${db.replyText} ${db.replyImage ? `<br><img src="${db.replyImage}" style="height:100px;">` : ''}</div>`}
+                </div>`).join('');
+            });
+        }
         else if (tab === 'students') {
             c.innerHTML = `<h3>Registered Students</h3><div class="table-container"><table><thead><tr><th>Name</th><th>Email</th><th>Password</th><th>Action</th></tr></thead><tbody id="stu-list"></tbody></table></div>`;
             fetch('/api/admin/students').then(r=>r.json()).then(d => { document.getElementById('stu-list').innerHTML = d.map(s => `<tr><td>${s.name}</td><td>${s.email}</td><td style="color:red; font-family:monospace;">${s.password}</td><td><button class="btn btn-gold btn-small" onclick="editStudent('${s._id}')">Edit</button> <button class="btn btn-red btn-small" onclick="deleteItem('student','${s._id}')">Del</button></td></tr>`).join(''); });
@@ -547,34 +664,26 @@
             fetch('/api/admin/results/online').then(r=>r.json()).then(d => { document.getElementById('adm-res-list').innerHTML = d.map(r => `<tr><td>${r.studentName}</td><td>${r.testTitle}</td><td>${r.score}</td><td><button class="btn btn-gold btn-small" onclick="viewSheet('${r._id}')">View</button> <button class="btn btn-red btn-small" onclick="deleteItem('result','${r._id}')">Del</button></td></tr>`).join(''); });
         }
         else if (tab === 'add-schedule') {
-    c.innerHTML = `
-        <h3>${editingScheduleId ? 'Edit' : 'Add'} Test Schedule</h3>
-        <select id="s-cls">
-            <option>11th Class</option><option>12th Class</option><option>Dropper</option>
-        </select>
-        <input id="s-topic" placeholder="Test Topic">
-        <input id="s-pass" placeholder="Password (Optional)">
-        <label>Test Time:</label>
-        <input type="datetime-local" id="s-time">
-        <button class="btn btn-gold" style="width:100%; margin-top:15px;" onclick="saveSchedule()">
-            ${editingScheduleId ? 'UPDATE SCHEDULE' : 'ADD SCHEDULE'}
-        </button>
-    `;
-}
+            c.innerHTML = `<h3>${editingScheduleId ? 'Edit' : 'Add'} Test Schedule</h3>
+            <select id="s-cls"><option>11th Class</option><option>12th Class</option><option>Dropper</option></select>
+            <input id="s-topic" placeholder="Test Topic">
+            <input id="s-pass" placeholder="Password (Optional)">
+            <label>Test Time:</label>
+            <input type="datetime-local" id="s-time">
+            <button class="btn btn-gold" style="width:100%; margin-top:15px;" onclick="saveSchedule()">${editingScheduleId ? 'UPDATE SCHEDULE' : 'ADD SCHEDULE'}</button>`;
+        }
         else if (tab === 'announce') {
              c.innerHTML = `<h3>News</h3><input id="ann-text" placeholder="Text"><button class="btn btn-gold" onclick="postAnnounce()">Post</button><div id="ann-list" style="margin-top:20px;"></div>`;
              fetch('/api/announcement').then(r=>r.json()).then(d => { document.getElementById('ann-list').innerHTML = d.list.map(t => `<div style="padding:10px; border-bottom:1px solid #eee; display:flex; justify-content:space-between;">${t} <button onclick="delAnnounce('${t}')">X</button></div>`).join(''); });
         }
     }
 
-    // --- HELPER FUNCTIONS ---
     async function loadManageTests() { const res = await fetch('/api/tests'); const data = await res.json(); document.getElementById('manage-area').innerHTML = `<table><tr><th>Title</th><th>Action</th></tr>${data.map(t => `<tr><td>${t.title}</td><td><button onclick="editTest('${t._id}')">Edit</button> <button style="color:red" onclick="deleteItem('test','${t._id}')">Del</button></td></tr>`).join('')}</table>`; }
     async function loadManageBlogs() { const res = await fetch('/api/blogs'); const data = await res.json(); document.getElementById('manage-area').innerHTML = `<table><tr><th>Title</th><th>Action</th></tr>${data.map(b => `<tr><td>${b.title}</td><td><button onclick="editBlog('${b._id}')">Edit</button> <button style="color:red" onclick="deleteItem('blog','${b._id}')">Del</button></td></tr>`).join('')}</table>`; }
     async function loadManageLibrary() { const res = await fetch('/api/materials'); const data = await res.json(); document.getElementById('manage-area').innerHTML = `<table><tr><th>Title</th><th>Action</th></tr>${data.map(m => `<tr><td>${m.title}</td><td><button onclick="editMaterial('${m._id}')">Edit</button> <button style="color:red" onclick="deleteItem('material','${m._id}')">Del</button></td></tr>`).join('')}</table>`; }
     async function loadManageOffline() { const res = await fetch('/api/results/offline'); const data = await res.json(); document.getElementById('manage-area').innerHTML = `<table><tr><th>Title</th><th>Action</th></tr>${data.map(r => `<tr><td>${r.title}</td><td><button onclick="editOffline('${r._id}')">Edit</button> <button style="color:red" onclick="deleteItem('offline-result','${r._id}')">Del</button></td></tr>`).join('')}</table>`; }
     async function loadManageStudents() { showAdm('students'); }
 
-    // --- GLOBAL EDIT STUDENT (OUTSIDE showAdm) ---
     async function editStudent(id) { 
         const res = await fetch(`/api/admin/student/${id}`); 
         const s = await res.json(); 
@@ -598,7 +707,8 @@
         else if(type==='blog') loadManageBlogs();
         else if(type === 'schedule') loadManageSchedule();
         else if(type==='material') loadManageLibrary();
-        else if(type === 'story') { loadStories(); } // Reload stories after delete
+        else if(type === 'story') loadStories();
+        else if(type === 'video') showAdm('video'); // 🆕 refresh videos
     }
 
     function initCreateTest() { editingTestId = null; draftQ = []; showAdm('create-test'); renderCreatePalette(); }
@@ -624,28 +734,21 @@
             document.getElementById('m-prev').src = mat.image;
             document.getElementById('m-prev').style.display = 'block';
             tempImg = mat.image; 
-        } else {
-            tempImg = "";
-        }
+        } else { tempImg = ""; }
     }
     
     async function editOffline(id) { const res = await fetch(`/api/admin/offline-result/${id}`); const data = await res.json(); editingOfflineId = id; offlineDraft = data.records; showAdm('offline'); document.getElementById('off-title').value = data.title; renderOfflineDraft(); }
 
     async function uploadMat() { 
         const body = { 
-            title: document.getElementById('m-title').value, 
-            link: document.getElementById('m-link').value, 
-            image: tempImg, 
-            category: document.getElementById('m-cat').value, 
-            accessCode: document.getElementById('m-code').value 
+            title: document.getElementById('m-title').value, link: document.getElementById('m-link').value, 
+            image: tempImg, category: document.getElementById('m-cat').value, accessCode: document.getElementById('m-code').value 
         }; 
         const method = editingMaterialId ? 'PUT' : 'POST'; 
         const url = editingMaterialId ? `/api/admin/material/${editingMaterialId}` : '/api/admin/material'; 
         await fetch(url, { method, headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) }); 
         alert(editingMaterialId ? "Updated!" : "Uploaded!"); 
-        editingMaterialId = null; 
-        tempImg = ""; 
-        showAdm('upload'); 
+        editingMaterialId = null; tempImg = ""; showAdm('upload'); 
     }
 
     function addOfflineStudent() { const name = document.getElementById('off-name').value; const total = document.getElementById('off-total').value; const obt = document.getElementById('off-obt').value; const link = document.getElementById('off-link').value; if(!name || !total || !obt) return alert("Fill details"); offlineDraft.push({ studentName: name, totalMarks: total, obtainedMarks: obt, copyLink: link }); renderOfflineDraft(); document.getElementById('off-name').value = ""; document.getElementById('off-obt').value = ""; document.getElementById('off-link').value = ""; }
@@ -655,11 +758,10 @@
     function exec(cmd, val=null) { document.execCommand(cmd, false, val); }
     function insChar(char) { document.execCommand('insertText', false, char); }
     function encodeImg(input, previewId, isSolution = false) { if (input.files && input.files[0]) { const reader = new FileReader(); reader.onload = function (e) { const result = e.target.result; if (isSolution) tempSolImg = result; else tempImg = result; if (previewId) { const img = document.getElementById(previewId); img.src = result; img.style.display = 'block'; } }; reader.readAsDataURL(input.files[0]); } }
-    function insertInlineImg(input) { if(input.files && input.files[0]) { const reader = new FileReader(); reader.onload = function(e) { document.getElementById('b-content').focus(); document.execCommand('insertImage', false, e.target.result); }; reader.readAsDataURL(input.files[0]); } }
     
     function switchTab(mode) { loginMode = mode; document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); document.getElementById('tab-'+mode).classList.add('active'); document.getElementById('student-input').style.display = mode === 'student' ? 'block' : 'none'; document.getElementById('teacher-input').style.display = mode === 'student' ? 'none' : 'block'; document.getElementById('login-title').innerText = mode === 'student' ? 'Student Login' : 'Teacher Login'; document.getElementById('reg-link').style.display = mode === 'student' ? 'block' : 'none'; }
   
-async function doLogin() { 
+    async function doLogin() { 
         let email = loginMode === 'student' ? document.getElementById('l-email').value : document.getElementById('l-admin-email').value;
         const password = document.getElementById('l-pass').value;
         if(loginMode === 'student' && !email.includes('@')) email += '@arcstudent.com';
@@ -671,6 +773,7 @@ async function doLogin() {
             user = userData;
             document.getElementById('nav-login').style.display = 'none';
             document.getElementById('nav-logout').style.display = 'block';
+            document.getElementById('nav-doubts').style.display = 'block'; // 🆕 Show doubts nav
             if(user.role === 'admin') document.getElementById('nav-admin').style.display = 'block';
             alert("Login Successful!");
             show('home'); 
@@ -713,7 +816,8 @@ async function doLogin() {
 
     async function startTest(id, hasCode, startTimeStr) { if (startTimeStr) { const now = new Date(); const start = new Date(startTimeStr); if (now < start) { document.getElementById('alert-msg').innerText = "Test Locked"; openModal('alert-modal'); return; } } let code = ""; if(hasCode) { code = prompt("Enter Password:"); if(!code) return; } const res = await fetch('/api/test/start', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ id, code, studentEmail: user.email }) }); const data = await res.json(); if(data.success) { currentTest = data.test; answers = new Array(currentTest.questions.length).fill(null); timeTaken = new Array(currentTest.questions.length).fill(0); qIndex = 0; startTimer(currentTest.duration); show('exam'); renderQ(); } else { document.getElementById('alert-msg').innerText = data.message; openModal('alert-modal'); } }
     
-    function renderQ() { const q = currentTest.questions[qIndex]; 
+    function renderQ() { 
+        const q = currentTest.questions[qIndex]; 
         document.getElementById('q-no').innerText = `Q${qIndex + 1}`; 
         const m = q.marks || 4; 
         const n = q.negative || 0; 
@@ -721,25 +825,20 @@ async function doLogin() {
         document.getElementById('q-text').innerHTML = q.text; 
         const img = document.getElementById('q-img'); 
         if(q.image) { img.src = q.image; img.style.display = 'block'; 
-        } else img.style.display = 'none'; document.getElementById('q-opts').innerHTML = q.options.map((o, i) => `<label class="mcq-label"><input type="radio" name="opt" value="${i}" ${answers[qIndex] === i ? 'checked' : ''}> <div>${o}</div></label>`).join(''); document.getElementById('palette').innerHTML = answers.map((a, i) => `<div class="p-btn ${a !== null ? 'done' : (i === qIndex ? 'active' : '')}" onclick="gotoQ(${i})">${i+1}</div>`).join(''); }
+        } else img.style.display = 'none'; document.getElementById('q-opts').innerHTML = q.options.map((o, i) => `<label class="mcq-label"><input type="radio" name="opt" value="${i}" ${answers[qIndex] === i ? 'checked' : ''}> <div>${o}</div></label>`).join(''); document.getElementById('palette').innerHTML = answers.map((a, i) => `<div class="p-btn ${a !== null ? 'done' : (i === qIndex ? 'active' : '')}" onclick="gotoQ(${i})">${i+1}</div>`).join(''); 
+    }
     
     function saveNext() { 
         const sel = document.querySelector('input[name="opt"]:checked'); 
         answers[qIndex] = sel ? parseInt(sel.value) : null; 
         timeTaken[qIndex] = (timeTaken[qIndex] || 0) + intervalSec; 
-        intervalSec = 0; // Reset question timer
+        intervalSec = 0; 
         saveSession(); 
         
-        // Update palette visual
         const pBtns = document.getElementById('palette').children;
         if(answers[qIndex] !== null) pBtns[qIndex].classList.add('done');
         
-        if(qIndex < currentTest.questions.length - 1) { 
-            qIndex++; 
-            renderQ(); 
-        } else { 
-            alert("This is the last question."); 
-        } 
+        if(qIndex < currentTest.questions.length - 1) { qIndex++; renderQ(); } else { alert("This is the last question."); } 
     }
 
     function clearAns() { answers[qIndex] = null; saveSession(); renderQ(); }
@@ -778,10 +877,12 @@ async function doLogin() {
     async function openMat(id) { const code = prompt("Password:"); const res = await fetch('/api/material/unlock', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id, code}) }); const data = await res.json(); if(data.success) window.open(data.link); else alert("Wrong Password"); }
     
     function renderCreatePalette() { const p = document.getElementById('create-palette'); if(!p) return; p.innerHTML = draftQ.map((q, i) => `<div class="q-btn ${i === editQIndex ? 'active' : ''}" onclick="loadDraftQ(${i})">${i+1}</div>`).join('') + `<div class="q-btn" onclick="clearQForm()" style="color:green; font-size:1.2rem;">+</div>`; document.getElementById('q-count').innerText = draftQ.length; }
-    function saveDraftQ() { const qData = { text: document.getElementById('q-editor').innerHTML, options: [0,1,2,3].map(i => document.getElementById('op'+i).innerHTML), correct: parseInt(document.getElementById('q-corr').value), marks: parseFloat(document.getElementById('q-marks').value) || 4, negative: parseFloat(document.getElementById('q-neg').value) || 0, solution: document.getElementById('q-sol').innerHTML, image: tempImg, solutionImage: tempSolImg }; if(editQIndex > -1) { if(!qData.image) qData.image = draftQ[editQIndex].image; if(!qData.solutionImage) qData.solutionImage = draftQ[editQIndex].solutionImage; draftQ[editQIndex] = qData; } else { draftQ.push(qData); } clearQForm(); }
-    function loadDraftQ(index) { editQIndex = index; const q = draftQ[index]; document.getElementById('q-editor').innerHTML = q.text; [0,1,2,3].forEach(i => document.getElementById('op'+i).innerHTML = q.options[i]); document.getElementById('q-corr').value = q.correct; document.getElementById('q-marks').value = q.marks !== undefined ? q.marks : 4; document.getElementById('q-neg').value = q.negative !== undefined ? q.negative : 0; document.getElementById('q-sol').innerHTML = q.solution || ""; if(q.image) { document.getElementById('q-prev').src = q.image; document.getElementById('q-prev').style.display = 'block'; tempImg = q.image; } else { document.getElementById('q-prev').style.display = 'none'; tempImg = ""; } if(q.solutionImage) { document.getElementById('sol-prev').src = q.solutionImage; document.getElementById('sol-prev').style.display = 'block'; tempSolImg = q.solutionImage; } else { document.getElementById('sol-prev').style.display = 'none'; tempSolImg = ""; } renderCreatePalette(); }
-    function clearQForm() { editQIndex = -1; document.getElementById('q-editor').innerHTML = ""; 
-    [0,1,2,3].forEach(i => document.getElementById('op'+i).innerHTML = ""); document.getElementById('q-sol').innerHTML = ""; document.getElementById('q-marks').value = "4"; document.getElementById('q-neg').value = "0"; document.getElementById('q-prev').style.display = 'none'; tempImg = ""; document.getElementById('sol-prev').style.display = 'none'; tempSolImg = ""; document.getElementById('q-sol-file').value = ""; renderCreatePalette(); }
+    
+    // 🆕 UPDATED TO INCLUDE TOPIC FIELD
+    function saveDraftQ() { const qData = { text: document.getElementById('q-editor').innerHTML, topic: document.getElementById('q-topic').value, options: [0,1,2,3].map(i => document.getElementById('op'+i).innerHTML), correct: parseInt(document.getElementById('q-corr').value), marks: parseFloat(document.getElementById('q-marks').value) || 4, negative: parseFloat(document.getElementById('q-neg').value) || 0, solution: document.getElementById('q-sol').innerHTML, image: tempImg, solutionImage: tempSolImg }; if(editQIndex > -1) { if(!qData.image) qData.image = draftQ[editQIndex].image; if(!qData.solutionImage) qData.solutionImage = draftQ[editQIndex].solutionImage; draftQ[editQIndex] = qData; } else { draftQ.push(qData); } clearQForm(); }
+    
+    function loadDraftQ(index) { editQIndex = index; const q = draftQ[index]; document.getElementById('q-editor').innerHTML = q.text; document.getElementById('q-topic').value = q.topic || ""; [0,1,2,3].forEach(i => document.getElementById('op'+i).innerHTML = q.options[i]); document.getElementById('q-corr').value = q.correct; document.getElementById('q-marks').value = q.marks !== undefined ? q.marks : 4; document.getElementById('q-neg').value = q.negative !== undefined ? q.negative : 0; document.getElementById('q-sol').innerHTML = q.solution || ""; if(q.image) { document.getElementById('q-prev').src = q.image; document.getElementById('q-prev').style.display = 'block'; tempImg = q.image; } else { document.getElementById('q-prev').style.display = 'none'; tempImg = ""; } if(q.solutionImage) { document.getElementById('sol-prev').src = q.solutionImage; document.getElementById('sol-prev').style.display = 'block'; tempSolImg = q.solutionImage; } else { document.getElementById('sol-prev').style.display = 'none'; tempSolImg = ""; } renderCreatePalette(); }
+    function clearQForm() { editQIndex = -1; document.getElementById('q-editor').innerHTML = ""; document.getElementById('q-topic').value = ""; [0,1,2,3].forEach(i => document.getElementById('op'+i).innerHTML = ""); document.getElementById('q-sol').innerHTML = ""; document.getElementById('q-marks').value = "4"; document.getElementById('q-neg').value = "0"; document.getElementById('q-prev').style.display = 'none'; tempImg = ""; document.getElementById('sol-prev').style.display = 'none'; tempSolImg = ""; document.getElementById('q-sol-file').value = ""; renderCreatePalette(); }
 
     let editingScheduleId = null;
 
@@ -832,64 +933,175 @@ async function doLogin() {
         const method = editingScheduleId ? 'PUT' : 'POST';
         const url = editingScheduleId ? `/api/admin/schedule/${editingScheduleId}` : '/api/admin/schedule';
         await fetch(url, { method, headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
-        alert("Saved!");
-        showAdm('manage');
-        loadManageSchedule();
+        alert("Saved!"); showAdm('manage'); loadManageSchedule();
     }
 
-    // --- NEW FUNCTIONS FOR SUCCESS STORIES ---
     async function loadStories() {
         const res = await fetch('/api/stories');
         const data = await res.json();
         const track = document.getElementById('story-track');
         if(!track || data.length === 0) return;
-
-        // Create card HTML function
         const createCard = (s) => `
             <div class="story-card">
                 <div class="story-header">
                     <img src="${s.image || 'https://via.placeholder.com/50'}" class="story-img">
-                    <div class="story-info">
-                        <h4>${s.name}</h4>
-                        <small>${s.status}</small>
-                    </div>
+                    <div class="story-info"><h4>${s.name}</h4><small>${s.status}</small></div>
                     ${(user && user.role === 'admin') ? `<button onclick="deleteItem('story', '${s._id}')" style="margin-left:auto; color:red; border:none; background:none; cursor:pointer;">X</button>` : ''}
                 </div>
                 <div class="story-text">"${s.experience}"</div>
             </div>`;
-
-        // We duplicate the list to ensure the marquee loop is smooth
         const cardsHTML = data.map(createCard).join('');
-        // To make seamless loop, we add the cards twice
         track.innerHTML = cardsHTML + cardsHTML + cardsHTML; 
     }
 
     async function submitStory() {
-        const body = {
-            name: document.getElementById('st-name').value,
-            status: document.getElementById('st-status').value,
-            experience: document.getElementById('st-exp').value,
-            image: tempImg
-        };
-        
+        const body = { name: document.getElementById('st-name').value, status: document.getElementById('st-status').value, experience: document.getElementById('st-exp').value, image: tempImg };
         if(!body.name || !body.experience) return alert("Please fill Name and Experience.");
+        const res = await fetch('/api/story', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) });
+        const data = await res.json();
+        if(data.success) { alert("Story Submitted!"); closeModal('story-modal'); tempImg = ""; loadStories(); } else { alert("Error"); }
+    }
 
-        const res = await fetch('/api/story', { 
-            method: 'POST', 
-            headers: {'Content-Type':'application/json'}, 
-            body: JSON.stringify(body) 
-        });
-        
+    // ==========================================
+    // 🆕 ADVANCED FRONTEND FUNCTIONS START HERE
+    // ==========================================
+
+    // 1. VIDEOS
+    async function loadVideosList() {
+        const res = await fetch('/api/videos');
+        const data = await res.json();
+        document.getElementById('video-list').innerHTML = data.map(v => `
+            <div class="card">
+                <div class="video-wrapper">
+                    <iframe src="${v.link}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+                <h4 style="margin: 10px 0 5px 0;">${v.title}</h4>
+                <small style="color:var(--gold); font-weight:bold;">${v.category}</small>
+            </div>
+        `).join('');
+    }
+
+    async function uploadVideo() {
+        const body = { title: document.getElementById('v-title').value, link: document.getElementById('v-link').value, category: document.getElementById('v-cat').value };
+        await fetch('/api/admin/video', { method: 'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
+        alert("Video Added!"); showAdm('video'); loadVideosList();
+    }
+
+    // 2. DOUBTS PORTAL
+    async function submitDoubt() {
+        if(!user) return alert("Please login first.");
+        const text = document.getElementById('d-text').value;
+        if(!text) return alert("Type your doubt!");
+        await fetch('/api/doubt', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ studentEmail: user.email, studentName: user.name, text, image: tempImg }) });
+        alert("Doubt sent! Teacher will review it soon.");
+        closeModal('ask-doubt-modal'); tempImg = ""; loadStudentDoubts();
+    }
+
+    async function loadStudentDoubts() {
+        if(!user) return;
+        const res = await fetch('/api/student/doubts', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ email: user.email }) });
+        const data = await res.json();
+        document.getElementById('doubt-student-list').innerHTML = data.map(db => `
+            <div class="card doubt-card ${db.status === 'Answered' ? 'answered' : ''}">
+                <div style="display:flex; justify-content:space-between;"><b>My Doubt:</b> <span class="badge ${db.status === 'Answered' ? 'bg-green' : 'bg-red'}">${db.status}</span></div>
+                <p>${db.text}</p>
+                ${db.image ? `<img src="${db.image}" style="height:100px; border:1px solid #ccc;">` : ''}
+                ${db.status === 'Answered' ? `<div style="background:#f0f9ff; padding:10px; margin-top:10px; border-radius:6px;"><b>Teacher's Reply:</b><br>${db.replyText} ${db.replyImage ? `<br><img src="${db.replyImage}" style="height:100px; margin-top:5px;">` : ''}</div>` : ''}
+            </div>
+        `).join('');
+    }
+
+    async function replyDoubt(id) {
+        const rText = document.getElementById(`reply-text-${id}`).value;
+        const rImg = document.getElementById(`reply-img-${id}`).src;
+        const finalImg = rImg.includes('data:image') ? rImg : "";
+        await fetch(`/api/admin/doubt/${id}`, { method: 'PUT', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ replyText: rText, replyImage: finalImg }) });
+        alert("Reply Sent!"); showAdm('doubts');
+    }
+
+    // 3. PROBLEM OF THE DAY (POTD)
+    let currentPOTD = null;
+    async function loadPOTD() {
+        const res = await fetch('/api/potd/today');
         const data = await res.json();
         if(data.success) {
-            alert("Story Submitted! It will appear on the homepage.");
-            closeModal('story-modal');
-            tempImg = "";
-            loadStories(); // Refresh list
-        } else {
-            alert("Error submitting story.");
+            currentPOTD = data.potd;
+            document.getElementById('potd-container').style.display = 'block';
+            document.getElementById('potd-content').innerHTML = currentPOTD.text + (currentPOTD.image ? `<br><img src="${currentPOTD.image}" style="max-height:150px; margin-top:10px; border-radius:8px;">` : '');
+            document.getElementById('potd-opts').innerHTML = currentPOTD.options.map((opt, i) => `<button class="btn" style="background:rgba(255,255,255,0.1); color:white; border:1px solid rgba(255,255,255,0.3); text-align:left;" onclick="checkPOTD(${i})">${opt}</button>`).join('');
         }
     }
+
+    function checkPOTD(sel) {
+        const resDiv = document.getElementById('potd-result');
+        resDiv.style.display = 'block';
+        if(sel === currentPOTD.correct) {
+            resDiv.innerHTML = `✅ Correct!<br><br><b>Solution:</b><br>${currentPOTD.solution} ${currentPOTD.solutionImage ? `<br><img src="${currentPOTD.solutionImage}" style="max-height:100px; margin-top:5px;">` : ''}`;
+            resDiv.style.background = 'rgba(34, 197, 94, 0.2)'; // Green tint
+        } else {
+            resDiv.innerHTML = `❌ Incorrect. Try again or check later!`;
+            resDiv.style.background = 'rgba(239, 68, 68, 0.2)'; // Red tint
+        }
+    }
+
+    async function uploadPOTD() {
+        const body = { dateStr: document.getElementById('potd-date').value, text: document.getElementById('potd-text').innerHTML, image: tempImg, options: [0,1,2,3].map(i => document.getElementById('po'+i).value), correct: parseInt(document.getElementById('potd-corr').value), solution: document.getElementById('potd-sol').innerHTML, solutionImage: tempSolImg };
+        await fetch('/api/admin/potd', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) });
+        alert("POTD Set!"); tempImg = ""; tempSolImg = ""; showAdm('potd');
+    }
+
+    // 4. WEAKNESS TRACKER ANALYTICS
+    async function loadAnalytics() {
+        if(!user) return alert("Please Login!");
+        const res = await fetch('/api/student/analytics', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ email: user.email }) });
+        const data = await res.json();
+        if(!data.success) return alert("Error loading analytics");
+
+        const topics = Object.keys(data.stats);
+        if(topics.length === 0) return alert("Take some tests first to generate your analytics!");
+
+        const accuracyData = topics.map(t => {
+            const stat = data.stats[t];
+            return stat.total > 0 ? ((stat.correct / stat.total) * 100).toFixed(1) : 0;
+        });
+
+        openModal('analytics-modal');
+
+        const ctx = document.getElementById('topicRadarChart').getContext('2d');
+        if(topicRadarInstance) topicRadarInstance.destroy();
+        
+        topicRadarInstance = new Chart(ctx, {
+            type: 'radar',
+            data: {
+                labels: topics,
+                datasets: [{
+                    label: 'Accuracy (%)',
+                    data: accuracyData,
+                    backgroundColor: 'rgba(251, 191, 36, 0.4)', // Gold
+                    borderColor: 'rgba(251, 191, 36, 1)',
+                    pointBackgroundColor: 'var(--primary)',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: 'var(--primary)'
+                }]
+            },
+            options: { elements: { line: { borderWidth: 3 } }, scales: { r: { angleLines: { display: true }, suggestedMin: 0, suggestedMax: 100 } } }
+        });
+
+        // Find weakest topic
+        let weakestTopic = "", minAcc = 101;
+        topics.forEach((t, i) => { if(accuracyData[i] < minAcc && data.stats[t].total > 2) { minAcc = accuracyData[i]; weakestTopic = t; } });
+        
+        const adviceDiv = document.getElementById('analytics-advice');
+        if(weakestTopic) {
+            adviceDiv.innerHTML = `📉 Based on your data, your weakest area is <b>${weakestTopic}</b> (Accuracy: ${minAcc}%). We strongly recommend watching the video lectures and practicing more questions in this topic.`;
+        } else {
+            adviceDiv.innerHTML = `📈 Great job! Keep giving tests so we can build a stronger profile of your weak areas.`;
+        }
+    }
+    // ==========================================
+    // 🆕 ADVANCED FRONTEND FUNCTIONS END HERE
+    // ==========================================
 
 </script>
 </body>
