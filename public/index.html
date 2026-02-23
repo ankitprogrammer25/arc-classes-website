@@ -89,15 +89,6 @@
         .doubt-card { border-left: 5px solid var(--red); margin-bottom: 15px; }
         .doubt-card.answered { border-left-color: var(--green); }
 
-        /* 🚗 --- CAR GAME EMPTY STATE CSS --- */
-        .empty-game-wrapper { grid-column: 1 / -1; width: 100%; text-align: center; padding: 30px 10px; background: white; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); box-sizing: border-box; }
-        .car-game-board { position: relative; width: 100%; max-width: 300px; height: 350px; background: #444; margin: 15px auto 5px; overflow: hidden; border: 4px solid #222; border-radius: 8px; cursor: pointer; }
-        .road-lines { position: absolute; left: 50%; top: -350px; width: 8px; height: 700px; background: repeating-linear-gradient(to bottom, transparent 0, transparent 30px, white 30px, white 60px); transform: translateX(-50%); }
-        .road-lines.moving { animation: roadMove 1s linear infinite; }
-        @keyframes roadMove { 100% { top: 0; } }
-        .game-car { position: absolute; bottom: 15px; left: 130px; font-size: 35px; width: 40px; height: 40px; text-align: center; line-height: 40px; z-index: 5; transition: left 0.1s; }
-        .game-obstacle { position: absolute; top: -50px; left: 130px; font-size: 35px; width: 40px; height: 40px; text-align: center; line-height: 40px; z-index: 4; }
-
         /* 💡 --- LAMP LOGIN CSS --- */
         .desk-scene { position: relative; width: 100%; max-width: 500px; height: 650px; margin: 40px auto; background: #1e1e24; overflow: hidden; border-radius: 12px; box-shadow: inset 0 0 50px rgba(0,0,0,0.5); transition: background 0.5s; }
         .desk-scene.is-on { background: #2a2a35; }
@@ -118,6 +109,10 @@
         .on-form { display: none; }
         .desk-scene.is-on .on-form { display: block; animation: fadeIn 0.5s; }
         #reg-link-container { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); width: 100%; text-align: center; z-index: 10; }
+
+        /* ⚛️ --- ATOM GAME CSS --- */
+        .empty-game-wrapper { grid-column: 1 / -1; width: 100%; text-align: center; padding: 40px 20px; background: white; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); box-sizing: border-box; }
+        .empty-game-board { position: relative; width: 100%; max-width: 400px; height: 250px; background: linear-gradient(135deg, #1e293b, #0f172a); border-radius: 12px; margin: 20px auto 0; overflow: hidden; border: 2px solid var(--gold); }
     </style>
 </head>
 <body>
@@ -497,97 +492,53 @@
     }
 
     // ==========================================
-    // 🚗 CAR DRIVING EMPTY STATE GAME JS
+    // ⚛️ "CATCH THE ATOM" EMPTY STATE GAME JS
     // ==========================================
-    let carGames = {}; 
+    let gameIntervals = {};
+    let gameScores = {};
 
     function getEmptyStateGame(message) {
         const id = Math.random().toString(36).substr(2, 9);
         return `
-        <div class="empty-game-wrapper">
+        <div class="empty-game-wrapper" style="grid-column: 1 / -1;">
             <h3 style="color: var(--primary); margin-top:0;">${message}</h3>
-            <p style="color: #666; margin-bottom: 10px;">Teacher hasn't added data here yet. Play a quick drive!</p>
-            <div class="car-game-board" id="game-bg-${id}" onmousedown="steerCar('${id}', event)" ontouchstart="steerCar('${id}', event)">
-                <div id="score-display-${id}" style="position: absolute; top: 10px; left: 10px; color: white; font-weight: bold; z-index:5;">Score: 0</div>
-                <div id="road-lines-${id}" class="road-lines"></div>
-                <button id="start-btn-${id}" class="btn btn-gold" style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); z-index:10;" onclick="startCarGame('${id}', event)">Start Driving 🚗</button>
-                <div id="car-${id}" class="game-car" style="display:none;">🚗</div>
-                <div id="obstacle-${id}" class="game-obstacle" style="display:none;">🚧</div>
-                <div id="game-over-${id}" style="display:none; position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); z-index:10; background:rgba(0,0,0,0.8); color:white; padding:20px; border-radius:8px; text-align:center; width: 80%;">
-                    <h3 style="margin:0 0 10px 0; color:#ef4444;">Crash!</h3>
-                    <p style="margin:0 0 15px 0;" id="final-score-${id}"></p>
-                    <button class="btn btn-gold btn-small" onclick="startCarGame('${id}', event)">Restart</button>
-                </div>
+            <p style="color: #666; margin-bottom: 5px;">Teacher hasn't added data here yet. Catch the Atom while you wait!</p>
+            <div class="empty-game-board" id="game-bg-${id}">
+                <div style="position: absolute; top: 10px; left: 10px; color: var(--gold); font-weight: bold; z-index:5; font-size: 1.2rem;">Score: <span id="score-${id}">0</span></div>
+                <button id="start-btn-${id}" class="btn btn-gold" style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); z-index:10; padding: 15px 25px; font-size: 1.1rem;" onclick="startAtomGame('${id}')">Start Game ⚛️</button>
+                <div id="target-${id}" style="position: absolute; font-size: 3rem; display: none; cursor: crosshair; user-select: none; transition: top 0.15s, left 0.15s; z-index:5;" onmousedown="catchAtom('${id}')" ontouchstart="catchAtom('${id}')">⚛️</div>
             </div>
-            <p style="font-size:0.8rem; color:#888; margin-top:5px;">Tap the left, center, or right side of the road to steer.</p>
         </div>`;
     }
 
-    function startCarGame(id, e) {
-        if(e) e.stopPropagation();
+    function startAtomGame(id) {
         document.getElementById(`start-btn-${id}`).style.display = 'none';
-        document.getElementById(`game-over-${id}`).style.display = 'none';
-        document.getElementById(`road-lines-${id}`).classList.add('moving');
-        
-        let car = document.getElementById(`car-${id}`);
-        let obs = document.getElementById(`obstacle-${id}`);
-        car.style.display = 'block';
-        obs.style.display = 'block';
-        
-        carGames[id] = { score: 0, carX: 130, obsX: 130, obsY: -50, speed: 5, active: true };
-        car.style.left = '130px';
-        document.getElementById(`score-display-${id}`).innerText = "Score: 0";
-        
-        if(carGames[id].interval) clearInterval(carGames[id].interval);
-        carGames[id].interval = setInterval(() => gameLoop(id), 20);
+        const target = document.getElementById(`target-${id}`);
+        target.style.display = 'block';
+        gameScores[id] = 0;
+        document.getElementById(`score-${id}`).innerText = "0";
+        if(gameIntervals[id]) clearInterval(gameIntervals[id]);
+        moveAtom(id);
+        gameIntervals[id] = setInterval(() => moveAtom(id), 1200);
     }
-    
-    function steerCar(id, e) {
-        if(!carGames[id] || !carGames[id].active) return;
-        const rect = document.getElementById(`game-bg-${id}`).getBoundingClientRect();
-        const clickX = e.clientX || (e.touches && e.touches[0].clientX);
-        if(!clickX) return;
-        const relativeX = clickX - rect.left;
-        
-        // 3 Lanes (approx 0-100, 100-200, 200-300)
-        let newX = 130;
-        if(relativeX < 100) newX = 30; // left
-        else if(relativeX > 200) newX = 230; // right
-        else newX = 130; // center
-        
-        carGames[id].carX = newX;
-        document.getElementById(`car-${id}`).style.left = newX + 'px';
+
+    function moveAtom(id) {
+        const target = document.getElementById(`target-${id}`);
+        if(!target) return clearInterval(gameIntervals[id]); 
+        const bg = document.getElementById(`game-bg-${id}`);
+        const maxX = bg.clientWidth - 50; 
+        const maxY = bg.clientHeight - 50;
+        target.style.left = Math.floor(Math.random() * maxX) + 'px';
+        target.style.top = Math.floor(Math.random() * maxY) + 'px';
     }
-    
-    function gameLoop(id) {
-        let state = carGames[id];
-        if(!state.active) return;
-        
-        state.obsY += state.speed;
-        
-        // Obstacle reset
-        if(state.obsY > 350) {
-            state.obsY = -50;
-            const lanes = [30, 130, 230];
-            state.obsX = lanes[Math.floor(Math.random() * lanes.length)];
-            state.score++;
-            state.speed += 0.2; // gradually speed up
-            document.getElementById(`score-display-${id}`).innerText = "Score: " + state.score;
-        }
-        
-        let obs = document.getElementById(`obstacle-${id}`);
-        obs.style.top = state.obsY + 'px';
-        obs.style.left = state.obsX + 'px';
-        
-        // Collision Math (AABB)
-        // Car is at Y: bottom 15px, height 40px -> Y is roughly 295 to 335
-        if (Math.abs(state.carX - state.obsX) < 30 && state.obsY > 260 && state.obsY < 335) {
-            state.active = false;
-            clearInterval(state.interval);
-            document.getElementById(`road-lines-${id}`).classList.remove('moving');
-            document.getElementById(`final-score-${id}`).innerText = "Final Score: " + state.score;
-            document.getElementById(`game-over-${id}`).style.display = 'block';
-        }
+
+    function catchAtom(id) {
+        gameScores[id]++;
+        document.getElementById(`score-${id}`).innerText = gameScores[id];
+        moveAtom(id); 
+        clearInterval(gameIntervals[id]);
+        let speed = Math.max(400, 1200 - (gameScores[id] * 50));
+        gameIntervals[id] = setInterval(() => moveAtom(id), speed);
     }
     // ==========================================
 
@@ -976,14 +927,13 @@
         const res = await fetch('/api/blogs'); 
         const blogs = await res.json(); 
         allBlogs = blogs; 
-        
         if (blogs.length === 0) {
             document.getElementById('blog-grid').innerHTML = getEmptyStateGame("No Blogs Published Yet");
         } else {
             document.getElementById('blog-grid').innerHTML = blogs.map(b => `<div class="card blog-card" onclick="viewBlog('${b._id}')"><img src="${b.image || 'https://via.placeholder.com/300'}" alt="cover"><div class="blog-content-preview"><h3 class="blog-title">${b.title}</h3><small>${new Date(b.date).toLocaleDateString()}</small></div></div>`).join(''); 
         }
     }
-
+    
     function viewBlog(id) { const blog = allBlogs.find(b => b._id === id); if(!blog) return; document.getElementById('bm-title').innerText = blog.title; document.getElementById('bm-date').innerText = new Date(blog.date).toLocaleDateString(); document.getElementById('bm-content').innerHTML = blog.content; const img = document.getElementById('bm-img'); if(blog.image) { img.src = blog.image; img.style.display='block'; } else img.style.display='none'; openModal('blog-modal'); }
     
     async function loadTests(isLive) { 
@@ -991,7 +941,6 @@
         const tests = await res.json(); 
         const now = new Date(); 
         const filteredTests = tests.filter(t => { const tEnd = t.endTime ? new Date(t.endTime) : null; if (isLive) { return t.isLive && tEnd && tEnd > now; } else { return !t.isLive || (t.isLive && tEnd && tEnd <= now); } }); 
-        
         const container = document.getElementById(isLive?'live-list':'test-list');
         if (filteredTests.length === 0) {
             container.innerHTML = getEmptyStateGame(`No ${isLive ? 'Live' : 'Practice'} Tests Available`);
@@ -1189,7 +1138,7 @@
         const res = await fetch('/api/videos');
         const data = await res.json();
         
-        if(data.length === 0) {
+        if (data.length === 0) {
             document.getElementById('video-list').innerHTML = getEmptyStateGame("No Video Lectures Added");
         } else {
             document.getElementById('video-list').innerHTML = data.map(v => `
