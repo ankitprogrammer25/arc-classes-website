@@ -8,7 +8,6 @@
     <style>
         :root { --primary: #0f172a; --gold: #fbbf24; --light: #f8fafc; --red: #ef4444; --green: #22c55e; }
         
-        /* 1. LAYOUT & RESET */
         html, body { 
             overscroll-behavior-y: none; font-family: 'Segoe UI', sans-serif; 
             background: var(--light); margin: 0; color: #333; 
@@ -16,7 +15,6 @@
         }
         body.modal-open { overflow: hidden; height: 100vh; }
 
-        /* 2. NAVBAR & MENU */
         nav { background: var(--primary); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
         .logo { 
             font-size: 1.5rem; font-weight: 900; 
@@ -40,7 +38,6 @@
         .blink { animation: blinker 1.5s linear infinite; }
         @keyframes blinker { 50% { opacity: 0; } }
 
-        /* 3. COMMON COMPONENTS */
         .section { display: none; padding: 20px; max-width: 1200px; margin: auto; width: 100%; box-sizing: border-box; flex: 1; }
         .section.active { display: block; animation: fadeIn 0.3s; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -56,7 +53,6 @@
         .btn-red { background: var(--red); color: white; }
         .btn-small { padding: 5px 10px; font-size: 0.8rem; }
 
-        /* 4. MODALS (Scroll Fixes) */
         .modal { 
             position: fixed; top:0; left:0; width:100%; height:100%; 
             background:rgba(0,0,0,0.85); display:none; 
@@ -79,7 +75,6 @@
             border: 1px solid #ddd;
         }
 
-        /* 5. SLIDER STYLES */
         .slider-container { overflow: hidden; white-space: nowrap; position: relative; width: 100%; padding: 20px 0; mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent); -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent); }
         .slider-track { display: inline-flex; gap: 20px; animation: scroll 30s linear infinite; }
         .slider-track:hover { animation-play-state: paused; }
@@ -92,7 +87,6 @@
         .story-info small { color: #666; font-style: italic; font-size: 0.85rem; }
         .story-text { font-size: 0.95rem; color: #444; line-height: 1.5; font-style: italic; background: #f8fafc; padding: 10px; border-radius: 8px; }
 
-        /* 6. EXAM & ADMIN LAYOUT */
         .exam-layout { display: flex; gap: 20px; height: calc(100vh - 140px); flex-direction: column; }
         @media(min-width: 900px) { .exam-layout { flex-direction: row; } }
         .question-panel { flex: 3; background: white; padding: 15px; border-radius: 12px; overflow-y: auto; display: flex; flex-direction: column; position: relative; }
@@ -116,7 +110,6 @@
         .form-box { width: 100%; max-width: 400px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
         footer { background: var(--primary); color: white; text-align: center; padding: 20px; margin-top: auto; border-top: 4px solid var(--gold); }
         
-        /* 🆕 ADVANCED UI STYLES */
         .floating-btn { position: fixed; bottom: 30px; right: 30px; background: var(--gold); color: var(--primary); border: none; padding: 15px 20px; border-radius: 50px; font-weight: bold; font-size: 1.1rem; box-shadow: 0 4px 15px rgba(0,0,0,0.2); cursor: pointer; z-index: 1500; display: flex; align-items: center; gap: 8px; transition: transform 0.2s; }
         .floating-btn:hover { transform: scale(1.05); }
         .video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 8px; margin-bottom: 10px; }
@@ -134,11 +127,13 @@
     <div class="menu" id="nav-menu">
         <a onclick="show('home')">Home</a>
         <a onclick="show('library')">Library</a>
-        <a onclick="show('videos')">📹 Videos</a> <a onclick="show('tests')">Practice Tests</a>
+        <a onclick="show('videos')">📹 Videos</a>
+        <a onclick="show('tests')">Practice Tests</a>
         <a onclick="show('live')"><span class="blink">🔴</span> Live/Future Tests</a>
         <a onclick="show('schedule')">📅 Upcoming Test Schedule</a>
         <a onclick="show('results')" id="nav-results">Test Results</a>
-        <a onclick="show('doubts')" id="nav-doubts" style="display:none">🤔 Doubts</a> <a onclick="show('login')" id="nav-login">Login</a>
+        <a onclick="show('doubts')" id="nav-doubts" style="display:none">🤔 Doubts</a>
+        <a onclick="show('login')" id="nav-login">Login</a>
         <a onclick="show('admin')" id="nav-admin" style="display:none; background: var(--red); padding: 5px 10px; border-radius: 4px;">TEACHER</a>
         <a onclick="logout()" id="nav-logout" style="display:none">Logout</a>
     </div>
@@ -166,6 +161,7 @@
             <div id="potd-result" style="margin-top:15px; font-weight:bold; display:none; padding:10px; border-radius:6px; background:rgba(255,255,255,0.1);"></div>
         </div>
     </div>
+
     <h3 style="margin-left: 10px;">Latest Blogs</h3>
     <div id="blog-grid" class="grid"></div>
 
@@ -220,8 +216,11 @@
     <div style="display:flex; gap:5px; flex-wrap:wrap; margin-bottom:15px;">
         <button class="btn btn-gold btn-small" onclick="initCreateTest()">➕ Test</button>
         <button class="btn btn-gold btn-small" onclick="initUpload()">📂 File</button>
-        <button class="btn btn-gold btn-small" onclick="showAdm('video')">📹 Video</button> <button class="btn btn-gold btn-small" onclick="showAdm('blog')">✍️ Blog</button>
-        <button class="btn btn-gold btn-small" onclick="showAdm('potd')">🔥 POTD</button> <button class="btn btn-gold btn-small" onclick="showAdm('doubts')">🤔 Doubts</button> <button class="btn btn-gold btn-small" onclick="showAdm('announce')">📢 News</button>
+        <button class="btn btn-gold btn-small" onclick="showAdm('video')">📹 Video</button>
+        <button class="btn btn-gold btn-small" onclick="showAdm('blog')">✍️ Blog</button>
+        <button class="btn btn-gold btn-small" onclick="showAdm('potd')">🔥 POTD</button>
+        <button class="btn btn-gold btn-small" onclick="showAdm('doubts')">🤔 Doubts</button>
+        <button class="btn btn-gold btn-small" onclick="showAdm('reftool')">🛠️ Ref Tools</button> <button class="btn btn-gold btn-small" onclick="showAdm('announce')">📢 News</button>
         <button class="btn btn-gold btn-small" onclick="showAdm('results')">📈 Online</button>
         <button class="btn btn-gold btn-small" onclick="showAdm('offline')">📊 Offline</button>
         <button class="btn btn-gold btn-small" onclick="showAdm('students')">👥 Students</button>
@@ -322,7 +321,7 @@
         <div class="close-corner" onclick="closeModal('analytics-modal')">&times;</div>
         <h2 style="text-align:center; color:var(--primary); margin-top:0;">Topic-Wise Weakness Tracker</h2>
         <p style="text-align:center; color:#666; font-size:0.9rem;">Based on your past mock test performances.</p>
-        <div style="position: relative; height:400px; width:100%;">
+        <div style="position: relative; height:350px; width:100%;">
             <canvas id="topicRadarChart"></canvas>
         </div>
         <div id="analytics-advice" style="margin-top:20px; padding:15px; background:#f1f5f9; border-left:4px solid var(--red); border-radius:4px;"></div>
@@ -344,16 +343,15 @@
 </div>
 
 <div id="ref-modal" class="modal">
-    <div class="modal-content" style="max-width: 900px; padding:10px;">
+    <div class="modal-content" style="max-width: 900px; padding:20px; background:#f8fafc;">
         <div class="close-corner" onclick="closeModal('ref-modal')">&times;</div>
-        <h2 style="margin:10px; text-align:center; color:var(--primary);">🧪 Chemistry Reference Tools</h2>
-        <div style="display:flex; justify-content:center; gap:10px; margin-bottom:15px; overflow-x:auto;">
-            <button class="btn btn-gold btn-small" onclick="document.getElementById('ref-img').src='https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Periodic_table_large.svg/1200px-Periodic_table_large.svg.png'">Periodic Table</button>
-            <button class="btn btn-gold btn-small" onclick="document.getElementById('ref-img').src='https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Standard_reduction_potentials.png/800px-Standard_reduction_potentials.png'">Reduction Potentials</button>
-            <button class="btn btn-gold btn-small" onclick="document.getElementById('ref-img').src='https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Reactivity_series_of_metals.svg/400px-Reactivity_series_of_metals.svg.png'">Reactivity Series</button>
-        </div>
-        <div style="width:100%; overflow:auto; background:white; text-align:center; border:1px solid #ddd; padding:10px; border-radius:8px;">
-            <img id="ref-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Periodic_table_large.svg/1200px-Periodic_table_large.svg.png" style="max-width:100%; min-width:600px;">
+        <h2 style="margin-top:0; text-align:center; color:var(--primary);">🧪 Reference Tools</h2>
+        
+        <div id="ref-btn-container" style="display:flex; justify-content:center; gap:10px; margin-bottom:20px; overflow-x:auto; padding-bottom:5px;">
+            </div>
+        
+        <div id="ref-img-display" style="width:100%; overflow:auto; background:white; text-align:center; border:1px solid #e2e8f0; padding:15px; border-radius:12px; min-height:200px; display:flex; align-items:center; justify-content:center;">
+            Loading...
         </div>
     </div>
 </div>
@@ -414,15 +412,16 @@
 
     window.onload = function() {
         loadMaterials(); loadAnnouncements(); loadBlogs(); loadStories(); 
-        loadPOTD(); // 🆕 Load POTD
-        loadVideosList(); // 🆕 Load Videos
+        loadPOTD(); 
+        loadVideosList(); 
+        loadRefToolsStudent(); // 🆕 Load Ref Tools on start
         
         const lastSection = localStorage.getItem('arc_last_section') || 'home';
         
         if(user) {
             document.getElementById('nav-login').style.display = 'none';
             document.getElementById('nav-logout').style.display = 'block';
-            document.getElementById('nav-doubts').style.display = 'block'; // 🆕 Show doubts nav
+            document.getElementById('nav-doubts').style.display = 'block'; 
             if(user.role === 'admin') document.getElementById('nav-admin').style.display = 'block';
         }
 
@@ -457,7 +456,7 @@
     let editQIndex = -1;
     let intervalSec = 0; 
     let testEndTime = null; 
-    let topicRadarInstance = null; // 🆕 Tracker instance
+    let topicRadarInstance = null; 
 
     function saveSession(endTime) { 
         if(!currentTest) return; 
@@ -469,7 +468,7 @@
     function show(id) {
         if((id==='tests' || id==='live' || id==='results' || id==='doubts') && !user) return show('login');
         if(id === 'schedule') loadSchedule();
-        if(id === 'doubts') loadStudentDoubts(); // 🆕
+        if(id === 'doubts') loadStudentDoubts(); 
         if(id==='admin' && (!user || user.role !== 'admin')) return alert("Access Denied");
         localStorage.setItem('arc_last_section', id);
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
@@ -605,7 +604,6 @@
             <input id="m-code" placeholder="Pass (Opt)">
             <button class="btn btn-gold" style="width:100%; margin-top:10px;" onclick="uploadMat()">${editingMaterialId ? 'UPDATE' : 'UPLOAD'}</button>`;
         }
-        // 🆕 ADDED VIDEO ADMIN UI
         else if (tab === 'video') {
             c.innerHTML = `<h3>Add Video Lecture</h3>
             <input id="v-title" placeholder="Video Title">
@@ -617,7 +615,6 @@
                 document.getElementById('admin-video-list').innerHTML = `<table><tr><th>Title</th><th>Cat</th><th>Action</th></tr>${d.map(v=>`<tr><td>${v.title}</td><td>${v.category}</td><td><button class="btn-red btn-small" onclick="deleteItem('video','${v._id}')">Del</button></td></tr>`).join('')}</table>`;
             });
         }
-        // 🆕 ADDED POTD ADMIN UI
         else if (tab === 'potd') {
             const today = new Date().toLocaleDateString('en-CA');
             c.innerHTML = `<h3>Set Problem of the Day</h3>
@@ -636,7 +633,6 @@
             </div>
             <button class="btn btn-gold" style="width:100%; margin-top:15px;" onclick="uploadPOTD()">Set POTD</button>`;
         }
-        // 🆕 ADDED DOUBTS ADMIN UI
         else if (tab === 'doubts') {
             c.innerHTML = `<h3>Manage Student Doubts</h3><div id="admin-doubt-list">Loading...</div>`;
             fetch('/api/admin/doubts').then(r=>r.json()).then(d => {
@@ -653,6 +649,20 @@
                         <button class="btn btn-gold btn-small" onclick="replyDoubt('${db._id}')">Send Reply</button>
                     ` : `<div style="background:#f0f9ff; padding:10px;"><b>Reply:</b> ${db.replyText} ${db.replyImage ? `<br><img src="${db.replyImage}" style="height:100px;">` : ''}</div>`}
                 </div>`).join('');
+            });
+        }
+        // 🆕 ADDED REF TOOLS ADMIN UI
+        else if (tab === 'reftool') {
+            c.innerHTML = `<h3>Manage Reference Tools</h3>
+            <input id="rt-title" placeholder="Tool Name (e.g. Periodic Table)">
+            <div style="margin:10px 0; border:1px solid #ccc; padding:10px; border-radius:6px;">
+                 <b>Upload Image:</b> <input type="file" onchange="encodeImg(this, 'rt-prev')" style="margin-top:5px;">
+                 <img id="rt-prev" style="height:100px; display:none; margin-top:10px;">
+            </div>
+            <button class="btn btn-gold" style="width:100%;" onclick="uploadRefTool()">Add Tool</button>
+            <hr><h4>Current Tools</h4><div id="admin-rt-list" class="table-container"></div>`;
+            fetch('/api/reftools').then(r=>r.json()).then(d => {
+                document.getElementById('admin-rt-list').innerHTML = `<table><tr><th>Title</th><th>Image</th><th>Action</th></tr>${d.map(rt=>`<tr><td>${rt.title}</td><td><img src="${rt.image}" style="height:40px; border-radius:4px;"></td><td><button class="btn-red btn-small" onclick="deleteItem('reftool','${rt._id}')">Del</button></td></tr>`).join('')}</table>`;
             });
         }
         else if (tab === 'students') {
@@ -708,7 +718,8 @@
         else if(type === 'schedule') loadManageSchedule();
         else if(type==='material') loadManageLibrary();
         else if(type === 'story') loadStories();
-        else if(type === 'video') showAdm('video'); // 🆕 refresh videos
+        else if(type === 'video') showAdm('video'); 
+        else if(type === 'reftool') { showAdm('reftool'); loadRefToolsStudent(); } // 🆕 Refreshes both admin & student list
     }
 
     function initCreateTest() { editingTestId = null; draftQ = []; showAdm('create-test'); renderCreatePalette(); }
@@ -773,7 +784,7 @@
             user = userData;
             document.getElementById('nav-login').style.display = 'none';
             document.getElementById('nav-logout').style.display = 'block';
-            document.getElementById('nav-doubts').style.display = 'block'; // 🆕 Show doubts nav
+            document.getElementById('nav-doubts').style.display = 'block'; 
             if(user.role === 'admin') document.getElementById('nav-admin').style.display = 'block';
             alert("Login Successful!");
             show('home'); 
@@ -878,7 +889,6 @@
     
     function renderCreatePalette() { const p = document.getElementById('create-palette'); if(!p) return; p.innerHTML = draftQ.map((q, i) => `<div class="q-btn ${i === editQIndex ? 'active' : ''}" onclick="loadDraftQ(${i})">${i+1}</div>`).join('') + `<div class="q-btn" onclick="clearQForm()" style="color:green; font-size:1.2rem;">+</div>`; document.getElementById('q-count').innerText = draftQ.length; }
     
-    // 🆕 UPDATED TO INCLUDE TOPIC FIELD
     function saveDraftQ() { const qData = { text: document.getElementById('q-editor').innerHTML, topic: document.getElementById('q-topic').value, options: [0,1,2,3].map(i => document.getElementById('op'+i).innerHTML), correct: parseInt(document.getElementById('q-corr').value), marks: parseFloat(document.getElementById('q-marks').value) || 4, negative: parseFloat(document.getElementById('q-neg').value) || 0, solution: document.getElementById('q-sol').innerHTML, image: tempImg, solutionImage: tempSolImg }; if(editQIndex > -1) { if(!qData.image) qData.image = draftQ[editQIndex].image; if(!qData.solutionImage) qData.solutionImage = draftQ[editQIndex].solutionImage; draftQ[editQIndex] = qData; } else { draftQ.push(qData); } clearQForm(); }
     
     function loadDraftQ(index) { editQIndex = index; const q = draftQ[index]; document.getElementById('q-editor').innerHTML = q.text; document.getElementById('q-topic').value = q.topic || ""; [0,1,2,3].forEach(i => document.getElementById('op'+i).innerHTML = q.options[i]); document.getElementById('q-corr').value = q.correct; document.getElementById('q-marks').value = q.marks !== undefined ? q.marks : 4; document.getElementById('q-neg').value = q.negative !== undefined ? q.negative : 0; document.getElementById('q-sol').innerHTML = q.solution || ""; if(q.image) { document.getElementById('q-prev').src = q.image; document.getElementById('q-prev').style.display = 'block'; tempImg = q.image; } else { document.getElementById('q-prev').style.display = 'none'; tempImg = ""; } if(q.solutionImage) { document.getElementById('sol-prev').src = q.solutionImage; document.getElementById('sol-prev').style.display = 'block'; tempSolImg = q.solutionImage; } else { document.getElementById('sol-prev').style.display = 'none'; tempSolImg = ""; } renderCreatePalette(); }
@@ -962,11 +972,6 @@
         if(data.success) { alert("Story Submitted!"); closeModal('story-modal'); tempImg = ""; loadStories(); } else { alert("Error"); }
     }
 
-    // ==========================================
-    // 🆕 ADVANCED FRONTEND FUNCTIONS START HERE
-    // ==========================================
-
-    // 1. VIDEOS
     async function loadVideosList() {
         const res = await fetch('/api/videos');
         const data = await res.json();
@@ -987,7 +992,6 @@
         alert("Video Added!"); showAdm('video'); loadVideosList();
     }
 
-    // 2. DOUBTS PORTAL
     async function submitDoubt() {
         if(!user) return alert("Please login first.");
         const text = document.getElementById('d-text').value;
@@ -1019,7 +1023,6 @@
         alert("Reply Sent!"); showAdm('doubts');
     }
 
-    // 3. PROBLEM OF THE DAY (POTD)
     let currentPOTD = null;
     async function loadPOTD() {
         const res = await fetch('/api/potd/today');
@@ -1037,10 +1040,10 @@
         resDiv.style.display = 'block';
         if(sel === currentPOTD.correct) {
             resDiv.innerHTML = `✅ Correct!<br><br><b>Solution:</b><br>${currentPOTD.solution} ${currentPOTD.solutionImage ? `<br><img src="${currentPOTD.solutionImage}" style="max-height:100px; margin-top:5px;">` : ''}`;
-            resDiv.style.background = 'rgba(34, 197, 94, 0.2)'; // Green tint
+            resDiv.style.background = 'rgba(34, 197, 94, 0.2)'; 
         } else {
             resDiv.innerHTML = `❌ Incorrect. Try again or check later!`;
-            resDiv.style.background = 'rgba(239, 68, 68, 0.2)'; // Red tint
+            resDiv.style.background = 'rgba(239, 68, 68, 0.2)'; 
         }
     }
 
@@ -1050,7 +1053,7 @@
         alert("POTD Set!"); tempImg = ""; tempSolImg = ""; showAdm('potd');
     }
 
-    // 4. WEAKNESS TRACKER ANALYTICS
+    // 🆕 UPDATED: BAR CHART ANALYTICS
     async function loadAnalytics() {
         if(!user) return alert("Please Login!");
         const res = await fetch('/api/student/analytics', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ email: user.email }) });
@@ -1071,26 +1074,31 @@
         if(topicRadarInstance) topicRadarInstance.destroy();
         
         topicRadarInstance = new Chart(ctx, {
-            type: 'radar',
+            type: 'bar',
             data: {
                 labels: topics,
                 datasets: [{
                     label: 'Accuracy (%)',
                     data: accuracyData,
-                    backgroundColor: 'rgba(251, 191, 36, 0.4)', // Gold
-                    borderColor: 'rgba(251, 191, 36, 1)',
-                    pointBackgroundColor: 'var(--primary)',
-                    pointBorderColor: '#fff',
-                    pointHoverBackgroundColor: '#fff',
-                    pointHoverBorderColor: 'var(--primary)'
+                    backgroundColor: 'rgba(59, 130, 246, 0.8)',
+                    borderColor: 'rgba(37, 99, 235, 1)',
+                    borderWidth: 1,
+                    borderRadius: 6
                 }]
             },
-            options: { elements: { line: { borderWidth: 3 } }, scales: { r: { angleLines: { display: true }, suggestedMin: 0, suggestedMax: 100 } } }
+            options: { 
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: { 
+                    y: { beginAtZero: true, max: 100, title: { display: true, text: 'Accuracy (%)' } },
+                    x: { title: { display: true, text: 'Topics' } }
+                },
+                plugins: { legend: { display: false } }
+            }
         });
 
-        // Find weakest topic
         let weakestTopic = "", minAcc = 101;
-        topics.forEach((t, i) => { if(accuracyData[i] < minAcc && data.stats[t].total > 2) { minAcc = accuracyData[i]; weakestTopic = t; } });
+        topics.forEach((t, i) => { if(accuracyData[i] < minAcc && data.stats[t].total >= 1) { minAcc = accuracyData[i]; weakestTopic = t; } });
         
         const adviceDiv = document.getElementById('analytics-advice');
         if(weakestTopic) {
@@ -1099,9 +1107,40 @@
             adviceDiv.innerHTML = `📈 Great job! Keep giving tests so we can build a stronger profile of your weak areas.`;
         }
     }
-    // ==========================================
-    // 🆕 ADVANCED FRONTEND FUNCTIONS END HERE
-    // ==========================================
+
+    // 🆕 NEW: DYNAMIC REF TOOLS FUNCTIONS
+    let allRefTools = [];
+    async function loadRefToolsStudent() {
+        const res = await fetch('/api/reftools');
+        allRefTools = await res.json();
+        const btnContainer = document.getElementById('ref-btn-container');
+        if(btnContainer) {
+            btnContainer.innerHTML = allRefTools.map((rt, i) => `<button class="btn ${i===0?'btn-red':'btn-gold'} btn-small ref-btn-dynamic" onclick="showRefImg(${i}, this)">${rt.title}</button>`).join('');
+            if(allRefTools.length > 0) showRefImg(0, btnContainer.firstChild);
+            else document.getElementById('ref-img-display').innerHTML = "<p style='color:#666;'>No reference tools have been uploaded by the teacher yet.</p>";
+        }
+    }
+
+    function showRefImg(idx, btnElem) {
+        document.querySelectorAll('.ref-btn-dynamic').forEach(b => { b.classList.remove('btn-red'); b.classList.add('btn-gold'); });
+        if(btnElem) { btnElem.classList.remove('btn-gold'); btnElem.classList.add('btn-red'); }
+        const rt = allRefTools[idx];
+        document.getElementById('ref-img-display').innerHTML = `<img src="${rt.image}" style="max-width:100%; border-radius:8px; box-shadow:0 4px 10px rgba(0,0,0,0.1);">`;
+    }
+
+    async function uploadRefTool() {
+        if(!tempImg) return alert("Please upload an image first!");
+        const title = document.getElementById('rt-title').value;
+        if(!title) return alert("Please provide a title!");
+        
+        const body = { title: title, image: tempImg };
+        await fetch('/api/admin/reftool', { method: 'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
+        
+        alert("Reference Tool Added Successfully!");
+        tempImg = "";
+        showAdm('reftool'); 
+        loadRefToolsStudent(); 
+    }
 
 </script>
 </body>

@@ -73,9 +73,6 @@ const SuccessStory = mongoose.model('SuccessStory', SuccessStorySchema);
 const ConfigSchema = new mongoose.Schema({ type: String, list: [String] });
 const Config = mongoose.model('Config', ConfigSchema);
 
-// ==========================================
-// 🆕 ADVANCED FEATURES SCHEMAS START HERE
-// ==========================================
 const DoubtSchema = new mongoose.Schema({
     studentEmail: String, studentName: String, text: String, image: String, 
     replyText: String, replyImage: String, status: { type: String, default: 'Pending' }, date: { type: Date, default: Date.now }
@@ -91,10 +88,12 @@ const POTDSchema = new mongoose.Schema({
     dateStr: String, text: String, image: String, options: [String], correct: Number, solution: String, solutionImage: String
 });
 const POTD = mongoose.model('POTD', POTDSchema);
-// ==========================================
-// 🆕 ADVANCED FEATURES SCHEMAS END HERE
-// ==========================================
 
+// 🆕 NEW: Reference Tool Schema
+const RefToolSchema = new mongoose.Schema({
+    title: String, image: String, date: { type: Date, default: Date.now }
+});
+const RefTool = mongoose.model('RefTool', RefToolSchema);
 
 // --- 3. ROUTES ---
 
@@ -187,9 +186,6 @@ app.post('/api/admin/announcement/delete', async (req, res) => {
     res.json({ success: true });
 });
 
-// ==========================================
-// 🆕 ADVANCED ADMIN ROUTES START HERE
-// ==========================================
 app.get('/api/admin/doubts', async (req, res) => res.json(await Doubt.find().sort({ date: -1 })));
 app.put('/api/admin/doubt/:id', async (req, res) => { 
     await Doubt.findByIdAndUpdate(req.params.id, { replyText: req.body.replyText, replyImage: req.body.replyImage, status: 'Answered' }); 
@@ -205,9 +201,11 @@ app.post('/api/admin/potd', async (req, res) => {
     await POTD.findOneAndUpdate({ dateStr }, req.body, { upsert: true });
     res.json({ success: true });
 });
-// ==========================================
-// 🆕 ADVANCED ADMIN ROUTES END HERE
-// ==========================================
+
+// 🆕 NEW: Reference Tools Routes
+app.get('/api/reftools', async (req, res) => res.json(await RefTool.find().sort({ date: 1 })));
+app.post('/api/admin/reftool', async (req, res) => { await new RefTool(req.body).save(); res.json({ success: true }); });
+app.delete('/api/admin/reftool/:id', async (req, res) => { await RefTool.findByIdAndDelete(req.params.id); res.json({ success: true }); });
 
 // --- STUDENT API ---
 app.get('/api/materials', async (req, res) => res.json(await Material.find()));
@@ -303,16 +301,13 @@ app.post('/api/test/submit', async (req, res) => {
     } catch(e) { res.json({ success: false }); }
 });
 
-// ==========================================
-// 🆕 ADVANCED STUDENT ROUTES START HERE
-// ==========================================
 app.post('/api/doubt', async (req, res) => { await new Doubt(req.body).save(); res.json({ success: true }); });
 app.post('/api/student/doubts', async (req, res) => res.json(await Doubt.find({ studentEmail: req.body.email }).sort({ date: -1 })));
 
 app.get('/api/videos', async (req, res) => res.json(await Video.find().sort({ date: -1 })));
 
 app.get('/api/potd/today', async (req, res) => {
-    const today = new Date().toLocaleDateString('en-CA'); // Gets YYYY-MM-DD local time
+    const today = new Date().toLocaleDateString('en-CA'); 
     let potd = await POTD.findOne({ dateStr: today });
     res.json({ success: !!potd, potd });
 });
@@ -329,7 +324,8 @@ app.post('/api/student/analytics', async (req, res) => {
             r.answers.forEach((ans, i) => {
                 if (i >= test.questions.length) return;
                 const q = test.questions[i];
-                const topic = q.topic || 'General Chemistry'; // Fallback if no topic assigned
+                // Better Fallback to ensure valid string
+                const topic = q.topic && q.topic.trim() !== "" ? q.topic.trim() : 'General Chemistry';
                 
                 if (!topicStats[topic]) topicStats[topic] = { total: 0, correct: 0 };
                 topicStats[topic].total += 1;
@@ -339,9 +335,6 @@ app.post('/api/student/analytics', async (req, res) => {
         res.json({ success: true, stats: topicStats });
     } catch(e) { res.json({ success: false }); }
 });
-// ==========================================
-// 🆕 ADVANCED STUDENT ROUTES END HERE
-// ==========================================
 
 const RENDER_EXTERNAL_URL = "https://arc-classes-ankit.onrender.com"; 
 
