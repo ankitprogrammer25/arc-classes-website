@@ -96,8 +96,6 @@ const RefToolSchema = new mongoose.Schema({
 const RefTool = mongoose.model('RefTool', RefToolSchema);
 
 // --- 3. ROUTES ---
-
-// --- AUTH ---
 app.post('/api/register', async (req, res) => {
     try {
         const { name, emailPart, password, phone } = req.body; 
@@ -120,12 +118,11 @@ app.post('/api/login', async (req, res) => {
         if (student.status === 'Pending') {
             return res.json({ success: false, message: "Your registration is under review." });
         }
-
         res.json({ success: true, name: student.name, email: student.email, role: 'student' });
     } catch (e) { res.json({ success: false, message: "Server Error" }); }
 });
 
-// --- ADMIN API ---
+// ADMIN API
 app.get('/api/admin/students', async (req, res) => res.json(await Student.find().sort({ joinedAt: -1 })));
 app.get('/api/admin/student/:id', async (req, res) => res.json(await Student.findById(req.params.id)));
 app.put('/api/admin/student/:id', async (req, res) => { await Student.findByIdAndUpdate(req.params.id, req.body); res.json({ success: true }); });
@@ -216,7 +213,7 @@ app.get('/api/reftools', async (req, res) => res.json(await RefTool.find().sort(
 app.post('/api/admin/reftool', async (req, res) => { await new RefTool(req.body).save(); res.json({ success: true }); });
 app.delete('/api/admin/reftool/:id', async (req, res) => { await RefTool.findByIdAndDelete(req.params.id); res.json({ success: true }); });
 
-// --- STUDENT API ---
+// STUDENT API
 app.get('/api/materials', async (req, res) => res.json(await Material.find()));
 app.get('/api/tests', async (req, res) => {
     const tests = await Test.find({}, 'title duration category date accessCode isLive startTime endTime');
@@ -239,12 +236,7 @@ app.post('/api/result-details', async (req, res) => {
         const allResults = await Result.find({ testId: result.testId }).sort({ score: -1 });
         const rank = allResults.findIndex(r => r._id.toString() === result._id.toString()) + 1;
 
-        const leaderboard = allResults.map((r, i) => ({
-            rank: i + 1,
-            name: r.studentName,
-            score: r.score,
-            total: r.totalMarks
-        }));
+        const leaderboard = allResults.map((r, i) => ({ rank: i + 1, name: r.studentName, score: r.score, total: r.totalMarks }));
 
         const test = await Test.findById(result.testId);
         if(!test) return res.json({ success: true, result, rank, leaderboard, questions: [], message: "Test was deleted by teacher." });
@@ -274,13 +266,7 @@ app.post('/api/test/start', async (req, res) => {
         if(now > new Date(t.endTime)) return res.json({ success: false, message: "Expired" });
     }
     if(!t.accessCode || t.accessCode === "" || t.accessCode === code) {
-        const safeQ = t.questions.map(q => ({ 
-            text: q.text, 
-            image: q.image, 
-            options: q.options, 
-            marks: q.marks || 4, 
-            negative: q.negative !== undefined ? q.negative : 0 
-        }));
+        const safeQ = t.questions.map(q => ({ text: q.text, image: q.image, options: q.options, marks: q.marks || 4, negative: q.negative !== undefined ? q.negative : 0 }));
         res.json({ success: true, test: {...t._doc, questions: safeQ} });
     } else res.json({ success: false, message: "Wrong Password" });
 });
@@ -294,7 +280,6 @@ app.post('/api/test/submit', async (req, res) => {
             const marks = q.marks || 4;
             const neg = q.negative !== undefined ? q.negative : 0;
             total += marks;
-            
             if (answers[i] === q.correct) score += marks;
             else if (answers[i] !== null && answers[i] !== -1) score -= neg; 
         });
@@ -312,7 +297,6 @@ app.post('/api/test/submit', async (req, res) => {
 
 app.post('/api/doubt', async (req, res) => { await new Doubt(req.body).save(); res.json({ success: true }); });
 app.post('/api/student/doubts', async (req, res) => res.json(await Doubt.find({ studentEmail: req.body.email }).sort({ date: -1 })));
-
 app.get('/api/videos', async (req, res) => res.json(await Video.find().sort({ date: -1 })));
 
 app.get('/api/potd/today', async (req, res) => {
@@ -321,7 +305,7 @@ app.get('/api/potd/today', async (req, res) => {
     res.json({ success: !!potd, potd });
 });
 
-// 🆕 BULLETPROOF ANALYTICS ROUTE
+// ANALYTICS
 app.post('/api/student/analytics', async (req, res) => {
     try {
         const results = await Result.find({ studentEmail: req.body.email });
@@ -339,7 +323,6 @@ app.post('/api/student/analytics', async (req, res) => {
 });
 
 const RENDER_EXTERNAL_URL = "https://arc-classes-ankit.onrender.com"; 
-
 function keepAlive() {
     fetch(RENDER_EXTERNAL_URL + '/api/schedule')
         .then(() => console.log("⏰ Self-Ping Successful"))

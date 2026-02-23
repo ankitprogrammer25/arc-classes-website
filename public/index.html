@@ -8,27 +8,17 @@
     <style>
         :root { --primary: #0f172a; --gold: #fbbf24; --light: #f8fafc; --red: #ef4444; --green: #22c55e; }
         
-        html, body { 
-            overscroll-behavior-y: none; font-family: 'Segoe UI', sans-serif; 
-            background: var(--light); margin: 0; color: #333; 
-            display: flex; flex-direction: column; min-height: 100vh; 
-        }
+        html, body { overscroll-behavior-y: none; font-family: 'Segoe UI', sans-serif; background: var(--light); margin: 0; color: #333; display: flex; flex-direction: column; min-height: 100vh; }
         body.modal-open { overflow: hidden; height: 100vh; }
 
         nav { background: var(--primary); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
-        .logo { 
-            font-size: 1.5rem; font-weight: 900; 
-            background: linear-gradient(90deg, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff);
-            background-size: 400%; -webkit-background-clip: text; background-clip: text; color: transparent; 
-            animation: rainbow 8s linear infinite; cursor: pointer;
-        }
+        .logo { font-size: 1.5rem; font-weight: 900; background: linear-gradient(90deg, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff); background-size: 400%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: rainbow 8s linear infinite; cursor: pointer; }
         @keyframes rainbow { 0% { background-position: 0%; } 100% { background-position: 400%; } }
 
         .menu-toggle { display: none; color: white; font-size: 1.8rem; cursor: pointer; }
         .menu { display: flex; align-items: center; gap: 20px; }
         .menu a { color: white; text-decoration: none; font-weight: 600; cursor: pointer; transition: 0.3s; }
         .menu a:hover { color: var(--gold); }
-        
         @media (max-width: 900px) {
             .menu { display: none; flex-direction: column; position: absolute; top: 60px; left: 0; width: 100%; background: var(--primary); padding: 20px 0; border-top: 1px solid #333; }
             .menu.active { display: flex; }
@@ -44,7 +34,6 @@
 
         .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border: 1px solid #eee; display: flex; flex-direction: column; cursor: pointer; transition: 0.2s; }
         .card:hover { transform: translateY(-3px); }
-        
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
         
         input, select, textarea { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
@@ -53,27 +42,9 @@
         .btn-red { background: var(--red); color: white; }
         .btn-small { padding: 5px 10px; font-size: 0.8rem; }
 
-        .modal { 
-            position: fixed; top:0; left:0; width:100%; height:100%; 
-            background:rgba(0,0,0,0.85); display:none; 
-            justify-content:center; align-items:flex-start;
-            z-index: 2000; padding: 10px; box-sizing: border-box; 
-            overflow-y: auto; overscroll-behavior: contain; 
-        }
-        .modal-content { 
-            background:white; width: 100%; max-width: 800px; 
-            max-height: 90vh; overflow-y: auto; 
-            padding: 20px; border-radius: 12px; position: relative; 
-            margin-top: 20px; margin-bottom: 20px;
-            overscroll-behavior: contain; -webkit-overflow-scrolling: touch;
-        }
-        .close-corner { 
-            position: absolute; top: 10px; right: 10px; 
-            background: #f1f5f9; width: 40px; height: 40px; 
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            font-size: 1.5rem; cursor: pointer; color: #333; font-weight: bold; z-index: 20;
-            border: 1px solid #ddd;
-        }
+        .modal { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); display:none; justify-content:center; align-items:flex-start; z-index: 2000; padding: 10px; box-sizing: border-box; overflow-y: auto; overscroll-behavior: contain; }
+        .modal-content { background:white; width: 100%; max-width: 800px; max-height: 90vh; overflow-y: auto; padding: 20px; border-radius: 12px; position: relative; margin-top: 20px; margin-bottom: 20px; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
+        .close-corner { position: absolute; top: 10px; right: 10px; background: #f1f5f9; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; cursor: pointer; color: #333; font-weight: bold; z-index: 20; border: 1px solid #ddd; }
 
         .slider-container { overflow: hidden; white-space: nowrap; position: relative; width: 100%; padding: 20px 0; mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent); -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent); }
         .slider-track { display: inline-flex; gap: 20px; animation: scroll 30s linear infinite; }
@@ -118,46 +89,35 @@
         .doubt-card { border-left: 5px solid var(--red); margin-bottom: 15px; }
         .doubt-card.answered { border-left-color: var(--green); }
 
-        /* 🆕 --- LAMP LOGIN DESK SCENE --- */
-        .desk-scene {
-            position: relative; width: 100%; max-width: 500px; 
-            height: 650px; /* Increased to ensure bottom links are visible */
-            margin: 40px auto; 
-            background: #1e1e24; overflow: hidden; border-radius: 12px; box-shadow: inset 0 0 50px rgba(0,0,0,0.5);
-            transition: background 0.5s;
-        }
+        /* 🚗 --- CAR GAME EMPTY STATE CSS --- */
+        .empty-game-wrapper { grid-column: 1 / -1; width: 100%; text-align: center; padding: 30px 10px; background: white; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); box-sizing: border-box; }
+        .car-game-board { position: relative; width: 100%; max-width: 300px; height: 350px; background: #444; margin: 15px auto 5px; overflow: hidden; border: 4px solid #222; border-radius: 8px; cursor: pointer; }
+        .road-lines { position: absolute; left: 50%; top: -350px; width: 8px; height: 700px; background: repeating-linear-gradient(to bottom, transparent 0, transparent 30px, white 30px, white 60px); transform: translateX(-50%); }
+        .road-lines.moving { animation: roadMove 1s linear infinite; }
+        @keyframes roadMove { 100% { top: 0; } }
+        .game-car { position: absolute; bottom: 15px; left: 130px; font-size: 35px; width: 40px; height: 40px; text-align: center; line-height: 40px; z-index: 5; transition: left 0.1s; }
+        .game-obstacle { position: absolute; top: -50px; left: 130px; font-size: 35px; width: 40px; height: 40px; text-align: center; line-height: 40px; z-index: 4; }
+
+        /* 💡 --- LAMP LOGIN CSS --- */
+        .desk-scene { position: relative; width: 100%; max-width: 500px; height: 650px; margin: 40px auto; background: #1e1e24; overflow: hidden; border-radius: 12px; box-shadow: inset 0 0 50px rgba(0,0,0,0.5); transition: background 0.5s; }
         .desk-scene.is-on { background: #2a2a35; }
         .lamp-container { position: absolute; top: 0; left: 50%; transform: translateX(-50%); z-index: 10; width: 200px; }
         .lamp-shade { width: 140px; height: 70px; background: linear-gradient(to bottom, #444, #222); border-radius: 70px 70px 0 0; margin: auto; position: relative; z-index: 2; }
         .lamp-bulb-area { width: 120px; height: 30px; background: #1a1a1a; border-radius: 0 0 60px 60px; margin: auto; transition: background 0.3s, box-shadow 0.3s; }
         .desk-scene.is-on .lamp-bulb-area { background: #ffeb3b; box-shadow: 0 0 50px 20px rgba(255, 235, 59, 0.8); }
-        
         .pull-string-container { position: absolute; top: 70px; left: 50%; transform: translateX(-50%); z-index: 20; cursor: grab; padding: 10px;}
         .pull-string-container:active { cursor: grabbing; }
         .string-line { width: 2px; height: 120px; background: #888; margin: auto; }
         .string-handle { width: 16px; height: 20px; background: #d4af37; border-radius: 4px; margin: auto; box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
-        
-        .paper-form-container {
-            position: absolute; top: 180px; left: 50%; transform: translateX(-50%); 
-            width: 85%; max-width: 380px; min-height: 380px;
-            padding: 30px 20px; background: #e0e0e0; border-radius: 4px; box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-            background-image: radial-gradient(circle at 50% -100px, rgba(255,255,255,0) 0%, rgba(0,0,0,0.8) 80%);
-            color: #555; transition: all 0.5s ease-in-out; opacity: 0.6; filter: blur(1px); 
-        }
-        .desk-scene.is-on .paper-form-container { 
-            opacity: 1; filter: blur(0); pointer-events: auto; background-color: #fffaf0; 
-            background-image: radial-gradient(circle at 50% -50px, rgba(255, 245, 200, 0.9) 10%, rgba(255, 255, 255, 0) 70%); color: #333; 
-        }
+        .paper-form-container { position: absolute; top: 180px; left: 50%; transform: translateX(-50%); width: 85%; max-width: 380px; min-height: 400px; padding: 30px 20px; background: #e0e0e0; border-radius: 4px; box-shadow: 0 10px 20px rgba(0,0,0,0.3); background-image: radial-gradient(circle at 50% -100px, rgba(255,255,255,0) 0%, rgba(0,0,0,0.8) 80%); color: #555; transition: all 0.5s ease-in-out; opacity: 0.6; filter: blur(1px); }
+        .desk-scene.is-on .paper-form-container { opacity: 1; filter: blur(0); pointer-events: auto; background-color: #fffaf0; background-image: radial-gradient(circle at 50% -50px, rgba(255, 245, 200, 0.9) 10%, rgba(255, 255, 255, 0) 70%); color: #333; }
         .paper-form-container input { background: rgba(255,255,255,0.7); border: 1px solid #ccc; }
         .desk-scene.is-on .paper-form-container input { background: white; }
-        
-        .off-message { display: block; text-align: center; color: #555; margin-top: 60px; font-weight: bold; border: 2px dashed #999; padding: 20px; border-radius: 8px; }
+        .off-message { display: block; text-align: center; color: #555; margin-top: 60px; font-weight: bold; border: 2px solid #555; padding: 20px; border-radius: 8px; background: rgba(0,0,0,0.1); }
         .desk-scene.is-on .off-message { display: none; }
-        
         .on-form { display: none; }
         .desk-scene.is-on .on-form { display: block; animation: fadeIn 0.5s; }
-        
-        #reg-link-container { position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); width: 100%; text-align: center; z-index: 10; }
+        #reg-link-container { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); width: 100%; text-align: center; z-index: 10; }
     </style>
 </head>
 <body>
@@ -215,8 +175,7 @@
             <button class="btn btn-gold btn-small" onclick="openModal('story-modal')">✍️ Add Your Story</button>
         </div>
         <div class="slider-container" style="margin-top:20px;">
-            <div id="story-track" class="slider-track">
-                </div>
+            <div id="story-track" class="slider-track"></div>
         </div>
     </div>
 </div>
@@ -234,32 +193,35 @@
 
         <div class="paper-form-container">
             <h2 id="login-title" style="text-align:center; margin-top:0;">Student Login</h2>
-            
             <div class="off-message">
                 <span style="font-size: 2rem;">💡</span><br>
                 Switch on lamp to view<br>
-                <small style="font-weight:normal;">(Drag the string down)</small>
+                <small style="font-weight:normal;">(Slide string down with mouse or touch)</small>
             </div>
 
             <div class="on-form">
-                <div style="display: flex; border-bottom: 2px solid rgba(0,0,0,0.1); margin-bottom: 20px;">
+                <div style="display: flex; border-bottom: 2px solid rgba(0,0,0,0.1); margin-bottom: 10px;">
                     <div class="tab active" style="flex:1; text-align:center; padding:10px; cursor:pointer; border-bottom:3px solid transparent;" onclick="switchTab('student')" id="tab-student">Student</div>
                     <div class="tab" style="flex:1; text-align:center; padding:10px; cursor:pointer; border-bottom:3px solid transparent;" onclick="switchTab('teacher')" id="tab-teacher">Teacher</div>
                 </div>
                 <form onsubmit="event.preventDefault(); doLogin()">
+                    <label style="font-weight:bold;">Email / Username:</label>
                     <div id="student-input">
-                        <input id="l-email" placeholder="username" required>
+                        <input id="l-email" placeholder="username" required style="margin-top:5px;">
                         <div style="text-align:right; font-size:0.8rem; color:#777;">@arcstudent.com</div>
                     </div>
-                    <div id="teacher-input" style="display:none;"><input id="l-admin-email" placeholder="admin@arc.com"></div>
-                    <input id="l-pass" type="password" placeholder="Password" required style="margin-top: 15px;">
-                    <button type="submit" class="btn btn-gold" style="width:100%; margin-top: 20px;">Login / Submit</button>
+                    <div id="teacher-input" style="display:none;"><input id="l-admin-email" placeholder="admin@arc.com" style="margin-top:5px;"></div>
+                    
+                    <label style="font-weight:bold; display:block; margin-top:10px;">Password:</label>
+                    <input id="l-pass" type="password" placeholder="Password" required style="margin-top:5px;">
+                    
+                    <button type="submit" class="btn btn-gold" style="width:100%; margin-top: 15px; border: 2px solid #333;">Submit</button>
                 </form>
             </div>
         </div>
 
         <div id="reg-link-container">
-            <p style="cursor:pointer; color:#8cb4ff; font-weight:bold; font-size: 1rem; margin:0;" onclick="showRegBoxFromLamp()">[ New Student? Register Now ]</p>
+            <p style="cursor:pointer; color:#b0c4de; font-weight:bold; font-size: 1.1rem; margin:0; text-shadow: 1px 1px 2px #000;" onclick="showRegBoxFromLamp()">[ New Student? Register Now ]</p>
         </div>
 
         <div id="reg-box" class="form-box" style="display:none; margin:20px auto; position: relative; z-index: 20;">
@@ -332,14 +294,7 @@
     <h2 style="text-align:center; color:var(--primary);">📅 Upcoming Test Schedule</h2>
     <div class="table-container">
         <table>
-            <thead>
-                <tr>
-                    <th>Class</th>
-                    <th>Topic</th>
-                    <th>Time</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
+            <thead><tr><th>Class</th><th>Topic</th><th>Time</th><th>Status</th></tr></thead>
             <tbody id="schedule-list"></tbody>
         </table>
     </div>
@@ -414,10 +369,7 @@
     <div class="modal-content" style="max-width: 900px; padding:20px; background: linear-gradient(135deg, #1e293b, #0f172a); color: white; border: 2px solid var(--gold); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
         <div class="close-corner" onclick="closeModal('ref-modal')" style="background:var(--red); color:white; border:none; display:flex; align-items:center; justify-content:center;">&times;</div>
         <h2 style="margin-top:0; text-align:center; color:var(--gold);">🧪 Quick Reference Tools</h2>
-        
-        <div id="ref-btn-container" style="display:flex; justify-content:center; gap:10px; margin-bottom:20px; overflow-x:auto; padding-bottom:10px;">
-        </div>
-        
+        <div id="ref-btn-container" style="display:flex; justify-content:center; gap:10px; margin-bottom:20px; overflow-x:auto; padding-bottom:10px;"></div>
         <div id="ref-img-display" style="width:100%; overflow:auto; background:rgba(255,255,255,0.05); text-align:center; border:1px solid rgba(255,255,255,0.2); padding:15px; border-radius:12px; min-height:300px; display:flex; align-items:center; justify-content:center;">
             <p style="color:#aaa;">Loading tools...</p>
         </div>
@@ -480,9 +432,7 @@
 
     window.onload = function() {
         loadMaterials(); loadAnnouncements(); loadBlogs(); loadStories(); 
-        loadPOTD(); 
-        loadVideosList(); 
-        loadRefToolsStudent(); 
+        loadPOTD(); loadVideosList(); loadRefToolsStudent(); 
         
         const lastSection = localStorage.getItem('arc_last_section') || 'home';
         
@@ -545,6 +495,101 @@
         document.getElementById('nav-menu').classList.remove('active');
         if(id==='tests') loadTests(false); if(id==='live') loadTests(true); if(id==='results') loadResults('practice');
     }
+
+    // ==========================================
+    // 🚗 CAR DRIVING EMPTY STATE GAME JS
+    // ==========================================
+    let carGames = {}; 
+
+    function getEmptyStateGame(message) {
+        const id = Math.random().toString(36).substr(2, 9);
+        return `
+        <div class="empty-game-wrapper">
+            <h3 style="color: var(--primary); margin-top:0;">${message}</h3>
+            <p style="color: #666; margin-bottom: 10px;">Teacher hasn't added data here yet. Play a quick drive!</p>
+            <div class="car-game-board" id="game-bg-${id}" onmousedown="steerCar('${id}', event)" ontouchstart="steerCar('${id}', event)">
+                <div id="score-display-${id}" style="position: absolute; top: 10px; left: 10px; color: white; font-weight: bold; z-index:5;">Score: 0</div>
+                <div id="road-lines-${id}" class="road-lines"></div>
+                <button id="start-btn-${id}" class="btn btn-gold" style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); z-index:10;" onclick="startCarGame('${id}', event)">Start Driving 🚗</button>
+                <div id="car-${id}" class="game-car" style="display:none;">🚗</div>
+                <div id="obstacle-${id}" class="game-obstacle" style="display:none;">🚧</div>
+                <div id="game-over-${id}" style="display:none; position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); z-index:10; background:rgba(0,0,0,0.8); color:white; padding:20px; border-radius:8px; text-align:center; width: 80%;">
+                    <h3 style="margin:0 0 10px 0; color:#ef4444;">Crash!</h3>
+                    <p style="margin:0 0 15px 0;" id="final-score-${id}"></p>
+                    <button class="btn btn-gold btn-small" onclick="startCarGame('${id}', event)">Restart</button>
+                </div>
+            </div>
+            <p style="font-size:0.8rem; color:#888; margin-top:5px;">Tap the left, center, or right side of the road to steer.</p>
+        </div>`;
+    }
+
+    function startCarGame(id, e) {
+        if(e) e.stopPropagation();
+        document.getElementById(`start-btn-${id}`).style.display = 'none';
+        document.getElementById(`game-over-${id}`).style.display = 'none';
+        document.getElementById(`road-lines-${id}`).classList.add('moving');
+        
+        let car = document.getElementById(`car-${id}`);
+        let obs = document.getElementById(`obstacle-${id}`);
+        car.style.display = 'block';
+        obs.style.display = 'block';
+        
+        carGames[id] = { score: 0, carX: 130, obsX: 130, obsY: -50, speed: 5, active: true };
+        car.style.left = '130px';
+        document.getElementById(`score-display-${id}`).innerText = "Score: 0";
+        
+        if(carGames[id].interval) clearInterval(carGames[id].interval);
+        carGames[id].interval = setInterval(() => gameLoop(id), 20);
+    }
+    
+    function steerCar(id, e) {
+        if(!carGames[id] || !carGames[id].active) return;
+        const rect = document.getElementById(`game-bg-${id}`).getBoundingClientRect();
+        const clickX = e.clientX || (e.touches && e.touches[0].clientX);
+        if(!clickX) return;
+        const relativeX = clickX - rect.left;
+        
+        // 3 Lanes (approx 0-100, 100-200, 200-300)
+        let newX = 130;
+        if(relativeX < 100) newX = 30; // left
+        else if(relativeX > 200) newX = 230; // right
+        else newX = 130; // center
+        
+        carGames[id].carX = newX;
+        document.getElementById(`car-${id}`).style.left = newX + 'px';
+    }
+    
+    function gameLoop(id) {
+        let state = carGames[id];
+        if(!state.active) return;
+        
+        state.obsY += state.speed;
+        
+        // Obstacle reset
+        if(state.obsY > 350) {
+            state.obsY = -50;
+            const lanes = [30, 130, 230];
+            state.obsX = lanes[Math.floor(Math.random() * lanes.length)];
+            state.score++;
+            state.speed += 0.2; // gradually speed up
+            document.getElementById(`score-display-${id}`).innerText = "Score: " + state.score;
+        }
+        
+        let obs = document.getElementById(`obstacle-${id}`);
+        obs.style.top = state.obsY + 'px';
+        obs.style.left = state.obsX + 'px';
+        
+        // Collision Math (AABB)
+        // Car is at Y: bottom 15px, height 40px -> Y is roughly 295 to 335
+        if (Math.abs(state.carX - state.obsX) < 30 && state.obsY > 260 && state.obsY < 335) {
+            state.active = false;
+            clearInterval(state.interval);
+            document.getElementById(`road-lines-${id}`).classList.remove('moving');
+            document.getElementById(`final-score-${id}`).innerText = "Final Score: " + state.score;
+            document.getElementById(`game-over-${id}`).style.display = 'block';
+        }
+    }
+    // ==========================================
 
     const toolbarHTML = `
         <div class="toolbar" style="background:#e2e8f0; padding:10px; border-radius:6px 6px 0 0; display:flex; gap:8px; flex-wrap:wrap; align-items:center; border:1px solid #ccc; border-bottom:none;">
@@ -926,10 +971,34 @@
     function filterTable(inp) { const filter = inp.value.toUpperCase(); const tr = document.getElementById('adm-res-list').getElementsByTagName('tr'); for (let i=0; i<tr.length; i++) { const txt = tr[i].innerText; tr[i].style.display = txt.toUpperCase().indexOf(filter) > -1 ? "" : "none"; } }
     
     async function loadAnnouncements() { try { const res = await fetch('/api/announcement'); const data = await res.json(); document.getElementById('anno-marquee').innerHTML = (data.list && data.list.length > 0) ? data.list.join(' &nbsp;|&nbsp; ') : "Welcome"; } catch(e) {} }
-    async function loadBlogs() { const res = await fetch('/api/blogs'); const blogs = await res.json(); allBlogs = blogs; document.getElementById('blog-grid').innerHTML = blogs.map(b => `<div class="card blog-card" onclick="viewBlog('${b._id}')"><img src="${b.image || 'https://via.placeholder.com/300'}" alt="cover"><div class="blog-content-preview"><h3 class="blog-title">${b.title}</h3><small>${new Date(b.date).toLocaleDateString()}</small></div></div>`).join(''); }
+    
+    async function loadBlogs() { 
+        const res = await fetch('/api/blogs'); 
+        const blogs = await res.json(); 
+        allBlogs = blogs; 
+        
+        if (blogs.length === 0) {
+            document.getElementById('blog-grid').innerHTML = getEmptyStateGame("No Blogs Published Yet");
+        } else {
+            document.getElementById('blog-grid').innerHTML = blogs.map(b => `<div class="card blog-card" onclick="viewBlog('${b._id}')"><img src="${b.image || 'https://via.placeholder.com/300'}" alt="cover"><div class="blog-content-preview"><h3 class="blog-title">${b.title}</h3><small>${new Date(b.date).toLocaleDateString()}</small></div></div>`).join(''); 
+        }
+    }
+
     function viewBlog(id) { const blog = allBlogs.find(b => b._id === id); if(!blog) return; document.getElementById('bm-title').innerText = blog.title; document.getElementById('bm-date').innerText = new Date(blog.date).toLocaleDateString(); document.getElementById('bm-content').innerHTML = blog.content; const img = document.getElementById('bm-img'); if(blog.image) { img.src = blog.image; img.style.display='block'; } else img.style.display='none'; openModal('blog-modal'); }
     
-    async function loadTests(isLive) { const res = await fetch('/api/tests'); const tests = await res.json(); const now = new Date(); const filteredTests = tests.filter(t => { const tEnd = t.endTime ? new Date(t.endTime) : null; if (isLive) { return t.isLive && tEnd && tEnd > now; } else { return !t.isLive || (t.isLive && tEnd && tEnd <= now); } }); document.getElementById(isLive?'live-list':'test-list').innerHTML = filteredTests.map(t => `<div class="card" style="border-left: 5px solid ${isLive ? 'red' : 'gold'}"><h3>${t.title} ${t.accessCode ? '🔒' : ''}</h3><p>${t.duration} Mins</p>${isLive ? `<p style="color:red">Start: ${new Date(t.startTime).toLocaleString()}</p>` : ''}<button class="btn btn-gold" onclick="startTest('${t._id}', ${t.accessCode ? true : false}, '${t.startTime}')">Start</button></div>`).join(''); }
+    async function loadTests(isLive) { 
+        const res = await fetch('/api/tests'); 
+        const tests = await res.json(); 
+        const now = new Date(); 
+        const filteredTests = tests.filter(t => { const tEnd = t.endTime ? new Date(t.endTime) : null; if (isLive) { return t.isLive && tEnd && tEnd > now; } else { return !t.isLive || (t.isLive && tEnd && tEnd <= now); } }); 
+        
+        const container = document.getElementById(isLive?'live-list':'test-list');
+        if (filteredTests.length === 0) {
+            container.innerHTML = getEmptyStateGame(`No ${isLive ? 'Live' : 'Practice'} Tests Available`);
+        } else {
+            container.innerHTML = filteredTests.map(t => `<div class="card" style="border-left: 5px solid ${isLive ? 'red' : 'gold'}"><h3>${t.title} ${t.accessCode ? '🔒' : ''}</h3><p>${t.duration} Mins</p>${isLive ? `<p style="color:red">Start: ${new Date(t.startTime).toLocaleString()}</p>` : ''}<button class="btn btn-gold" onclick="startTest('${t._id}', ${t.accessCode ? true : false}, '${t.startTime}')">Start</button></div>`).join(''); 
+        }
+    }
     
     function startTimer(durationOrTimestamp) { 
         clearInterval(timer); 
@@ -996,19 +1065,34 @@
     }
     
     async function loadResults(type) { const res = await fetch('/api/student/results/online', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ email: user.email }) }); const data = await res.json(); document.getElementById('result-list').innerHTML = `<table><tr><th>Date</th><th>Test</th><th>Score</th><th>Action</th></tr>${data.results.filter(r => r.testType === type).map(r => `<tr><td>${new Date(r.date).toLocaleDateString()}</td><td>${r.testTitle}</td><td>${r.score}</td><td><button class="btn btn-gold btn-small" onclick="viewSheet('${r._id}')">View</button></td></tr>`).join('')}</table>`; }
-    async function loadOfflineResults() { const res = await fetch('/api/results/offline'); const data = await res.json(); document.getElementById('result-list').innerHTML = data.map(r => `<h3>${r.title}</h3><table><tr><th>Rank</th><th>Student</th><th>Marks</th><th>Sheet</th></tr>${r.records.map(rec => `<tr><td>#${rec.rank}</td><td>${rec.studentName}</td><td>${rec.obtainedMarks}</td><td>${rec.copyLink ? `<a href="${rec.copyLink}" target="_blank" style="color:blue">View</a>` : '-'}</td></tr>`).join('')}</table>`).join(''); }
+    
+    async function loadOfflineResults() { 
+        const res = await fetch('/api/results/offline'); 
+        const data = await res.json(); 
+        if (data.length === 0) {
+            document.getElementById('result-list').innerHTML = getEmptyStateGame("No Offline Results Uploaded");
+        } else {
+            document.getElementById('result-list').innerHTML = data.map(r => `<h3>${r.title}</h3><table><tr><th>Rank</th><th>Student</th><th>Marks</th><th>Sheet</th></tr>${r.records.map(rec => `<tr><td>#${rec.rank}</td><td>${rec.studentName}</td><td>${rec.obtainedMarks}</td><td>${rec.copyLink ? `<a href="${rec.copyLink}" target="_blank" style="color:blue">View</a>` : '-'}</td></tr>`).join('')}</table>`).join(''); 
+        }
+    }
     
     async function loadMaterials() { try { const res = await fetch('/api/materials'); allMats = await res.json(); } catch(e) {} }
     function loadLib(cat) { document.getElementById('lib-cats').style.display = 'none'; document.getElementById('lib-back').style.display = 'block'; renderLib(cat); }
+    
     function renderLib(cat) { 
         const items = allMats.filter(m => m.category === cat || (cat === '11th Class' && m.category.includes('11'))); 
-        document.getElementById('lib-content').innerHTML = items.length ? items.map(m => `
-            <div class="card">
-                 <img src="${m.image||''}" style="height:180px; width: 100%; background:#f8fafc; object-fit:contain; border-radius: 8px; border: 1px solid #eee;">
-                 <h4 style="margin: 15px 0 10px 0;">${m.title} ${m.accessCode?'🔒':''}</h4>
-                 <button class="btn btn-gold" onclick="openMat('${m._id}')">Open</button>
-            </div>`).join('') : "<p>No items found.</p>"; 
+        if (items.length === 0) {
+            document.getElementById('lib-content').innerHTML = getEmptyStateGame(`No items available in ${cat}`);
+        } else {
+            document.getElementById('lib-content').innerHTML = items.map(m => `
+                <div class="card">
+                     <img src="${m.image||''}" style="height:180px; width: 100%; background:#f8fafc; object-fit:contain; border-radius: 8px; border: 1px solid #eee;">
+                     <h4 style="margin: 15px 0 10px 0;">${m.title} ${m.accessCode?'🔒':''}</h4>
+                     <button class="btn btn-gold" onclick="openMat('${m._id}')">Open</button>
+                </div>`).join(''); 
+        }
     }
+    
     function resetLib() { document.getElementById('lib-cats').style.display = 'grid'; document.getElementById('lib-back').style.display = 'none'; document.getElementById('lib-content').innerHTML = ''; }
     async function openMat(id) { const code = prompt("Password:"); const res = await fetch('/api/material/unlock', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id, code}) }); const data = await res.json(); if(data.success) window.open(data.link); else alert("Wrong Password"); }
     
@@ -1026,16 +1110,20 @@
         const data = await res.json();
         const list = document.getElementById('schedule-list');
         if(list) {
-            const now = new Date();
-            list.innerHTML = data.map(s => {
-                const time = new Date(s.time);
-                const diff = (now - time) / 1000 / 60; 
-                let status = "", colorClass = "";
-                if (diff < 0) { status = "Upcoming"; colorClass = "color: blue;"; } 
-                else if (diff >= 0 && diff <= 10) { status = "Live"; colorClass = "color: var(--green);"; } 
-                else { status = "Expired"; colorClass = "color: var(--red);"; }
-                return `<tr><td><span class="badge bg-green">${s.cls}</span></td><td><b>${s.topic}</b></td><td>${time.toLocaleString()}</td><td style="font-weight:bold; ${colorClass}" class="blink">${status}</td></tr>`;
-            }).join('');
+            if (data.length === 0) {
+                list.innerHTML = `<tr><td colspan="4" style="border:none; padding:0;">${getEmptyStateGame("No Upcoming Schedule")}</td></tr>`;
+            } else {
+                const now = new Date();
+                list.innerHTML = data.map(s => {
+                    const time = new Date(s.time);
+                    const diff = (now - time) / 1000 / 60; 
+                    let status = "", colorClass = "";
+                    if (diff < 0) { status = "Upcoming"; colorClass = "color: blue;"; } 
+                    else if (diff >= 0 && diff <= 10) { status = "Live"; colorClass = "color: var(--green);"; } 
+                    else { status = "Expired"; colorClass = "color: var(--red);"; }
+                    return `<tr><td><span class="badge bg-green">${s.cls}</span></td><td><b>${s.topic}</b></td><td>${time.toLocaleString()}</td><td style="font-weight:bold; ${colorClass}" class="blink">${status}</td></tr>`;
+                }).join('');
+            }
         }
     }
 
@@ -1100,15 +1188,20 @@
     async function loadVideosList() {
         const res = await fetch('/api/videos');
         const data = await res.json();
-        document.getElementById('video-list').innerHTML = data.map(v => `
-            <div class="card">
-                <div class="video-wrapper">
-                    <iframe src="${v.link}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        
+        if(data.length === 0) {
+            document.getElementById('video-list').innerHTML = getEmptyStateGame("No Video Lectures Added");
+        } else {
+            document.getElementById('video-list').innerHTML = data.map(v => `
+                <div class="card">
+                    <div class="video-wrapper">
+                        <iframe src="${v.link}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                    <h4 style="margin: 10px 0 5px 0;">${v.title}</h4>
+                    <small style="color:var(--gold); font-weight:bold;">${v.category}</small>
                 </div>
-                <h4 style="margin: 10px 0 5px 0;">${v.title}</h4>
-                <small style="color:var(--gold); font-weight:bold;">${v.category}</small>
-            </div>
-        `).join('');
+            `).join('');
+        }
     }
 
     async function uploadVideo() {
@@ -1130,14 +1223,20 @@
         if(!user) return;
         const res = await fetch('/api/student/doubts', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ email: user.email }) });
         const data = await res.json();
-        document.getElementById('doubt-student-list').innerHTML = data.map(db => `
-            <div class="card doubt-card ${db.status === 'Answered' ? 'answered' : ''}">
-                <div style="display:flex; justify-content:space-between;"><b>My Doubt:</b> <span class="badge ${db.status === 'Answered' ? 'bg-green' : 'bg-red'}">${db.status}</span></div>
-                <p>${db.text}</p>
-                ${db.image ? `<img src="${db.image}" style="height:100px; border:1px solid #ccc;">` : ''}
-                ${db.status === 'Answered' ? `<div style="background:#f0f9ff; padding:10px; margin-top:10px; border-radius:6px;"><b>Teacher's Reply:</b><br>${db.replyText} ${db.replyImage ? `<br><img src="${db.replyImage}" style="height:100px; margin-top:5px;">` : ''}</div>` : ''}
-            </div>
-        `).join('');
+        
+        if (data.length === 0) {
+            document.getElementById('doubt-student-list').innerHTML = getEmptyStateGame("You haven't asked any doubts yet.");
+        } else {
+            document.getElementById('doubt-student-list').innerHTML = data.map(db => `
+                <div class="card doubt-card ${db.status === 'Answered' ? 'answered' : ''}">
+                    <div style="display:flex; justify-content:space-between;"><b>My Doubt:</b> <span class="badge ${db.status === 'Answered' ? 'bg-green' : 'bg-red'}">${db.status}</span></div>
+                    <p>${db.text}</p>
+                    ${db.image ? `<a href="${db.image}" target="_blank"><img src="${db.image}" style="height:100px; border:1px solid #ccc;"></a>` : ''}
+                    <hr>
+                    ${db.status === 'Answered' ? `<div style="background:#f0f9ff; padding:10px; margin-top:10px; border-radius:6px;"><b>Teacher's Reply:</b><br>${db.replyText} ${db.replyImage ? `<br><img src="${db.replyImage}" style="height:100px; margin-top:5px;">` : ''}</div>` : ''}
+                </div>
+            `).join('');
+        }
     }
 
     async function replyDoubt(id) {
@@ -1278,9 +1377,12 @@
         allRefTools = await res.json();
         const btnContainer = document.getElementById('ref-btn-container');
         if(btnContainer) {
-            btnContainer.innerHTML = allRefTools.map((rt, i) => `<button class="btn ${i===0?'btn-red':'btn-gold'} btn-small ref-btn-dynamic" onclick="showRefImg(${i}, this)">${rt.title}</button>`).join('');
-            if(allRefTools.length > 0) showRefImg(0, btnContainer.firstChild);
-            else document.getElementById('ref-img-display').innerHTML = "<p style='color:#aaa;'>No reference tools have been uploaded by the teacher yet.</p>";
+            if(allRefTools.length > 0) {
+                btnContainer.innerHTML = allRefTools.map((rt, i) => `<button class="btn ${i===0?'btn-red':'btn-gold'} btn-small ref-btn-dynamic" onclick="showRefImg(${i}, this)">${rt.title}</button>`).join('');
+                showRefImg(0, btnContainer.firstChild);
+            } else {
+                document.getElementById('ref-img-display').innerHTML = getEmptyStateGame("No Reference Tools Uploaded");
+            }
         }
     }
 
@@ -1307,7 +1409,7 @@
 
 
     // ==========================================
-    // 🆕 INTERACTIVE "PULL THE STRING" DRAG GAME JS
+    // 💡 LAMP PULL-STRING INTERACTION JS
     // ==========================================
     const pullStringBtn = document.getElementById('pull-string-btn');
     const stringLineEl = document.getElementById('string-line-el');
@@ -1315,7 +1417,6 @@
     let stringStartY = 0;
 
     if (pullStringBtn) {
-        // Listen for both mouse and touch events
         pullStringBtn.addEventListener('mousedown', startPull);
         pullStringBtn.addEventListener('touchstart', startPull, {passive: false});
     }
@@ -1323,10 +1424,7 @@
     function startPull(e) {
         isDraggingString = true;
         stringStartY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY;
-        
-        // Remove the smooth transition while actively dragging so it follows the finger instantly
         stringLineEl.style.transition = 'none';
-        
         document.addEventListener('mousemove', pullMove);
         document.addEventListener('touchmove', pullMove, {passive: false});
         document.addEventListener('mouseup', endPull);
@@ -1335,16 +1433,11 @@
 
     function pullMove(e) {
         if (!isDraggingString) return;
-        e.preventDefault(); // Stop mobile screen from scrolling while pulling the string
-        
+        e.preventDefault(); 
         let currentY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY;
         let deltaY = currentY - stringStartY;
-        
-        // Only allow pulling down, and cap it at 60px stretch
         if (deltaY < 0) deltaY = 0;
         if (deltaY > 60) deltaY = 60; 
-        
-        // Update the visual height of the string
         stringLineEl.style.height = (120 + deltaY) + 'px';
     }
 
@@ -1358,13 +1451,9 @@
         document.removeEventListener('touchend', endPull);
         
         let currentHeight = parseInt(stringLineEl.style.height || 120);
-        
-        // Add a smooth bouncy transition as the string snaps back up
         stringLineEl.style.transition = 'height 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
-        stringLineEl.style.height = '120px'; // Reset to default length
+        stringLineEl.style.height = '120px'; 
         
-        // GAME LOGIC: Did they pull it down far enough?
-        // If pulled down past 140px, toggle the lamp!
         if (currentHeight > 140) {
             toggleLampString();
         }
@@ -1375,7 +1464,6 @@
         desk.classList.toggle('is-on');
     }
 
-    // Handlers for switching between login and registration inside the lamp view
     function showRegBoxFromLamp() {
          document.querySelector('.paper-form-container').style.display='none';
          document.getElementById('reg-link-container').style.display='none';
