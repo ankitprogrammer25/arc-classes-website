@@ -106,7 +106,7 @@
         th, td { padding: 10px; border: 1px solid #ddd; text-align: left; }
         th { background: var(--primary); color: white; }
         .badge { padding: 4px 8px; border-radius: 4px; color: white; font-size: 0.8rem; font-weight: bold; }
-        .bg-green { background: var(--green); } .bg-red { background: var(--red); }
+        .bg-green { background: var(--green); } .bg-red { background: var(--red); } .bg-gold { background: var(--gold); color: var(--primary); }
         .form-box { width: 100%; max-width: 400px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
         footer { background: var(--primary); color: white; text-align: center; padding: 20px; margin-top: auto; border-top: 4px solid var(--gold); }
         
@@ -198,6 +198,7 @@
         </form>
         <p id="reg-link" style="text-align:center; cursor:pointer; margin-top:15px; color:blue;" onclick="document.getElementById('reg-box').style.display='block'; document.querySelector('.form-box').style.display='none';">New Student? Register</p>
     </div>
+    
     <div id="reg-box" class="form-box" style="display:none; margin-top:20px;">
         <h2 style="text-align:center;">Register</h2>
         <input id="r-name" placeholder="Full Name">
@@ -205,6 +206,10 @@
             <input id="r-prefix" placeholder="username" style="border:none; margin:0;"> 
             <div style="padding:10px; background:#f1f5f9; color:#64748b; border-left:1px solid #ccc;">@arcstudent.com</div>
         </div>
+        
+        <input id="r-phone" placeholder="10-digit Phone Number" maxlength="10" oninput="document.getElementById('phone-sec-msg').style.display='block'">
+        <div id="phone-sec-msg" style="color:var(--red); display:none; font-size:0.8rem; margin:-5px 0 10px 5px; font-weight:bold;">🔒 Your phone number is secured and only shared with the teacher.</div>
+        
         <input id="r-pass" type="password" placeholder="Password">
         <button class="btn btn-gold" style="width:100%" onclick="doReg()">Register</button>
         <p style="text-align:center; cursor:pointer; margin-top:15px; color:blue;" onclick="document.getElementById('reg-box').style.display='none'; document.querySelector('.form-box').style.display='block';">Back to Login</p>
@@ -220,7 +225,8 @@
         <button class="btn btn-gold btn-small" onclick="showAdm('blog')">✍️ Blog</button>
         <button class="btn btn-gold btn-small" onclick="showAdm('potd')">🔥 POTD</button>
         <button class="btn btn-gold btn-small" onclick="showAdm('doubts')">🤔 Doubts</button>
-        <button class="btn btn-gold btn-small" onclick="showAdm('reftool')">🛠️ Ref Tools</button> <button class="btn btn-gold btn-small" onclick="showAdm('announce')">📢 News</button>
+        <button class="btn btn-gold btn-small" onclick="showAdm('reftool')">🛠️ Ref Tools</button>
+        <button class="btn btn-gold btn-small" onclick="showAdm('announce')">📢 News</button>
         <button class="btn btn-gold btn-small" onclick="showAdm('results')">📈 Online</button>
         <button class="btn btn-gold btn-small" onclick="showAdm('offline')">📊 Offline</button>
         <button class="btn btn-gold btn-small" onclick="showAdm('students')">👥 Students</button>
@@ -348,7 +354,7 @@
         <h2 style="margin-top:0; text-align:center; color:var(--primary);">🧪 Reference Tools</h2>
         
         <div id="ref-btn-container" style="display:flex; justify-content:center; gap:10px; margin-bottom:20px; overflow-x:auto; padding-bottom:5px;">
-            </div>
+        </div>
         
         <div id="ref-img-display" style="width:100%; overflow:auto; background:white; text-align:center; border:1px solid #e2e8f0; padding:15px; border-radius:12px; min-height:200px; display:flex; align-items:center; justify-content:center;">
             Loading...
@@ -414,7 +420,7 @@
         loadMaterials(); loadAnnouncements(); loadBlogs(); loadStories(); 
         loadPOTD(); 
         loadVideosList(); 
-        loadRefToolsStudent(); // 🆕 Load Ref Tools on start
+        loadRefToolsStudent(); 
         
         const lastSection = localStorage.getItem('arc_last_section') || 'home';
         
@@ -615,6 +621,8 @@
                 document.getElementById('admin-video-list').innerHTML = `<table><tr><th>Title</th><th>Cat</th><th>Action</th></tr>${d.map(v=>`<tr><td>${v.title}</td><td>${v.category}</td><td><button class="btn-red btn-small" onclick="deleteItem('video','${v._id}')">Del</button></td></tr>`).join('')}</table>`;
             });
         }
+        
+        // 🆕 UPDATED: ADMIN POTD MANAGEMENT WITH LIST
         else if (tab === 'potd') {
             const today = new Date().toLocaleDateString('en-CA');
             c.innerHTML = `<h3>Set Problem of the Day</h3>
@@ -631,7 +639,27 @@
                 <b>Solution:</b><div id="potd-sol" class="editor-small" contenteditable="true" style="background:white; min-height:50px;"></div>
                 <label class="btn-small" style="background:#fcd34d; cursor:pointer; margin-top:5px;">📷 Sol-Image <input type="file" onchange="encodeImg(this, 'potd-sol-img', true)" style="display:none;"></label><img id="potd-sol-img" style="height:50px; display:none;">
             </div>
-            <button class="btn btn-gold" style="width:100%; margin-top:15px;" onclick="uploadPOTD()">Set POTD</button>`;
+            <button class="btn btn-gold" style="width:100%; margin-top:15px;" onclick="uploadPOTD()">Set POTD</button>
+            <hr>
+            <h4>Manage POTDs</h4>
+            <div class="table-container">
+                <table>
+                    <thead><tr><th>Date</th><th>Question Info</th><th>Action</th></tr></thead>
+                    <tbody id="potd-list"></tbody>
+                </table>
+            </div>`;
+
+            fetch('/api/admin/potds').then(r=>r.json()).then(d => {
+                window.allPOTDs = d; // Store globally for editing
+                document.getElementById('potd-list').innerHTML = d.map((p, i) => `<tr>
+                    <td>${p.dateStr}</td>
+                    <td>${p.text.replace(/<[^>]*>?/gm, '').substring(0, 30)}...</td>
+                    <td>
+                        <button class="btn btn-gold btn-small" onclick="editPOTD(${i})">Edit</button>
+                        <button class="btn btn-red btn-small" onclick="deleteItem('potd','${p._id}')">Del</button>
+                    </td>
+                </tr>`).join('');
+            });
         }
         else if (tab === 'doubts') {
             c.innerHTML = `<h3>Manage Student Doubts</h3><div id="admin-doubt-list">Loading...</div>`;
@@ -651,7 +679,6 @@
                 </div>`).join('');
             });
         }
-        // 🆕 ADDED REF TOOLS ADMIN UI
         else if (tab === 'reftool') {
             c.innerHTML = `<h3>Manage Reference Tools</h3>
             <input id="rt-title" placeholder="Tool Name (e.g. Periodic Table)">
@@ -665,9 +692,23 @@
                 document.getElementById('admin-rt-list').innerHTML = `<table><tr><th>Title</th><th>Image</th><th>Action</th></tr>${d.map(rt=>`<tr><td>${rt.title}</td><td><img src="${rt.image}" style="height:40px; border-radius:4px;"></td><td><button class="btn-red btn-small" onclick="deleteItem('reftool','${rt._id}')">Del</button></td></tr>`).join('')}</table>`;
             });
         }
+
+        // 🆕 UPDATED: ADMIN STUDENTS - PHONE & APPROVAL
         else if (tab === 'students') {
-            c.innerHTML = `<h3>Registered Students</h3><div class="table-container"><table><thead><tr><th>Name</th><th>Email</th><th>Password</th><th>Action</th></tr></thead><tbody id="stu-list"></tbody></table></div>`;
-            fetch('/api/admin/students').then(r=>r.json()).then(d => { document.getElementById('stu-list').innerHTML = d.map(s => `<tr><td>${s.name}</td><td>${s.email}</td><td style="color:red; font-family:monospace;">${s.password}</td><td><button class="btn btn-gold btn-small" onclick="editStudent('${s._id}')">Edit</button> <button class="btn btn-red btn-small" onclick="deleteItem('student','${s._id}')">Del</button></td></tr>`).join(''); });
+            c.innerHTML = `<h3>Registered Students</h3><div class="table-container"><table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Status</th><th>Action</th></tr></thead><tbody id="stu-list"></tbody></table></div>`;
+            fetch('/api/admin/students').then(r=>r.json()).then(d => { 
+                document.getElementById('stu-list').innerHTML = d.map(s => `<tr>
+                    <td>${s.name}</td>
+                    <td>${s.email}</td>
+                    <td>${s.phone || 'N/A'}</td>
+                    <td><span class="badge ${s.status === 'Approved' ? 'bg-green' : 'bg-red'}">${s.status || 'Approved'}</span></td>
+                    <td>
+                        ${s.status === 'Pending' ? `<button class="btn btn-green btn-small" style="background:green;color:white;" onclick="approveStudent('${s._id}')">Approve</button>` : ''}
+                        <button class="btn btn-gold btn-small" onclick="editStudent('${s._id}')">Edit</button> 
+                        <button class="btn btn-red btn-small" onclick="deleteItem('student','${s._id}')">Del</button>
+                    </td>
+                </tr>`).join(''); 
+            });
         }
         else if (tab === 'results') {
             c.innerHTML = `<h3>Online Results</h3><input placeholder="Search..." onkeyup="filterTable(this)"><div class="table-container"><table><thead><tr><th>Student</th><th>Test</th><th>Score</th><th>Action</th></tr></thead><tbody id="adm-res-list"></tbody></table></div>`;
@@ -706,6 +747,13 @@
         } 
     }
 
+    // 🆕 NEW: APPROVE STUDENT
+    async function approveStudent(id) {
+        await fetch(`/api/admin/student/${id}`, { method: 'PUT', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ status: 'Approved' }) });
+        alert("Student Approved! They can now log in.");
+        showAdm('students');
+    }
+
     async function deleteItem(type, id) { 
         if(!confirm("Permanently delete?")) return; 
         await fetch(`/api/admin/${type}/${id}`, { method: 'DELETE' }); 
@@ -719,7 +767,8 @@
         else if(type==='material') loadManageLibrary();
         else if(type === 'story') loadStories();
         else if(type === 'video') showAdm('video'); 
-        else if(type === 'reftool') { showAdm('reftool'); loadRefToolsStudent(); } // 🆕 Refreshes both admin & student list
+        else if(type === 'reftool') { showAdm('reftool'); loadRefToolsStudent(); } 
+        else if(type === 'potd') { showAdm('potd'); loadPOTD(); } // 🆕 Added POTD delete reload
     }
 
     function initCreateTest() { editingTestId = null; draftQ = []; showAdm('create-test'); renderCreatePalette(); }
@@ -772,12 +821,32 @@
     
     function switchTab(mode) { loginMode = mode; document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); document.getElementById('tab-'+mode).classList.add('active'); document.getElementById('student-input').style.display = mode === 'student' ? 'block' : 'none'; document.getElementById('teacher-input').style.display = mode === 'student' ? 'none' : 'block'; document.getElementById('login-title').innerText = mode === 'student' ? 'Student Login' : 'Teacher Login'; document.getElementById('reg-link').style.display = mode === 'student' ? 'block' : 'none'; }
   
+    // 🆕 UPDATED: REGISTRATION LOGIC WITH PHONE
+    async function doReg() { 
+        const phone = document.getElementById('r-phone').value;
+        if(phone.length !== 10) return alert("Please enter a valid 10-digit phone number.");
+        
+        const res = await fetch('/api/register', { 
+            method: 'POST', headers: {'Content-Type':'application/json'}, 
+            body: JSON.stringify({ name: document.getElementById('r-name').value, emailPart: document.getElementById('r-prefix').value, password: document.getElementById('r-pass').value, phone }) 
+        }); 
+        
+        const data = await res.json(); 
+        if(data.success) { 
+            alert("Registered successfully! Your registration is under review. You will be able to log in once the teacher approves it."); 
+            location.reload(); 
+        } else {
+            alert(data.message); 
+        }
+    }
+
     async function doLogin() { 
         let email = loginMode === 'student' ? document.getElementById('l-email').value : document.getElementById('l-admin-email').value;
         const password = document.getElementById('l-pass').value;
         if(loginMode === 'student' && !email.includes('@')) email += '@arcstudent.com';
         const res = await fetch('/api/login', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ email, password, role: loginMode }) });
         const data = await res.json();
+        
         if(data.success) {
             const userData = {name: data.name, email: data.email, role: data.role};
             localStorage.setItem('arc_user', JSON.stringify(userData));
@@ -786,12 +855,13 @@
             document.getElementById('nav-logout').style.display = 'block';
             document.getElementById('nav-doubts').style.display = 'block'; 
             if(user.role === 'admin') document.getElementById('nav-admin').style.display = 'block';
-            alert("Login Successful!");
             show('home'); 
-        } else { alert("Invalid Email or Password"); } 
+        } else { 
+            // 🆕 SHOW REVIEW MESSAGE
+            alert(data.message || "Invalid Email or Password"); 
+        } 
     }
 
-    async function doReg() { const res = await fetch('/api/register', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ name: document.getElementById('r-name').value, emailPart: document.getElementById('r-prefix').value, password: document.getElementById('r-pass').value }) }); const data = await res.json(); if(data.success) { alert("Registered!"); location.reload(); } else alert(data.message); }
     function logout() { localStorage.removeItem('arc_user'); localStorage.removeItem('arc_last_section'); clearSession(); location.reload(); }
     
     async function pubTest() { const body = { title: document.getElementById('t-title').value, duration: parseInt(document.getElementById('t-dur').value), accessCode: document.getElementById('t-code').value, category: document.getElementById('t-cat').value, isLive: document.getElementById('t-live').checked, startTime: document.getElementById('t-start').value ? new Date(document.getElementById('t-start').value) : null, endTime: document.getElementById('t-end').value ? new Date(document.getElementById('t-end').value) : null, questions: draftQ }; const method = editingTestId ? 'PUT' : 'POST'; const url = editingTestId ? `/api/admin/test/${editingTestId}` : '/api/admin/test'; try { await fetch(url, { method, headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) }); alert(editingTestId ? "Updated!" : "Published!"); editingTestId = null; draftQ = []; initCreateTest(); } catch(e) { alert("Error: " + e.message); } }
@@ -1050,10 +1120,42 @@
     async function uploadPOTD() {
         const body = { dateStr: document.getElementById('potd-date').value, text: document.getElementById('potd-text').innerHTML, image: tempImg, options: [0,1,2,3].map(i => document.getElementById('po'+i).value), correct: parseInt(document.getElementById('potd-corr').value), solution: document.getElementById('potd-sol').innerHTML, solutionImage: tempSolImg };
         await fetch('/api/admin/potd', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) });
-        alert("POTD Set!"); tempImg = ""; tempSolImg = ""; showAdm('potd');
+        alert("POTD Set/Updated!"); tempImg = ""; tempSolImg = ""; showAdm('potd');
     }
 
-    // 🆕 UPDATED: BAR CHART ANALYTICS
+    // 🆕 NEW: EDIT POTD FUNCTION
+    function editPOTD(index) {
+        if(!window.allPOTDs || !window.allPOTDs[index]) return;
+        const p = window.allPOTDs[index];
+        
+        document.getElementById('potd-date').value = p.dateStr;
+        document.getElementById('potd-text').innerHTML = p.text;
+        
+        if(p.image) { 
+            document.getElementById('potd-img').src = p.image; 
+            document.getElementById('potd-img').style.display = 'inline-block'; 
+            tempImg = p.image; 
+        } else { 
+            document.getElementById('potd-img').style.display = 'none'; 
+            tempImg = ""; 
+        }
+        
+        for(let i=0; i<4; i++) document.getElementById('po'+i).value = p.options[i] || "";
+        document.getElementById('potd-corr').value = p.correct;
+        document.getElementById('potd-sol').innerHTML = p.solution || "";
+        
+        if(p.solutionImage) { 
+            document.getElementById('potd-sol-img').src = p.solutionImage; 
+            document.getElementById('potd-sol-img').style.display = 'inline-block'; 
+            tempSolImg = p.solutionImage; 
+        } else { 
+            document.getElementById('potd-sol-img').style.display = 'none'; 
+            tempSolImg = ""; 
+        }
+
+        window.scrollTo(0, 0); // Scroll up to the form
+    }
+
     async function loadAnalytics() {
         if(!user) return alert("Please Login!");
         const res = await fetch('/api/student/analytics', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ email: user.email }) });
@@ -1108,7 +1210,6 @@
         }
     }
 
-    // 🆕 NEW: DYNAMIC REF TOOLS FUNCTIONS
     let allRefTools = [];
     async function loadRefToolsStudent() {
         const res = await fetch('/api/reftools');

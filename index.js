@@ -19,7 +19,12 @@ mongoose.connect(dbLink)
 
 // --- 2. SCHEMAS ---
 const StudentSchema = new mongoose.Schema({
-    name: String, email: { type: String, unique: true }, password: String, joinedAt: { type: Date, default: Date.now },
+    name: String, 
+    email: { type: String, unique: true }, 
+    password: String, 
+    phone: String,                               // 🆕 ADDED
+    status: { type: String, default: 'Pending' }, // 🆕 ADDED
+    joinedAt: { type: Date, default: Date.now },
 });
 const Student = mongoose.model('Student', StudentSchema);
 
@@ -89,7 +94,6 @@ const POTDSchema = new mongoose.Schema({
 });
 const POTD = mongoose.model('POTD', POTDSchema);
 
-// 🆕 NEW: Reference Tool Schema
 const RefToolSchema = new mongoose.Schema({
     title: String, image: String, date: { type: Date, default: Date.now }
 });
@@ -100,10 +104,10 @@ const RefTool = mongoose.model('RefTool', RefToolSchema);
 // --- AUTH ---
 app.post('/api/register', async (req, res) => {
     try {
-        const { name, emailPart, password } = req.body; 
+        const { name, emailPart, password, phone } = req.body; 
         const fullEmail = emailPart + "@arcstudent.com";
         if(await Student.findOne({ email: fullEmail })) return res.json({ success: false, message: "Username Taken" });
-        await new Student({ name, email: fullEmail, password }).save(); 
+        await new Student({ name, email: fullEmail, password, phone, status: 'Pending' }).save(); // 🆕 ADDED PENDING STATUS & PHONE
         res.json({ success: true });
     } catch (e) { res.json({ success: false, message: "Error" }); }
 });
@@ -115,9 +119,15 @@ app.post('/api/login', async (req, res) => {
             return res.json({ success: true, name: "ARC Admin", email: "admin@arc.com", role: 'admin' });
         }
         const student = await Student.findOne({ email });
-        if (!student || student.password !== password) return res.json({ success: false });
+        if (!student || student.password !== password) return res.json({ success: false, message: "Invalid Email or Password" });
+        
+        // 🆕 CHECK IF STUDENT IS PENDING
+        if (student.status === 'Pending') {
+            return res.json({ success: false, message: "Your registration is under review." });
+        }
+
         res.json({ success: true, name: student.name, email: student.email, role: 'student' });
-    } catch (e) { res.json({ success: false }); }
+    } catch (e) { res.json({ success: false, message: "Server Error" }); }
 });
 
 // --- ADMIN API ---
@@ -196,13 +206,18 @@ app.delete('/api/admin/doubt/:id', async (req, res) => { await Doubt.findByIdAnd
 app.post('/api/admin/video', async (req, res) => { await new Video(req.body).save(); res.json({ success: true }); });
 app.delete('/api/admin/video/:id', async (req, res) => { await Video.findByIdAndDelete(req.params.id); res.json({ success: true }); });
 
+// 🆕 UPDATED: Admin POTD Routes (GET & DELETE ADDED)
+app.get('/api/admin/potds', async (req, res) => res.json(await POTD.find().sort({ dateStr: -1 })));
 app.post('/api/admin/potd', async (req, res) => {
     const { dateStr } = req.body;
     await POTD.findOneAndUpdate({ dateStr }, req.body, { upsert: true });
     res.json({ success: true });
 });
+app.delete('/api/admin/potd/:id', async (req, res) => {
+    await POTD.findByIdAndDelete(req.params.id);
+    res.json({ success: true });
+});
 
-// 🆕 NEW: Reference Tools Routes
 app.get('/api/reftools', async (req, res) => res.json(await RefTool.find().sort({ date: 1 })));
 app.post('/api/admin/reftool', async (req, res) => { await new RefTool(req.body).save(); res.json({ success: true }); });
 app.delete('/api/admin/reftool/:id', async (req, res) => { await RefTool.findByIdAndDelete(req.params.id); res.json({ success: true }); });
@@ -324,7 +339,6 @@ app.post('/api/student/analytics', async (req, res) => {
             r.answers.forEach((ans, i) => {
                 if (i >= test.questions.length) return;
                 const q = test.questions[i];
-                // Better Fallback to ensure valid string
                 const topic = q.topic && q.topic.trim() !== "" ? q.topic.trim() : 'General Chemistry';
                 
                 if (!topicStats[topic]) topicStats[topic] = { total: 0, correct: 0 };
