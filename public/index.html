@@ -118,9 +118,9 @@
         
         .empty-game-board { position: relative; width: 100%; max-width: 450px; height: 350px; background: linear-gradient(135deg, #1e293b, #0f172a); border-radius: 12px; margin: 0 auto; overflow: hidden; border: 2px solid var(--gold); box-shadow: inset 0 0 20px rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; flex-direction: column; color: white; }
         
-        /* Game 1: Memory */
-        .memory-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 10px; width: 100%; box-sizing: border-box; }
-        .memory-card { background: #334155; border: 2px solid var(--gold); height: 60px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold; cursor: pointer; font-size: 1rem; color: transparent; transition: background 0.3s; user-select: none; }
+        /* Game 1: Memory (Updated for 30 boxes / 5x6 grid) */
+        .memory-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding: 10px; width: 100%; height: 100%; box-sizing: border-box; align-content: center; }
+        .memory-card { background: #334155; border: 2px solid var(--gold); height: 42px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: bold; cursor: pointer; font-size: 0.8rem; color: transparent; transition: background 0.3s; user-select: none; text-align: center; line-height: 1.1; overflow: hidden; }
         .memory-card.flipped { background: white; color: var(--primary); border-color: white; }
         .memory-card.matched { background: var(--green); color: white; border-color: var(--green); visibility: hidden; }
 
@@ -129,17 +129,17 @@
         .ab-controls { position: absolute; bottom: 15px; width: 100%; display: flex; justify-content: space-around; padding: 0 20px; box-sizing: border-box; }
 
         /* Game 3: Hangman (Save Flask) */
-        .hm-word { font-size: 1.8rem; letter-spacing: 5px; font-weight: bold; margin-bottom: 10px; color: var(--gold); }
-        .hm-hint { font-size: 0.9rem; color: #cbd5e1; margin-bottom: 20px; font-style: italic; }
-        .hm-keyboard { display: flex; flex-wrap: wrap; justify-content: center; gap: 5px; max-width: 380px; }
-        .hm-key { background: #334155; color: white; border: 1px solid #475569; padding: 8px; width: 35px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .hm-word { font-size: 1.5rem; letter-spacing: 4px; font-weight: bold; margin-bottom: 10px; color: var(--gold); text-align: center; padding: 0 10px; }
+        .hm-hint { font-size: 0.85rem; color: #cbd5e1; margin-bottom: 15px; font-style: italic; text-align: center; padding: 0 15px; }
+        .hm-keyboard { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; max-width: 400px; padding: 0 10px; }
+        .hm-key { background: #334155; color: white; border: 1px solid #475569; padding: 6px; width: 32px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.9rem; }
         .hm-key:disabled { opacity: 0.5; cursor: not-allowed; }
-        .hm-flask-container { width: 60px; height: 80px; border: 3px solid white; border-radius: 30px 30px 10px 10px; position: relative; margin-bottom: 15px; overflow: hidden; }
-        .hm-flask-neck { width: 20px; height: 30px; border: 3px solid white; border-bottom: none; position: absolute; top: -30px; left: 17px; }
+        .hm-flask-container { width: 50px; height: 70px; border: 3px solid white; border-radius: 25px 25px 10px 10px; position: relative; margin-bottom: 15px; overflow: hidden; flex-shrink: 0; }
+        .hm-flask-neck { width: 16px; height: 25px; border: 3px solid white; border-bottom: none; position: absolute; top: -25px; left: 14px; }
         .hm-liquid { position: absolute; bottom: 0; left: 0; width: 100%; height: 0%; background: var(--green); transition: height 0.3s, background 0.3s; }
 
         /* Game 4: Coefficient */
-        .coeff-eq { font-size: 1.5rem; font-weight: bold; background: rgba(0,0,0,0.5); padding: 10px 20px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #475569; }
+        .coeff-eq { font-size: 1.3rem; font-weight: bold; background: rgba(0,0,0,0.5); padding: 10px 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #475569; text-align: center; max-width: 90%; }
         .coeff-num { position: absolute; width: 40px; height: 40px; border-radius: 50%; background: var(--gold); color: var(--primary); font-weight: bold; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3); user-select: none; z-index: 10; }
     </style>
 </head>
@@ -565,11 +565,14 @@
             if(type === 'coeff') this.coeff.init(id);
         },
         
-        // --- 1. MEMORY MATCH ---
+        // --- 1. MEMORY MATCH (Expanded to 30 Boxes / 15 Pairs) ---
         memory: {
             data: [
-                {s: 'H', n: 'Hydrogen'}, {s: 'O', n: 'Oxygen'}, {s: 'Na', n: 'Sodium'}, 
-                {s: 'Fe', n: 'Iron'}, {s: 'C', n: 'Carbon'}, {s: 'Au', n: 'Gold'}
+                {s: 'H', n: 'Hydrogen'}, {s: 'He', n: 'Helium'}, {s: 'Li', n: 'Lithium'},
+                {s: 'Be', n: 'Beryllium'}, {s: 'B', n: 'Boron'}, {s: 'C', n: 'Carbon'},
+                {s: 'N', n: 'Nitrogen'}, {s: 'O', n: 'Oxygen'}, {s: 'F', n: 'Fluorine'},
+                {s: 'Ne', n: 'Neon'}, {s: 'Na', n: 'Sodium'}, {s: 'Mg', n: 'Magnesium'},
+                {s: 'Al', n: 'Aluminum'}, {s: 'Si', n: 'Silicon'}, {s: 'P', n: 'Phosphorus'}
             ],
             init: function(id) {
                 let deck = [];
@@ -623,12 +626,19 @@
             }
         },
 
-        // --- 2. ACID OR BASE ---
+        // --- 2. ACID OR BASE (Expanded to 40 items) ---
         acid: {
             data: [
-                {f: 'HCl', t: 'acid'}, {f: 'NaOH', t: 'base'}, {f: 'H₂SO₄', t: 'acid'}, 
-                {f: 'NH₃', t: 'base'}, {f: 'CH₃COOH', t: 'acid'}, {f: 'KOH', t: 'base'},
-                {f: 'HNO₃', t: 'acid'}, {f: 'Ca(OH)₂', t: 'base'}
+                {f: 'HCl', t: 'acid'}, {f: 'HNO₃', t: 'acid'}, {f: 'H₂SO₄', t: 'acid'}, {f: 'HBr', t: 'acid'},
+                {f: 'HI', t: 'acid'}, {f: 'HClO₄', t: 'acid'}, {f: 'CH₃COOH', t: 'acid'}, {f: 'H₂CO₃', t: 'acid'},
+                {f: 'H₃PO₄', t: 'acid'}, {f: 'HF', t: 'acid'}, {f: 'H₂SO₃', t: 'acid'}, {f: 'HNO₂', t: 'acid'},
+                {f: 'HCN', t: 'acid'}, {f: 'HCOOH', t: 'acid'}, {f: 'H₂C₂O₄', t: 'acid'}, {f: 'HBrO₄', t: 'acid'},
+                {f: 'HClO', t: 'acid'}, {f: 'H₃BO₃', t: 'acid'}, {f: 'H₂S', t: 'acid'}, {f: 'H₂CrO₄', t: 'acid'},
+                {f: 'NaOH', t: 'base'}, {f: 'KOH', t: 'base'}, {f: 'LiOH', t: 'base'}, {f: 'Ba(OH)₂', t: 'base'},
+                {f: 'Ca(OH)₂', t: 'base'}, {f: 'NH₃', t: 'base'}, {f: 'CH₃NH₂', t: 'base'}, {f: 'C₅H₅N', t: 'base'},
+                {f: 'Mg(OH)₂', t: 'base'}, {f: 'Al(OH)₃', t: 'base'}, {f: 'RbOH', t: 'base'}, {f: 'CsOH', t: 'base'},
+                {f: 'Sr(OH)₂', t: 'base'}, {f: 'NaHCO₃', t: 'base'}, {f: 'Na₂CO₃', t: 'base'}, {f: 'K₂CO₃', t: 'base'},
+                {f: 'C₂H₅NH₂', t: 'base'}, {f: '(CH₃)₂NH', t: 'base'}, {f: '(CH₃)₃N', t: 'base'}, {f: 'N₂H₄', t: 'base'}
             ],
             init: function(id) {
                 window.arcGames.instances[id] = { score: 0, speed: 2000, current: null, yPos: 0 };
@@ -673,7 +683,7 @@
                     state.score++;
                     document.getElementById(`ab-score-${id}`).innerText = state.score;
                     el.style.background = 'var(--green)';
-                    state.speed = Math.max(500, state.speed - 100); // Speed up
+                    state.speed = Math.max(500, state.speed - 100); 
                     setTimeout(() => this.spawn(id), 300);
                 } else {
                     el.style.background = 'var(--red)';
@@ -686,14 +696,35 @@
             }
         },
 
-        // --- 3. HANGMAN (Save the Flask) ---
+        // --- 3. HANGMAN (Expanded to 50 Words) ---
         hangman: {
             data: [
-                {w: 'PROTON', h: 'Positively charged particle'},
-                {w: 'ISOTOPE', h: 'Same protons, different neutrons'},
-                {w: 'CATION', h: 'Positively charged ion'},
-                {w: 'ANODE', h: 'Electrode where oxidation occurs'},
-                {w: 'CATALYST', h: 'Speeds up a reaction'}
+                {w: 'PROTON', h: 'Positively charged subatomic particle'}, {w: 'NEUTRON', h: 'Neutral subatomic particle in the nucleus'},
+                {w: 'ELECTRON', h: 'Negatively charged subatomic particle'}, {w: 'ISOTOPE', h: 'Same atomic number, different mass'},
+                {w: 'CATION', h: 'A positively charged ion'}, {w: 'ANION', h: 'A negatively charged ion'},
+                {w: 'ANODE', h: 'Electrode where oxidation occurs'}, {w: 'CATHODE', h: 'Electrode where reduction occurs'},
+                {w: 'CATALYST', h: 'Lowers activation energy of a reaction'}, {w: 'MOLE', h: 'Avogadro’s number of particles'},
+                {w: 'TITRATION', h: 'Method to determine concentration'}, {w: 'POLYMER', h: 'Large molecule made of repeating subunits'},
+                {w: 'ISOMER', h: 'Same formula, different structure'}, {w: 'ORBITAL', h: 'Region of high electron probability'},
+                {w: 'VALENCE', h: 'Outermost electrons of an atom'}, {w: 'ENTHALPY', h: 'Total heat content of a system'},
+                {w: 'ENTROPY', h: 'Measure of disorder or randomness'}, {w: 'KINETICS', h: 'Study of reaction rates'},
+                {w: 'EQUILIBRIUM', h: 'Forward and reverse rates are equal'}, {w: 'OXIDATION', h: 'Loss of electrons in a reaction'},
+                {w: 'REDUCTION', h: 'Gain of electrons in a reaction'}, {w: 'HALOGEN', h: 'Group 17 non-metal elements'},
+                {w: 'NOBLEGAS', h: 'Highly unreactive Group 18 elements'}, {w: 'ALKALI', h: 'Highly reactive Group 1 metals'},
+                {w: 'COVALENT', h: 'Bond formed by sharing electrons'}, {w: 'IONIC', h: 'Bond formed by electron transfer'},
+                {w: 'METALLIC', h: 'Bond with a "sea of electrons"'}, {w: 'SUBLIMATION', h: 'Solid changing directly to gas'},
+                {w: 'SOLVENT', h: 'Substance that dissolves a solute'}, {w: 'SOLUTE', h: 'Substance dissolved in a solvent'},
+                {w: 'MOLARITY', h: 'Moles of solute per liter of solution'}, {w: 'YIELD', h: 'Amount of product produced'},
+                {w: 'BUFFER', h: 'Solution that resists pH changes'}, {w: 'INDICATOR', h: 'Changes color at specific pH'},
+                {w: 'ALKANE', h: 'Hydrocarbon with only single bonds'}, {w: 'ALKENE', h: 'Hydrocarbon with a double bond'},
+                {w: 'ALKYNE', h: 'Hydrocarbon with a triple bond'}, {w: 'AROMATIC', h: 'Contains a benzene ring'},
+                {w: 'KETONE', h: 'Carbonyl group bonded to two carbons'}, {w: 'ALDEHYDE', h: 'Carbonyl group bonded to a hydrogen'},
+                {w: 'ALCOHOL', h: 'Contains an -OH functional group'}, {w: 'AMINE', h: 'Derivative of ammonia (NH3)'},
+                {w: 'AMIDE', h: 'Carbonyl group bonded to nitrogen'}, {w: 'ESTER', h: 'Formed from carboxylic acid and alcohol'},
+                {w: 'ETHER', h: 'Oxygen bonded to two alkyl groups'}, {w: 'CARBOXYLIC', h: 'Contains a -COOH group'},
+                {w: 'CHIRAL', h: 'Molecule with non-superimposable mirror image'}, {w: 'RACEMIC', h: 'Equal mixture of two enantiomers'},
+                {w: 'NUCLEOPHILE', h: 'Electron-rich species (nucleus lover)'}, {w: 'ELECTROPHILE', h: 'Electron-poor species (electron lover)'},
+                {w: 'RADICAL', h: 'Species with an unpaired electron'}, {w: 'RESONANCE', h: 'Delocalization of electrons in a molecule'}
             ],
             init: function(id) {
                 const item = this.data[Math.floor(Math.random() * this.data.length)];
@@ -741,7 +772,7 @@
                     if(state.errors >= state.maxErrors) {
                         liquid.style.background = 'var(--red)';
                         setTimeout(() => {
-                            document.getElementById(`game-bg-${id}`).innerHTML = `<h2 style="color:var(--red);">💥 Flask Exploded!</h2><p>Word was: ${state.word}</p><button class="btn btn-gold" onclick="ArcGameEngine.hangman.init('${id}')">Try Again</button>`;
+                            document.getElementById(`game-bg-${id}`).innerHTML = `<h2 style="color:var(--red);">💥 Flask Exploded!</h2><p style="font-size:1.2rem;">Word was: <b>${state.word}</b></p><button class="btn btn-gold" onclick="ArcGameEngine.hangman.init('${id}')">Try Again</button>`;
                         }, 500);
                         return;
                     }
@@ -750,17 +781,40 @@
             }
         },
 
-        // --- 4. COEFFICIENT CATCHER ---
+        // --- 4. COEFFICIENT CATCHER (Expanded to 100 Equations) ---
         coeff: {
             data: [
-                {eq: 'N₂ + 3H₂ ➝ [ ? ] NH₃', a: 2},
-                {eq: '2H₂ + O₂ ➝ [ ? ] H₂O', a: 2},
-                {eq: 'CH₄ + [ ? ] O₂ ➝ CO₂ + 2H₂O', a: 2},
-                {eq: '2Na + Cl₂ ➝ [ ? ] NaCl', a: 2},
-                {eq: '[ ? ] Fe + 3O₂ ➝ 2Fe₂O₃', a: 4}
+                {eq: '[ ? ] H₂ + O₂ ➝ 2H₂O', a: 2}, {eq: 'H₂ + [ ? ] Cl₂ ➝ 2HCl', a: 1}, {eq: 'N₂ + [ ? ] H₂ ➝ 2NH₃', a: 3}, {eq: '[ ? ] Na + Cl₂ ➝ 2NaCl', a: 2},
+                {eq: 'CH₄ + [ ? ] O₂ ➝ CO₂ + 2H₂O', a: 2}, {eq: '2H₂O₂ ➝ 2H₂O + [ ? ] O₂', a: 1}, {eq: '[ ? ] K + Br₂ ➝ 2KBr', a: 2}, {eq: 'Mg + [ ? ] HCl ➝ MgCl₂ + H₂', a: 2},
+                {eq: '[ ? ] Fe + 3O₂ ➝ 2Fe₂O₃', a: 4}, {eq: '2Al + [ ? ] Cl₂ ➝ 2AlCl₃', a: 3}, {eq: 'C₃H₈ + [ ? ] O₂ ➝ 3CO₂ + 4H₂O', a: 5}, {eq: '[ ? ] Li + F₂ ➝ 2LiF', a: 2},
+                {eq: 'Ca + [ ? ] H₂O ➝ Ca(OH)₂ + H₂', a: 2}, {eq: '[ ? ] Ag + S ➝ Ag₂S', a: 2}, {eq: 'P₄ + [ ? ] O₂ ➝ P₄O₁₀', a: 5}, {eq: '[ ? ] SO₂ + O₂ ➝ 2SO₃', a: 2},
+                {eq: 'N₂ + [ ? ] O₂ ➝ 2NO₂', a: 2}, {eq: '[ ? ] KClO₃ ➝ 2KCl + 3O₂', a: 2}, {eq: '2Na + [ ? ] H₂O ➝ 2NaOH + H₂', a: 2}, {eq: '[ ? ] NH₃ + H₂SO₄ ➝ (NH₄)₂SO₄', a: 2},
+                {eq: 'Zn + [ ? ] HCl ➝ ZnCl₂ + H₂', a: 2}, {eq: '[ ? ] Cu + O₂ ➝ 2CuO', a: 2}, {eq: 'C₂H₄ + [ ? ] O₂ ➝ 2CO₂ + 2H₂O', a: 3}, {eq: '[ ? ] K + I₂ ➝ 2KI', a: 2},
+                {eq: 'BaCl₂ + [ ? ] AgNO₃ ➝ 2AgCl + Ba(NO₃)₂', a: 2}, {eq: '[ ? ] Al + 3H₂SO₄ ➝ Al₂(SO₄)₃ + 3H₂', a: 2}, {eq: 'SiO₂ + [ ? ] HF ➝ SiF₄ + 2H₂O', a: 4}, {eq: '[ ? ] H₂S + 3O₂ ➝ 2SO₂ + 2H₂O', a: 2},
+                {eq: 'CS₂ + [ ? ] O₂ ➝ CO₂ + 2SO₂', a: 3}, {eq: '[ ? ] Fe + 3Cl₂ ➝ 2FeCl₃', a: 2}, {eq: 'MnO₂ + [ ? ] HCl ➝ MnCl₂ + Cl₂ + 2H₂O', a: 4}, {eq: '[ ? ] Na + O₂ ➝ Na₂O₂', a: 2},
+                {eq: 'C₂H₆ + [ ? ] O₂ ➝ 4CO₂ + 6H₂O (x2)', a: 7}, /* Special case but handled */ {eq: '[ ? ] CO + O₂ ➝ 2CO₂', a: 2}, {eq: '2NO + [ ? ] O₂ ➝ 2NO₂', a: 1}, {eq: '[ ? ] H₂ + CO ➝ CH₃OH', a: 2},
+                {eq: 'C + [ ? ] H₂ ➝ CH₄', a: 2}, {eq: '[ ? ] LiOH + CO₂ ➝ Li₂CO₃ + H₂O', a: 2}, {eq: 'CaCO₃ ➝ CaO + [ ? ] CO₂', a: 1}, {eq: '[ ? ] Al + 3Br₂ ➝ 2AlBr₃', a: 2},
+                {eq: 'Fe₂O₃ + [ ? ] CO ➝ 2Fe + 3CO₂', a: 3}, {eq: '[ ? ] K + 2H₂O ➝ 2KOH + H₂', a: 2}, {eq: '2H₂S + [ ? ] O₂ ➝ 2H₂O + 2S', a: 1}, {eq: '[ ? ] Mg + O₂ ➝ 2MgO', a: 2},
+                {eq: 'SO₂ + [ ? ] H₂S ➝ 3S + 2H₂O', a: 2}, {eq: '[ ? ] NO₂ + H₂O ➝ HNO₃ + HNO₂', a: 2}, {eq: 'N₂O₄ ➝ [ ? ] NO₂', a: 2}, {eq: '[ ? ] P + 3Cl₂ ➝ 2PCl₃', a: 2},
+                {eq: '3Fe + [ ? ] H₂O ➝ Fe₃O₄ + 4H₂', a: 4}, {eq: '[ ? ] NaN₃ ➝ 2Na + 3N₂', a: 2}, {eq: '2HNO₃ + [ ? ] NO ➝ 3NO₂ + H₂O', a: 1}, {eq: '[ ? ] KOH + H₂SO₄ ➝ K₂SO₄ + 2H₂O', a: 2},
+                {eq: 'C₂H₂ + [ ? ] H₂ ➝ C₂H₆', a: 2}, {eq: '[ ? ] B + 3O₂ ➝ 2B₂O₃', a: 4}, {eq: 'TiCl₄ + [ ? ] Mg ➝ Ti + 2MgCl₂', a: 2}, {eq: '[ ? ] Rb + 2H₂O ➝ 2RbOH + H₂', a: 2},
+                {eq: 'SiCl₄ + [ ? ] H₂O ➝ H₄SiO₄ + 4HCl', a: 4}, {eq: '[ ? ] HI ➝ H₂ + I₂', a: 2}, {eq: '2Au₂O₃ ➝ 4Au + [ ? ] O₂', a: 3}, {eq: '[ ? ] C + O₂ ➝ 2CO', a: 2},
+                {eq: 'Cl₂ + [ ? ] NaBr ➝ 2NaCl + Br₂', a: 2}, {eq: '[ ? ] O₃ ➝ 3O₂', a: 2}, {eq: 'H₂SO₄ + [ ? ] NaOH ➝ Na₂SO₄ + 2H₂O', a: 2}, {eq: '[ ? ] Cu + S ➝ Cu₂S', a: 2},
+                {eq: 'Pb(NO₃)₂ + [ ? ] KI ➝ PbI₂ + 2KNO₃', a: 2}, {eq: '[ ? ] Al + 6HCl ➝ 2AlCl₃ + 3H₂', a: 2}, {eq: 'FeCl₃ + [ ? ] NaOH ➝ Fe(OH)₃ + 3NaCl', a: 3}, {eq: '[ ? ] C₂H₄ + O₂ ➝ 2CO + 4H₂', a: 2},
+                {eq: 'N₂H₄ + [ ? ] H₂O₂ ➝ N₂ + 4H₂O', a: 2}, {eq: '[ ? ] KClO₃ ➝ 2KCl + 3O₂', a: 2}, {eq: 'PCl₅ + [ ? ] H₂O ➝ H₃PO₄ + 5HCl', a: 4}, {eq: '[ ? ] Na + 2H₂O ➝ 2NaOH + H₂', a: 2},
+                {eq: 'SF₄ + [ ? ] H₂O ➝ SO₂ + 4HF', a: 2}, {eq: '[ ? ] Fe + O₂ ➝ 2FeO', a: 2}, {eq: '2C₂H₆ + [ ? ] O₂ ➝ 4CO₂ + 6H₂O', a: 7}, {eq: '[ ? ] Ag + Cl₂ ➝ 2AgCl', a: 2},
+                {eq: 'Na₂CO₃ + [ ? ] HCl ➝ 2NaCl + H₂O + CO₂', a: 2}, {eq: '[ ? ] Al + 3CuCl₂ ➝ 2AlCl₃ + 3Cu', a: 2}, {eq: 'C + [ ? ] O₂ ➝ CO₂', a: 1}, {eq: '[ ? ] NaHCO₃ ➝ Na₂CO₃ + H₂O + CO₂', a: 2},
+                {eq: 'Mg(OH)₂ + [ ? ] HCl ➝ MgCl₂ + 2H₂O', a: 2}, {eq: '[ ? ] K + Cl₂ ➝ 2KCl', a: 2}, {eq: 'C₂H₅OH + [ ? ] O₂ ➝ 2CO₂ + 3H₂O', a: 3}, {eq: '[ ? ] H₂ + C ➝ CH₄', a: 2},
+                {eq: '2H₃PO₄ + [ ? ] Ca(OH)₂ ➝ Ca₃(PO₄)₂ + 6H₂O', a: 3}, {eq: '[ ? ] NO + O₂ ➝ 2NO₂', a: 2}, {eq: 'H₂ + [ ? ] F₂ ➝ 2HF', a: 1}, {eq: '[ ? ] P + 5Cl₂ ➝ 2PCl₅', a: 2},
+                {eq: '2Cr + [ ? ] Cl₂ ➝ 2CrCl₃', a: 3}, {eq: '[ ? ] N₂O ➝ 2N₂ + O₂', a: 2}, {eq: 'ZnS + [ ? ] O₂ ➝ 2ZnO + 2SO₂', a: 3}, {eq: '[ ? ] CO + O₂ ➝ 2CO₂', a: 2},
+                {eq: '2KMnO₄ + [ ? ] HCl ➝ 2KCl+2MnCl₂+5Cl₂+8H₂O', a: 16}, /* Trick question but floating 1-5 will miss, lets fix to simple */ 
+                {eq: '[ ? ] Cu + S ➝ Cu₂S', a: 2}, {eq: 'H₂SO₄ + [ ? ] NH₃ ➝ (NH₄)₂SO₄', a: 2}, {eq: '[ ? ] Fe + 3H₂O ➝ Fe₂O₃ + 3H₂', a: 2}, {eq: 'CaC₂ + [ ? ] H₂O ➝ Ca(OH)₂ + C₂H₂', a: 2},
+                {eq: '[ ? ] Na + O₂ ➝ Na₂O₂', a: 2}, {eq: 'CH₄ + [ ? ] Cl₂ ➝ CCl₄ + 4HCl', a: 4}, {eq: '[ ? ] Al + 3O₂ ➝ 2Al₂O₃', a: 4}, {eq: 'N₂ + [ ? ] O₂ ➝ 2NO', a: 1}
             ],
             init: function(id) {
-                const item = this.data[Math.floor(Math.random() * this.data.length)];
+                // Ensure we only pick equations where the answer is between 1 and 5
+                const validData = this.data.filter(item => item.a >= 1 && item.a <= 5);
+                const item = validData[Math.floor(Math.random() * validData.length)];
                 window.arcGames.instances[id] = { ans: item.a };
                 
                 document.getElementById(`game-bg-${id}`).innerHTML = `
@@ -1154,7 +1208,12 @@
     async function doLogin() { 
         let email = loginMode === 'student' ? document.getElementById('l-email').value : document.getElementById('l-admin-email').value;
         const password = document.getElementById('l-pass').value;
-        if (!email || !password) { alert("Please enter both email and password."); return; }
+        
+        if (!email || !password) {
+            alert("Please enter both email and password.");
+            return;
+        }
+
         if(loginMode === 'student' && !email.includes('@')) email += '@arcstudent.com';
         
         try {
@@ -1173,7 +1232,9 @@
             } else { 
                 alert(data.message || "Invalid Email or Password"); 
             }
-        } catch(e) { alert("Server connection error. Please try again."); } 
+        } catch(e) {
+            alert("Server connection error. Please try again.");
+        } 
     }
 
     function logout() { localStorage.removeItem('arc_user'); localStorage.removeItem('arc_last_section'); clearSession(); location.reload(); }
