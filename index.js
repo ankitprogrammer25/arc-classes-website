@@ -5,6 +5,12 @@ const cors = require('cors');
 const path = require('path');
 const fetch = require('node-fetch');
 
+// --- 0. GLOBAL ERROR CATCHERS ---
+// This prevents Render.com / Node from crashing entirely and causing a 500 error 
+// if a background process fails (crucial for Android wrappers).
+process.on('uncaughtException', (err) => console.error('Uncaught Exception:', err));
+process.on('unhandledRejection', (err) => console.error('Unhandled Rejection:', err));
+
 const app = express();
 app.use(express.json({ limit: '100mb' }));
 app.use(cors());
@@ -13,7 +19,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 // --- 1. DATABASE CONNECTION ---
 const dbLink = "mongodb+srv://ankitprogrammer25:a32x05sYvukG178G@cluster0.0dhqpzv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 
-mongoose.connect(dbLink)
+// Added timeouts to ensure DB drops don't hold the server hostage
+mongoose.connect(dbLink, { 
+    serverSelectionTimeoutMS: 5000, 
+    socketTimeoutMS: 45000 
+})
     .then(() => console.log('✅ MongoDB Connected'))
     .catch(err => console.log('❌ DB Connection Error:', err.message));
 
@@ -144,12 +154,16 @@ app.post('/api/admin/blog', async (req, res) => { await new Blog(req.body).save(
 app.put('/api/admin/blog/:id', async (req, res) => { await Blog.findByIdAndUpdate(req.params.id, req.body); res.json({ success: true }); });
 app.delete('/api/admin/blog/:id', async (req, res) => { await Blog.findByIdAndDelete(req.params.id); res.json({ success: true }); });
 
-app.get('/api/schedule', async (req, res) => res.json(await Schedule.find().sort({ time: 1 })));
+app.get('/api/schedule', async (req, res) => {
+    try { res.json(await Schedule.find().sort({ time: 1 })); } catch(e) { res.json([]); }
+});
 app.post('/api/admin/schedule', async (req, res) => { await new Schedule(req.body).save(); res.json({ success: true }); });
 app.put('/api/admin/schedule/:id', async (req, res) => { await Schedule.findByIdAndUpdate(req.params.id, req.body); res.json({ success: true }); });
 app.delete('/api/admin/schedule/:id', async (req, res) => { await Schedule.findByIdAndDelete(req.params.id); res.json({ success: true }); });
 
-app.get('/api/stories', async (req, res) => res.json(await SuccessStory.find().sort({ date: -1 })));
+app.get('/api/stories', async (req, res) => {
+    try { res.json(await SuccessStory.find().sort({ date: -1 })); } catch(e) { res.json([]); }
+});
 app.post('/api/story', async (req, res) => { try { await new SuccessStory(req.body).save(); res.json({ success: true }); } catch(e) { res.json({ success: false }); } });
 app.delete('/api/admin/story/:id', async (req, res) => { await SuccessStory.findByIdAndDelete(req.params.id); res.json({ success: true }); });
 
@@ -175,8 +189,10 @@ app.put('/api/admin/offline-result/:id', async (req, res) => {
 app.delete('/api/admin/offline-result/:id', async (req, res) => { await OfflineResult.findByIdAndDelete(req.params.id); res.json({ success: true }); });
 
 app.get('/api/announcement', async (req, res) => { 
-    const c = await Config.findOne({ type: 'announce_list' });
-    res.json({ list: c ? c.list : ["Welcome to ARC Classes"] });
+    try {
+        const c = await Config.findOne({ type: 'announce_list' });
+        res.json({ list: c ? c.list : ["Welcome to ARC Classes"] });
+    } catch(e) { res.json({ list: ["Welcome to ARC Classes"] }); }
 });
 app.post('/api/admin/announcement/add', async (req, res) => {
     await Config.findOneAndUpdate({ type: 'announce_list' }, { $push: { list: req.body.text } }, { upsert: true });
@@ -209,19 +225,29 @@ app.delete('/api/admin/potd/:id', async (req, res) => {
     res.json({ success: true });
 });
 
-app.get('/api/reftools', async (req, res) => res.json(await RefTool.find().sort({ date: 1 })));
+app.get('/api/reftools', async (req, res) => {
+    try { res.json(await RefTool.find().sort({ date: 1 })); } catch(e) { res.json([]); }
+});
 app.post('/api/admin/reftool', async (req, res) => { await new RefTool(req.body).save(); res.json({ success: true }); });
 app.delete('/api/admin/reftool/:id', async (req, res) => { await RefTool.findByIdAndDelete(req.params.id); res.json({ success: true }); });
 
 // STUDENT API
-app.get('/api/materials', async (req, res) => res.json(await Material.find()));
-app.get('/api/tests', async (req, res) => {
-    const tests = await Test.find({}, 'title duration category date accessCode isLive startTime endTime');
-    res.json(tests);
+app.get('/api/materials', async (req, res) => {
+    try { res.json(await Material.find()); } catch(e) { res.json([]); }
 });
-app.get('/api/blogs', async (req, res) => res.json(await Blog.find().sort({ date: -1 })));
+app.get('/api/tests', async (req, res) => {
+    try {
+        const tests = await Test.find({}, 'title duration category date accessCode isLive startTime endTime');
+        res.json(tests);
+    } catch(e) { res.json([]); }
+});
+app.get('/api/blogs', async (req, res) => {
+    try { res.json(await Blog.find().sort({ date: -1 })); } catch(e) { res.json([]); }
+});
 app.post('/api/student/results/online', async (req, res) => res.json({ success: true, results: await Result.find({ studentEmail: req.body.email }).sort({ date: -1 }) }));
-app.get('/api/results/offline', async (req, res) => res.json(await OfflineResult.find()));
+app.get('/api/results/offline', async (req, res) => {
+    try { res.json(await OfflineResult.find()); } catch(e) { res.json([]); }
+});
 
 app.post('/api/material/unlock', async (req, res) => {
     const f = await Material.findById(req.body.id);
@@ -297,12 +323,16 @@ app.post('/api/test/submit', async (req, res) => {
 
 app.post('/api/doubt', async (req, res) => { await new Doubt(req.body).save(); res.json({ success: true }); });
 app.post('/api/student/doubts', async (req, res) => res.json(await Doubt.find({ studentEmail: req.body.email }).sort({ date: -1 })));
-app.get('/api/videos', async (req, res) => res.json(await Video.find().sort({ date: -1 })));
+app.get('/api/videos', async (req, res) => {
+    try { res.json(await Video.find().sort({ date: -1 })); } catch(e) { res.json([]); }
+});
 
 app.get('/api/potd/today', async (req, res) => {
-    const today = new Date().toLocaleDateString('en-CA'); 
-    let potd = await POTD.findOne({ dateStr: today });
-    res.json({ success: !!potd, potd });
+    try {
+        const today = new Date().toLocaleDateString('en-CA'); 
+        let potd = await POTD.findOne({ dateStr: today });
+        res.json({ success: !!potd, potd });
+    } catch(e) { res.json({ success: false }); }
 });
 
 // ANALYTICS
@@ -325,6 +355,7 @@ app.post('/api/student/analytics', async (req, res) => {
 const RENDER_EXTERNAL_URL = "https://arc-classes-ankit.onrender.com"; 
 function keepAlive() {
     fetch(RENDER_EXTERNAL_URL + '/api/schedule')
+        .then(res => res.text()) // FIX: Read the response completely to prevent socket leak!
         .then(() => console.log("⏰ Self-Ping Successful"))
         .catch(err => console.error("Self-Ping Failed:", err.message));
     setTimeout(keepAlive, 2 * 60 * 1000); 

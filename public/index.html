@@ -202,13 +202,13 @@
                 <form onsubmit="event.preventDefault(); doLogin()">
                     <label style="font-weight:bold;">Email / Username:</label>
                     <div id="student-input">
-                        <input id="l-email" placeholder="username" required style="margin-top:5px;">
+                        <input id="l-email" placeholder="username" style="margin-top:5px;">
                         <div style="text-align:right; font-size:0.8rem; color:#777;">@arcstudent.com</div>
                     </div>
                     <div id="teacher-input" style="display:none;"><input id="l-admin-email" placeholder="admin@arc.com" style="margin-top:5px;"></div>
                     
                     <label style="font-weight:bold; display:block; margin-top:10px;">Password:</label>
-                    <input id="l-pass" type="password" placeholder="Password" required style="margin-top:5px;">
+                    <input id="l-pass" type="password" placeholder="Password" style="margin-top:5px;">
                     
                     <button type="submit" class="btn btn-gold" style="width:100%; margin-top: 15px; border: 2px solid #333;">Submit</button>
                 </form>
@@ -895,21 +895,33 @@
     async function doLogin() { 
         let email = loginMode === 'student' ? document.getElementById('l-email').value : document.getElementById('l-admin-email').value;
         const password = document.getElementById('l-pass').value;
-        if(loginMode === 'student' && !email.includes('@')) email += '@arcstudent.com';
-        const res = await fetch('/api/login', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ email, password, role: loginMode }) });
-        const data = await res.json();
         
-        if(data.success) {
-            const userData = {name: data.name, email: data.email, role: data.role};
-            localStorage.setItem('arc_user', JSON.stringify(userData));
-            user = userData;
-            document.getElementById('nav-login').style.display = 'none';
-            document.getElementById('nav-logout').style.display = 'block';
-            document.getElementById('nav-doubts').style.display = 'block'; 
-            if(user.role === 'admin') document.getElementById('nav-admin').style.display = 'block';
-            show('home'); 
-        } else { 
-            alert(data.message || "Invalid Email or Password"); 
+        // --- ADDED MANUAL VALIDATION TO FIX MOBILE BUG ---
+        if (!email || !password) {
+            alert("Please enter both email and password.");
+            return;
+        }
+
+        if(loginMode === 'student' && !email.includes('@')) email += '@arcstudent.com';
+        
+        try {
+            const res = await fetch('/api/login', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ email, password, role: loginMode }) });
+            const data = await res.json();
+            
+            if(data.success) {
+                const userData = {name: data.name, email: data.email, role: data.role};
+                localStorage.setItem('arc_user', JSON.stringify(userData));
+                user = userData;
+                document.getElementById('nav-login').style.display = 'none';
+                document.getElementById('nav-logout').style.display = 'block';
+                document.getElementById('nav-doubts').style.display = 'block'; 
+                if(user.role === 'admin') document.getElementById('nav-admin').style.display = 'block';
+                show('home'); 
+            } else { 
+                alert(data.message || "Invalid Email or Password"); 
+            }
+        } catch(e) {
+            alert("Server connection error. Please try again.");
         } 
     }
 
@@ -924,29 +936,33 @@
     async function loadAnnouncements() { try { const res = await fetch('/api/announcement'); const data = await res.json(); document.getElementById('anno-marquee').innerHTML = (data.list && data.list.length > 0) ? data.list.join(' &nbsp;|&nbsp; ') : "Welcome"; } catch(e) {} }
     
     async function loadBlogs() { 
-        const res = await fetch('/api/blogs'); 
-        const blogs = await res.json(); 
-        allBlogs = blogs; 
-        if (blogs.length === 0) {
-            document.getElementById('blog-grid').innerHTML = getEmptyStateGame("No Blogs Published Yet");
-        } else {
-            document.getElementById('blog-grid').innerHTML = blogs.map(b => `<div class="card blog-card" onclick="viewBlog('${b._id}')"><img src="${b.image || 'https://via.placeholder.com/300'}" alt="cover"><div class="blog-content-preview"><h3 class="blog-title">${b.title}</h3><small>${new Date(b.date).toLocaleDateString()}</small></div></div>`).join(''); 
-        }
+        try {
+            const res = await fetch('/api/blogs'); 
+            const blogs = await res.json(); 
+            allBlogs = blogs; 
+            if (blogs.length === 0) {
+                document.getElementById('blog-grid').innerHTML = getEmptyStateGame("No Blogs Published Yet");
+            } else {
+                document.getElementById('blog-grid').innerHTML = blogs.map(b => `<div class="card blog-card" onclick="viewBlog('${b._id}')"><img src="${b.image || 'https://via.placeholder.com/300'}" alt="cover"><div class="blog-content-preview"><h3 class="blog-title">${b.title}</h3><small>${new Date(b.date).toLocaleDateString()}</small></div></div>`).join(''); 
+            }
+        } catch(e) { console.error("Could not load blogs"); }
     }
     
     function viewBlog(id) { const blog = allBlogs.find(b => b._id === id); if(!blog) return; document.getElementById('bm-title').innerText = blog.title; document.getElementById('bm-date').innerText = new Date(blog.date).toLocaleDateString(); document.getElementById('bm-content').innerHTML = blog.content; const img = document.getElementById('bm-img'); if(blog.image) { img.src = blog.image; img.style.display='block'; } else img.style.display='none'; openModal('blog-modal'); }
     
     async function loadTests(isLive) { 
-        const res = await fetch('/api/tests'); 
-        const tests = await res.json(); 
-        const now = new Date(); 
-        const filteredTests = tests.filter(t => { const tEnd = t.endTime ? new Date(t.endTime) : null; if (isLive) { return t.isLive && tEnd && tEnd > now; } else { return !t.isLive || (t.isLive && tEnd && tEnd <= now); } }); 
-        const container = document.getElementById(isLive?'live-list':'test-list');
-        if (filteredTests.length === 0) {
-            container.innerHTML = getEmptyStateGame(`No ${isLive ? 'Live' : 'Practice'} Tests Available`);
-        } else {
-            container.innerHTML = filteredTests.map(t => `<div class="card" style="border-left: 5px solid ${isLive ? 'red' : 'gold'}"><h3>${t.title} ${t.accessCode ? '🔒' : ''}</h3><p>${t.duration} Mins</p>${isLive ? `<p style="color:red">Start: ${new Date(t.startTime).toLocaleString()}</p>` : ''}<button class="btn btn-gold" onclick="startTest('${t._id}', ${t.accessCode ? true : false}, '${t.startTime}')">Start</button></div>`).join(''); 
-        }
+        try {
+            const res = await fetch('/api/tests'); 
+            const tests = await res.json(); 
+            const now = new Date(); 
+            const filteredTests = tests.filter(t => { const tEnd = t.endTime ? new Date(t.endTime) : null; if (isLive) { return t.isLive && tEnd && tEnd > now; } else { return !t.isLive || (t.isLive && tEnd && tEnd <= now); } }); 
+            const container = document.getElementById(isLive?'live-list':'test-list');
+            if (filteredTests.length === 0) {
+                container.innerHTML = getEmptyStateGame(`No ${isLive ? 'Live' : 'Practice'} Tests Available`);
+            } else {
+                container.innerHTML = filteredTests.map(t => `<div class="card" style="border-left: 5px solid ${isLive ? 'red' : 'gold'}"><h3>${t.title} ${t.accessCode ? '🔒' : ''}</h3><p>${t.duration} Mins</p>${isLive ? `<p style="color:red">Start: ${new Date(t.startTime).toLocaleString()}</p>` : ''}<button class="btn btn-gold" onclick="startTest('${t._id}', ${t.accessCode ? true : false}, '${t.startTime}')">Start</button></div>`).join(''); 
+            }
+        } catch(e) { console.error("Could not load tests"); }
     }
     
     function startTimer(durationOrTimestamp) { 
@@ -1016,13 +1032,15 @@
     async function loadResults(type) { const res = await fetch('/api/student/results/online', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ email: user.email }) }); const data = await res.json(); document.getElementById('result-list').innerHTML = `<table><tr><th>Date</th><th>Test</th><th>Score</th><th>Action</th></tr>${data.results.filter(r => r.testType === type).map(r => `<tr><td>${new Date(r.date).toLocaleDateString()}</td><td>${r.testTitle}</td><td>${r.score}</td><td><button class="btn btn-gold btn-small" onclick="viewSheet('${r._id}')">View</button></td></tr>`).join('')}</table>`; }
     
     async function loadOfflineResults() { 
-        const res = await fetch('/api/results/offline'); 
-        const data = await res.json(); 
-        if (data.length === 0) {
-            document.getElementById('result-list').innerHTML = getEmptyStateGame("No Offline Results Uploaded");
-        } else {
-            document.getElementById('result-list').innerHTML = data.map(r => `<h3>${r.title}</h3><table><tr><th>Rank</th><th>Student</th><th>Marks</th><th>Sheet</th></tr>${r.records.map(rec => `<tr><td>#${rec.rank}</td><td>${rec.studentName}</td><td>${rec.obtainedMarks}</td><td>${rec.copyLink ? `<a href="${rec.copyLink}" target="_blank" style="color:blue">View</a>` : '-'}</td></tr>`).join('')}</table>`).join(''); 
-        }
+        try {
+            const res = await fetch('/api/results/offline'); 
+            const data = await res.json(); 
+            if (data.length === 0) {
+                document.getElementById('result-list').innerHTML = getEmptyStateGame("No Offline Results Uploaded");
+            } else {
+                document.getElementById('result-list').innerHTML = data.map(r => `<h3>${r.title}</h3><table><tr><th>Rank</th><th>Student</th><th>Marks</th><th>Sheet</th></tr>${r.records.map(rec => `<tr><td>#${rec.rank}</td><td>${rec.studentName}</td><td>${rec.obtainedMarks}</td><td>${rec.copyLink ? `<a href="${rec.copyLink}" target="_blank" style="color:blue">View</a>` : '-'}</td></tr>`).join('')}</table>`).join(''); 
+            }
+        } catch(e) { console.error(e); }
     }
     
     async function loadMaterials() { try { const res = await fetch('/api/materials'); allMats = await res.json(); } catch(e) {} }
@@ -1055,25 +1073,27 @@
     let editingScheduleId = null;
 
     async function loadSchedule() {
-        const res = await fetch('/api/schedule');
-        const data = await res.json();
-        const list = document.getElementById('schedule-list');
-        if(list) {
-            if (data.length === 0) {
-                list.innerHTML = `<tr><td colspan="4" style="border:none; padding:0;">${getEmptyStateGame("No Upcoming Schedule")}</td></tr>`;
-            } else {
-                const now = new Date();
-                list.innerHTML = data.map(s => {
-                    const time = new Date(s.time);
-                    const diff = (now - time) / 1000 / 60; 
-                    let status = "", colorClass = "";
-                    if (diff < 0) { status = "Upcoming"; colorClass = "color: blue;"; } 
-                    else if (diff >= 0 && diff <= 10) { status = "Live"; colorClass = "color: var(--green);"; } 
-                    else { status = "Expired"; colorClass = "color: var(--red);"; }
-                    return `<tr><td><span class="badge bg-green">${s.cls}</span></td><td><b>${s.topic}</b></td><td>${time.toLocaleString()}</td><td style="font-weight:bold; ${colorClass}" class="blink">${status}</td></tr>`;
-                }).join('');
+        try {
+            const res = await fetch('/api/schedule');
+            const data = await res.json();
+            const list = document.getElementById('schedule-list');
+            if(list) {
+                if (data.length === 0) {
+                    list.innerHTML = `<tr><td colspan="4" style="border:none; padding:0;">${getEmptyStateGame("No Upcoming Schedule")}</td></tr>`;
+                } else {
+                    const now = new Date();
+                    list.innerHTML = data.map(s => {
+                        const time = new Date(s.time);
+                        const diff = (now - time) / 1000 / 60; 
+                        let status = "", colorClass = "";
+                        if (diff < 0) { status = "Upcoming"; colorClass = "color: blue;"; } 
+                        else if (diff >= 0 && diff <= 10) { status = "Live"; colorClass = "color: var(--green);"; } 
+                        else { status = "Expired"; colorClass = "color: var(--red);"; }
+                        return `<tr><td><span class="badge bg-green">${s.cls}</span></td><td><b>${s.topic}</b></td><td>${time.toLocaleString()}</td><td style="font-weight:bold; ${colorClass}" class="blink">${status}</td></tr>`;
+                    }).join('');
+                }
             }
-        }
+        } catch(e) { console.error(e); }
     }
 
     async function loadManageSchedule() {
@@ -1109,21 +1129,23 @@
     }
 
     async function loadStories() {
-        const res = await fetch('/api/stories');
-        const data = await res.json();
-        const track = document.getElementById('story-track');
-        if(!track || data.length === 0) return;
-        const createCard = (s) => `
-            <div class="story-card">
-                <div class="story-header">
-                    <img src="${s.image || 'https://via.placeholder.com/50'}" class="story-img">
-                    <div class="story-info"><h4>${s.name}</h4><small>${s.status}</small></div>
-                    ${(user && user.role === 'admin') ? `<button onclick="deleteItem('story', '${s._id}')" style="margin-left:auto; color:red; border:none; background:none; cursor:pointer;">X</button>` : ''}
-                </div>
-                <div class="story-text">"${s.experience}"</div>
-            </div>`;
-        const cardsHTML = data.map(createCard).join('');
-        track.innerHTML = cardsHTML + cardsHTML + cardsHTML; 
+        try {
+            const res = await fetch('/api/stories');
+            const data = await res.json();
+            const track = document.getElementById('story-track');
+            if(!track || data.length === 0) return;
+            const createCard = (s) => `
+                <div class="story-card">
+                    <div class="story-header">
+                        <img src="${s.image || 'https://via.placeholder.com/50'}" class="story-img">
+                        <div class="story-info"><h4>${s.name}</h4><small>${s.status}</small></div>
+                        ${(user && user.role === 'admin') ? `<button onclick="deleteItem('story', '${s._id}')" style="margin-left:auto; color:red; border:none; background:none; cursor:pointer;">X</button>` : ''}
+                    </div>
+                    <div class="story-text">"${s.experience}"</div>
+                </div>`;
+            const cardsHTML = data.map(createCard).join('');
+            track.innerHTML = cardsHTML + cardsHTML + cardsHTML; 
+        } catch(e) { console.error(e); }
     }
 
     async function submitStory() {
@@ -1135,22 +1157,24 @@
     }
 
     async function loadVideosList() {
-        const res = await fetch('/api/videos');
-        const data = await res.json();
-        
-        if (data.length === 0) {
-            document.getElementById('video-list').innerHTML = getEmptyStateGame("No Video Lectures Added");
-        } else {
-            document.getElementById('video-list').innerHTML = data.map(v => `
-                <div class="card">
-                    <div class="video-wrapper">
-                        <iframe src="${v.link}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        try {
+            const res = await fetch('/api/videos');
+            const data = await res.json();
+            
+            if (data.length === 0) {
+                document.getElementById('video-list').innerHTML = getEmptyStateGame("No Video Lectures Added");
+            } else {
+                document.getElementById('video-list').innerHTML = data.map(v => `
+                    <div class="card">
+                        <div class="video-wrapper">
+                            <iframe src="${v.link}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+                        <h4 style="margin: 10px 0 5px 0;">${v.title}</h4>
+                        <small style="color:var(--gold); font-weight:bold;">${v.category}</small>
                     </div>
-                    <h4 style="margin: 10px 0 5px 0;">${v.title}</h4>
-                    <small style="color:var(--gold); font-weight:bold;">${v.category}</small>
-                </div>
-            `).join('');
-        }
+                `).join('');
+            }
+        } catch(e) { console.error(e); }
     }
 
     async function uploadVideo() {
@@ -1198,14 +1222,16 @@
 
     let currentPOTD = null;
     async function loadPOTD() {
-        const res = await fetch('/api/potd/today');
-        const data = await res.json();
-        if(data.success) {
-            currentPOTD = data.potd;
-            document.getElementById('potd-container').style.display = 'block';
-            document.getElementById('potd-content').innerHTML = currentPOTD.text + (currentPOTD.image ? `<br><img src="${currentPOTD.image}" style="max-height:150px; margin-top:10px; border-radius:8px;">` : '');
-            document.getElementById('potd-opts').innerHTML = currentPOTD.options.map((opt, i) => `<button class="btn" style="background:rgba(255,255,255,0.1); color:white; border:1px solid rgba(255,255,255,0.3); text-align:left;" onclick="checkPOTD(${i})">${opt}</button>`).join('');
-        }
+        try {
+            const res = await fetch('/api/potd/today');
+            const data = await res.json();
+            if(data.success) {
+                currentPOTD = data.potd;
+                document.getElementById('potd-container').style.display = 'block';
+                document.getElementById('potd-content').innerHTML = currentPOTD.text + (currentPOTD.image ? `<br><img src="${currentPOTD.image}" style="max-height:150px; margin-top:10px; border-radius:8px;">` : '');
+                document.getElementById('potd-opts').innerHTML = currentPOTD.options.map((opt, i) => `<button class="btn" style="background:rgba(255,255,255,0.1); color:white; border:1px solid rgba(255,255,255,0.3); text-align:left;" onclick="checkPOTD(${i})">${opt}</button>`).join('');
+            }
+        } catch(e) { console.error(e); }
     }
 
     function checkPOTD(sel) {
@@ -1322,17 +1348,19 @@
 
     let allRefTools = [];
     async function loadRefToolsStudent() {
-        const res = await fetch('/api/reftools');
-        allRefTools = await res.json();
-        const btnContainer = document.getElementById('ref-btn-container');
-        if(btnContainer) {
-            if(allRefTools.length > 0) {
-                btnContainer.innerHTML = allRefTools.map((rt, i) => `<button class="btn ${i===0?'btn-red':'btn-gold'} btn-small ref-btn-dynamic" onclick="showRefImg(${i}, this)">${rt.title}</button>`).join('');
-                showRefImg(0, btnContainer.firstChild);
-            } else {
-                document.getElementById('ref-img-display').innerHTML = getEmptyStateGame("No Reference Tools Uploaded");
+        try {
+            const res = await fetch('/api/reftools');
+            allRefTools = await res.json();
+            const btnContainer = document.getElementById('ref-btn-container');
+            if(btnContainer) {
+                if(allRefTools.length > 0) {
+                    btnContainer.innerHTML = allRefTools.map((rt, i) => `<button class="btn ${i===0?'btn-red':'btn-gold'} btn-small ref-btn-dynamic" onclick="showRefImg(${i}, this)">${rt.title}</button>`).join('');
+                    showRefImg(0, btnContainer.firstChild);
+                } else {
+                    document.getElementById('ref-img-display').innerHTML = getEmptyStateGame("No Reference Tools Uploaded");
+                }
             }
-        }
+        } catch(e) { console.error(e); }
     }
 
     function showRefImg(idx, btnElem) {
