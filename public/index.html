@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ARC CLASSES</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
     <style>
         :root { --primary: #0f172a; --gold: #fbbf24; --light: #f8fafc; --red: #ef4444; --green: #22c55e; }
         
@@ -119,17 +118,14 @@
         
         .empty-game-board { position: relative; width: 100%; max-width: 450px; height: 350px; background: linear-gradient(135deg, #1e293b, #0f172a); border-radius: 12px; margin: 0 auto; overflow: hidden; border: 2px solid var(--gold); box-shadow: inset 0 0 20px rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; flex-direction: column; color: white; }
         
-        /* Game 1: Memory (Updated for 30 boxes / 5x6 grid) */
         .memory-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding: 10px; width: 100%; height: 100%; box-sizing: border-box; align-content: center; }
         .memory-card { background: #334155; border: 2px solid var(--gold); height: 42px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: bold; cursor: pointer; font-size: 0.8rem; color: transparent; transition: background 0.3s; user-select: none; text-align: center; line-height: 1.1; overflow: hidden; }
         .memory-card.flipped { background: white; color: var(--primary); border-color: white; }
         .memory-card.matched { background: var(--green); color: white; border-color: var(--green); visibility: hidden; }
 
-        /* Game 2: Acid/Base */
         .ab-element { position: absolute; top: 0; left: 50%; transform: translateX(-50%); background: white; color: var(--primary); font-weight: bold; font-size: 1.5rem; padding: 10px 20px; border-radius: 8px; border: 2px solid var(--gold); box-shadow: 0 4px 10px rgba(0,0,0,0.5); transition: top 0.1s linear; }
         .ab-controls { position: absolute; bottom: 15px; width: 100%; display: flex; justify-content: space-around; padding: 0 20px; box-sizing: border-box; }
 
-        /* Game 3: Hangman (Save Flask) */
         .hm-word { font-size: 1.5rem; letter-spacing: 4px; font-weight: bold; margin-bottom: 10px; color: var(--gold); text-align: center; padding: 0 10px; }
         .hm-hint { font-size: 0.85rem; color: #cbd5e1; margin-bottom: 15px; font-style: italic; text-align: center; padding: 0 15px; }
         .hm-keyboard { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; max-width: 400px; padding: 0 10px; }
@@ -139,48 +135,50 @@
         .hm-flask-neck { width: 16px; height: 25px; border: 3px solid white; border-bottom: none; position: absolute; top: -25px; left: 14px; }
         .hm-liquid { position: absolute; bottom: 0; left: 0; width: 100%; height: 0%; background: var(--green); transition: height 0.3s, background 0.3s; }
 
-        /* Game 4: Coefficient */
         .coeff-eq { font-size: 1.3rem; font-weight: bold; background: rgba(0,0,0,0.5); padding: 10px 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #475569; text-align: center; max-width: 90%; }
         .coeff-num { position: absolute; width: 40px; height: 40px; border-radius: 50%; background: var(--gold); color: var(--primary); font-weight: bold; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3); user-select: none; z-index: 10; }
-    
-           /* 📖 --- 3D BOOK BLOG VIEWER CSS --- */
-.book-container {
-    position: relative;
-    width: 100%;
-    max-width: 600px;
-    height: 65vh;
-    min-height: 400px;
-    margin: 15px auto;
-    perspective: 1500px;
-    background: #e2e8f0;
-    border-radius: 8px;
-    padding: 10px;
-    box-shadow: inset 0 0 15px rgba(0,0,0,0.1);
-}
-.book-page {
-    position: absolute;
-    top: 10px; left: 10px; right: 10px; bottom: 10px;
-    background: #fffaf0; /* Slightly warm paper color */
-    border-radius: 2px 12px 12px 2px;
-    padding: 30px;
-    box-sizing: border-box;
-    overflow-y: auto;
-    box-shadow: -4px 0 10px rgba(0,0,0,0.1), 0 0 5px rgba(0,0,0,0.05);
-    transform-origin: left center;
-    transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1), opacity 0.8s;
-    backface-visibility: hidden;
-    border-left: 8px solid #cbd5e1; /* Book spine/binding */
-}
-/* Shadow effect for page curvature near binding */
-.book-page::before {
-    content: ''; position: absolute; top: 0; left: 0; width: 40px; height: 100%;
-    background: linear-gradient(to right, rgba(0,0,0,0.08), transparent); pointer-events: none;
-}
-.book-page.flipped {
-    transform: rotateY(-180deg);
-    opacity: 0; /* Fades out as it flips away */
-}
-    
+
+        /* 📖 --- 3D BOOK BLOG VIEWER CSS (FIXED) --- */
+        .book-container-simple {
+            background: #fffaf0;
+            border-radius: 2px 12px 12px 2px;
+            padding: 30px 20px;
+            box-shadow: -4px 0 10px rgba(0,0,0,0.1), 0 0 5px rgba(0,0,0,0.05);
+            border-left: 8px solid #cbd5e1;
+            position: relative;
+            transform-origin: left center;
+            margin-bottom: 15px;
+        }
+        .book-container-simple::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 40px; height: 100%;
+            background: linear-gradient(to right, rgba(0,0,0,0.08), transparent); pointer-events: none;
+        }
+        .book-container-simple img {
+            max-width: 100%; height: auto; display: block; margin: 0 auto 15px; border-radius: 6px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        @keyframes flipOutLeft {
+            from { transform: perspective(1500px) rotateY(0deg); opacity: 1; }
+            to { transform: perspective(1500px) rotateY(-90deg); opacity: 0; }
+        }
+        @keyframes flipInRight {
+            from { transform: perspective(1500px) rotateY(90deg); opacity: 0; }
+            to { transform: perspective(1500px) rotateY(0deg); opacity: 1; }
+        }
+        @keyframes flipOutRight {
+            from { transform: perspective(1500px) rotateY(0deg); opacity: 1; }
+            to { transform: perspective(1500px) rotateY(90deg); opacity: 0; }
+        }
+        @keyframes flipInLeft {
+            from { transform: perspective(1500px) rotateY(-90deg); opacity: 0; }
+            to { transform: perspective(1500px) rotateY(0deg); opacity: 1; }
+        }
+
+        .flip-out-left { animation: flipOutLeft 0.3s forwards ease-in; }
+        .flip-in-right { animation: flipInRight 0.3s forwards ease-out; }
+        .flip-out-right { animation: flipOutRight 0.3s forwards ease-in; }
+        .flip-in-left { animation: flipInLeft 0.3s forwards ease-out; }
+
     </style>
 </head>
 <body>
@@ -270,13 +268,13 @@
                 <form onsubmit="event.preventDefault(); doLogin()">
                     <label style="font-weight:bold;">Email / Username:</label>
                     <div id="student-input">
-                        <input id="l-email" placeholder="username" style="margin-top:5px;">
+                        <input id="l-email" placeholder="username" required style="margin-top:5px;">
                         <div style="text-align:right; font-size:0.8rem; color:#777;">@arcstudent.com</div>
                     </div>
                     <div id="teacher-input" style="display:none;"><input id="l-admin-email" placeholder="admin@arc.com" style="margin-top:5px;"></div>
                     
                     <label style="font-weight:bold; display:block; margin-top:10px;">Password:</label>
-                    <input id="l-pass" type="password" placeholder="Password" style="margin-top:5px;">
+                    <input id="l-pass" type="password" placeholder="Password" required style="margin-top:5px;">
                     
                     <button type="submit" class="btn btn-gold" style="width:100%; margin-top: 15px; border: 2px solid #333;">Submit</button>
                 </form>
@@ -482,8 +480,8 @@
     <div class="modal-content">
         <div class="close-corner" onclick="closeModal('blog-modal')">&times;</div>
         <h2 id="bm-title" style="margin-top:0; padding-right: 40px; color:var(--primary);"></h2>
-        <p id="bm-date" style="color:#777; font-size:0.9rem;"></p>
-        <img id="bm-img" style="width:100%; max-height:300px; object-fit:contain; margin-bottom:20px; display:none; background:#f0f0f0;">
+        <p id="bm-date" style="color:#777; font-size:0.9rem; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px;"></p>
+        
         <div id="bm-content" style="line-height:1.6; padding-bottom:20px;"></div>
     </div>
 </div>
@@ -604,8 +602,6 @@
             if(type === 'hangman') this.hangman.init(id);
             if(type === 'coeff') this.coeff.init(id);
         },
-        
-        // --- 1. MEMORY MATCH (Expanded to 30 Boxes / 15 Pairs) ---
         memory: {
             data: [
                 {s: 'H', n: 'Hydrogen'}, {s: 'He', n: 'Helium'}, {s: 'Li', n: 'Lithium'},
@@ -621,9 +617,7 @@
                     deck.push({ text: item.n, matchId: idx, type: 'name' });
                 });
                 deck.sort(() => Math.random() - 0.5);
-                
                 window.arcGames.instances[id] = { deck, flipped: [], matched: 0, lock: false };
-                
                 let html = `<div class="memory-grid">`;
                 deck.forEach((card, i) => {
                     html += `<div class="memory-card" id="mem-${id}-${i}" onclick="ArcGameEngine.memory.flip('${id}', ${i})">?</div>`;
@@ -634,7 +628,6 @@
             flip: function(id, index) {
                 const state = window.arcGames.instances[id];
                 if(state.lock || state.flipped.includes(index) || document.getElementById(`mem-${id}-${index}`).classList.contains('matched')) return;
-                
                 const cardEl = document.getElementById(`mem-${id}-${index}`);
                 cardEl.innerText = state.deck[index].text;
                 cardEl.classList.add('flipped');
@@ -644,7 +637,6 @@
                     state.lock = true;
                     const match1 = state.deck[state.flipped[0]].matchId;
                     const match2 = state.deck[state.flipped[1]].matchId;
-                    
                     setTimeout(() => {
                         if(match1 === match2) {
                             document.getElementById(`mem-${id}-${state.flipped[0]}`).classList.add('matched');
@@ -665,8 +657,6 @@
                 }
             }
         },
-
-        // --- 2. ACID OR BASE (Expanded to 40 items) ---
         acid: {
             data: [
                 {f: 'HCl', t: 'acid'}, {f: 'HNO₃', t: 'acid'}, {f: 'H₂SO₄', t: 'acid'}, {f: 'HBr', t: 'acid'},
@@ -735,36 +725,13 @@
                 document.getElementById(`game-bg-${id}`).innerHTML = `<h2 style="color:var(--red);">Game Over</h2><p>Score: ${score}</p><button class="btn btn-gold" onclick="ArcGameEngine.acid.init('${id}')">Restart</button>`;
             }
         },
-
-        // --- 3. HANGMAN (Expanded to 50 Words) ---
         hangman: {
             data: [
                 {w: 'PROTON', h: 'Positively charged subatomic particle'}, {w: 'NEUTRON', h: 'Neutral subatomic particle in the nucleus'},
                 {w: 'ELECTRON', h: 'Negatively charged subatomic particle'}, {w: 'ISOTOPE', h: 'Same atomic number, different mass'},
                 {w: 'CATION', h: 'A positively charged ion'}, {w: 'ANION', h: 'A negatively charged ion'},
                 {w: 'ANODE', h: 'Electrode where oxidation occurs'}, {w: 'CATHODE', h: 'Electrode where reduction occurs'},
-                {w: 'CATALYST', h: 'Lowers activation energy of a reaction'}, {w: 'MOLE', h: 'Avogadro’s number of particles'},
-                {w: 'TITRATION', h: 'Method to determine concentration'}, {w: 'POLYMER', h: 'Large molecule made of repeating subunits'},
-                {w: 'ISOMER', h: 'Same formula, different structure'}, {w: 'ORBITAL', h: 'Region of high electron probability'},
-                {w: 'VALENCE', h: 'Outermost electrons of an atom'}, {w: 'ENTHALPY', h: 'Total heat content of a system'},
-                {w: 'ENTROPY', h: 'Measure of disorder or randomness'}, {w: 'KINETICS', h: 'Study of reaction rates'},
-                {w: 'EQUILIBRIUM', h: 'Forward and reverse rates are equal'}, {w: 'OXIDATION', h: 'Loss of electrons in a reaction'},
-                {w: 'REDUCTION', h: 'Gain of electrons in a reaction'}, {w: 'HALOGEN', h: 'Group 17 non-metal elements'},
-                {w: 'NOBLEGAS', h: 'Highly unreactive Group 18 elements'}, {w: 'ALKALI', h: 'Highly reactive Group 1 metals'},
-                {w: 'COVALENT', h: 'Bond formed by sharing electrons'}, {w: 'IONIC', h: 'Bond formed by electron transfer'},
-                {w: 'METALLIC', h: 'Bond with a "sea of electrons"'}, {w: 'SUBLIMATION', h: 'Solid changing directly to gas'},
-                {w: 'SOLVENT', h: 'Substance that dissolves a solute'}, {w: 'SOLUTE', h: 'Substance dissolved in a solvent'},
-                {w: 'MOLARITY', h: 'Moles of solute per liter of solution'}, {w: 'YIELD', h: 'Amount of product produced'},
-                {w: 'BUFFER', h: 'Solution that resists pH changes'}, {w: 'INDICATOR', h: 'Changes color at specific pH'},
-                {w: 'ALKANE', h: 'Hydrocarbon with only single bonds'}, {w: 'ALKENE', h: 'Hydrocarbon with a double bond'},
-                {w: 'ALKYNE', h: 'Hydrocarbon with a triple bond'}, {w: 'AROMATIC', h: 'Contains a benzene ring'},
-                {w: 'KETONE', h: 'Carbonyl group bonded to two carbons'}, {w: 'ALDEHYDE', h: 'Carbonyl group bonded to a hydrogen'},
-                {w: 'ALCOHOL', h: 'Contains an -OH functional group'}, {w: 'AMINE', h: 'Derivative of ammonia (NH3)'},
-                {w: 'AMIDE', h: 'Carbonyl group bonded to nitrogen'}, {w: 'ESTER', h: 'Formed from carboxylic acid and alcohol'},
-                {w: 'ETHER', h: 'Oxygen bonded to two alkyl groups'}, {w: 'CARBOXYLIC', h: 'Contains a -COOH group'},
-                {w: 'CHIRAL', h: 'Molecule with non-superimposable mirror image'}, {w: 'RACEMIC', h: 'Equal mixture of two enantiomers'},
-                {w: 'NUCLEOPHILE', h: 'Electron-rich species (nucleus lover)'}, {w: 'ELECTROPHILE', h: 'Electron-poor species (electron lover)'},
-                {w: 'RADICAL', h: 'Species with an unpaired electron'}, {w: 'RESONANCE', h: 'Delocalization of electrons in a molecule'}
+                {w: 'CATALYST', h: 'Lowers activation energy of a reaction'}, {w: 'MOLE', h: 'Avogadro’s number of particles'}
             ],
             init: function(id) {
                 const item = this.data[Math.floor(Math.random() * this.data.length)];
@@ -820,39 +787,12 @@
                 this.renderWord(id);
             }
         },
-
-        // --- 4. COEFFICIENT CATCHER (Expanded to 100 Equations) ---
         coeff: {
             data: [
                 {eq: '[ ? ] H₂ + O₂ ➝ 2H₂O', a: 2}, {eq: 'H₂ + [ ? ] Cl₂ ➝ 2HCl', a: 1}, {eq: 'N₂ + [ ? ] H₂ ➝ 2NH₃', a: 3}, {eq: '[ ? ] Na + Cl₂ ➝ 2NaCl', a: 2},
-                {eq: 'CH₄ + [ ? ] O₂ ➝ CO₂ + 2H₂O', a: 2}, {eq: '2H₂O₂ ➝ 2H₂O + [ ? ] O₂', a: 1}, {eq: '[ ? ] K + Br₂ ➝ 2KBr', a: 2}, {eq: 'Mg + [ ? ] HCl ➝ MgCl₂ + H₂', a: 2},
-                {eq: '[ ? ] Fe + 3O₂ ➝ 2Fe₂O₃', a: 4}, {eq: '2Al + [ ? ] Cl₂ ➝ 2AlCl₃', a: 3}, {eq: 'C₃H₈ + [ ? ] O₂ ➝ 3CO₂ + 4H₂O', a: 5}, {eq: '[ ? ] Li + F₂ ➝ 2LiF', a: 2},
-                {eq: 'Ca + [ ? ] H₂O ➝ Ca(OH)₂ + H₂', a: 2}, {eq: '[ ? ] Ag + S ➝ Ag₂S', a: 2}, {eq: 'P₄ + [ ? ] O₂ ➝ P₄O₁₀', a: 5}, {eq: '[ ? ] SO₂ + O₂ ➝ 2SO₃', a: 2},
-                {eq: 'N₂ + [ ? ] O₂ ➝ 2NO₂', a: 2}, {eq: '[ ? ] KClO₃ ➝ 2KCl + 3O₂', a: 2}, {eq: '2Na + [ ? ] H₂O ➝ 2NaOH + H₂', a: 2}, {eq: '[ ? ] NH₃ + H₂SO₄ ➝ (NH₄)₂SO₄', a: 2},
-                {eq: 'Zn + [ ? ] HCl ➝ ZnCl₂ + H₂', a: 2}, {eq: '[ ? ] Cu + O₂ ➝ 2CuO', a: 2}, {eq: 'C₂H₄ + [ ? ] O₂ ➝ 2CO₂ + 2H₂O', a: 3}, {eq: '[ ? ] K + I₂ ➝ 2KI', a: 2},
-                {eq: 'BaCl₂ + [ ? ] AgNO₃ ➝ 2AgCl + Ba(NO₃)₂', a: 2}, {eq: '[ ? ] Al + 3H₂SO₄ ➝ Al₂(SO₄)₃ + 3H₂', a: 2}, {eq: 'SiO₂ + [ ? ] HF ➝ SiF₄ + 2H₂O', a: 4}, {eq: '[ ? ] H₂S + 3O₂ ➝ 2SO₂ + 2H₂O', a: 2},
-                {eq: 'CS₂ + [ ? ] O₂ ➝ CO₂ + 2SO₂', a: 3}, {eq: '[ ? ] Fe + 3Cl₂ ➝ 2FeCl₃', a: 2}, {eq: 'MnO₂ + [ ? ] HCl ➝ MnCl₂ + Cl₂ + 2H₂O', a: 4}, {eq: '[ ? ] Na + O₂ ➝ Na₂O₂', a: 2},
-                {eq: 'C₂H₆ + [ ? ] O₂ ➝ 4CO₂ + 6H₂O (x2)', a: 7}, /* Special case but handled */ {eq: '[ ? ] CO + O₂ ➝ 2CO₂', a: 2}, {eq: '2NO + [ ? ] O₂ ➝ 2NO₂', a: 1}, {eq: '[ ? ] H₂ + CO ➝ CH₃OH', a: 2},
-                {eq: 'C + [ ? ] H₂ ➝ CH₄', a: 2}, {eq: '[ ? ] LiOH + CO₂ ➝ Li₂CO₃ + H₂O', a: 2}, {eq: 'CaCO₃ ➝ CaO + [ ? ] CO₂', a: 1}, {eq: '[ ? ] Al + 3Br₂ ➝ 2AlBr₃', a: 2},
-                {eq: 'Fe₂O₃ + [ ? ] CO ➝ 2Fe + 3CO₂', a: 3}, {eq: '[ ? ] K + 2H₂O ➝ 2KOH + H₂', a: 2}, {eq: '2H₂S + [ ? ] O₂ ➝ 2H₂O + 2S', a: 1}, {eq: '[ ? ] Mg + O₂ ➝ 2MgO', a: 2},
-                {eq: 'SO₂ + [ ? ] H₂S ➝ 3S + 2H₂O', a: 2}, {eq: '[ ? ] NO₂ + H₂O ➝ HNO₃ + HNO₂', a: 2}, {eq: 'N₂O₄ ➝ [ ? ] NO₂', a: 2}, {eq: '[ ? ] P + 3Cl₂ ➝ 2PCl₃', a: 2},
-                {eq: '3Fe + [ ? ] H₂O ➝ Fe₃O₄ + 4H₂', a: 4}, {eq: '[ ? ] NaN₃ ➝ 2Na + 3N₂', a: 2}, {eq: '2HNO₃ + [ ? ] NO ➝ 3NO₂ + H₂O', a: 1}, {eq: '[ ? ] KOH + H₂SO₄ ➝ K₂SO₄ + 2H₂O', a: 2},
-                {eq: 'C₂H₂ + [ ? ] H₂ ➝ C₂H₆', a: 2}, {eq: '[ ? ] B + 3O₂ ➝ 2B₂O₃', a: 4}, {eq: 'TiCl₄ + [ ? ] Mg ➝ Ti + 2MgCl₂', a: 2}, {eq: '[ ? ] Rb + 2H₂O ➝ 2RbOH + H₂', a: 2},
-                {eq: 'SiCl₄ + [ ? ] H₂O ➝ H₄SiO₄ + 4HCl', a: 4}, {eq: '[ ? ] HI ➝ H₂ + I₂', a: 2}, {eq: '2Au₂O₃ ➝ 4Au + [ ? ] O₂', a: 3}, {eq: '[ ? ] C + O₂ ➝ 2CO', a: 2},
-                {eq: 'Cl₂ + [ ? ] NaBr ➝ 2NaCl + Br₂', a: 2}, {eq: '[ ? ] O₃ ➝ 3O₂', a: 2}, {eq: 'H₂SO₄ + [ ? ] NaOH ➝ Na₂SO₄ + 2H₂O', a: 2}, {eq: '[ ? ] Cu + S ➝ Cu₂S', a: 2},
-                {eq: 'Pb(NO₃)₂ + [ ? ] KI ➝ PbI₂ + 2KNO₃', a: 2}, {eq: '[ ? ] Al + 6HCl ➝ 2AlCl₃ + 3H₂', a: 2}, {eq: 'FeCl₃ + [ ? ] NaOH ➝ Fe(OH)₃ + 3NaCl', a: 3}, {eq: '[ ? ] C₂H₄ + O₂ ➝ 2CO + 4H₂', a: 2},
-                {eq: 'N₂H₄ + [ ? ] H₂O₂ ➝ N₂ + 4H₂O', a: 2}, {eq: '[ ? ] KClO₃ ➝ 2KCl + 3O₂', a: 2}, {eq: 'PCl₅ + [ ? ] H₂O ➝ H₃PO₄ + 5HCl', a: 4}, {eq: '[ ? ] Na + 2H₂O ➝ 2NaOH + H₂', a: 2},
-                {eq: 'SF₄ + [ ? ] H₂O ➝ SO₂ + 4HF', a: 2}, {eq: '[ ? ] Fe + O₂ ➝ 2FeO', a: 2}, {eq: '2C₂H₆ + [ ? ] O₂ ➝ 4CO₂ + 6H₂O', a: 7}, {eq: '[ ? ] Ag + Cl₂ ➝ 2AgCl', a: 2},
-                {eq: 'Na₂CO₃ + [ ? ] HCl ➝ 2NaCl + H₂O + CO₂', a: 2}, {eq: '[ ? ] Al + 3CuCl₂ ➝ 2AlCl₃ + 3Cu', a: 2}, {eq: 'C + [ ? ] O₂ ➝ CO₂', a: 1}, {eq: '[ ? ] NaHCO₃ ➝ Na₂CO₃ + H₂O + CO₂', a: 2},
-                {eq: 'Mg(OH)₂ + [ ? ] HCl ➝ MgCl₂ + 2H₂O', a: 2}, {eq: '[ ? ] K + Cl₂ ➝ 2KCl', a: 2}, {eq: 'C₂H₅OH + [ ? ] O₂ ➝ 2CO₂ + 3H₂O', a: 3}, {eq: '[ ? ] H₂ + C ➝ CH₄', a: 2},
-                {eq: '2H₃PO₄ + [ ? ] Ca(OH)₂ ➝ Ca₃(PO₄)₂ + 6H₂O', a: 3}, {eq: '[ ? ] NO + O₂ ➝ 2NO₂', a: 2}, {eq: 'H₂ + [ ? ] F₂ ➝ 2HF', a: 1}, {eq: '[ ? ] P + 5Cl₂ ➝ 2PCl₅', a: 2},
-                {eq: '2Cr + [ ? ] Cl₂ ➝ 2CrCl₃', a: 3}, {eq: '[ ? ] N₂O ➝ 2N₂ + O₂', a: 2}, {eq: 'ZnS + [ ? ] O₂ ➝ 2ZnO + 2SO₂', a: 3}, {eq: '[ ? ] CO + O₂ ➝ 2CO₂', a: 2},
-                {eq: '2KMnO₄ + [ ? ] HCl ➝ 2KCl+2MnCl₂+5Cl₂+8H₂O', a: 16}, /* Trick question but floating 1-5 will miss, lets fix to simple */ 
-                {eq: '[ ? ] Cu + S ➝ Cu₂S', a: 2}, {eq: 'H₂SO₄ + [ ? ] NH₃ ➝ (NH₄)₂SO₄', a: 2}, {eq: '[ ? ] Fe + 3H₂O ➝ Fe₂O₃ + 3H₂', a: 2}, {eq: 'CaC₂ + [ ? ] H₂O ➝ Ca(OH)₂ + C₂H₂', a: 2},
-                {eq: '[ ? ] Na + O₂ ➝ Na₂O₂', a: 2}, {eq: 'CH₄ + [ ? ] Cl₂ ➝ CCl₄ + 4HCl', a: 4}, {eq: '[ ? ] Al + 3O₂ ➝ 2Al₂O₃', a: 4}, {eq: 'N₂ + [ ? ] O₂ ➝ 2NO', a: 1}
+                {eq: 'CH₄ + [ ? ] O₂ ➝ CO₂ + 2H₂O', a: 2}, {eq: '2H₂O₂ ➝ 2H₂O + [ ? ] O₂', a: 1}, {eq: '[ ? ] K + Br₂ ➝ 2KBr', a: 2}, {eq: 'Mg + [ ? ] HCl ➝ MgCl₂ + H₂', a: 2}
             ],
             init: function(id) {
-                // Ensure we only pick equations where the answer is between 1 and 5
                 const validData = this.data.filter(item => item.a >= 1 && item.a <= 5);
                 const item = validData[Math.floor(Math.random() * validData.length)];
                 window.arcGames.instances[id] = { ans: item.a };
@@ -893,9 +833,9 @@
             }
         }
     };
-    // ==========================================
 
     function insHTML(html) { document.execCommand('insertHTML', false, html); }
+
     const toolbarHTML = `
         <div class="toolbar" style="background:#e2e8f0; padding:10px; border-radius:6px 6px 0 0; display:flex; gap:8px; flex-wrap:wrap; align-items:center; border:1px solid #ccc; border-bottom:none;">
             <select onchange="exec('fontName', this.value)" style="padding:5px; border-radius:4px;" title="Font">
@@ -923,7 +863,7 @@
                 <option value=" &darr; ">&darr; (Ppt)</option>
                 <option value=" &#8710; ">&#8710; (Heat)</option>
             </select>
-            <button class="tool-btn" onclick="insHTML('<div class=\\'page-break\\' style=\\'width:100%; text-align:center; border-bottom:2px dashed var(--gold); margin:20px 0; padding-bottom:5px; color:var(--primary); font-weight:bold;\\'>📖 --- PAGE BREAK --- 📖</div>')" title="Insert Page Break" style="background: var(--gold); border: 1px solid #333; cursor:pointer;">📖 Break</button>
+            <button class="tool-btn" onclick="insHTML('<div class=\\'page-break\\' style=\\'width:100%; text-align:center; border-bottom:2px dashed var(--gold); margin:20px 0; padding-bottom:5px; color:var(--primary); font-weight:bold;\\'>📖 --- PAGE BREAK --- 📖</div>')" title="Insert Page Break" style="background: var(--gold); border: 1px solid #333; cursor:pointer; padding: 4px 8px; font-weight: bold; border-radius: 4px;">📖 Break</button>
         </div>`;
 
     function showAdm(tab) {
@@ -993,7 +933,7 @@
         }
         else if (tab === 'blog') {
             editingBlogId = null;
-            c.innerHTML = `<h3>Post Blog</h3><input id="b-title" placeholder="Blog Title"><div style="margin:10px 0;"><b>Cover:</b> <input type="file" onchange="encodeImg(this, 'b-cover-prev')"><img id="b-cover-prev" style="height:100px; display:none;"></div>${toolbarHTML}<div id="b-content" class="editor" contenteditable="true" style="min-height:300px; margin-top:0; border-radius:0 0 6px 6px;"></div><button class="btn btn-gold" style="width:100%; margin-top:15px;" onclick="postBlog()">PUBLISH BLOG</button>`;
+            c.innerHTML = `<h3>Post Blog</h3><input id="b-title" placeholder="Blog Title"><div style="margin:10px 0;"><b>Cover:</b> <input type="file" onchange="encodeImg(this, 'b-cover-prev')"><img id="b-cover-prev" style="height:100px; display:none;"></div>${toolbarHTML}<div id="b-content" class="editor" contenteditable="true" style="min-height:300px; margin-top:0; border-radius:0 0 6px 6px; padding: 10px; border: 1px solid #ccc;"></div><button class="btn btn-gold" style="width:100%; margin-top:15px;" onclick="postBlog()">PUBLISH BLOG</button>`;
         }
         else if (tab === 'offline') {
             if(!editingOfflineId) offlineDraft = []; 
@@ -1250,32 +1190,21 @@
     async function doLogin() { 
         let email = loginMode === 'student' ? document.getElementById('l-email').value : document.getElementById('l-admin-email').value;
         const password = document.getElementById('l-pass').value;
-        
-        if (!email || !password) {
-            alert("Please enter both email and password.");
-            return;
-        }
-
         if(loginMode === 'student' && !email.includes('@')) email += '@arcstudent.com';
+        const res = await fetch('/api/login', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ email, password, role: loginMode }) });
+        const data = await res.json();
         
-        try {
-            const res = await fetch('/api/login', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ email, password, role: loginMode }) });
-            const data = await res.json();
-            
-            if(data.success) {
-                const userData = {name: data.name, email: data.email, role: data.role};
-                localStorage.setItem('arc_user', JSON.stringify(userData));
-                user = userData;
-                document.getElementById('nav-login').style.display = 'none';
-                document.getElementById('nav-logout').style.display = 'block';
-                document.getElementById('nav-doubts').style.display = 'block'; 
-                if(user.role === 'admin') document.getElementById('nav-admin').style.display = 'block';
-                show('home'); 
-            } else { 
-                alert(data.message || "Invalid Email or Password"); 
-            }
-        } catch(e) {
-            alert("Server connection error. Please try again.");
+        if(data.success) {
+            const userData = {name: data.name, email: data.email, role: data.role};
+            localStorage.setItem('arc_user', JSON.stringify(userData));
+            user = userData;
+            document.getElementById('nav-login').style.display = 'none';
+            document.getElementById('nav-logout').style.display = 'block';
+            document.getElementById('nav-doubts').style.display = 'block'; 
+            if(user.role === 'admin') document.getElementById('nav-admin').style.display = 'block';
+            show('home'); 
+        } else { 
+            alert(data.message || "Invalid Email or Password"); 
         } 
     }
 
@@ -1290,19 +1219,24 @@
     async function loadAnnouncements() { try { const res = await fetch('/api/announcement'); const data = await res.json(); document.getElementById('anno-marquee').innerHTML = (data.list && data.list.length > 0) ? data.list.join(' &nbsp;|&nbsp; ') : "Welcome"; } catch(e) {} }
     
     async function loadBlogs() { 
-        try {
-            const res = await fetch('/api/blogs'); 
-            const blogs = await res.json(); 
-            allBlogs = blogs; 
-            if (blogs.length === 0) {
-                document.getElementById('blog-grid').innerHTML = getEmptyStateGame("No Blogs Published Yet");
-            } else {
-                document.getElementById('blog-grid').innerHTML = blogs.map(b => `<div class="card blog-card" onclick="viewBlog('${b._id}')"><img src="${b.image || 'https://via.placeholder.com/300'}" alt="cover"><div class="blog-content-preview"><h3 class="blog-title">${b.title}</h3><small>${new Date(b.date).toLocaleDateString()}</small></div></div>`).join(''); 
-            }
-        } catch(e) { console.error("Could not load blogs"); }
+        const res = await fetch('/api/blogs'); 
+        const blogs = await res.json(); 
+        allBlogs = blogs; 
+        if (blogs.length === 0) {
+            document.getElementById('blog-grid').innerHTML = getEmptyStateGame("No Blogs Published Yet");
+        } else {
+            document.getElementById('blog-grid').innerHTML = blogs.map(b => `<div class="card blog-card" onclick="viewBlog('${b._id}')"><img src="${b.image || 'https://via.placeholder.com/300'}" alt="cover"><div class="blog-content-preview"><h3 class="blog-title">${b.title}</h3><small>${new Date(b.date).toLocaleDateString()}</small></div></div>`).join(''); 
+        }
     }
     
-function viewBlog(id) { 
+    // ==========================================
+    // 📖 --- 3D BOOK BLOG VIEWER LOGIC ---
+    // ==========================================
+    window.arcBlogChunks = [];
+    window.currentBookPage = 0;
+    window.arcBlogImage = "";
+
+    function viewBlog(id) { 
         const blog = allBlogs.find(b => b._id === id); 
         if(!blog) return; 
         
@@ -1314,62 +1248,78 @@ function viewBlog(id) {
         let chunks = rawChunks.filter(c => c.trim() !== '');
         if(chunks.length === 0) chunks = ["<p>No content available.</p>"];
         
-        // Generate the 3D pages
-        let pagesHtml = chunks.map((chunk, i) => `
-            <div class="book-page" id="book-page-${i}" style="z-index: ${chunks.length - i}">
-                ${i===0 && blog.image ? `<img src="${blog.image}" style="width:100%; max-height:200px; object-fit:contain; margin-bottom:15px; border-radius:4px; border:1px solid #ccc;">` : ''}
-                <div class="page-content">${chunk}</div>
-                <div style="position:absolute; bottom:15px; right:25px; color:#94a3b8; font-weight:bold;">Page ${i + 1} of ${chunks.length}</div>
-            </div>
-        `).join('');
-
-        // Inject into modal
-        document.getElementById('bm-content').innerHTML = `
-            <div style="display:flex; justify-content:space-between; margin-bottom: 10px;">
-                <button class="btn btn-primary" style="background:#334155; color:white;" onclick="turnBlogPage('prev')">◀ Prev Page</button>
-                <button class="btn btn-primary" style="background:#334155; color:white;" onclick="turnBlogPage('next')">Next Page ▶</button>
-            </div>
-            <div class="book-container">
-                ${pagesHtml}
-            </div>
-        `;
+        window.arcBlogChunks = chunks;
+        window.arcBlogImage = blog.image;
+        window.currentBookPage = 0;
         
-        // Hide the old simple image as it's now embedded in Page 1
+        // Hide the old simple image element, as it's now embedded in Page 1 of the book
         document.getElementById('bm-img').style.display = 'none';
         
-        window.currentBookPage = 0;
-        window.totalBookPages = chunks.length;
+        renderBlogPage('');
         openModal('blog-modal'); 
     }
 
-    // The physics of flipping the pages
-    window.turnBlogPage = function(dir) {
-        if(dir === 'next' && window.currentBookPage < window.totalBookPages - 1) {
-            let page = document.getElementById(`book-page-${window.currentBookPage}`);
-            page.classList.add('flipped');
-            setTimeout(() => { page.style.opacity = '0'; }, 200); // Fades halfway through the flip
-            window.currentBookPage++;
-        } else if (dir === 'prev' && window.currentBookPage > 0) {
-            window.currentBookPage--;
-            let page = document.getElementById(`book-page-${window.currentBookPage}`);
-            page.style.opacity = '1';
-            page.classList.remove('flipped');
-        }
-    }
+    window.renderBlogPage = function(dir) {
+        let chunk = window.arcBlogChunks[window.currentBookPage];
+        let isFirst = window.currentBookPage === 0;
+        let isLast = window.currentBookPage === window.arcBlogChunks.length - 1;
         
-    async function loadTests(isLive) { 
-        try {
-            const res = await fetch('/api/tests'); 
-            const tests = await res.json(); 
-            const now = new Date(); 
-            const filteredTests = tests.filter(t => { const tEnd = t.endTime ? new Date(t.endTime) : null; if (isLive) { return t.isLive && tEnd && tEnd > now; } else { return !t.isLive || (t.isLive && tEnd && tEnd <= now); } }); 
-            const container = document.getElementById(isLive?'live-list':'test-list');
-            if (filteredTests.length === 0) {
-                container.innerHTML = getEmptyStateGame(`No ${isLive ? 'Live' : 'Practice'} Tests Available`);
-            } else {
-                container.innerHTML = filteredTests.map(t => `<div class="card" style="border-left: 5px solid ${isLive ? 'red' : 'gold'}"><h3>${t.title} ${t.accessCode ? '🔒' : ''}</h3><p>${t.duration} Mins</p>${isLive ? `<p style="color:red">Start: ${new Date(t.startTime).toLocaleString()}</p>` : ''}<button class="btn btn-gold" onclick="startTest('${t._id}', ${t.accessCode ? true : false}, '${t.startTime}')">Start</button></div>`).join(''); 
+        let animClass = dir === 'next' ? 'flip-in-right' : (dir === 'prev' ? 'flip-in-left' : '');
+
+        let html = `
+            <div style="display:flex; justify-content:space-between; margin-bottom: 10px;">
+                <button class="btn btn-primary" style="background:#334155; color:white; visibility: ${isFirst ? 'hidden' : 'visible'}; padding: 8px 15px; border-radius: 20px;" onclick="turnBlogPage('prev')">◀ Prev Page</button>
+                <button class="btn btn-primary" style="background:#334155; color:white; visibility: ${isLast ? 'hidden' : 'visible'}; padding: 8px 15px; border-radius: 20px;" onclick="turnBlogPage('next')">Next Page ▶</button>
+            </div>
+            
+            <div class="book-container-simple ${animClass}" id="book-page-wrap">
+                ${isFirst && window.arcBlogImage ? `<img src="${window.arcBlogImage}">` : ''}
+                <div class="page-content" style="line-height: 1.6;">${chunk}</div>
+                <div style="text-align:right; color:#94a3b8; font-weight:bold; margin-top: 30px; border-top: 1px dashed #cbd5e1; padding-top: 10px;">Page ${window.currentBookPage + 1} of ${window.arcBlogChunks.length}</div>
+            </div>
+            
+            <div style="display:flex; justify-content:space-between; margin-top: 10px;">
+                <button class="btn btn-primary" style="background:#334155; color:white; visibility: ${isFirst ? 'hidden' : 'visible'}; padding: 8px 15px; border-radius: 20px;" onclick="turnBlogPage('prev')">◀ Prev Page</button>
+                <button class="btn btn-primary" style="background:#334155; color:white; visibility: ${isLast ? 'hidden' : 'visible'}; padding: 8px 15px; border-radius: 20px;" onclick="turnBlogPage('next')">Next Page ▶</button>
+            </div>
+        `;
+        document.getElementById('bm-content').innerHTML = html;
+        
+        // Ensure the modal scrolls back to the top when turning pages
+        document.getElementById('blog-modal').scrollTop = 0;
+    }
+
+    window.turnBlogPage = function(dir) {
+        let wrap = document.getElementById('book-page-wrap');
+        if(!wrap) return;
+        
+        // Remove incoming animation classes, add outgoing animation classes
+        wrap.classList.remove('flip-in-right', 'flip-in-left');
+        wrap.classList.add(dir === 'next' ? 'flip-out-left' : 'flip-out-right');
+        
+        // Wait for flip out animation, then swap DOM content
+        setTimeout(() => {
+            if (dir === 'next' && window.currentBookPage < window.arcBlogChunks.length - 1) {
+                window.currentBookPage++;
+            } else if (dir === 'prev' && window.currentBookPage > 0) {
+                window.currentBookPage--;
             }
-        } catch(e) { console.error("Could not load tests"); }
+            renderBlogPage(dir);
+        }, 250); 
+    }
+    // ==========================================
+    
+    async function loadTests(isLive) { 
+        const res = await fetch('/api/tests'); 
+        const tests = await res.json(); 
+        const now = new Date(); 
+        const filteredTests = tests.filter(t => { const tEnd = t.endTime ? new Date(t.endTime) : null; if (isLive) { return t.isLive && tEnd && tEnd > now; } else { return !t.isLive || (t.isLive && tEnd && tEnd <= now); } }); 
+        const container = document.getElementById(isLive?'live-list':'test-list');
+        if (filteredTests.length === 0) {
+            container.innerHTML = getEmptyStateGame(`No ${isLive ? 'Live' : 'Practice'} Tests Available`);
+        } else {
+            container.innerHTML = filteredTests.map(t => `<div class="card" style="border-left: 5px solid ${isLive ? 'red' : 'gold'}"><h3>${t.title} ${t.accessCode ? '🔒' : ''}</h3><p>${t.duration} Mins</p>${isLive ? `<p style="color:red">Start: ${new Date(t.startTime).toLocaleString()}</p>` : ''}<button class="btn btn-gold" onclick="startTest('${t._id}', ${t.accessCode ? true : false}, '${t.startTime}')">Start</button></div>`).join(''); 
+        }
     }
     
     function startTimer(durationOrTimestamp) { 
@@ -1439,15 +1389,13 @@ function viewBlog(id) {
     async function loadResults(type) { const res = await fetch('/api/student/results/online', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ email: user.email }) }); const data = await res.json(); document.getElementById('result-list').innerHTML = `<table><tr><th>Date</th><th>Test</th><th>Score</th><th>Action</th></tr>${data.results.filter(r => r.testType === type).map(r => `<tr><td>${new Date(r.date).toLocaleDateString()}</td><td>${r.testTitle}</td><td>${r.score}</td><td><button class="btn btn-gold btn-small" onclick="viewSheet('${r._id}')">View</button></td></tr>`).join('')}</table>`; }
     
     async function loadOfflineResults() { 
-        try {
-            const res = await fetch('/api/results/offline'); 
-            const data = await res.json(); 
-            if (data.length === 0) {
-                document.getElementById('result-list').innerHTML = getEmptyStateGame("No Offline Results Uploaded");
-            } else {
-                document.getElementById('result-list').innerHTML = data.map(r => `<h3>${r.title}</h3><table><tr><th>Rank</th><th>Student</th><th>Marks</th><th>Sheet</th></tr>${r.records.map(rec => `<tr><td>#${rec.rank}</td><td>${rec.studentName}</td><td>${rec.obtainedMarks}</td><td>${rec.copyLink ? `<a href="${rec.copyLink}" target="_blank" style="color:blue">View</a>` : '-'}</td></tr>`).join('')}</table>`).join(''); 
-            }
-        } catch(e) { console.error(e); }
+        const res = await fetch('/api/results/offline'); 
+        const data = await res.json(); 
+        if (data.length === 0) {
+            document.getElementById('result-list').innerHTML = getEmptyStateGame("No Offline Results Uploaded");
+        } else {
+            document.getElementById('result-list').innerHTML = data.map(r => `<h3>${r.title}</h3><table><tr><th>Rank</th><th>Student</th><th>Marks</th><th>Sheet</th></tr>${r.records.map(rec => `<tr><td>#${rec.rank}</td><td>${rec.studentName}</td><td>${rec.obtainedMarks}</td><td>${rec.copyLink ? `<a href="${rec.copyLink}" target="_blank" style="color:blue">View</a>` : '-'}</td></tr>`).join('')}</table>`).join(''); 
+        }
     }
     
     async function loadMaterials() { try { const res = await fetch('/api/materials'); allMats = await res.json(); } catch(e) {} }
@@ -1480,27 +1428,25 @@ function viewBlog(id) {
     let editingScheduleId = null;
 
     async function loadSchedule() {
-        try {
-            const res = await fetch('/api/schedule');
-            const data = await res.json();
-            const list = document.getElementById('schedule-list');
-            if(list) {
-                if (data.length === 0) {
-                    list.innerHTML = `<tr><td colspan="4" style="border:none; padding:0;">${getEmptyStateGame("No Upcoming Schedule")}</td></tr>`;
-                } else {
-                    const now = new Date();
-                    list.innerHTML = data.map(s => {
-                        const time = new Date(s.time);
-                        const diff = (now - time) / 1000 / 60; 
-                        let status = "", colorClass = "";
-                        if (diff < 0) { status = "Upcoming"; colorClass = "color: blue;"; } 
-                        else if (diff >= 0 && diff <= 10) { status = "Live"; colorClass = "color: var(--green);"; } 
-                        else { status = "Expired"; colorClass = "color: var(--red);"; }
-                        return `<tr><td><span class="badge bg-green">${s.cls}</span></td><td><b>${s.topic}</b></td><td>${time.toLocaleString()}</td><td style="font-weight:bold; ${colorClass}" class="blink">${status}</td></tr>`;
-                    }).join('');
-                }
+        const res = await fetch('/api/schedule');
+        const data = await res.json();
+        const list = document.getElementById('schedule-list');
+        if(list) {
+            if (data.length === 0) {
+                list.innerHTML = `<tr><td colspan="4" style="border:none; padding:0;">${getEmptyStateGame("No Upcoming Schedule")}</td></tr>`;
+            } else {
+                const now = new Date();
+                list.innerHTML = data.map(s => {
+                    const time = new Date(s.time);
+                    const diff = (now - time) / 1000 / 60; 
+                    let status = "", colorClass = "";
+                    if (diff < 0) { status = "Upcoming"; colorClass = "color: blue;"; } 
+                    else if (diff >= 0 && diff <= 10) { status = "Live"; colorClass = "color: var(--green);"; } 
+                    else { status = "Expired"; colorClass = "color: var(--red);"; }
+                    return `<tr><td><span class="badge bg-green">${s.cls}</span></td><td><b>${s.topic}</b></td><td>${time.toLocaleString()}</td><td style="font-weight:bold; ${colorClass}" class="blink">${status}</td></tr>`;
+                }).join('');
             }
-        } catch(e) { console.error(e); }
+        }
     }
 
     async function loadManageSchedule() {
@@ -1536,23 +1482,21 @@ function viewBlog(id) {
     }
 
     async function loadStories() {
-        try {
-            const res = await fetch('/api/stories');
-            const data = await res.json();
-            const track = document.getElementById('story-track');
-            if(!track || data.length === 0) return;
-            const createCard = (s) => `
-                <div class="story-card">
-                    <div class="story-header">
-                        <img src="${s.image || 'https://via.placeholder.com/50'}" class="story-img">
-                        <div class="story-info"><h4>${s.name}</h4><small>${s.status}</small></div>
-                        ${(user && user.role === 'admin') ? `<button onclick="deleteItem('story', '${s._id}')" style="margin-left:auto; color:red; border:none; background:none; cursor:pointer;">X</button>` : ''}
-                    </div>
-                    <div class="story-text">"${s.experience}"</div>
-                </div>`;
-            const cardsHTML = data.map(createCard).join('');
-            track.innerHTML = cardsHTML + cardsHTML + cardsHTML; 
-        } catch(e) { console.error(e); }
+        const res = await fetch('/api/stories');
+        const data = await res.json();
+        const track = document.getElementById('story-track');
+        if(!track || data.length === 0) return;
+        const createCard = (s) => `
+            <div class="story-card">
+                <div class="story-header">
+                    <img src="${s.image || 'https://via.placeholder.com/50'}" class="story-img">
+                    <div class="story-info"><h4>${s.name}</h4><small>${s.status}</small></div>
+                    ${(user && user.role === 'admin') ? `<button onclick="deleteItem('story', '${s._id}')" style="margin-left:auto; color:red; border:none; background:none; cursor:pointer;">X</button>` : ''}
+                </div>
+                <div class="story-text">"${s.experience}"</div>
+            </div>`;
+        const cardsHTML = data.map(createCard).join('');
+        track.innerHTML = cardsHTML + cardsHTML + cardsHTML; 
     }
 
     async function submitStory() {
@@ -1564,24 +1508,22 @@ function viewBlog(id) {
     }
 
     async function loadVideosList() {
-        try {
-            const res = await fetch('/api/videos');
-            const data = await res.json();
-            
-            if (data.length === 0) {
-                document.getElementById('video-list').innerHTML = getEmptyStateGame("No Video Lectures Added");
-            } else {
-                document.getElementById('video-list').innerHTML = data.map(v => `
-                    <div class="card">
-                        <div class="video-wrapper">
-                            <iframe src="${v.link}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                        </div>
-                        <h4 style="margin: 10px 0 5px 0;">${v.title}</h4>
-                        <small style="color:var(--gold); font-weight:bold;">${v.category}</small>
+        const res = await fetch('/api/videos');
+        const data = await res.json();
+        
+        if (data.length === 0) {
+            document.getElementById('video-list').innerHTML = getEmptyStateGame("No Video Lectures Added");
+        } else {
+            document.getElementById('video-list').innerHTML = data.map(v => `
+                <div class="card">
+                    <div class="video-wrapper">
+                        <iframe src="${v.link}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                     </div>
-                `).join('');
-            }
-        } catch(e) { console.error(e); }
+                    <h4 style="margin: 10px 0 5px 0;">${v.title}</h4>
+                    <small style="color:var(--gold); font-weight:bold;">${v.category}</small>
+                </div>
+            `).join('');
+        }
     }
 
     async function uploadVideo() {
@@ -1629,16 +1571,14 @@ function viewBlog(id) {
 
     let currentPOTD = null;
     async function loadPOTD() {
-        try {
-            const res = await fetch('/api/potd/today');
-            const data = await res.json();
-            if(data.success) {
-                currentPOTD = data.potd;
-                document.getElementById('potd-container').style.display = 'block';
-                document.getElementById('potd-content').innerHTML = currentPOTD.text + (currentPOTD.image ? `<br><img src="${currentPOTD.image}" style="max-height:150px; margin-top:10px; border-radius:8px;">` : '');
-                document.getElementById('potd-opts').innerHTML = currentPOTD.options.map((opt, i) => `<button class="btn" style="background:rgba(255,255,255,0.1); color:white; border:1px solid rgba(255,255,255,0.3); text-align:left;" onclick="checkPOTD(${i})">${opt}</button>`).join('');
-            }
-        } catch(e) { console.error(e); }
+        const res = await fetch('/api/potd/today');
+        const data = await res.json();
+        if(data.success) {
+            currentPOTD = data.potd;
+            document.getElementById('potd-container').style.display = 'block';
+            document.getElementById('potd-content').innerHTML = currentPOTD.text + (currentPOTD.image ? `<br><img src="${currentPOTD.image}" style="max-height:150px; margin-top:10px; border-radius:8px;">` : '');
+            document.getElementById('potd-opts').innerHTML = currentPOTD.options.map((opt, i) => `<button class="btn" style="background:rgba(255,255,255,0.1); color:white; border:1px solid rgba(255,255,255,0.3); text-align:left;" onclick="checkPOTD(${i})">${opt}</button>`).join('');
+        }
     }
 
     function checkPOTD(sel) {
@@ -1755,19 +1695,17 @@ function viewBlog(id) {
 
     let allRefTools = [];
     async function loadRefToolsStudent() {
-        try {
-            const res = await fetch('/api/reftools');
-            allRefTools = await res.json();
-            const btnContainer = document.getElementById('ref-btn-container');
-            if(btnContainer) {
-                if(allRefTools.length > 0) {
-                    btnContainer.innerHTML = allRefTools.map((rt, i) => `<button class="btn ${i===0?'btn-red':'btn-gold'} btn-small ref-btn-dynamic" onclick="showRefImg(${i}, this)">${rt.title}</button>`).join('');
-                    showRefImg(0, btnContainer.firstChild);
-                } else {
-                    document.getElementById('ref-img-display').innerHTML = getEmptyStateGame("No Reference Tools Uploaded");
-                }
+        const res = await fetch('/api/reftools');
+        allRefTools = await res.json();
+        const btnContainer = document.getElementById('ref-btn-container');
+        if(btnContainer) {
+            if(allRefTools.length > 0) {
+                btnContainer.innerHTML = allRefTools.map((rt, i) => `<button class="btn ${i===0?'btn-red':'btn-gold'} btn-small ref-btn-dynamic" onclick="showRefImg(${i}, this)">${rt.title}</button>`).join('');
+                showRefImg(0, btnContainer.firstChild);
+            } else {
+                document.getElementById('ref-img-display').innerHTML = getEmptyStateGame("No Reference Tools Uploaded");
             }
-        } catch(e) { console.error(e); }
+        }
     }
 
     function showRefImg(idx, btnElem) {
