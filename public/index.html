@@ -110,9 +110,37 @@
         .desk-scene.is-on .on-form { display: block; animation: fadeIn 0.5s; }
         #reg-link-container { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); width: 100%; text-align: center; z-index: 10; }
 
-        /* ⚛️ --- ATOM GAME CSS --- */
-        .empty-game-wrapper { grid-column: 1 / -1; width: 100%; text-align: center; padding: 40px 20px; background: white; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); box-sizing: border-box; }
-        .empty-game-board { position: relative; width: 100%; max-width: 400px; height: 250px; background: linear-gradient(135deg, #1e293b, #0f172a); border-radius: 12px; margin: 20px auto 0; overflow: hidden; border: 2px solid var(--gold); }
+        /* 🎮 --- ARC MULTI-GAME COMPONENT CSS --- */
+        .empty-game-wrapper { grid-column: 1 / -1; width: 100%; text-align: center; padding: 30px 10px; background: white; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); box-sizing: border-box; }
+        .game-selector-nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 15px 0; }
+        .game-selector-nav button { background: #f1f5f9; border: 1px solid #cbd5e1; padding: 8px 12px; border-radius: 20px; cursor: pointer; font-size: 0.85rem; font-weight: bold; color: var(--primary); transition: 0.2s; }
+        .game-selector-nav button:hover, .game-selector-nav button.active { background: var(--primary); color: var(--gold); border-color: var(--primary); }
+        
+        .empty-game-board { position: relative; width: 100%; max-width: 450px; height: 350px; background: linear-gradient(135deg, #1e293b, #0f172a); border-radius: 12px; margin: 0 auto; overflow: hidden; border: 2px solid var(--gold); box-shadow: inset 0 0 20px rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; flex-direction: column; color: white; }
+        
+        /* Game 1: Memory */
+        .memory-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 10px; width: 100%; box-sizing: border-box; }
+        .memory-card { background: #334155; border: 2px solid var(--gold); height: 60px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold; cursor: pointer; font-size: 1rem; color: transparent; transition: background 0.3s; user-select: none; }
+        .memory-card.flipped { background: white; color: var(--primary); border-color: white; }
+        .memory-card.matched { background: var(--green); color: white; border-color: var(--green); visibility: hidden; }
+
+        /* Game 2: Acid/Base */
+        .ab-element { position: absolute; top: 0; left: 50%; transform: translateX(-50%); background: white; color: var(--primary); font-weight: bold; font-size: 1.5rem; padding: 10px 20px; border-radius: 8px; border: 2px solid var(--gold); box-shadow: 0 4px 10px rgba(0,0,0,0.5); transition: top 0.1s linear; }
+        .ab-controls { position: absolute; bottom: 15px; width: 100%; display: flex; justify-content: space-around; padding: 0 20px; box-sizing: border-box; }
+
+        /* Game 3: Hangman (Save Flask) */
+        .hm-word { font-size: 1.8rem; letter-spacing: 5px; font-weight: bold; margin-bottom: 10px; color: var(--gold); }
+        .hm-hint { font-size: 0.9rem; color: #cbd5e1; margin-bottom: 20px; font-style: italic; }
+        .hm-keyboard { display: flex; flex-wrap: wrap; justify-content: center; gap: 5px; max-width: 380px; }
+        .hm-key { background: #334155; color: white; border: 1px solid #475569; padding: 8px; width: 35px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .hm-key:disabled { opacity: 0.5; cursor: not-allowed; }
+        .hm-flask-container { width: 60px; height: 80px; border: 3px solid white; border-radius: 30px 30px 10px 10px; position: relative; margin-bottom: 15px; overflow: hidden; }
+        .hm-flask-neck { width: 20px; height: 30px; border: 3px solid white; border-bottom: none; position: absolute; top: -30px; left: 17px; }
+        .hm-liquid { position: absolute; bottom: 0; left: 0; width: 100%; height: 0%; background: var(--green); transition: height 0.3s, background 0.3s; }
+
+        /* Game 4: Coefficient */
+        .coeff-eq { font-size: 1.5rem; font-weight: bold; background: rgba(0,0,0,0.5); padding: 10px 20px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #475569; }
+        .coeff-num { position: absolute; width: 40px; height: 40px; border-radius: 50%; background: var(--gold); color: var(--primary); font-weight: bold; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3); user-select: none; z-index: 10; }
     </style>
 </head>
 <body>
@@ -492,54 +520,285 @@
     }
 
     // ==========================================
-    // ⚛️ "CATCH THE ATOM" EMPTY STATE GAME JS
+    // 🎮 ARC MULTI-GAME EMPTY STATE COMPONENT
     // ==========================================
-    let gameIntervals = {};
-    let gameScores = {};
+    window.arcGames = { instances: {} };
 
     function getEmptyStateGame(message) {
         const id = Math.random().toString(36).substr(2, 9);
         return `
-        <div class="empty-game-wrapper" style="grid-column: 1 / -1;">
+        <div class="empty-game-wrapper" id="game-wrap-${id}">
             <h3 style="color: var(--primary); margin-top:0;">${message}</h3>
-            <p style="color: #666; margin-bottom: 5px;">Teacher hasn't added data here yet. Catch the Atom while you wait!</p>
+            <p style="color: #666; margin-bottom: 5px; font-size: 0.9rem;">Teacher hasn't added data here yet. Play a quick game while you wait!</p>
+            <div class="game-selector-nav" id="game-nav-${id}">
+                <button onclick="ArcGameEngine.load('${id}', 'memory', this)">Memory Match</button>
+                <button onclick="ArcGameEngine.load('${id}', 'acid', this)">Acid or Base</button>
+                <button onclick="ArcGameEngine.load('${id}', 'hangman', this)">Save Flask</button>
+                <button onclick="ArcGameEngine.load('${id}', 'coeff', this)">Balance Eq</button>
+            </div>
             <div class="empty-game-board" id="game-bg-${id}">
-                <div style="position: absolute; top: 10px; left: 10px; color: var(--gold); font-weight: bold; z-index:5; font-size: 1.2rem;">Score: <span id="score-${id}">0</span></div>
-                <button id="start-btn-${id}" class="btn btn-gold" style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); z-index:10; padding: 15px 25px; font-size: 1.1rem;" onclick="startAtomGame('${id}')">Start Game ⚛️</button>
-                <div id="target-${id}" style="position: absolute; font-size: 3rem; display: none; cursor: crosshair; user-select: none; transition: top 0.15s, left 0.15s; z-index:5;" onmousedown="catchAtom('${id}')" ontouchstart="catchAtom('${id}')">⚛️</div>
+                <p style="color:#cbd5e1;">Select a game above to start! ⚛️</p>
             </div>
         </div>`;
     }
 
-    function startAtomGame(id) {
-        document.getElementById(`start-btn-${id}`).style.display = 'none';
-        const target = document.getElementById(`target-${id}`);
-        target.style.display = 'block';
-        gameScores[id] = 0;
-        document.getElementById(`score-${id}`).innerText = "0";
-        if(gameIntervals[id]) clearInterval(gameIntervals[id]);
-        moveAtom(id);
-        gameIntervals[id] = setInterval(() => moveAtom(id), 1200);
-    }
+    const ArcGameEngine = {
+        clearState: function(id) {
+            if(window.arcGames.instances[id] && window.arcGames.instances[id].interval) {
+                clearInterval(window.arcGames.instances[id].interval);
+            }
+            window.arcGames.instances[id] = {};
+            const bg = document.getElementById(`game-bg-${id}`);
+            if(bg) bg.innerHTML = '';
+        },
+        load: function(id, type, btnElem) {
+            const nav = document.getElementById(`game-nav-${id}`);
+            if(nav) {
+                const btns = nav.getElementsByTagName('button');
+                for(let b of btns) b.classList.remove('active');
+                if(btnElem) btnElem.classList.add('active');
+            }
+            this.clearState(id);
+            if(type === 'memory') this.memory.init(id);
+            if(type === 'acid') this.acid.init(id);
+            if(type === 'hangman') this.hangman.init(id);
+            if(type === 'coeff') this.coeff.init(id);
+        },
+        
+        // --- 1. MEMORY MATCH ---
+        memory: {
+            data: [
+                {s: 'H', n: 'Hydrogen'}, {s: 'O', n: 'Oxygen'}, {s: 'Na', n: 'Sodium'}, 
+                {s: 'Fe', n: 'Iron'}, {s: 'C', n: 'Carbon'}, {s: 'Au', n: 'Gold'}
+            ],
+            init: function(id) {
+                let deck = [];
+                this.data.forEach((item, idx) => {
+                    deck.push({ text: item.s, matchId: idx, type: 'sym' });
+                    deck.push({ text: item.n, matchId: idx, type: 'name' });
+                });
+                deck.sort(() => Math.random() - 0.5);
+                
+                window.arcGames.instances[id] = { deck, flipped: [], matched: 0, lock: false };
+                
+                let html = `<div class="memory-grid">`;
+                deck.forEach((card, i) => {
+                    html += `<div class="memory-card" id="mem-${id}-${i}" onclick="ArcGameEngine.memory.flip('${id}', ${i})">?</div>`;
+                });
+                html += `</div>`;
+                document.getElementById(`game-bg-${id}`).innerHTML = html;
+            },
+            flip: function(id, index) {
+                const state = window.arcGames.instances[id];
+                if(state.lock || state.flipped.includes(index) || document.getElementById(`mem-${id}-${index}`).classList.contains('matched')) return;
+                
+                const cardEl = document.getElementById(`mem-${id}-${index}`);
+                cardEl.innerText = state.deck[index].text;
+                cardEl.classList.add('flipped');
+                state.flipped.push(index);
 
-    function moveAtom(id) {
-        const target = document.getElementById(`target-${id}`);
-        if(!target) return clearInterval(gameIntervals[id]); 
-        const bg = document.getElementById(`game-bg-${id}`);
-        const maxX = bg.clientWidth - 50; 
-        const maxY = bg.clientHeight - 50;
-        target.style.left = Math.floor(Math.random() * maxX) + 'px';
-        target.style.top = Math.floor(Math.random() * maxY) + 'px';
-    }
+                if(state.flipped.length === 2) {
+                    state.lock = true;
+                    const match1 = state.deck[state.flipped[0]].matchId;
+                    const match2 = state.deck[state.flipped[1]].matchId;
+                    
+                    setTimeout(() => {
+                        if(match1 === match2) {
+                            document.getElementById(`mem-${id}-${state.flipped[0]}`).classList.add('matched');
+                            document.getElementById(`mem-${id}-${state.flipped[1]}`).classList.add('matched');
+                            state.matched += 2;
+                            if(state.matched === state.deck.length) {
+                                document.getElementById(`game-bg-${id}`).innerHTML = `<h2 style="color:var(--green);">🧠 Master Chemist!</h2><button class="btn btn-gold" onclick="ArcGameEngine.memory.init('${id}')">Play Again</button>`;
+                            }
+                        } else {
+                            const c1 = document.getElementById(`mem-${id}-${state.flipped[0]}`);
+                            const c2 = document.getElementById(`mem-${id}-${state.flipped[1]}`);
+                            c1.innerText = '?'; c1.classList.remove('flipped');
+                            c2.innerText = '?'; c2.classList.remove('flipped');
+                        }
+                        state.flipped = [];
+                        state.lock = false;
+                    }, 800);
+                }
+            }
+        },
 
-    function catchAtom(id) {
-        gameScores[id]++;
-        document.getElementById(`score-${id}`).innerText = gameScores[id];
-        moveAtom(id); 
-        clearInterval(gameIntervals[id]);
-        let speed = Math.max(400, 1200 - (gameScores[id] * 50));
-        gameIntervals[id] = setInterval(() => moveAtom(id), speed);
-    }
+        // --- 2. ACID OR BASE ---
+        acid: {
+            data: [
+                {f: 'HCl', t: 'acid'}, {f: 'NaOH', t: 'base'}, {f: 'H₂SO₄', t: 'acid'}, 
+                {f: 'NH₃', t: 'base'}, {f: 'CH₃COOH', t: 'acid'}, {f: 'KOH', t: 'base'},
+                {f: 'HNO₃', t: 'acid'}, {f: 'Ca(OH)₂', t: 'base'}
+            ],
+            init: function(id) {
+                window.arcGames.instances[id] = { score: 0, speed: 2000, current: null, yPos: 0 };
+                document.getElementById(`game-bg-${id}`).innerHTML = `
+                    <div style="position:absolute; top:10px; left:15px; font-weight:bold; color:var(--gold);">Score: <span id="ab-score-${id}">0</span></div>
+                    <div id="ab-drop-${id}" class="ab-element" style="display:none;"></div>
+                    <div class="ab-controls">
+                        <button class="btn btn-red" style="flex:1; margin-right:10px;" onclick="ArcGameEngine.acid.guess('${id}', 'acid')">ACID</button>
+                        <button class="btn" style="flex:1; background:#3b82f6; color:white;" onclick="ArcGameEngine.acid.guess('${id}', 'base')">BASE</button>
+                    </div>`;
+                this.spawn(id);
+            },
+            spawn: function(id) {
+                const state = window.arcGames.instances[id];
+                if(!state) return;
+                state.current = this.data[Math.floor(Math.random() * this.data.length)];
+                state.yPos = 0;
+                const el = document.getElementById(`ab-drop-${id}`);
+                if(!el) return;
+                el.innerText = state.current.f;
+                el.style.top = '0px';
+                el.style.display = 'block';
+                el.style.background = 'white';
+                
+                state.interval = setInterval(() => {
+                    if(!window.arcGames.instances[id]) return clearInterval(state.interval);
+                    state.yPos += 5;
+                    el.style.top = state.yPos + 'px';
+                    if(state.yPos > 250) {
+                        clearInterval(state.interval);
+                        this.gameOver(id);
+                    }
+                }, state.speed / 100);
+            },
+            guess: function(id, type) {
+                const state = window.arcGames.instances[id];
+                if(!state || !state.current) return;
+                clearInterval(state.interval);
+                const el = document.getElementById(`ab-drop-${id}`);
+                
+                if(state.current.t === type) {
+                    state.score++;
+                    document.getElementById(`ab-score-${id}`).innerText = state.score;
+                    el.style.background = 'var(--green)';
+                    state.speed = Math.max(500, state.speed - 100); // Speed up
+                    setTimeout(() => this.spawn(id), 300);
+                } else {
+                    el.style.background = 'var(--red)';
+                    setTimeout(() => this.gameOver(id), 300);
+                }
+            },
+            gameOver: function(id) {
+                const score = window.arcGames.instances[id].score;
+                document.getElementById(`game-bg-${id}`).innerHTML = `<h2 style="color:var(--red);">Game Over</h2><p>Score: ${score}</p><button class="btn btn-gold" onclick="ArcGameEngine.acid.init('${id}')">Restart</button>`;
+            }
+        },
+
+        // --- 3. HANGMAN (Save the Flask) ---
+        hangman: {
+            data: [
+                {w: 'PROTON', h: 'Positively charged particle'},
+                {w: 'ISOTOPE', h: 'Same protons, different neutrons'},
+                {w: 'CATION', h: 'Positively charged ion'},
+                {w: 'ANODE', h: 'Electrode where oxidation occurs'},
+                {w: 'CATALYST', h: 'Speeds up a reaction'}
+            ],
+            init: function(id) {
+                const item = this.data[Math.floor(Math.random() * this.data.length)];
+                window.arcGames.instances[id] = { word: item.w, guessed: [], errors: 0, maxErrors: 5 };
+                
+                const keyboard = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split('').map(l => 
+                    `<button class="hm-key" id="hm-key-${id}-${l}" onclick="ArcGameEngine.hangman.guess('${id}', '${l}')">${l}</button>`
+                ).join('');
+
+                document.getElementById(`game-bg-${id}`).innerHTML = `
+                    <div class="hm-flask-container">
+                        <div class="hm-flask-neck"></div>
+                        <div class="hm-liquid" id="hm-liquid-${id}"></div>
+                    </div>
+                    <div class="hm-hint">Hint: ${item.h}</div>
+                    <div class="hm-word" id="hm-word-${id}"></div>
+                    <div class="hm-keyboard">${keyboard}</div>`;
+                this.renderWord(id);
+            },
+            renderWord: function(id) {
+                const state = window.arcGames.instances[id];
+                if(!state) return;
+                let display = state.word.split('').map(l => state.guessed.includes(l) ? l : '_').join(' ');
+                document.getElementById(`hm-word-${id}`).innerText = display;
+                
+                if(!display.includes('_')) {
+                    document.getElementById(`game-bg-${id}`).innerHTML = `<h2 style="color:var(--green);">🧪 Reaction Complete!</h2><button class="btn btn-gold" onclick="ArcGameEngine.hangman.init('${id}')">Play Again</button>`;
+                }
+            },
+            guess: function(id, letter) {
+                const state = window.arcGames.instances[id];
+                if(!state) return;
+                
+                const btn = document.getElementById(`hm-key-${id}-${letter}`);
+                btn.disabled = true;
+                state.guessed.push(letter);
+                
+                if(!state.word.includes(letter)) {
+                    state.errors++;
+                    const liquid = document.getElementById(`hm-liquid-${id}`);
+                    const pct = (state.errors / state.maxErrors) * 100;
+                    liquid.style.height = pct + '%';
+                    
+                    if(state.errors >= 3) liquid.style.background = 'orange';
+                    if(state.errors >= state.maxErrors) {
+                        liquid.style.background = 'var(--red)';
+                        setTimeout(() => {
+                            document.getElementById(`game-bg-${id}`).innerHTML = `<h2 style="color:var(--red);">💥 Flask Exploded!</h2><p>Word was: ${state.word}</p><button class="btn btn-gold" onclick="ArcGameEngine.hangman.init('${id}')">Try Again</button>`;
+                        }, 500);
+                        return;
+                    }
+                }
+                this.renderWord(id);
+            }
+        },
+
+        // --- 4. COEFFICIENT CATCHER ---
+        coeff: {
+            data: [
+                {eq: 'N₂ + 3H₂ ➝ [ ? ] NH₃', a: 2},
+                {eq: '2H₂ + O₂ ➝ [ ? ] H₂O', a: 2},
+                {eq: 'CH₄ + [ ? ] O₂ ➝ CO₂ + 2H₂O', a: 2},
+                {eq: '2Na + Cl₂ ➝ [ ? ] NaCl', a: 2},
+                {eq: '[ ? ] Fe + 3O₂ ➝ 2Fe₂O₃', a: 4}
+            ],
+            init: function(id) {
+                const item = this.data[Math.floor(Math.random() * this.data.length)];
+                window.arcGames.instances[id] = { ans: item.a };
+                
+                document.getElementById(`game-bg-${id}`).innerHTML = `
+                    <div class="coeff-eq">${item.eq}</div>
+                    <div style="font-size:0.9rem; color:#cbd5e1; margin-bottom:20px;">Catch the correct number to balance!</div>
+                    <div id="coeff-area-${id}" style="position:absolute; width:100%; height:100%; top:0; left:0; pointer-events:none;"></div>
+                `;
+                
+                const area = document.getElementById(`coeff-area-${id}`);
+                [1,2,3,4,5].forEach(num => {
+                    let el = document.createElement('div');
+                    el.className = 'coeff-num';
+                    el.innerText = num;
+                    el.style.pointerEvents = 'auto';
+                    el.onclick = () => ArcGameEngine.coeff.guess(id, num);
+                    area.appendChild(el);
+                    this.move(el);
+                    window.arcGames.instances[id]['int'+num] = setInterval(() => this.move(el), 1500 + Math.random()*1000);
+                });
+            },
+            move: function(el) {
+                el.style.top = Math.random() * 80 + '%';
+                el.style.left = Math.random() * 85 + '%';
+            },
+            guess: function(id, num) {
+                const state = window.arcGames.instances[id];
+                if(!state) return;
+                
+                [1,2,3,4,5].forEach(n => clearInterval(state['int'+n]));
+                
+                if(num === state.ans) {
+                    document.getElementById(`game-bg-${id}`).innerHTML = `<h2 style="color:var(--green);">✅ Perfectly Balanced!</h2><button class="btn btn-gold" onclick="ArcGameEngine.coeff.init('${id}')">Next Equation</button>`;
+                } else {
+                    document.getElementById(`game-bg-${id}`).innerHTML = `<h2 style="color:var(--red);">❌ Unbalanced!</h2><button class="btn btn-gold" onclick="ArcGameEngine.coeff.init('${id}')">Try Again</button>`;
+                }
+            }
+        }
+    };
     // ==========================================
 
     const toolbarHTML = `
@@ -895,13 +1154,7 @@
     async function doLogin() { 
         let email = loginMode === 'student' ? document.getElementById('l-email').value : document.getElementById('l-admin-email').value;
         const password = document.getElementById('l-pass').value;
-        
-        // --- ADDED MANUAL VALIDATION TO FIX MOBILE BUG ---
-        if (!email || !password) {
-            alert("Please enter both email and password.");
-            return;
-        }
-
+        if (!email || !password) { alert("Please enter both email and password."); return; }
         if(loginMode === 'student' && !email.includes('@')) email += '@arcstudent.com';
         
         try {
@@ -920,9 +1173,7 @@
             } else { 
                 alert(data.message || "Invalid Email or Password"); 
             }
-        } catch(e) {
-            alert("Server connection error. Please try again.");
-        } 
+        } catch(e) { alert("Server connection error. Please try again."); } 
     }
 
     function logout() { localStorage.removeItem('arc_user'); localStorage.removeItem('arc_last_section'); clearSession(); location.reload(); }
