@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ARC CLASSES</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <style>
         :root { --primary: #0f172a; --gold: #fbbf24; --light: #f8fafc; --red: #ef4444; --green: #22c55e; }
         
@@ -141,6 +142,45 @@
         /* Game 4: Coefficient */
         .coeff-eq { font-size: 1.3rem; font-weight: bold; background: rgba(0,0,0,0.5); padding: 10px 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #475569; text-align: center; max-width: 90%; }
         .coeff-num { position: absolute; width: 40px; height: 40px; border-radius: 50%; background: var(--gold); color: var(--primary); font-weight: bold; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3); user-select: none; z-index: 10; }
+    
+           /* 📖 --- 3D BOOK BLOG VIEWER CSS --- */
+.book-container {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+    height: 65vh;
+    min-height: 400px;
+    margin: 15px auto;
+    perspective: 1500px;
+    background: #e2e8f0;
+    border-radius: 8px;
+    padding: 10px;
+    box-shadow: inset 0 0 15px rgba(0,0,0,0.1);
+}
+.book-page {
+    position: absolute;
+    top: 10px; left: 10px; right: 10px; bottom: 10px;
+    background: #fffaf0; /* Slightly warm paper color */
+    border-radius: 2px 12px 12px 2px;
+    padding: 30px;
+    box-sizing: border-box;
+    overflow-y: auto;
+    box-shadow: -4px 0 10px rgba(0,0,0,0.1), 0 0 5px rgba(0,0,0,0.05);
+    transform-origin: left center;
+    transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1), opacity 0.8s;
+    backface-visibility: hidden;
+    border-left: 8px solid #cbd5e1; /* Book spine/binding */
+}
+/* Shadow effect for page curvature near binding */
+.book-page::before {
+    content: ''; position: absolute; top: 0; left: 0; width: 40px; height: 100%;
+    background: linear-gradient(to right, rgba(0,0,0,0.08), transparent); pointer-events: none;
+}
+.book-page.flipped {
+    transform: rotateY(-180deg);
+    opacity: 0; /* Fades out as it flips away */
+}
+    
     </style>
 </head>
 <body>
@@ -855,6 +895,7 @@
     };
     // ==========================================
 
+    function insHTML(html) { document.execCommand('insertHTML', false, html); }
     const toolbarHTML = `
         <div class="toolbar" style="background:#e2e8f0; padding:10px; border-radius:6px 6px 0 0; display:flex; gap:8px; flex-wrap:wrap; align-items:center; border:1px solid #ccc; border-bottom:none;">
             <select onchange="exec('fontName', this.value)" style="padding:5px; border-radius:4px;" title="Font">
@@ -882,6 +923,7 @@
                 <option value=" &darr; ">&darr; (Ppt)</option>
                 <option value=" &#8710; ">&#8710; (Heat)</option>
             </select>
+            <button class="tool-btn" onclick="insHTML('<div class=\\'page-break\\' style=\\'width:100%; text-align:center; border-bottom:2px dashed var(--gold); margin:20px 0; padding-bottom:5px; color:var(--primary); font-weight:bold;\\'>📖 --- PAGE BREAK --- 📖</div>')" title="Insert Page Break" style="background: var(--gold); border: 1px solid #333; cursor:pointer;">📖 Break</button>
         </div>`;
 
     function showAdm(tab) {
@@ -1260,8 +1302,61 @@
         } catch(e) { console.error("Could not load blogs"); }
     }
     
-    function viewBlog(id) { const blog = allBlogs.find(b => b._id === id); if(!blog) return; document.getElementById('bm-title').innerText = blog.title; document.getElementById('bm-date').innerText = new Date(blog.date).toLocaleDateString(); document.getElementById('bm-content').innerHTML = blog.content; const img = document.getElementById('bm-img'); if(blog.image) { img.src = blog.image; img.style.display='block'; } else img.style.display='none'; openModal('blog-modal'); }
-    
+function viewBlog(id) { 
+        const blog = allBlogs.find(b => b._id === id); 
+        if(!blog) return; 
+        
+        document.getElementById('bm-title').innerText = blog.title; 
+        document.getElementById('bm-date').innerText = new Date(blog.date).toLocaleDateString(); 
+        
+        // Split content wherever the teacher clicked the "Page Break" button
+        let rawChunks = blog.content.split(/<div class="page-break"[^>]*>.*?<\/div>/i);
+        let chunks = rawChunks.filter(c => c.trim() !== '');
+        if(chunks.length === 0) chunks = ["<p>No content available.</p>"];
+        
+        // Generate the 3D pages
+        let pagesHtml = chunks.map((chunk, i) => `
+            <div class="book-page" id="book-page-${i}" style="z-index: ${chunks.length - i}">
+                ${i===0 && blog.image ? `<img src="${blog.image}" style="width:100%; max-height:200px; object-fit:contain; margin-bottom:15px; border-radius:4px; border:1px solid #ccc;">` : ''}
+                <div class="page-content">${chunk}</div>
+                <div style="position:absolute; bottom:15px; right:25px; color:#94a3b8; font-weight:bold;">Page ${i + 1} of ${chunks.length}</div>
+            </div>
+        `).join('');
+
+        // Inject into modal
+        document.getElementById('bm-content').innerHTML = `
+            <div style="display:flex; justify-content:space-between; margin-bottom: 10px;">
+                <button class="btn btn-primary" style="background:#334155; color:white;" onclick="turnBlogPage('prev')">◀ Prev Page</button>
+                <button class="btn btn-primary" style="background:#334155; color:white;" onclick="turnBlogPage('next')">Next Page ▶</button>
+            </div>
+            <div class="book-container">
+                ${pagesHtml}
+            </div>
+        `;
+        
+        // Hide the old simple image as it's now embedded in Page 1
+        document.getElementById('bm-img').style.display = 'none';
+        
+        window.currentBookPage = 0;
+        window.totalBookPages = chunks.length;
+        openModal('blog-modal'); 
+    }
+
+    // The physics of flipping the pages
+    window.turnBlogPage = function(dir) {
+        if(dir === 'next' && window.currentBookPage < window.totalBookPages - 1) {
+            let page = document.getElementById(`book-page-${window.currentBookPage}`);
+            page.classList.add('flipped');
+            setTimeout(() => { page.style.opacity = '0'; }, 200); // Fades halfway through the flip
+            window.currentBookPage++;
+        } else if (dir === 'prev' && window.currentBookPage > 0) {
+            window.currentBookPage--;
+            let page = document.getElementById(`book-page-${window.currentBookPage}`);
+            page.style.opacity = '1';
+            page.classList.remove('flipped');
+        }
+    }
+        
     async function loadTests(isLive) { 
         try {
             const res = await fetch('/api/tests'); 
