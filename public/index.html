@@ -187,7 +187,7 @@
     </div>
 
     <div style="background: white; border: 2px solid var(--gold); border-radius: 12px; padding: 20px; margin: 30px 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
-        <h3 style="margin-top: 0; color: var(--primary);">🙋‍♂️ Have a quick question? Ask here!</h3>
+        <h3 style="margin-top: 0; color: var(--primary);">🙋‍♂️ Have a quick question? Ask here to Teacher!</h3>
         <p style="font-size: 0.9rem; color: #666; margin-top: -10px;">Upload an image or PDF (Max size: 5MB) of your problem and type your question.</p>
         
         <textarea id="home-d-text" rows="3" placeholder="Type your doubt here..." style="width:100%; padding:10px; border:1px solid #ccc; border-radius:6px; box-sizing: border-box;"></textarea>
@@ -203,11 +203,6 @@
             <button class="btn btn-gold" onclick="submitHomeDoubt()">Send Question</button>
         </div>
     </div>
-
-
-
-
-
 
     <h3 style="margin-left: 10px;">Latest Blogs</h3>
     <div id="blog-grid" class="grid"></div>
@@ -536,10 +531,51 @@
     }
     function clearSession() { localStorage.removeItem('arc_test_session'); }
 
+    let homeDoubtFileBase64 = "";
 
+function encodeHomeDoubtFile(input) {
+    if (input.files && input.files[0]) {
+        // Prevent huge PDFs from crashing the database
+        if(input.files[0].size > 5 * 1024 * 1024) {
+            input.value = "";
+            return alert("File is too large! Please keep it under 5MB.");
+        }
+        
+        document.getElementById('home-d-fileName').innerText = "✅ Attached: " + input.files[0].name;
+        
+        const reader = new FileReader();
+        reader.onload = function(e) { homeDoubtFileBase64 = e.target.result; };
+        reader.readAsDataURL(input.files[0]);
+    }
+}
 
-/*       If you want teacher should give answer paste code below */
-
+async function submitHomeDoubt() {
+    if(!user) return alert("Please login first to ask a question.");
+    
+    const text = document.getElementById('home-d-text').value;
+    if(!text && !homeDoubtFileBase64) return alert("Please type a question or attach a file.");
+    
+    // Uses your existing API endpoint!
+    await fetch('/api/doubt', { 
+        method: 'POST', 
+        headers: {'Content-Type':'application/json'}, 
+        body: JSON.stringify({ 
+            studentEmail: user.email, 
+            studentName: user.name, 
+            text: text, 
+            image: homeDoubtFileBase64 // Schema holds 'image' but it handles base64 PDFs fine
+        }) 
+    });
+    
+    alert("Doubt sent successfully! The teacher will review it soon.");
+    
+    // Reset form
+    document.getElementById('home-d-text').value = "";
+    document.getElementById('home-d-file').value = "";
+    document.getElementById('home-d-fileName').innerText = "";
+    homeDoubtFileBase64 = "";
+    loadStudentDoubts(); // Refresh doubts list
+}
 
 
     function show(id) {
@@ -1077,7 +1113,7 @@
 
                     ${db.image ? (db.image.startsWith('data:application/pdf') ? `<div style="margin: 10px 0;"><a href="${db.image}" download="student_doubt.pdf" class="btn-small" style="background:var(--red); color:white; text-decoration:none;">📄 Download Attached PDF</a></div>` : `<a href="${db.image}" target="_blank"><img src="${db.image}" style="height:100px; border:1px solid #ccc;"></a>`) : ''}
                     <hr>
-
+                    
                     ${db.status === 'Pending' ? `
                         <textarea id="reply-text-${db._id}" placeholder="Type reply..."></textarea>
                         <input type="file" onchange="encodeImg(this, 'reply-img-${db._id}')" style="margin:5px 0;">
@@ -1834,47 +1870,6 @@ function changeBlogPage(dir) {
          document.getElementById('reg-box').style.display='none';
          document.querySelector('.paper-form-container').style.display='block';
          document.getElementById('reg-link-container').style.display='block';
-    }
-
-    /* ------------------------------------------------------ NEW AI DOUBT LOGIC -----------------------------------------------*/
-    let homeDoubtFileBase64 = "";
-
-    function encodeHomeDoubtFile(input) {
-        if (input.files && input.files[0]) {
-            if(input.files[0].size > 5 * 1024 * 1024) {
-                input.value = "";
-                return alert("File is too large! Please keep it under 5MB.");
-            }
-            document.getElementById('home-d-fileName').innerText = "✅ Attached: " + input.files[0].name;
-            
-            const reader = new FileReader();
-            reader.onload = function(e) { homeDoubtFileBase64 = e.target.result; };
-            reader.readAsDataURL(input.files[0]);
-        }
-    }
-
-    async function submitHomeDoubt() {
-        if(!user) return alert("Please login first to ask a question.");
-        
-        const text = document.getElementById('home-d-text').value;
-        if(!text && !homeDoubtFileBase64) return alert("Please type a question or attach a file.");
-        
-        document.getElementById('home-d-fileName').innerText = "⏳ AI is thinking... Please wait!";
-        
-        await fetch('/api/doubt', { 
-            method: 'POST', 
-            headers: {'Content-Type':'application/json'}, 
-            body: JSON.stringify({ studentEmail: user.email, studentName: user.name, text: text, image: homeDoubtFileBase64 }) 
-        });
-        
-        alert("Doubt solved! Check 'My Doubts' to see the AI's answer.");
-        
-        document.getElementById('home-d-text').value = "";
-        document.getElementById('home-d-file').value = "";
-        document.getElementById('home-d-fileName').innerText = "";
-        homeDoubtFileBase64 = "";
-        
-        show('doubts');
     }
 
 </script>
