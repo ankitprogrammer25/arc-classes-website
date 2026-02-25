@@ -1345,7 +1345,7 @@ function viewBlog(id) {
     document.getElementById('bm-date').innerText = new Date(blog.date).toLocaleDateString(); 
     
     // Split the content using the horizontal rule inserted by the teacher
-    blogPages = blog.content.split(/<hr\s*\/?>/i);
+    blogPages = blog.content.split(/<hr[^>]*>/i);
     if(blogPages.length === 0) blogPages = [blog.content];
     currentBPage = 0;
     
