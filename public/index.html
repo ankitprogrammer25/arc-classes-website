@@ -456,6 +456,18 @@
     </div>
 </div>
 
+<div id="pdf-modal" class="modal">
+    <div class="modal-content" style="max-width: 900px; height: 85vh; display: flex; flex-direction: column; padding: 0; overflow: hidden; border: 2px solid var(--gold);">
+        <div style="padding: 15px; background: var(--primary); color: white; display: flex; justify-content: space-between; align-items: center;">
+            <h3 id="pdf-title" style="margin: 0; color: var(--gold);">Document Viewer</h3>
+            <button class="btn btn-red btn-small" onclick="closeModal('pdf-modal'); document.getElementById('pdf-frame').src='';" style="font-size: 1.2rem; padding: 2px 10px;">&times;</button>
+        </div>
+        <div style="flex-grow: 1; background: #e2e8f0; position: relative;">
+            <iframe id="pdf-frame" style="width: 100%; height: 100%; border: none; position: absolute; top: 0; left: 0;" src=""></iframe>
+        </div>
+    </div>
+</div>
+
 <div id="blog-modal" class="modal">
     <div class="modal-content" style="max-width: 800px; min-height: 50vh; display: flex; flex-direction: column;">
         <div class="close-corner" onclick="closeModal('blog-modal')">&times;</div>
@@ -1114,7 +1126,10 @@ async function submitHomeDoubt() {
                         <button class="btn btn-red btn-small" onclick="deleteItem('doubt', '${db._id}')">🗑️ Delete</button>
                     </div>
                     <p style="margin-top: 10px;">${db.text}</p>
-                    ${db.image ? `<a href="${db.image}" target="_blank"><img src="${db.image}" style="height:100px; border:1px solid #ccc;"></a>` : ''}
+                    ${db.image ? (db.image.startsWith('data:application/pdf') ? 
+    `<div style="margin-top:10px;"><button class="btn btn-gold btn-small" onclick="openPdfViewer('Attached PDF', '${db.image}')">📄 View PDF Attachment</button></div>` : 
+    `<img src="${db.image}" style="height:100px; border:1px solid #ccc; cursor:pointer; margin-top:10px;" onclick="openPdfViewer('Student Image', '${db.image}')" title="Click to enlarge">`
+) : ''}
                     <hr>
                     ${db.status === 'Pending' ? `
                         <textarea id="reply-text-${db._id}" placeholder="Type reply..." style="width:100%; padding:8px; border-radius:6px;"></textarea>
@@ -1490,8 +1505,29 @@ function changeBlogPage(dir) {
     }
     
     function resetLib() { document.getElementById('lib-cats').style.display = 'grid'; document.getElementById('lib-back').style.display = 'none'; document.getElementById('lib-content').innerHTML = ''; }
-    async function openMat(id) { const code = prompt("Password:"); const res = await fetch('/api/material/unlock', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id, code}) }); const data = await res.json(); if(data.success) window.open(data.link); else alert("Wrong Password"); }
+
+    async function openMat(id) { 
+    const mat = allMats.find(m => m._id === id);
+    let code = "";
     
+    // Only prompt for a password if the teacher actually set one!
+    if (mat && mat.accessCode) {
+        code = prompt("Enter Password to unlock:");
+        if (code === null) return; // Stop if the student clicks Cancel
+    }
+    
+    const res = await fetch('/api/material/unlock', { 
+        method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id, code}) 
+    }); 
+    const data = await res.json(); 
+    
+    if(data.success) {
+        // Open inside our new custom viewer instead of window.open()
+        openPdfViewer(mat ? mat.title : 'Library Material', data.link);
+    } else {
+        alert("Wrong Password"); 
+    }
+}
     function renderCreatePalette() { const p = document.getElementById('create-palette'); if(!p) return; p.innerHTML = draftQ.map((q, i) => `<div class="q-btn ${i === editQIndex ? 'active' : ''}" onclick="loadDraftQ(${i})">${i+1}</div>`).join('') + `<div class="q-btn" onclick="clearQForm()" style="color:green; font-size:1.2rem;">+</div>`; document.getElementById('q-count').innerText = draftQ.length; }
     
     function saveDraftQ() { const qData = { text: document.getElementById('q-editor').innerHTML, topic: document.getElementById('q-topic').value, options: [0,1,2,3].map(i => document.getElementById('op'+i).innerHTML), correct: parseInt(document.getElementById('q-corr').value), marks: parseFloat(document.getElementById('q-marks').value) || 4, negative: parseFloat(document.getElementById('q-neg').value) || 0, solution: document.getElementById('q-sol').innerHTML, image: tempImg, solutionImage: tempSolImg }; if(editQIndex > -1) { if(!qData.image) qData.image = draftQ[editQIndex].image; if(!qData.solutionImage) qData.solutionImage = draftQ[editQIndex].solutionImage; draftQ[editQIndex] = qData; } else { draftQ.push(qData); } clearQForm(); }
@@ -1640,7 +1676,10 @@ function changeBlogPage(dir) {
                 <div class="card doubt-card ${db.status === 'Answered' ? 'answered' : ''}">
                     <div style="display:flex; justify-content:space-between;"><b>My Doubt:</b> <span class="badge ${db.status === 'Answered' ? 'bg-green' : 'bg-red'}">${db.status}</span></div>
                     <p>${db.text}</p>
-                    ${db.image ? `<a href="${db.image}" target="_blank"><img src="${db.image}" style="height:100px; border:1px solid #ccc;"></a>` : ''}
+                    ${db.image ? (db.image.startsWith('data:application/pdf') ? 
+    `<div style="margin-top:10px;"><button class="btn btn-gold btn-small" onclick="openPdfViewer('Attached PDF', '${db.image}')">📄 View PDF Attachment</button></div>` : 
+    `<img src="${db.image}" style="height:100px; border:1px solid #ccc; cursor:pointer; margin-top:10px;" onclick="openPdfViewer('Image Attachment', '${db.image}')" title="Click to enlarge">`
+) : ''}
                     <hr>
                     ${db.status === 'Answered' ? `<div style="background:#f0f9ff; padding:10px; margin-top:10px; border-radius:6px;"><b>Teacher's Reply:</b><br>${db.replyText} ${db.replyImage ? `<br><img src="${db.replyImage}" style="height:100px; margin-top:5px;">` : ''}</div>` : ''}
                 </div>
@@ -1904,6 +1943,24 @@ function changeBlogPage(dir) {
          document.querySelector('.paper-form-container').style.display='block';
          document.getElementById('reg-link-container').style.display='block';
     }
+
+    // --- UNIVERSAL DOCUMENT VIEWER ---
+function openPdfViewer(title, link) {
+    document.getElementById('pdf-title').innerText = title || "Document Viewer";
+    let finalLink = link;
+    
+    // 1. If it's a Google Drive link, convert it to 'preview' mode so it works inside an iframe
+    if (link.includes('drive.google.com') && link.includes('/view')) {
+        finalLink = link.replace(/\/view.*$/, '/preview');
+    } 
+    // 2. If it's a direct .pdf link (not a base64 string), use Google's Viewer for better mobile support
+    else if (link.toLowerCase().endsWith('.pdf') && !link.startsWith('data:')) {
+        finalLink = `https://docs.google.com/gview?url=${encodeURIComponent(link)}&embedded=true`;
+    }
+
+    document.getElementById('pdf-frame').src = finalLink;
+    openModal('pdf-modal');
+}
 
 </script>
 </body>
