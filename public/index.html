@@ -1350,7 +1350,7 @@ function viewBlog(id) {
     currentBPage = 0;
     
     const img = document.getElementById('bm-img'); 
-    if(blog.image) { img.src = blog.image; img.style.display='block'; } else img.style.display='none'; 
+    img.style.display = 'none'; // Forces the thumbnail to hide inside the booklet
     
     renderBlogPage();
     openModal('blog-modal'); 
