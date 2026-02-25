@@ -4,6 +4,8 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const path = require('path');
 const fetch = require('node-fetch');
+const { GoogleGenerativeAI } = require('@google/generative-ai');
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 // --- 0. GLOBAL ERROR CATCHERS ---
 // This prevents Render.com / Node from crashing entirely and causing a 500 error 
@@ -321,7 +323,49 @@ app.post('/api/test/submit', async (req, res) => {
     } catch(e) { res.json({ success: false }); }
 });
 
-app.post('/api/doubt', async (req, res) => { await new Doubt(req.body).save(); res.json({ success: true }); });
+app.post('/api/doubt', async (req, res) => {
+    try {
+        const { studentEmail, studentName, text, image } = req.body;
+        let aiReply = "Your teacher will review this shortly!";
+        let doubtStatus = "Pending";
+
+        // If the AI key exists and there is a question or image
+        if (process.env.GEMINI_API_KEY && (text || image)) {
+            try {
+                const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+                
+                let prompt = "You are a helpful expert Chemistry tutor for 11th and 12th-grade students studying for competitive exams like JEE/NEET. Explain the answer clearly and step-by-step. The student asks: " + (text || "Please explain the attached document/image.");
+                
+                let contentArray = [prompt];
+
+                if (image && image.includes('base64,')) {
+                    const mimeType = image.split(';')[0].split(':')[1];
+                    const base64Data = image.split(',')[1];
+                    contentArray.push({ inlineData: { data: base64Data, mimeType: mimeType } });
+                }
+
+                const result = await model.generateContent(contentArray);
+                aiReply = result.response.text();
+                
+                // Format AI markdown to HTML
+                aiReply = aiReply.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>');
+                doubtStatus = "Answered"; 
+
+            } catch (aiError) {
+                console.error("AI Error:", aiError.message);
+                aiReply = "The AI tutor is currently taking a break. Your teacher will review this shortly!";
+            }
+        }
+
+        const newDoubt = new Doubt({ studentEmail, studentName, text, image, replyText: aiReply, status: doubtStatus });
+        await newDoubt.save(); 
+        
+        res.json({ success: true }); 
+    } catch(e) { 
+        console.error(e);
+        res.json({ success: false }); 
+    } 
+});
 app.post('/api/student/doubts', async (req, res) => res.json(await Doubt.find({ studentEmail: req.body.email }).sort({ date: -1 })));
 app.get('/api/videos', async (req, res) => {
     try { res.json(await Video.find().sort({ date: -1 })); } catch(e) { res.json([]); }
