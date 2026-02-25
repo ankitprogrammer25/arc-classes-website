@@ -1,0 +1,72 @@
+If we want teacher to solve doubt
+
+    let homeDoubtFileBase64 = "";
+
+function encodeHomeDoubtFile(input) {
+    if (input.files && input.files[0]) {
+        // Prevent huge PDFs from crashing the database
+        if(input.files[0].size > 5 * 1024 * 1024) {
+            input.value = "";
+            return alert("File is too large! Please keep it under 5MB.");
+        }
+        
+        document.getElementById('home-d-fileName').innerText = "✅ Attached: " + input.files[0].name;
+        
+        const reader = new FileReader();
+        reader.onload = function(e) { homeDoubtFileBase64 = e.target.result; };
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+async function submitHomeDoubt() {
+    if(!user) return alert("Please login first to ask a question.");
+    
+    const text = document.getElementById('home-d-text').value;
+    if(!text && !homeDoubtFileBase64) return alert("Please type a question or attach a file.");
+    
+    // Uses your existing API endpoint!
+    await fetch('/api/doubt', { 
+        method: 'POST', 
+        headers: {'Content-Type':'application/json'}, 
+        body: JSON.stringify({ 
+            studentEmail: user.email, 
+            studentName: user.name, 
+            text: text, 
+            image: homeDoubtFileBase64 // Schema holds 'image' but it handles base64 PDFs fine
+        }) 
+    });
+    
+    alert("Doubt sent successfully! The teacher will review it soon.");
+    
+    // Reset form
+    document.getElementById('home-d-text').value = "";
+    document.getElementById('home-d-file').value = "";
+    document.getElementById('home-d-fileName').innerText = "";
+    homeDoubtFileBase64 = "";
+    loadStudentDoubts(); // Refresh doubts list
+} 
+
+
+
+paste below 208 line above Latest blog heading
+
+
+<div style="background: white; border: 2px solid var(--gold); border-radius: 12px; padding: 20px; margin: 30px 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);"> 
+        <h3 style="margin-top: 0; color: var(--primary);">🙋‍♂️ Have a quick question? Ask the ARC Tutor!</h3>
+        <p style="font-size: 0.9rem; color: #666; margin-top: -10px;">Upload an image or PDF of your problem and type your question.</p>
+        
+        <textarea id="home-d-text" rows="3" placeholder="Type your doubt here..." style="width:100%; padding:10px; border:1px solid #ccc; border-radius:6px; box-sizing: border-box;"></textarea>
+        
+        <div style="display:flex; flex-wrap: wrap; gap:10px; align-items:center; margin-top:10px; justify-content: space-between;">
+            <div>
+                <label class="btn btn-small" style="background:#e2e8f0; color:#333; cursor:pointer; font-weight:bold;">
+                    📎 Attach Image / PDF
+                    <input type="file" id="home-d-file" accept="image/*,application/pdf" onchange="encodeHomeDoubtFile(this)" style="display:none;">
+                </label>
+                <div id="home-d-fileName" style="font-size:0.85rem; color:var(--green); margin-top:5px; font-weight:bold;"></div>
+            </div>
+            <button class="btn btn-gold" onclick="submitHomeDoubt()">Send Question</button>
+        </div>
+    </div> 
+
+
