@@ -1106,20 +1106,29 @@ async function submitHomeDoubt() {
         else if (tab === 'doubts') {
             c.innerHTML = `<h3>Manage Student Doubts</h3><div id="admin-doubt-list">Loading...</div>`;
             fetch('/api/admin/doubts').then(r=>r.json()).then(d => {
+                window.adminDoubts = d; // Save the data globally for the Edit function
                 document.getElementById('admin-doubt-list').innerHTML = d.map(db => `
                 <div class="card doubt-card ${db.status === 'Answered' ? 'answered' : ''}">
-                    <div style="display:flex; justify-content:space-between;"><b>${db.studentName}</b> <span class="badge ${db.status === 'Answered' ? 'bg-green' : 'bg-red'}">${db.status}</span></div>
-                    <p>${db.text}</p>
-
-                    ${db.image ? (db.image.startsWith('data:application/pdf') ? `<div style="margin: 10px 0;"><a href="${db.image}" download="student_doubt.pdf" class="btn-small" style="background:var(--red); color:white; text-decoration:none;">📄 Download Attached PDF</a></div>` : `<a href="${db.image}" target="_blank"><img src="${db.image}" style="height:100px; border:1px solid #ccc;"></a>`) : ''}
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <div><b>${db.studentName}</b> <span class="badge ${db.status === 'Answered' ? 'bg-green' : 'bg-red'}">${db.status}</span></div>
+                        <button class="btn btn-red btn-small" onclick="deleteItem('doubt', '${db._id}')">🗑️ Delete</button>
+                    </div>
+                    <p style="margin-top: 10px;">${db.text}</p>
+                    ${db.image ? `<a href="${db.image}" target="_blank"><img src="${db.image}" style="height:100px; border:1px solid #ccc;"></a>` : ''}
                     <hr>
-                    
                     ${db.status === 'Pending' ? `
-                        <textarea id="reply-text-${db._id}" placeholder="Type reply..."></textarea>
+                        <textarea id="reply-text-${db._id}" placeholder="Type reply..." style="width:100%; padding:8px; border-radius:6px;"></textarea>
                         <input type="file" onchange="encodeImg(this, 'reply-img-${db._id}')" style="margin:5px 0;">
                         <img id="reply-img-${db._id}" style="height:80px; display:none;">
-                        <button class="btn btn-gold btn-small" onclick="replyDoubt('${db._id}')">Send Reply</button>
-                    ` : `<div style="background:#f0f9ff; padding:10px;"><b>Reply:</b> ${db.replyText} ${db.replyImage ? `<br><img src="${db.replyImage}" style="height:100px;">` : ''}</div>`}
+                        <br><button class="btn btn-gold btn-small" style="margin-top:5px;" onclick="replyDoubt('${db._id}')">Send Reply</button>
+                    ` : `
+                        <div id="doubt-ans-container-${db._id}" style="background:#f0f9ff; padding:10px; border-radius:6px;">
+                            <b>Reply:</b> ${db.replyText} ${db.replyImage ? `<br><img src="${db.replyImage}" style="height:100px; margin-top:5px;">` : ''}
+                            <div style="margin-top: 10px;">
+                                <button class="btn btn-gold btn-small" onclick="editDoubtReply('${db._id}')">✏️ Edit Reply</button>
+                            </div>
+                        </div>
+                    `}
                 </div>`).join('');
             });
         }
@@ -1210,6 +1219,7 @@ async function submitHomeDoubt() {
         else if(type === 'video') showAdm('video'); 
         else if(type === 'reftool') { showAdm('reftool'); loadRefToolsStudent(); } 
         else if(type === 'potd') { showAdm('potd'); loadPOTD(); } 
+        else if(type === 'doubt') { showAdm('doubts'); }
     }
 
     function initCreateTest() { editingTestId = null; draftQ = []; showAdm('create-test'); renderCreatePalette(); }
@@ -1553,15 +1563,22 @@ function changeBlogPage(dir) {
             const data = await res.json();
             const track = document.getElementById('story-track');
             if(!track || data.length === 0) return;
-            const createCard = (s) => `
+            
+            const createCard = (s) => {
+                // Generates an initial-based avatar matching your site's theme (Navy background, Gold text)
+                const fallbackImg = `https://ui-avatars.com/api/?name=${encodeURIComponent(s.name)}&background=0f172a&color=fbbf24&bold=true`;
+                
+                return `
                 <div class="story-card">
                     <div class="story-header">
-                        <img src="${s.image || 'https://via.placeholder.com/50'}" class="story-img">
+                        <img src="${s.image || fallbackImg}" class="story-img" onerror="this.onerror=null; this.src='${fallbackImg}';">
                         <div class="story-info"><h4>${s.name}</h4><small>${s.status}</small></div>
                         ${(user && user.role === 'admin') ? `<button onclick="deleteItem('story', '${s._id}')" style="margin-left:auto; color:red; border:none; background:none; cursor:pointer;">X</button>` : ''}
                     </div>
                     <div class="story-text">"${s.experience}"</div>
                 </div>`;
+            };
+            
             const cardsHTML = data.map(createCard).join('');
             track.innerHTML = cardsHTML + cardsHTML + cardsHTML; 
         } catch(e) { console.error(e); }
@@ -1803,6 +1820,22 @@ function changeBlogPage(dir) {
         loadRefToolsStudent(); 
     }
 
+     function editDoubtReply(id) {
+        // Find the doubt data we saved earlier
+        const db = window.adminDoubts.find(d => d._id === id);
+        if(!db) return;
+        
+        // Turn the answered div back into a form
+        const container = document.getElementById(`doubt-ans-container-${id}`);
+        container.innerHTML = `
+            <textarea id="reply-text-${id}" style="width:100%; padding:8px; border-radius:6px; margin-bottom:10px;">${db.replyText}</textarea>
+            <input type="file" onchange="encodeImg(this, 'reply-img-${id}')" style="margin:5px 0;">
+            <img id="reply-img-${id}" src="${db.replyImage || ''}" style="height:80px; display:${db.replyImage ? 'block' : 'none'}; border:1px solid #ccc;">
+            <br>
+            <button class="btn btn-gold btn-small" style="margin-top:5px;" onclick="replyDoubt('${id}')">Update Reply</button>
+            <button class="btn btn-red btn-small" style="margin-top:5px;" onclick="showAdm('doubts')">Cancel</button>
+        `;
+    }
 
     // ==========================================
     // 💡 LAMP PULL-STRING INTERACTION JS
