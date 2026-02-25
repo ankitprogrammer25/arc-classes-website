@@ -338,7 +338,7 @@ app.post('/api/doubt', async (req, res) => {
         if (process.env.GEMINI_API_KEY && (text || image)) {
             try {
                 console.log("Attempting to connect to Gemini...");
-                const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
+                const model = genAI.getGenerativeModel({ model: "gemini-pro" });
                 
                 let prompt = "You are a helpful expert Chemistry tutor for 11th and 12th-grade students studying for competitive exams like JEE/NEET. Explain the answer clearly and step-by-step. The student asks: " + (text || "Please explain the attached document/image.");
                 
