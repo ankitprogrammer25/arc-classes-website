@@ -182,42 +182,51 @@
         }
     
     /* 🧪 --- VIRTUAL COLORFUL LAB CSS --- */
-        .lab-menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-top: 20px; }
+        .lab-menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-top: 20px; max-height: 65vh; overflow-y: auto; padding: 10px; }
         .lab-card { background: linear-gradient(135deg, #1e293b, #0f172a); color: white; border: 2px solid var(--gold); border-radius: 12px; padding: 20px; text-align: center; cursor: pointer; transition: transform 0.3s, box-shadow 0.3s; }
-        .lab-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(251, 191, 36, 0.2); }
+        .lab-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(251, 191, 36, 0.2); border-color: white; }
         .lab-icon { font-size: 3rem; margin-bottom: 10px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5)); }
         
-        .lab-workspace { background: #0f172a; border-radius: 12px; border: 4px solid #334155; padding: 20px; display: flex; flex-direction: column; align-items: center; min-height: 450px; position: relative; overflow: hidden; box-shadow: inset 0 0 50px rgba(0,0,0,0.8); }
-        .lab-bench { position: absolute; bottom: 0; left: 0; width: 100%; height: 100px; background: linear-gradient(to bottom, #475569, #1e293b); border-top: 4px solid #64748b; perspective: 1000px; }
+        .lab-workspace { background: #0f172a; border-radius: 12px; border: 4px solid #334155; padding: 20px; display: flex; flex-direction: column; align-items: center; min-height: 500px; position: relative; overflow: hidden; box-shadow: inset 0 0 50px rgba(0,0,0,0.8); }
+        .lab-bench { position: absolute; bottom: 0; left: 0; width: 100%; height: 120px; background: linear-gradient(to bottom, #475569, #1e293b); border-top: 6px solid #64748b; perspective: 1000px; z-index: 1; }
         .lab-bench::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 20px; background: rgba(255,255,255,0.05); transform: rotateX(60deg); transform-origin: top; }
         
-        .lab-controls { background: white; padding: 15px; border-radius: 8px; width: 100%; max-width: 600px; margin-top: 20px; z-index: 10; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
-        .lab-info-panel { background: rgba(0,0,0,0.7); color: #cbd5e1; padding: 10px 20px; border-radius: 6px; border-left: 4px solid var(--gold); width: 100%; max-width: 600px; margin-bottom: 20px; z-index: 10; min-height: 60px; display: flex; align-items: center; }
+        .lab-controls { background: white; padding: 15px; border-radius: 8px; width: 100%; max-width: 700px; margin-top: auto; z-index: 100; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.3); position: relative; }
+        .lab-info-panel { background: rgba(0,0,0,0.8); color: #e2e8f0; padding: 15px 20px; border-radius: 8px; border-left: 4px solid var(--gold); width: 100%; max-width: 600px; margin-bottom: 20px; z-index: 10; min-height: 60px; display: flex; align-items: center; font-size: 1.1rem; }
 
-        /* Lab Equipment Graphics */
-        .equipment-area { position: relative; width: 100%; height: 250px; display: flex; justify-content: center; align-items: flex-end; gap: 40px; z-index: 5; padding-bottom: 20px; }
+        /* Equipment Graphics */
+        .equipment-area { position: relative; width: 100%; height: 280px; display: flex; justify-content: center; align-items: flex-end; gap: 40px; z-index: 5; padding-bottom: 20px; }
         
-        /* Test Tube */
-        .tt-stand { width: 60px; height: 150px; border: 4px solid #cbd5e1; border-top: none; border-radius: 0 0 10px 10px; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 10px; }
-        .test-tube { width: 30px; height: 140px; border: 2px solid rgba(255,255,255,0.6); border-top: none; border-radius: 0 0 15px 15px; background: rgba(255,255,255,0.1); position: relative; overflow: hidden; transition: background 1s; box-shadow: inset -5px -5px 10px rgba(0,0,0,0.2); }
-        .tt-liquid { position: absolute; bottom: 0; left: 0; width: 100%; height: 0%; background: rgba(255,255,255,0.2); transition: height 0.5s, background 1s; }
-        .tt-silver { background: linear-gradient(135deg, #e2e8f0 0%, #ffffff 50%, #94a3b8 100%) !important; box-shadow: inset 0 0 20px white; }
+        .tt-stand { width: 80px; height: 180px; border: 6px solid #cbd5e1; border-top: none; border-radius: 0 0 15px 15px; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 10px; position: relative; background: rgba(255,255,255,0.02); box-shadow: 0 10px 20px rgba(0,0,0,0.5); margin: 0 auto; }
+        .tt-stand::before { content: ''; position: absolute; top: 20px; width: 100%; height: 10px; background: #cbd5e1; }
+        .test-tube { width: 36px; height: 160px; border: 3px solid rgba(255,255,255,0.8); border-top: none; border-radius: 0 0 18px 18px; background: rgba(255,255,255,0.05); position: relative; overflow: hidden; transition: background 1s; box-shadow: inset -5px -5px 15px rgba(0,0,0,0.3), 0 5px 10px rgba(0,0,0,0.5); z-index: 2; }
+        .test-tube::after { content: ''; position: absolute; top: 0; left: 5px; width: 6px; height: 90%; background: rgba(255,255,255,0.3); border-radius: 5px; } 
+        .tt-liquid { position: absolute; bottom: 0; left: 0; width: 100%; height: 0%; background: rgba(255,255,255,0.2); transition: height 0.8s cubic-bezier(0.4, 0, 0.2, 1), background 1s; }
+        .tt-silver { background: linear-gradient(135deg, #e2e8f0 0%, #ffffff 50%, #94a3b8 100%) !important; box-shadow: inset 0 0 30px white; }
         
-        /* Bunsen Burner & Flame */
-        .burner-base { width: 60px; height: 20px; background: #64748b; border-radius: 10px 10px 0 0; position: absolute; bottom: 0; }
-        .burner-pipe { width: 16px; height: 80px; background: #94a3b8; position: absolute; bottom: 20px; border-radius: 4px; box-shadow: inset -2px 0 5px rgba(0,0,0,0.3); }
-        .flame { position: absolute; bottom: 100px; width: 30px; height: 60px; background: #3b82f6; border-radius: 50% 50% 20% 20%; box-shadow: 0 0 20px #3b82f6, inset 0 0 10px #60a5fa; filter: blur(2px); transition: background 0.5s, box-shadow 0.5s; animation: flicker 0.2s infinite alternate; }
-        @keyframes flicker { 0% { transform: scaleY(1) scaleX(1); opacity: 0.9; } 100% { transform: scaleY(1.1) scaleX(0.95); opacity: 1; } }
+        .cell-beaker { width: 130px; height: 150px; border: 4px solid rgba(255,255,255,0.8); border-top: none; border-radius: 0 0 15px 15px; background: rgba(255,255,255,0.05); position: relative; box-shadow: inset -5px -5px 20px rgba(0,0,0,0.3), 0 10px 20px rgba(0,0,0,0.5); overflow: hidden; margin: 0 auto; }
+        .cell-beaker::before { content: ''; position: absolute; top: -20px; left: 10px; width: 15px; height: 20px; border: 4px solid rgba(255,255,255,0.8); border-bottom: none; border-radius: 5px 0 0 0; } 
+        .cell-beaker::after { content: ''; position: absolute; top: 0; right: 15px; width: 10px; height: 90%; background: rgba(255,255,255,0.2); border-radius: 5px; pointer-events: none; } 
         
-        /* Daniell Cell */
-        .cell-beaker { width: 90px; height: 110px; border: 3px solid rgba(255,255,255,0.6); border-top: none; border-radius: 0 0 10px 10px; background: rgba(255,255,255,0.05); position: relative; }
-        .electrode { width: 20px; height: 130px; position: absolute; top: -30px; left: 35px; border-radius: 2px; box-shadow: 2px 2px 5px rgba(0,0,0,0.5); }
-        .wire { position: absolute; top: -30px; width: 100px; height: 3px; background: #ef4444; }
-        .voltmeter { position: absolute; top: -60px; left: 50%; transform: translateX(-50%); width: 60px; height: 40px; background: #333; border: 2px solid #ccc; border-radius: 6px; color: #22c55e; font-family: monospace; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; font-weight: bold; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
-        .salt-bridge { position: absolute; top: 10px; left: 65px; width: 100px; height: 40px; border: 15px solid rgba(255,255,255,0.8); border-bottom: none; border-radius: 20px 20px 0 0; z-index: -1; }
-        
-        /* Hand Pointer tool */
-        .hand-tool { font-size: 2.5rem; position: absolute; transition: all 0.5s ease-in-out; z-index: 50; opacity: 0; pointer-events: none; }
+        .beaker-marks { position: absolute; left: 5px; bottom: 10px; height: 80%; display: flex; flex-direction: column-reverse; justify-content: space-between; }
+        .beaker-marks div { width: 15px; height: 2px; background: rgba(255,255,255,0.5); }
+        .beaker-marks div:nth-child(even) { width: 8px; }
+
+        /* Daniell Cell Specifics */
+        .electrode { width: 20px; height: 130px; position: absolute; top: -30px; left: 35px; border-radius: 2px; box-shadow: 2px 2px 5px rgba(0,0,0,0.5); z-index: 2; }
+        .wire { position: absolute; top: -30px; width: 100px; height: 3px; background: #ef4444; z-index: 1; }
+        .voltmeter { position: absolute; top: -60px; left: 50%; transform: translateX(-50%); width: 60px; height: 40px; background: #333; border: 2px solid #ccc; border-radius: 6px; color: #22c55e; font-family: monospace; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; font-weight: bold; box-shadow: 0 5px 15px rgba(0,0,0,0.5); z-index: 10; }
+        .salt-bridge { position: absolute; top: 10px; left: 65px; width: 100px; height: 40px; border: 15px solid rgba(255,255,255,0.8); border-bottom: none; border-radius: 20px 20px 0 0; z-index: 0; }
+
+        .burner-base { width: 60px; height: 20px; background: #64748b; border-radius: 10px 10px 0 0; margin: 0 auto; box-shadow: 0 5px 10px rgba(0,0,0,0.5); }
+        .burner-pipe { width: 16px; height: 60px; background: linear-gradient(to right, #94a3b8, #e2e8f0, #94a3b8); margin: 0 auto; }
+        .flame { width: 30px; height: 60px; background: #3b82f6; border-radius: 50% 50% 20% 20%; box-shadow: 0 0 20px #3b82f6, inset 0 0 10px #60a5fa; filter: blur(1px); transition: background 0.5s, box-shadow 0.5s; animation: flicker 0.15s infinite alternate; margin: 0 auto -5px auto; }
+        @keyframes flicker { 0% { transform: scaleY(1) scaleX(1); opacity: 0.9; } 100% { transform: scaleY(1.15) scaleX(0.9); opacity: 1; } }
+
+        /* Animation Overlay Elements */
+        .lab-hand-tool { font-size: 5rem; position: absolute; z-index: 60; opacity: 0; transition: all 0.7s cubic-bezier(0.34, 1.56, 0.64, 1); pointer-events: none; text-shadow: 0 10px 20px rgba(0,0,0,0.5); filter: drop-shadow(0 5px 5px rgba(0,0,0,0.3)); top: -100px; left: 50%; }
+        .lab-drop { position: absolute; width: 14px; height: 22px; border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%; opacity: 0; z-index: 55; pointer-events: none; transition: top 0.4s ease-in; }
+        .burner-slide { position: absolute; bottom: -150px; left: 50%; transform: translateX(-50%); transition: all 0.8s ease; z-index: 4; display: flex; flex-direction: column; align-items: center; pointer-events: none; }
 
     </style>
 </head>
@@ -416,7 +425,6 @@
         
         <div class="lab-workspace" id="lab-workspace">
             <div class="lab-bench"></div>
-            
             <h3 id="lab-title" style="color:var(--gold); margin-top:0; z-index:10; position:absolute; top:20px; left:20px;">Experiment Name</h3>
             
             <div class="lab-info-panel" id="lab-info">Select an action below to begin the experiment.</div>
@@ -424,13 +432,18 @@
             <div class="equipment-area" id="lab-equipment">
                 </div>
             
-            <div id="lab-hand" class="hand-tool">🤏</div>
+            <div id="lab-anim-hand" class="lab-hand-tool">🫗</div>
+            <div id="lab-anim-drop" class="lab-drop"></div>
+            <div id="lab-anim-burner" class="burner-slide">
+                <div class="flame"></div>
+                <div class="burner-pipe"></div>
+                <div class="burner-base"></div>
+            </div>
             
             <div class="lab-controls" id="lab-controls">
                 </div>
         </div>
     </div>
-</div>
 
 <div id="videos" class="section">
     <h2>📹 Video Lectures</h2>
@@ -630,11 +643,11 @@
     // 🧪 VIRTUAL COLORFUL LAB ENGINE (54 EXPERIMENTS)
     // ==========================================
     
-    // 🛠️ FACTORY HELPERS (Saves 10,000+ lines of code)
+    // 🛠️ FACTORY HELPERS
     function makeTube(id, title, icon, desc, r1Name, r2Name, c1, c2, successMsg, needsHeat = false) {
         return {
             id, title, icon, desc,
-            setup: () => `<div class="tt-stand"><div class="test-tube" id="${id}-tube"><div class="tt-liquid" id="${id}-liq" style="height: 0%; background: transparent; transition: all 1s;"></div></div></div>`,
+            setup: () => `<div class="tt-stand" id="${id}-target"><div class="test-tube" id="${id}-tube"><div class="tt-liquid" id="${id}-liq" style="height: 0%; background: transparent;"></div></div></div>`,
             controls: [
                 { label: `💧 Add ${r1Name}`, action: `LabEngine.runTube('${id}', 'r1')` },
                 { label: `💧 Add ${r2Name}`, action: `LabEngine.runTube('${id}', 'r2')` },
@@ -648,7 +661,7 @@
     function makeBeaker(id, title, icon, desc, r1Name, r2Name, c1, c2, successMsg) {
         return {
             id, title, icon, desc,
-            setup: () => `<div class="cell-beaker" style="border-radius:10px; width:120px; height:140px; border-width:4px; margin: 0 auto;"><div id="${id}-liq" style="position:absolute; bottom:0; width:100%; height:0%; background:transparent; transition: all 1s;"></div></div>`,
+            setup: () => `<div class="cell-beaker" id="${id}-target"><div class="beaker-marks"><div></div><div></div><div></div><div></div><div></div><div></div></div><div id="${id}-liq" style="position:absolute; bottom:0; width:100%; height:0%; background:transparent; transition: all 1s;"></div></div>`,
             controls: [
                 { label: `💧 Pour ${r1Name}`, action: `LabEngine.runBeaker('${id}', 'r1')` },
                 { label: `💧 Pour ${r2Name}`, action: `LabEngine.runBeaker('${id}', 'r2')` },
@@ -660,95 +673,54 @@
 
     const LabEngine = {
         experiments: [
-            // 🌟 CUSTOM ADVANCED EXPERIMENTS
+            // Custom Adv Experiments
             {
                 id: 'daniell', title: 'Daniell Cell', icon: '🔋', desc: 'Galvanic cell using Zinc and Copper.',
-                setup: () => `<div class="voltmeter" id="volt-read">0.00V</div><div class="wire" style="left:55px;"></div><div class="salt-bridge" id="salt-bridge" style="opacity:0.2;"></div><div class="cell-beaker"><div style="position:absolute; bottom:0; width:100%; height:70%; background:rgba(255,255,255,0.1);"></div><div class="electrode" style="background:#cbd5e1;"></div><div style="position:absolute; bottom:-25px; left:20px; color:white; font-weight:bold;">ZnSO₄</div></div><div class="cell-beaker"><div style="position:absolute; bottom:0; width:100%; height:70%; background:rgba(59, 130, 246, 0.4);"></div><div class="electrode" style="background:#b45309;"></div><div style="position:absolute; bottom:-25px; left:20px; color:white; font-weight:bold;">CuSO₄</div></div>`,
+                setup: () => `<div style="position:relative; width: 250px; height: 150px; display: flex; justify-content: space-between; margin: 0 auto; margin-top: 50px;">
+                    <div class="voltmeter" id="volt-read">0.00V</div>
+                    <div class="wire" style="left:55px;"></div>
+                    <div class="salt-bridge" id="salt-bridge" style="opacity:0.2;"></div>
+                    <div class="cell-beaker" style="width: 90px; height: 110px; box-shadow: none;">
+                        <div style="position:absolute; bottom:0; width:100%; height:70%; background:rgba(255,255,255,0.1);"></div>
+                        <div class="electrode" style="background:#cbd5e1; left: 35px;"></div>
+                        <div style="position:absolute; bottom:-25px; left:20px; color:white; font-weight:bold; font-size: 0.8rem;">ZnSO₄</div>
+                    </div>
+                    <div class="cell-beaker" style="width: 90px; height: 110px; box-shadow: none;">
+                        <div style="position:absolute; bottom:0; width:100%; height:70%; background:rgba(59, 130, 246, 0.4);"></div>
+                        <div class="electrode" style="background:#b45309; left: 35px;"></div>
+                        <div style="position:absolute; bottom:-25px; left:20px; color:white; font-weight:bold; font-size: 0.8rem;">CuSO₄</div>
+                    </div>
+                </div>`,
                 controls: [{ label: '🔌 Connect Wires', action: 'LabEngine.runCustom("daniell", "wire")' }, { label: '🌉 Insert Salt Bridge', action: 'LabEngine.runCustom("daniell", "bridge")' }, { label: '⚡ Close Circuit', action: 'LabEngine.runCustom("daniell", "circuit")' }],
                 state: { wired: false, bridged: false }
             },
             {
                 id: 'flame', title: 'Flame Tests', icon: '🔥', desc: 'Emission spectra of 10 different metal cations.',
-                setup: () => `<div style="position:relative; width: 100px; height: 150px; display:flex; justify-content:center;"><div class="flame" id="bunsen-flame"></div><div class="burner-pipe"></div><div class="burner-base"></div></div>`,
+                setup: () => `<div style="position:relative; width: 100px; height: 150px; display:flex; justify-content:center;" id="flame-target"><div class="flame" id="bunsen-flame"></div><div class="burner-pipe"></div><div class="burner-base"></div></div>`,
                 controls: ['Li⁺ (Crimson,li)','Na⁺ (Yellow,na)','K⁺ (Lilac,k)','Rb⁺ (Red-Violet,rb)','Cs⁺ (Blue,cs)','Ca²⁺ (Brick Red,ca)','Sr²⁺ (Crimson,sr)','Ba²⁺ (Apple Green,ba)','Cu²⁺ (Blue-Green,cu)','Pb²⁺ (Pale Blue,pb)'].map(m => ({ label: `🤏 ${m.split(',')[0]}`, action: `LabEngine.runFlame("${m.split(',')[1].replace(')','')}")` })).concat([{ label: '💨 Reset Flame', action: 'LabEngine.startLab("flame")' }]),
                 state: {}
             },
             {
-                id: 'osmosis', title: 'Osmotic Pressure', icon: '🧫', desc: 'Solvent flows to higher concentration.',
-                setup: () => `<div style="display:flex; align-items:flex-end; border:4px solid #cbd5e1; border-top:none; border-radius:0 0 20px 20px; width:140px; height:140px; position:relative; overflow:hidden; margin: 0 auto;"><div style="width:50%; background:#93c5fd; height:40%; transition:2s;" id="osm-left"></div><div style="width:4px; background:#475569; height:100%; z-index:10;"></div><div style="width:50%; background:#2563eb; height:40%; transition:2s;" id="osm-right"></div></div>`,
-                controls: [{label: '⏳ Wait for Osmosis', action: 'document.getElementById("osm-left").style.height="20%"; document.getElementById("osm-right").style.height="60%"; LabEngine.setInfo("Water moves through semi-permeable membrane to higher concentration!")'}, {label:'🔄 Reset', action:'LabEngine.startLab("osmosis")'}],
-                state: {}
-            },
-            {
                 id: 'vapor', title: 'Vaporization', icon: '☁️', desc: 'Liquid turns to gas upon heating.',
-                setup: () => `<div class="cell-beaker" style="margin: 0 auto;"><div id="vap-liq" style="position:absolute; bottom:0; width:100%; height:80%; background:#3b82f6; transition:2s;"></div><div id="vap-gas" style="position:absolute; top:-50px; left:15px; font-size:2.5rem; opacity:0; transition:2s;">☁️☁️</div></div>`,
-                controls: [{label: '🔥 Heat Liquid', action: 'document.getElementById("vap-liq").style.height="10%"; document.getElementById("vap-gas").style.opacity="1"; document.getElementById("vap-gas").style.top="-100px"; LabEngine.setInfo("Liquid vaporizes into gas phase!")'}, {label:'🔄 Reset', action:'LabEngine.startLab("vapor")'}],
+                setup: () => `<div class="cell-beaker" id="vapor-target" style="margin: 0 auto;"><div class="beaker-marks"><div></div><div></div><div></div><div></div><div></div></div><div id="vap-liq" style="position:absolute; bottom:0; width:100%; height:80%; background:#3b82f6; transition:2s;"></div><div id="vap-gas" style="position:absolute; top:-50px; left:15px; font-size:2.5rem; opacity:0; transition:2s;">☁️☁️</div></div>`,
+                controls: [{label: '🔥 Heat Liquid', action: 'LabEngine.animate("vapor", "heat", null, () => { document.getElementById("vap-liq").style.height="10%"; document.getElementById("vap-gas").style.opacity="1"; document.getElementById("vap-gas").style.top="-100px"; LabEngine.setInfo("Liquid vaporizes into gas phase!"); })'}, {label:'🔄 Reset', action:'LabEngine.startLab("vapor")'}],
                 state: {}
             },
-            {
-                id: 'filter', title: 'Filtration', icon: '☕', desc: 'Separate solid from liquid.',
-                setup: () => `<div style="display:flex; flex-direction:column; align-items:center;"><div style="width:0; height:0; border-left:40px solid transparent; border-right:40px solid transparent; border-top:60px solid rgba(255,255,255,0.5); position:relative;"><div id="fil-solid" style="position:absolute; top:-50px; left:-15px; width:30px; height:10px; background:#1e293b; opacity:0; transition:1s;"></div></div><div class="cell-beaker" style="height:60px; width:60px;"><div id="fil-liq" style="position:absolute; bottom:0; width:100%; height:0%; background:#3b82f6; transition:2s;"></div></div></div>`,
-                controls: [{label: '🧪 Pour Mixture', action: 'document.getElementById("fil-solid").style.opacity="1"; document.getElementById("fil-liq").style.height="80%"; LabEngine.setInfo("Residue stays in filter, filtrate drops in beaker!")'}, {label:'🔄 Reset', action:'LabEngine.startLab("filter")'}],
-                state: {}
-            },
-            {
-                id: 'distill', title: 'Distillation', icon: '⚗️', desc: 'Separate liquids by boiling point.',
-                setup: () => `<div style="display:flex; gap:20px; align-items:flex-end; margin: 0 auto;"><div class="cell-beaker" style="height:100px;"><div id="dis-l1" style="position:absolute; bottom:0; width:100%; height:80%; background:#fcd34d; transition:2s;"></div></div> <div style="font-size:2rem; margin-bottom: 20px;">➡️</div> <div class="cell-beaker" style="height:100px;"><div id="dis-l2" style="position:absolute; bottom:0; width:100%; height:0%; background:#3b82f6; transition:2s; transition-delay:1s;"></div></div></div>`,
-                controls: [{label: '🔥 Heat Flask', action: 'document.getElementById("dis-l1").style.height="20%"; document.getElementById("dis-l2").style.height="60%"; LabEngine.setInfo("Lower boiling point liquid evaporates and condenses in receiver!")'}, {label:'🔄 Reset', action:'LabEngine.startLab("distill")'}],
-                state: {}
-            },
-
-            // 🌟 ORGANIC CHEMISTRY TESTS (Test Tubes)
+            // Generative Tubes (Subset)
             makeTube('tollens', 'Tollens Test', '🪞', 'Silver mirror test for Aldehydes.', 'Tollens Reagent', 'Glucose (Aldehyde)', 'rgba(255,255,255,0.2)', 'silver', '✨ Silver Mirror Formed! Aldehyde confirmed.', true),
             makeTube('fehling', 'Fehlings Test', '🍷', 'Test for aliphatic aldehydes.', 'Fehling A+B', 'Aldehyde', '#3b82f6', '#b91c1c', 'Brick Red Precipitate Formed!', true),
             makeTube('iodoform', 'Iodoform Test', '🟡', 'Test for methyl ketones.', 'NaOH + I₂', 'Methyl Ketone', 'rgba(255,255,255,0.2)', '#fef08a', 'Yellow Precipitate of Iodoform (CHI₃) formed!', true),
-            makeTube('lucas', 'Lucas Test', '☁️', 'Differentiate 1°, 2°, 3° alcohols.', 'Lucas Reagent', '3° Alcohol', 'rgba(255,255,255,0.2)', 'rgba(255,255,255,0.9)', 'Immediate White Cloudiness (Alkyl chloride formed)!', false),
-            makeTube('br_water', 'Bromine Water', '💧', 'Test for unsaturation.', 'Bromine Water', 'Alkene', '#b45309', 'rgba(255,255,255,0.2)', 'Brown color completely discharged (Decolorized)!', false),
-            makeTube('baeyer', 'Baeyers Test', '🟣', 'Test for unsaturation.', 'KMnO₄ (Purple)', 'Alkene', '#c084fc', '#713f12', 'Purple color fades, brown MnO₂ precipitate forms!', false),
-            makeTube('dnp', '2,4-DNP Test', '🟠', 'Test for carbonyl groups.', 'Brady Reagent', 'Ketone', '#f97316', '#ea580c', 'Orange-Yellow Precipitate forms!', false),
-            makeTube('fecl3', 'Neutral FeCl₃ Test', '💜', 'Test for Phenols.', 'FeCl₃ Solution', 'Phenol', '#fef08a', '#7e22ce', 'Intense Violet/Purple complex formed!', false),
             makeTube('ninhydrin', 'Ninhydrin Test', '🔵', 'Test for Amino Acids.', 'Ninhydrin', 'Amino Acid', 'rgba(255,255,255,0.2)', '#1e3a8a', 'Deep Blue/Purple (Ruhemanns Purple) formed!', true),
-            makeTube('biuret', 'Biuret Test', '🟣', 'Test for Peptide bonds (Proteins).', 'CuSO₄ + NaOH', 'Protein', '#93c5fd', '#9333ea', 'Violet/Purple color indicates peptide bonds!', false),
-            makeTube('schiff', 'Schiffs Test', '🩷', 'Test for Aldehydes.', 'Schiffs Reagent', 'Aldehyde', 'rgba(255,255,255,0.2)', '#db2777', 'Restoration of Magenta/Pink color!', false),
-            makeTube('can_test', 'Ceric Ammon. Nitrate', '🔴', 'Test for Alcohols.', 'CAN Reagent', 'Alcohol', '#fde047', '#dc2626', 'Red colored alkoxy cerate complex formed!', false),
-            makeTube('ester', 'Esterification', '🍎', 'Test for Carboxylic Acids/Alcohols.', 'Carboxylic Acid', 'Alcohol + H₂SO₄', 'rgba(255,255,255,0.2)', 'rgba(255,255,255,0.4)', 'Sweet Fruity Smell observed! (Ester formed)', true),
-            makeTube('carbylamine', 'Carbylamine Test', '🤢', 'Test for 1° Amines.', 'CHCl₃ + KOH', '1° Amine', 'rgba(255,255,255,0.2)', '#bbf7d0', 'Offensive foul-smelling Isocyanide gas evolved!', true),
-            makeTube('nahco3', 'NaHCO₃ Test', '🫧', 'Test for Carboxylic Acids.', 'NaHCO₃ Solution', 'Carboxylic Acid', 'rgba(255,255,255,0.2)', 'rgba(255,255,255,0.3)', 'Brisk Effervescence of CO₂ gas!', false),
-            makeTube('starch', 'Iodine-Starch Test', '🌌', 'Test for Starch.', 'Iodine Solution', 'Starch', '#b45309', '#0f172a', 'Deep Blue-Black complex formed!', false),
             makeTube('golden_rain', 'Golden Rain', '🌧️', 'Crystallization of PbI₂.', 'Pb(NO₃)₂', 'KI', 'rgba(255,255,255,0.2)', '#eab308', 'Brilliant Golden Spangles of PbI₂ crystallize!', true),
             
-            // 🌟 INORGANIC & PHYSICAL CHEMISTRY (Beakers)
+            // Generative Beakers (Subset)
             makeBeaker('neutral', 'Neutralization', '🌡️', 'Acid + Base reaction.', 'Acid (HCl)', 'Base (NaOH)', 'rgba(255,255,255,0.2)', 'rgba(255,255,255,0.2)', 'Neutralization! Heat is released (Exothermic).'),
-            makeBeaker('agcl', 'AgCl Precipitate', '⬜', 'Chloride test.', 'AgNO₃', 'NaCl', 'rgba(255,255,255,0.2)', '#f8fafc', 'Curdy White Precipitate of AgCl!'),
-            makeBeaker('agbr', 'AgBr Precipitate', '🟨', 'Bromide test.', 'AgNO₃', 'NaBr', 'rgba(255,255,255,0.2)', '#fef08a', 'Pale Yellow Precipitate of AgBr!'),
-            makeBeaker('agi', 'AgI Precipitate', '💛', 'Iodide test.', 'AgNO₃', 'NaI', 'rgba(255,255,255,0.2)', '#eab308', 'Dark Yellow Precipitate of AgI!'),
-            makeBeaker('baso4', 'BaSO₄ Precipitate', '🥛', 'Sulfate test.', 'BaCl₂', 'Na₂SO₄', 'rgba(255,255,255,0.2)', '#f8fafc', 'Dense White Precipitate of BaSO₄!'),
             makeBeaker('pbcro4', 'PbCrO₄ Precipitate', '🚸', 'Chromate test.', 'Pb(NO₃)₂', 'K₂CrO₄', 'rgba(255,255,255,0.2)', '#eab308', 'Bright Yellow Precipitate of Lead Chromate!'),
             makeBeaker('cuoh2', 'Cu(OH)₂ Precipitate', '🥣', 'Copper(II) test.', 'CuSO₄', 'NaOH', '#93c5fd', '#3b82f6', 'Pale Blue Precipitate of Cu(OH)₂!'),
-            makeBeaker('feoh3', 'Fe(OH)₃ Precipitate', '🟤', 'Iron(III) test.', 'FeCl₃', 'NaOH', '#fde047', '#9a3412', 'Reddish-Brown Precipitate of Fe(OH)₃!'),
-            makeBeaker('feoh2', 'Fe(OH)₂ Precipitate', '🥬', 'Iron(II) test.', 'FeSO₄', 'NaOH', '#bbf7d0', '#15803d', 'Dirty Green Precipitate of Fe(OH)₂!'),
-            makeBeaker('nioh2', 'Ni(OH)₂ Precipitate', '🍏', 'Nickel(II) test.', 'NiCl₂', 'NaOH', '#86efac', '#16a34a', 'Apple Green Precipitate of Ni(OH)₂!'),
-            makeBeaker('cooh2', 'Co(OH)₂ Precipitate', '🎀', 'Cobalt(II) test.', 'CoCl₂', 'NaOH', '#fbcfe8', '#1d4ed8', 'Blue precipitate formed!'), 
-            makeBeaker('znoh2', 'Zn(OH)₂ Precipitate', '☁️', 'Zinc(II) test.', 'ZnSO₄', 'NaOH', 'rgba(255,255,255,0.2)', '#f8fafc', 'White Gelatinous Precipitate of Zn(OH)₂!'),
-            makeBeaker('aloh3', 'Al(OH)₃ Precipitate', '🌫️', 'Aluminum(III) test.', 'AlCl₃', 'NaOH', 'rgba(255,255,255,0.2)', '#f8fafc', 'White Gelatinous Precipitate of Al(OH)₃!'),
-            makeBeaker('mnoh2', 'Mn(OH)₂ Precipitate', '🌸', 'Manganese(II) test.', 'MnCl₂', 'NaOH', 'rgba(255,255,255,0.2)', '#fbcfe8', 'Flesh/Pink-colored Precipitate of Mn(OH)₂!'),
-            makeBeaker('croh3', 'Cr(OH)₃ Precipitate', '🌿', 'Chromium(III) test.', 'CrCl₃', 'NaOH', '#86efac', '#14532d', 'Grey-Green Precipitate of Cr(OH)₃!'),
-            makeBeaker('cus', 'CuS Precipitate', '⚫', 'Sulfide test (Grp 2).', 'CuSO₄', 'H₂S', '#93c5fd', '#1e293b', 'Black Precipitate of CuS!'),
-            makeBeaker('cds', 'CdS Precipitate', '🟡', 'Sulfide test (Grp 2).', 'CdCl₂', 'H₂S', 'rgba(255,255,255,0.2)', '#eab308', 'Bright Yellow Precipitate of CdS!'),
-            makeBeaker('sb2s3', 'Sb₂S₃ Precipitate', '🟠', 'Sulfide test (Grp 2).', 'SbCl₃', 'H₂S', 'rgba(255,255,255,0.2)', '#f97316', 'Orange Precipitate of Sb₂S₃!'),
-            makeBeaker('bi2s3', 'Bi₂S₃ Precipitate', '🟤', 'Sulfide test (Grp 2).', 'BiCl₃', 'H₂S', 'rgba(255,255,255,0.2)', '#451a03', 'Brown-Black Precipitate of Bi₂S₃!'),
-            makeBeaker('sns2', 'SnS₂ Precipitate', '🟨', 'Sulfide test (Grp 2).', 'SnCl₄', 'H₂S', 'rgba(255,255,255,0.2)', '#fef08a', 'Yellow Precipitate of SnS₂!'),
-            makeBeaker('pbs', 'PbS Precipitate', '⬛', 'Sulfide test (Grp 2).', 'Pb(NO₃)₂', 'H₂S', 'rgba(255,255,255,0.2)', '#0f172a', 'Black Precipitate of PbS!'),
-            makeBeaker('hgs', 'HgS Precipitate', '🐦‍⬛', 'Sulfide test (Grp 2).', 'HgCl₂', 'H₂S', 'rgba(255,255,255,0.2)', '#000000', 'Black Precipitate of HgS!'),
-            makeBeaker('zns', 'ZnS Precipitate', '🤍', 'Sulfide test (Grp 4).', 'ZnSO₄', 'H₂S', 'rgba(255,255,255,0.2)', '#f8fafc', 'White Precipitate of ZnS!'),
-            makeBeaker('mns', 'MnS Precipitate', '🪷', 'Sulfide test (Grp 4).', 'MnCl₂', 'H₂S', 'rgba(255,255,255,0.2)', '#fbcfe8', 'Flesh-colored Precipitate of MnS!'),
-            makeBeaker('blue_bottle', 'Blue Bottle Exp', '🌀', 'Redox indicator test.', 'Glucose + KOH', 'Methylene Blue', 'rgba(255,255,255,0.2)', '#1d4ed8', 'Shake to turn Blue, rest to turn Clear! (Simulation: Blue)'),
             makeBeaker('chameleon', 'Chem Chameleon', '🦎', 'Redox states of Manganese.', 'KMnO₄', 'Sugar + NaOH', '#c084fc', '#15803d', 'Color shifts Purple -> Blue -> Green -> Yellow!'),
-            makeBeaker('litmus_b_r', 'Litmus (Blue to Red)', '🔴', 'Acid test.', 'Blue Litmus', 'Acid (HCl)', '#3b82f6', '#ef4444', 'Blue Litmus turns Red indicating Acid!'),
-            makeBeaker('litmus_r_b', 'Litmus (Red to Blue)', '🔵', 'Base test.', 'Red Litmus', 'Base (NaOH)', '#ef4444', '#3b82f6', 'Red Litmus turns Blue indicating Base!'),
-            makeBeaker('phenolphthalein', 'Phenolphthalein', '🩷', 'Base indicator test.', 'Phenolphthalein', 'Base (NaOH)', 'rgba(255,255,255,0.2)', '#db2777', 'Colorless turns Pink/Magenta in Base!'),
-            makeBeaker('methyl_orange', 'Methyl Orange', '🍅', 'Acid indicator test.', 'Methyl Orange', 'Acid (HCl)', '#f97316', '#dc2626', 'Orange turns Red in Acidic pH!'),
-            makeBeaker('pbi2', 'Lead Iodide Precip', '🌟', 'Double displacement.', 'Pb(NO₃)₂', 'KI', 'rgba(255,255,255,0.2)', '#eab308', 'Bright Yellow Precipitate of PbI₂!')
+            makeBeaker('litmus_b_r', 'Litmus (Blue to Red)', '🔴', 'Acid test.', 'Acid (HCl)', 'Blue Litmus', 'rgba(255,255,255,0.2)', '#ef4444', 'Blue Litmus drops turn Red indicating Acid!'),
+            makeBeaker('litmus_r_b', 'Litmus (Red to Blue)', '🔵', 'Base test.', 'Base (NaOH)', 'Red Litmus', 'rgba(255,255,255,0.2)', '#3b82f6', 'Red Litmus drops turn Blue indicating Base!'),
+            makeBeaker('phenolphthalein', 'Phenolphthalein', '🩷', 'Base indicator test.', 'Base (NaOH)', 'Phenolphthalein', 'rgba(255,255,255,0.2)', '#db2777', 'Colorless solution turns Pink/Magenta!')
         ],
 
         init: function() {
@@ -772,17 +744,10 @@
             document.getElementById('lab-equipment').innerHTML = exp.setup();
             
             const controls = document.getElementById('lab-controls');
-            controls.innerHTML = exp.controls.map(c => `
-                <button class="btn btn-gold" onclick='${c.action}'>${c.label}</button>
-            `).join('');
-            
+            controls.innerHTML = exp.controls.map(c => `<button class="btn btn-gold" onclick="${c.action}">${c.label}</button>`).join('');
             this.setInfo(`Welcome to the ${exp.title} lab! Follow the steps below.`);
             
-            // Reset states
-            if(exp.state) {
-                exp.state.step = 0;
-                if(exp.state.wired !== undefined) { exp.state.wired = false; exp.state.bridged = false; }
-            }
+            if(exp.state) exp.state.step = 0;
             const tube = document.getElementById(`${id}-tube`);
             if(tube) tube.classList.remove('tt-silver');
         },
@@ -796,7 +761,58 @@
             document.getElementById('lab-info').innerHTML = `<b>👨‍🔬 System:</b> &nbsp; ${msg}`;
         },
 
-        // --- ANIMATION CONTROLLERS ---
+        // --- MASTER ANIMATION CONTROLLER ---
+        animate: function(targetId, actionType, color, onComplete) {
+            const hand = document.getElementById('lab-anim-hand');
+            const drop = document.getElementById('lab-anim-drop');
+            const target = document.getElementById(targetId + '-target') || document.getElementById('flame-target');
+            if(!target && actionType !== 'heat') { onComplete(); return; }
+
+            const tgtRect = target.getBoundingClientRect();
+            const wsRect = document.getElementById('lab-workspace').getBoundingClientRect();
+            const tgtX = tgtRect.left - wsRect.left + (tgtRect.width/2);
+            const tgtY = tgtRect.top - wsRect.top;
+
+            if(actionType === 'pour') {
+                hand.innerText = '🧪'; // Flask emoji for pouring
+                hand.style.top = '20px'; hand.style.left = '90%'; hand.style.opacity = '1'; hand.style.transform = 'rotate(0deg)';
+                
+                setTimeout(() => {
+                    hand.style.top = (tgtY - 60) + 'px';
+                    hand.style.left = (tgtX + 25) + 'px';
+                    
+                    setTimeout(() => {
+                        hand.style.transform = 'rotate(-50deg)'; // Tilt flask
+                        drop.style.background = color === 'transparent' || color.includes('rgba(255,255,255') ? '#38bdf8' : color;
+                        drop.style.left = tgtX + 'px';
+                        drop.style.top = (tgtY + 5) + 'px';
+                        drop.style.opacity = '1';
+                        drop.style.transition = 'none';
+                        
+                        setTimeout(() => {
+                            drop.style.transition = 'top 0.4s ease-in';
+                            drop.style.top = (tgtY + tgtRect.height - 30) + 'px'; // Fall into container
+                            
+                            setTimeout(() => {
+                                drop.style.opacity = '0';
+                                onComplete(); // Trigger liquid fill
+                                setTimeout(() => { hand.style.opacity = '0'; hand.style.transform = 'rotate(0deg)'; }, 800);
+                            }, 400);
+                        }, 50);
+                    }, 600);
+                }, 100);
+            } else if(actionType === 'heat') {
+                const burner = document.getElementById('lab-anim-burner');
+                burner.style.left = tgtX + 'px';
+                burner.style.bottom = '100px'; // Slide burner up from bench
+                
+                setTimeout(() => {
+                    onComplete(); // Trigger boiling reaction
+                    setTimeout(() => { burner.style.bottom = '-150px'; }, 2500); // Slide burner away
+                }, 1500);
+            }
+        },
+
         runTube: function(id, action) {
             const exp = this.experiments.find(e => e.id === id);
             const liq = document.getElementById(`${id}-liq`);
@@ -804,30 +820,34 @@
             
             if (action === 'r1') {
                 if(exp.state.step >= 1) return;
-                exp.state.step = 1;
-                liq.style.height = '40%'; liq.style.background = exp.state.c1;
-                this.setInfo(`Added first chemical.`);
+                this.animate(id, 'pour', exp.state.c1, () => {
+                    exp.state.step = 1;
+                    liq.style.height = '40%'; liq.style.background = exp.state.c1;
+                    this.setInfo(`Added first chemical.`);
+                });
             } else if (action === 'r2') {
-                if(exp.state.step !== 1) return this.setInfo("Please add the first reagent initially.");
-                exp.state.step = 2;
-                liq.style.height = '70%';
-                if(!exp.state.needsHeat) {
-                    if(exp.state.c2 === 'silver') tube.classList.add('tt-silver');
-                    else liq.style.background = exp.state.c2;
-                    this.setInfo(exp.state.msg);
-                } else {
-                    this.setInfo("Chemicals mixed. Ready for heating.");
-                }
+                if(exp.state.step !== 1) return this.setInfo("Add first reagent initially.");
+                this.animate(id, 'pour', exp.state.c2, () => {
+                    exp.state.step = 2;
+                    liq.style.height = '70%';
+                    if(!exp.state.needsHeat) {
+                        if(exp.state.c2 === 'silver') tube.classList.add('tt-silver');
+                        else liq.style.background = exp.state.c2;
+                        this.setInfo(exp.state.msg);
+                    } else { this.setInfo("Chemicals mixed. Ready for heating."); }
+                });
             } else if (action === 'heat') {
                 if(exp.state.step !== 2) return this.setInfo("Mix chemicals first!");
                 if(exp.state.step === 3) return;
-                exp.state.step = 3;
-                this.setInfo("Heating in water bath...");
-                setTimeout(() => {
-                    if(exp.state.c2 === 'silver') tube.classList.add('tt-silver');
-                    else liq.style.background = exp.state.c2;
-                    this.setInfo(exp.state.msg);
-                }, 1200);
+                this.animate(id, 'heat', null, () => {
+                    exp.state.step = 3;
+                    this.setInfo("Heating in water bath...");
+                    setTimeout(() => {
+                        if(exp.state.c2 === 'silver') tube.classList.add('tt-silver');
+                        else liq.style.background = exp.state.c2;
+                        this.setInfo(exp.state.msg);
+                    }, 1200);
+                });
             }
         },
 
@@ -836,53 +856,43 @@
             const liq = document.getElementById(`${id}-liq`);
             if(action === 'r1') {
                 if(exp.state.step >= 1) return;
-                exp.state.step = 1;
-                liq.style.height = '40%'; liq.style.background = exp.state.c1;
-                this.setInfo(`Poured first solution.`);
+                this.animate(id, 'pour', exp.state.c1, () => {
+                    exp.state.step = 1;
+                    liq.style.height = '40%'; liq.style.background = exp.state.c1;
+                    this.setInfo(`Poured first solution.`);
+                });
             } else if(action === 'r2') {
-                if(exp.state.step !== 1) return this.setInfo("Please pour the first solution initially.");
-                exp.state.step = 2;
-                liq.style.height = '80%'; liq.style.background = exp.state.c2;
-                this.setInfo(exp.state.msg);
+                if(exp.state.step !== 1) return this.setInfo("Pour first solution initially.");
+                this.animate(id, 'pour', exp.state.c2, () => {
+                    exp.state.step = 2;
+                    liq.style.height = '80%'; liq.style.background = exp.state.c2;
+                    this.setInfo(exp.state.msg);
+                });
             }
         },
 
         runFlame: function(metal) {
-            const hand = document.getElementById('lab-hand');
+            const hand = document.getElementById('lab-anim-hand');
             const flame = document.getElementById('bunsen-flame');
-            hand.style.opacity = '1'; hand.style.top = '100px'; hand.style.left = '60%';
+            const wsRect = document.getElementById('lab-workspace').getBoundingClientRect();
+            const flameRect = document.getElementById('flame-target').getBoundingClientRect();
+            
+            hand.innerText = '🤏'; // Hand holding wire
+            hand.style.top = '20px'; hand.style.left = '80%'; hand.style.opacity = '1'; hand.style.transform = 'rotate(0deg)';
             
             setTimeout(() => {
-                hand.style.top = '10px'; hand.style.left = '45%';
+                hand.style.top = (flameRect.top - wsRect.top - 20) + 'px';
+                hand.style.left = (flameRect.left - wsRect.left + 15) + 'px';
+                
                 setTimeout(() => {
-                    const colors = {
-                        'li': ['#dc2626', 'Crimson Red'], 'na': ['#eab308', 'Golden Yellow'],
-                        'k': ['#c084fc', 'Lilac/Purple'], 'rb': ['#9d174d', 'Red-Violet'],
-                        'cs': ['#60a5fa', 'Blue'], 'ca': ['#ea580c', 'Brick Red'],
-                        'sr': ['#ef4444', 'Crimson'], 'ba': ['#84cc16', 'Apple Green'],
-                        'cu': ['#22c55e', 'Blue-Green'], 'pb': ['#93c5fd', 'Pale Blue']
-                    };
+                    const colors = { 'li': ['#dc2626', 'Crimson Red'], 'na': ['#eab308', 'Golden Yellow'], 'k': ['#c084fc', 'Lilac/Purple'], 'rb': ['#9d174d', 'Red-Violet'], 'cs': ['#60a5fa', 'Blue'], 'ca': ['#ea580c', 'Brick Red'], 'sr': ['#ef4444', 'Crimson'], 'ba': ['#84cc16', 'Apple Green'], 'cu': ['#22c55e', 'Blue-Green'], 'pb': ['#93c5fd', 'Pale Blue'] };
                     flame.style.background = colors[metal][0];
-                    flame.style.boxShadow = `0 0 30px ${colors[metal][0]}, inset 0 0 10px white`;
+                    flame.style.boxShadow = `0 0 40px ${colors[metal][0]}, inset 0 0 10px white`;
                     this.setInfo(`${metal.toUpperCase()} produces a ${colors[metal][1]} flame!`);
                     
-                    setTimeout(() => { hand.style.opacity = '0'; }, 500);
-                }, 500);
+                    setTimeout(() => { hand.style.opacity = '0'; }, 1000);
+                }, 600);
             }, 100);
-        },
-
-        runCustom: function(labId, action) {
-            const exp = this.experiments.find(e => e.id === labId);
-            if (labId === 'daniell') {
-                if(action === 'wire') { exp.state.wired = true; this.setInfo("Wires connected to voltmeter. Circuit is open (needs salt bridge)."); }
-                if(action === 'bridge') { document.getElementById('salt-bridge').style.opacity = '1'; exp.state.bridged = true; this.setInfo("Salt bridge (KCl) inserted to maintain electrical neutrality."); }
-                if(action === 'circuit') {
-                    if(!exp.state.wired || !exp.state.bridged) return this.setInfo("Connect wires and insert salt bridge first!");
-                    document.getElementById('volt-read').innerText = "1.10V";
-                    document.getElementById('volt-read').style.color = "var(--gold)";
-                    this.setInfo("⚡ Electricity is flowing! Zinc oxidizes (Anode) and Copper reduces (Cathode).");
-                }
-            }
         }
     };
     // ==========================================
@@ -1199,28 +1209,61 @@
                 {f: 'Na₂CO₃', t: 'base'}, {f: 'C₂H₅NH₂', t: 'base'}, {f: '(CH₃)₂NH', t: 'base'}, {f: 'N₂H₄', t: 'base'}
             ],
             init: function(id) {
-                window.arcGames.instances[id] = { score: 0, speed: 800, current: null, yPos: 0 };
-                document.getElementById(`game-bg-${id}`).innerHTML = `<div style="position:absolute; top:10px; left:15px; font-weight:bold; color:var(--gold);">Score: <span id="ab-score-${id}">0</span></div><div id="ab-drop-${id}" style="position:absolute; top:0; left:50%; transform:translateX(-50%); background:white; color:var(--primary); font-weight:bold; font-size:1.5rem; padding:10px 20px; border-radius:8px; display:none;"></div><div class="ab-controls" style="position:absolute; bottom:15px; width:100%; display:flex; justify-content:space-around;"><button class="btn btn-red" style="width:40%;" onclick="ArcGameEngine.acid.guess('${id}', 'acid')">ACID</button><button class="btn" style="width:40%; background:#3b82f6; color:white;" onclick="ArcGameEngine.acid.guess('${id}', 'base')">BASE</button></div>`;
+                // 🛠️ CHANGED: Increased starting speed from 2000 to 4500 (Much slower start)
+                window.arcGames.instances[id] = { score: 0, speed: 4500, current: null, yPos: 0 };
+                document.getElementById(`game-bg-${id}`).innerHTML = `
+                    <div style="position:absolute; top:10px; left:15px; font-weight:bold; color:var(--gold);">Score: <span id="ab-score-${id}">0</span></div>
+                    <div id="ab-drop-${id}" class="ab-element" style="display:none;"></div>
+                    <div class="ab-controls">
+                        <button class="btn btn-red" style="flex:1; margin-right:10px;" onclick="ArcGameEngine.acid.guess('${id}', 'acid')">ACID</button>
+                        <button class="btn" style="flex:1; background:#3b82f6; color:white;" onclick="ArcGameEngine.acid.guess('${id}', 'base')">BASE</button>
+                    </div>`;
                 this.spawn(id);
             },
             spawn: function(id) {
-                const state = window.arcGames.instances[id]; if(!state) return;
-                state.current = this.data[Math.floor(Math.random() * this.data.length)]; state.yPos = 0;
-                const el = document.getElementById(`ab-drop-${id}`); if(!el) return;
-                el.innerText = state.current.f; el.style.top = '0px'; el.style.display = 'block'; el.style.background = 'white';
+                const state = window.arcGames.instances[id];
+                if(!state) return;
+                state.current = this.data[Math.floor(Math.random() * this.data.length)];
+                state.yPos = 0;
+                const el = document.getElementById(`ab-drop-${id}`);
+                if(!el) return;
+                el.innerText = state.current.f;
+                el.style.top = '0px';
+                el.style.display = 'block';
+                el.style.background = 'white';
+                
                 state.interval = setInterval(() => {
                     if(!window.arcGames.instances[id]) return clearInterval(state.interval);
-                    state.yPos += 5; el.style.top = state.yPos + 'px';
-                    if(state.yPos > 250) { clearInterval(state.interval); this.gameOver(id); }
+                    
+                    // 🛠️ CHANGED: Drop step from 5px to 2px so it glides down smoothly
+                    state.yPos += 2; 
+                    
+                    el.style.top = state.yPos + 'px';
+                    if(state.yPos > 250) {
+                        clearInterval(state.interval);
+                        this.gameOver(id);
+                    }
                 }, state.speed / 100);
             },
             guess: function(id, type) {
-                const state = window.arcGames.instances[id]; if(!state || !state.current) return;
-                clearInterval(state.interval); const el = document.getElementById(`ab-drop-${id}`);
+                const state = window.arcGames.instances[id];
+                if(!state || !state.current) return;
+                clearInterval(state.interval);
+                const el = document.getElementById(`ab-drop-${id}`);
+                
                 if(state.current.t === type) {
-                    state.score++; document.getElementById(`ab-score-${id}`).innerText = state.score;
-                    el.style.background = 'var(--green)'; state.speed = Math.max(500, state.speed - 100); setTimeout(() => this.spawn(id), 300);
-                } else { el.style.background = 'var(--red)'; setTimeout(() => this.gameOver(id), 300); }
+                    state.score++;
+                    document.getElementById(`ab-score-${id}`).innerText = state.score;
+                    el.style.background = 'var(--green)';
+                    
+                    // 🛠️ CHANGED: Min speed limit increased from 500 to 1500 so it doesn't get unplayable
+                    state.speed = Math.max(1500, state.speed - 100); 
+                    
+                    setTimeout(() => this.spawn(id), 300);
+                } else {
+                    el.style.background = 'var(--red)';
+                    setTimeout(() => this.gameOver(id), 300);
+                }
             },
             gameOver: function(id) { document.getElementById(`game-bg-${id}`).innerHTML = `<h2 style="color:var(--red);">Game Over</h2><p>Score: ${window.arcGames.instances[id].score}</p><button class="btn btn-gold" onclick="ArcGameEngine.acid.init('${id}')">Restart</button>`; }
         },
