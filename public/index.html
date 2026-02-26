@@ -248,8 +248,8 @@
                 <form onsubmit="event.preventDefault(); doLogin()">
                     <label style="font-weight:bold;">Email / Username:</label>
                     <div id="student-input">
-                        <input id="l-email" placeholder="username" style="margin-top:5px;">
-                        <div style="text-align:right; font-size:0.8rem; color:#777;">@arcstudent.com</div>
+                    <input id="l-email" placeholder="username" style="margin-top:5px;" oninput="this.value = this.value.replace(/@.*/, '')">
+                    <div style="text-align:right; font-size:0.8rem; color:#777;">@arcstudent.com</div>
                     </div>
                     <div id="teacher-input" style="display:none;"><input id="l-admin-email" placeholder="admin@arc.com" style="margin-top:5px;"></div>
                     
@@ -269,9 +269,9 @@
             <h2 style="text-align:center;">Register</h2>
             <input id="r-name" placeholder="Full Name">
             <div style="display:flex; align-items:center; border:1px solid #ccc; border-radius:6px; background:white; margin:10px 0;">
-                <input id="r-prefix" placeholder="username" style="border:none; margin:0;"> 
-                <div style="padding:10px; background:#f1f5f9; color:#64748b; border-left:1px solid #ccc;">@arcstudent.com</div>
-            </div>
+    <input id="r-prefix" placeholder="username" style="border:none; margin:0;" oninput="this.value = this.value.replace(/@.*/, '')"> 
+    <div style="padding:10px; background:#f1f5f9; color:#64748b; border-left:1px solid #ccc;">@arcstudent.com</div>
+</div>
             <input id="r-phone" placeholder="10-digit Phone Number" maxlength="10" oninput="document.getElementById('phone-sec-msg').style.display='block'">
             <div id="phone-sec-msg" style="color:var(--red); display:none; font-size:0.8rem; margin:-5px 0 10px 5px; font-weight:bold;">🔒 Your phone number is secured and only shared with the teacher.</div>
             <input id="r-pass" type="password" placeholder="Password">
