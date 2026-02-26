@@ -181,52 +181,61 @@
             filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
         }
     
-    /* 🧪 --- VIRTUAL COLORFUL LAB CSS --- */
+        /* 🧪 --- VIRTUAL COLORFUL LAB CSS (Updated) --- */
         .lab-menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-top: 20px; max-height: 65vh; overflow-y: auto; padding: 10px; }
         .lab-card { background: linear-gradient(135deg, #1e293b, #0f172a); color: white; border: 2px solid var(--gold); border-radius: 12px; padding: 20px; text-align: center; cursor: pointer; transition: transform 0.3s, box-shadow 0.3s; }
-        .lab-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(251, 191, 36, 0.2); border-color: white; }
-        .lab-icon { font-size: 3rem; margin-bottom: 10px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5)); }
-        
+        .lab-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(251, 191, 36, 0.2); }
         .lab-workspace { background: #0f172a; border-radius: 12px; border: 4px solid #334155; padding: 20px; display: flex; flex-direction: column; align-items: center; min-height: 500px; position: relative; overflow: hidden; box-shadow: inset 0 0 50px rgba(0,0,0,0.8); }
         .lab-bench { position: absolute; bottom: 0; left: 0; width: 100%; height: 120px; background: linear-gradient(to bottom, #475569, #1e293b); border-top: 6px solid #64748b; perspective: 1000px; z-index: 1; }
         .lab-bench::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 20px; background: rgba(255,255,255,0.05); transform: rotateX(60deg); transform-origin: top; }
-        
-        .lab-controls { background: white; padding: 15px; border-radius: 8px; width: 100%; max-width: 700px; margin-top: auto; z-index: 100; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.3); position: relative; }
+        .lab-controls { background: white; padding: 15px; border-radius: 8px; width: 100%; max-width: 700px; margin-top: auto; z-index: 100; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
         .lab-info-panel { background: rgba(0,0,0,0.8); color: #e2e8f0; padding: 15px 20px; border-radius: 8px; border-left: 4px solid var(--gold); width: 100%; max-width: 600px; margin-bottom: 20px; z-index: 10; min-height: 60px; display: flex; align-items: center; font-size: 1.1rem; }
-
-        /* Equipment Graphics */
+        
+        /* Realistic Glassware */
         .equipment-area { position: relative; width: 100%; height: 280px; display: flex; justify-content: center; align-items: flex-end; gap: 40px; z-index: 5; padding-bottom: 20px; }
-        
-        .tt-stand { width: 80px; height: 180px; border: 6px solid #cbd5e1; border-top: none; border-radius: 0 0 15px 15px; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 10px; position: relative; background: rgba(255,255,255,0.02); box-shadow: 0 10px 20px rgba(0,0,0,0.5); margin: 0 auto; }
+        .tt-stand { width: 80px; height: 180px; border: 6px solid #cbd5e1; border-top: none; border-radius: 0 0 15px 15px; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 10px; position: relative; background: rgba(255,255,255,0.02); box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
         .tt-stand::before { content: ''; position: absolute; top: 20px; width: 100%; height: 10px; background: #cbd5e1; }
-        .test-tube { width: 36px; height: 160px; border: 3px solid rgba(255,255,255,0.8); border-top: none; border-radius: 0 0 18px 18px; background: rgba(255,255,255,0.05); position: relative; overflow: hidden; transition: background 1s; box-shadow: inset -5px -5px 15px rgba(0,0,0,0.3), 0 5px 10px rgba(0,0,0,0.5); z-index: 2; }
-        .test-tube::after { content: ''; position: absolute; top: 0; left: 5px; width: 6px; height: 90%; background: rgba(255,255,255,0.3); border-radius: 5px; } 
-        .tt-liquid { position: absolute; bottom: 0; left: 0; width: 100%; height: 0%; background: rgba(255,255,255,0.2); transition: height 0.8s cubic-bezier(0.4, 0, 0.2, 1), background 1s; }
-        .tt-silver { background: linear-gradient(135deg, #e2e8f0 0%, #ffffff 50%, #94a3b8 100%) !important; box-shadow: inset 0 0 30px white; }
         
-        .cell-beaker { width: 130px; height: 150px; border: 4px solid rgba(255,255,255,0.8); border-top: none; border-radius: 0 0 15px 15px; background: rgba(255,255,255,0.05); position: relative; box-shadow: inset -5px -5px 20px rgba(0,0,0,0.3), 0 10px 20px rgba(0,0,0,0.5); overflow: hidden; margin: 0 auto; }
-        .cell-beaker::before { content: ''; position: absolute; top: -20px; left: 10px; width: 15px; height: 20px; border: 4px solid rgba(255,255,255,0.8); border-bottom: none; border-radius: 5px 0 0 0; } 
-        .cell-beaker::after { content: ''; position: absolute; top: 0; right: 15px; width: 10px; height: 90%; background: rgba(255,255,255,0.2); border-radius: 5px; pointer-events: none; } 
+        /* 3D Test Tube */
+        .test-tube { width: 36px; height: 160px; border: 2px solid rgba(255,255,255,0.6); border-top: none; border-radius: 0 0 18px 18px; background: rgba(255,255,255,0.05); position: relative; overflow: hidden; box-shadow: inset -5px -5px 15px rgba(255,255,255,0.2), inset 5px 0px 10px rgba(0,0,0,0.3), 0 10px 15px rgba(0,0,0,0.5); z-index: 2; }
+        .test-tube::after { content: ''; position: absolute; top: 5px; left: 4px; width: 6px; height: 90%; background: linear-gradient(to bottom, rgba(255,255,255,0.8), transparent); border-radius: 5px; pointer-events: none; } 
         
-        .beaker-marks { position: absolute; left: 5px; bottom: 10px; height: 80%; display: flex; flex-direction: column-reverse; justify-content: space-between; }
-        .beaker-marks div { width: 15px; height: 2px; background: rgba(255,255,255,0.5); }
+        /* 3D Beaker */
+        .cell-beaker { width: 130px; height: 150px; border: 3px solid rgba(255,255,255,0.6); border-top: none; border-radius: 0 0 15px 15px; background: rgba(255,255,255,0.05); position: relative; box-shadow: inset -10px -10px 20px rgba(255,255,255,0.1), inset 10px 0px 20px rgba(0,0,0,0.4), 0 10px 20px rgba(0,0,0,0.5); overflow: hidden; margin: 0 auto; }
+        .cell-beaker::before { content: ''; position: absolute; top: -20px; left: 10px; width: 15px; height: 20px; border: 3px solid rgba(255,255,255,0.6); border-bottom: none; border-radius: 5px 0 0 0; } 
+        .cell-beaker::after { content: ''; position: absolute; top: 5px; right: 10px; width: 12px; height: 90%; background: linear-gradient(to bottom, rgba(255,255,255,0.5), transparent); border-radius: 5px; pointer-events: none; } 
+        .beaker-marks { position: absolute; left: 5px; bottom: 10px; height: 80%; display: flex; flex-direction: column-reverse; justify-content: space-between; z-index: 3;}
+        .beaker-marks div { width: 15px; height: 2px; background: rgba(255,255,255,0.7); }
         .beaker-marks div:nth-child(even) { width: 8px; }
 
-        /* Daniell Cell Specifics */
-        .electrode { width: 20px; height: 130px; position: absolute; top: -30px; left: 35px; border-radius: 2px; box-shadow: 2px 2px 5px rgba(0,0,0,0.5); z-index: 2; }
-        .wire { position: absolute; top: -30px; width: 100px; height: 3px; background: #ef4444; z-index: 1; }
-        .voltmeter { position: absolute; top: -60px; left: 50%; transform: translateX(-50%); width: 60px; height: 40px; background: #333; border: 2px solid #ccc; border-radius: 6px; color: #22c55e; font-family: monospace; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; font-weight: bold; box-shadow: 0 5px 15px rgba(0,0,0,0.5); z-index: 10; }
-        .salt-bridge { position: absolute; top: 10px; left: 65px; width: 100px; height: 40px; border: 15px solid rgba(255,255,255,0.8); border-bottom: none; border-radius: 20px 20px 0 0; z-index: 0; }
+        /* Liquids */
+        .tt-liquid { position: absolute; bottom: 0; left: 0; width: 100%; height: 0%; background: transparent; transition: height 0.8s cubic-bezier(0.4, 0, 0.2, 1), background 1.2s ease; border-top: 2px solid rgba(255,255,255,0.3); }
+        .tt-silver { background: linear-gradient(135deg, #e2e8f0 0%, #ffffff 50%, #94a3b8 100%) !important; box-shadow: inset 0 0 30px white; border-top: none; }
+        
+        /* Daniell Cell Components */
+        .electrode { width: 22px; height: 130px; position: absolute; top: -20px; left: 35px; border-radius: 4px; box-shadow: inset -2px -2px 5px rgba(0,0,0,0.5), 2px 2px 5px rgba(0,0,0,0.5); z-index: 2; transition: all 0.5s; }
+        .wire { position: absolute; top: -40px; width: 100px; height: 4px; background: #64748b; z-index: 1; border-radius: 2px; transition: all 0.3s; }
+        .wire.live { background: #fbbf24; box-shadow: 0 0 10px #fbbf24, 0 0 20px #f59e0b; }
+        .voltmeter { position: absolute; top: -75px; left: 50%; transform: translateX(-50%); width: 70px; height: 45px; background: #1e293b; border: 3px solid #94a3b8; border-radius: 8px; color: #ef4444; font-family: 'Courier New', monospace; font-size: 1.4rem; display: flex; align-items: center; justify-content: center; font-weight: bold; box-shadow: 0 10px 15px rgba(0,0,0,0.5), inset 0 0 10px rgba(0,0,0,0.8); z-index: 10; transition: color 0.3s; }
+        .voltmeter.active { color: #22c55e; text-shadow: 0 0 5px #22c55e; }
+        .salt-bridge { position: absolute; top: 0px; left: 65px; width: 150px; height: 60px; border: 18px solid rgba(255,255,255,0.8); border-bottom: none; border-radius: 30px 30px 0 0; z-index: 0; box-shadow: inset 0 5px 10px rgba(0,0,0,0.2), 0 -5px 10px rgba(0,0,0,0.3); transition: top 0.5s, opacity 0.5s; }
 
-        .burner-base { width: 60px; height: 20px; background: #64748b; border-radius: 10px 10px 0 0; margin: 0 auto; box-shadow: 0 5px 10px rgba(0,0,0,0.5); }
-        .burner-pipe { width: 16px; height: 60px; background: linear-gradient(to right, #94a3b8, #e2e8f0, #94a3b8); margin: 0 auto; }
-        .flame { width: 30px; height: 60px; background: #3b82f6; border-radius: 50% 50% 20% 20%; box-shadow: 0 0 20px #3b82f6, inset 0 0 10px #60a5fa; filter: blur(1px); transition: background 0.5s, box-shadow 0.5s; animation: flicker 0.15s infinite alternate; margin: 0 auto -5px auto; }
+        /* Bunsen Burner & Picker */
+        .burner-base { width: 70px; height: 20px; background: linear-gradient(to right, #475569, #94a3b8, #475569); border-radius: 10px 10px 0 0; margin: 0 auto; box-shadow: 0 5px 10px rgba(0,0,0,0.5); border-bottom: 4px solid #1e293b;}
+        .burner-pipe { width: 18px; height: 70px; background: linear-gradient(to right, #64748b, #cbd5e1, #64748b); margin: 0 auto; border: 1px solid #334155;}
+        .flame { width: 35px; height: 70px; background: #3b82f6; border-radius: 50% 50% 20% 20%; box-shadow: 0 0 20px #3b82f6, inset 0 0 10px #60a5fa; filter: blur(1px); transition: background 0.8s, box-shadow 0.8s; animation: flicker 0.12s infinite alternate; margin: 0 auto -5px auto; }
         @keyframes flicker { 0% { transform: scaleY(1) scaleX(1); opacity: 0.9; } 100% { transform: scaleY(1.15) scaleX(0.9); opacity: 1; } }
+        
+        .picker-tool { position: absolute; width: 120px; height: 4px; background: #94a3b8; top: 30px; left: -150px; transition: left 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); z-index: 10; }
+        .picker-loop { position: absolute; right: -15px; top: -6px; width: 15px; height: 15px; border: 3px solid #cbd5e1; border-radius: 50%; }
 
-        /* Animation Overlay Elements */
-        .lab-hand-tool { font-size: 5rem; position: absolute; z-index: 60; opacity: 0; transition: all 0.7s cubic-bezier(0.34, 1.56, 0.64, 1); pointer-events: none; text-shadow: 0 10px 20px rgba(0,0,0,0.5); filter: drop-shadow(0 5px 5px rgba(0,0,0,0.3)); top: -100px; left: 50%; }
-        .lab-drop { position: absolute; width: 14px; height: 22px; border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%; opacity: 0; z-index: 55; pointer-events: none; transition: top 0.4s ease-in; }
-        .burner-slide { position: absolute; bottom: -150px; left: 50%; transform: translateX(-50%); transition: all 0.8s ease; z-index: 4; display: flex; flex-direction: column; align-items: center; pointer-events: none; }
+        /* Animations */
+        .lab-hand-tool { font-size: 5rem; position: absolute; z-index: 60; opacity: 0; pointer-events: none; filter: drop-shadow(0 10px 10px rgba(0,0,0,0.5)); transform-origin: bottom left; transition: opacity 0.3s, transform 0.6s ease-in-out, top 0.6s ease-in-out, left 0.6s ease-in-out; }
+        .lab-drop { position: absolute; width: 16px; height: 24px; border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%; opacity: 0; z-index: 55; pointer-events: none; background: #38bdf8; box-shadow: inset -3px -3px 5px rgba(0,0,0,0.2), 0 5px 5px rgba(0,0,0,0.3); }
+        .burner-slide { position: absolute; bottom: -200px; left: 50%; transform: translateX(-50%); transition: bottom 0.8s cubic-bezier(0.34, 1.56, 0.64, 1); z-index: 4; display: flex; flex-direction: column; align-items: center; pointer-events: none; }
+        
+        .bubble { position: absolute; bottom: 0; background: rgba(255,255,255,0.6); border-radius: 50%; animation: rise 2s infinite ease-in; opacity: 0; }
+        @keyframes rise { 0% { transform: translateY(0) scale(0.5); opacity: 1; } 100% { transform: translateY(-100px) scale(1.2); opacity: 0; } }
 
     </style>
 </head>
@@ -409,13 +418,12 @@
 
 <div id="lab" class="section">
     <div style="text-align:center; margin-bottom: 20px;">
-        <h2 style="color:var(--primary); font-size: 2.5rem; margin-bottom: 5px;">🧪 The Colorful Virtual Lab</h2>
-        <p style="color:#666;">Perform realistic chemical experiments, observe color changes, and learn visual chemistry!</p>
+        <h2 style="color:var(--primary); font-size: 2.5rem; margin-bottom: 5px;">🧪 Realistic Virtual Lab</h2>
+        <p style="color:#666;">Perform 54 fully animated chemical experiments with realistic physics.</p>
     </div>
 
     <div id="lab-main-menu">
-        <div class="lab-menu-grid" id="lab-grid-container">
-            </div>
+        <div class="lab-menu-grid" id="lab-grid-container"></div>
     </div>
 
     <div id="lab-workspace-container" style="display:none;">
@@ -429,8 +437,7 @@
             
             <div class="lab-info-panel" id="lab-info">Select an action below to begin the experiment.</div>
             
-            <div class="equipment-area" id="lab-equipment">
-                </div>
+            <div class="equipment-area" id="lab-equipment"></div>
             
             <div id="lab-anim-hand" class="lab-hand-tool">🫗</div>
             <div id="lab-anim-drop" class="lab-drop"></div>
@@ -440,10 +447,10 @@
                 <div class="burner-base"></div>
             </div>
             
-            <div class="lab-controls" id="lab-controls">
-                </div>
+            <div class="lab-controls" id="lab-controls"></div>
         </div>
     </div>
+</div>
 
 <div id="videos" class="section">
     <h2>📹 Video Lectures</h2>
@@ -637,35 +644,32 @@
     function closeModal(id) { document.getElementById(id).style.display = 'none'; document.body.classList.remove('modal-open'); }
 
     // ==========================================
-    // 🧪 VIRTUAL COLORFUL LAB ENGINE
-    // ==========================================
-   // ==========================================
-    // 🧪 VIRTUAL COLORFUL LAB ENGINE (53 EXPERIMENTS)
+    // 🧪 54-EXPERIMENT VIRTUAL LAB ENGINE
     // ==========================================
     
-    // 🛠️ FACTORY HELPERS
-    function makeTube(id, title, icon, desc, r1Name, r2Name, c1, c2, successMsg, needsHeat = false) {
+    // 🛠️ Factory Functions for standardized setups
+    function makeTube(id, title, icon, desc, r1Name, r2Name, c1, c2, successMsg, needsHeat = false, effervescence = false) {
         return {
             id, title, icon, desc,
-            setup: () => `<div class="tt-stand" id="${id}-target"><div class="test-tube" id="${id}-tube"><div class="tt-liquid" id="${id}-liq" style="height: 0%; background: transparent;"></div></div></div>`,
+            setup: () => `<div class="tt-stand" id="${id}-target"><div class="test-tube" id="${id}-tube"><div class="tt-liquid" id="${id}-liq"></div><div id="${id}-gas" style="position:absolute; bottom:0; width:100%; height:100%; pointer-events:none;"></div></div></div>`,
             controls: [
                 { label: `💧 Add ${r1Name}`, action: `LabEngine.runTube('${id}', 'r1')` },
                 { label: `💧 Add ${r2Name}`, action: `LabEngine.runTube('${id}', 'r2')` },
                 ...(needsHeat ? [{ label: `🔥 Heat Tube`, action: `LabEngine.runTube('${id}', 'heat')` }] : []),
-                { label: `🔄 Clean Tube`, action: `LabEngine.startLab('${id}')` }
+                { label: `🔄 Clean`, action: `LabEngine.startLab('${id}')` }
             ],
-            state: { step: 0, c1, c2, msg: successMsg, needsHeat }
+            state: { step: 0, c1, c2, msg: successMsg, needsHeat, effervescence }
         };
     }
 
     function makeBeaker(id, title, icon, desc, r1Name, r2Name, c1, c2, successMsg) {
         return {
             id, title, icon, desc,
-            setup: () => `<div class="cell-beaker" id="${id}-target"><div class="beaker-marks"><div></div><div></div><div></div><div></div><div></div><div></div></div><div id="${id}-liq" style="position:absolute; bottom:0; width:100%; height:0%; background:transparent; transition: all 1s;"></div></div>`,
+            setup: () => `<div class="cell-beaker" id="${id}-target"><div class="beaker-marks"><div></div><div></div><div></div><div></div></div><div id="${id}-liq" class="tt-liquid"></div></div>`,
             controls: [
                 { label: `💧 Pour ${r1Name}`, action: `LabEngine.runBeaker('${id}', 'r1')` },
                 { label: `💧 Pour ${r2Name}`, action: `LabEngine.runBeaker('${id}', 'r2')` },
-                { label: `🔄 Wash Beaker`, action: `LabEngine.startLab('${id}')` }
+                { label: `🔄 Wash`, action: `LabEngine.startLab('${id}')` }
             ],
             state: { step: 0, c1, c2, msg: successMsg }
         };
@@ -673,94 +677,97 @@
 
     const LabEngine = {
         experiments: [
-            // --- CUSTOM PHYSICAL EXPERIMENTS ---
+            // --- 1-6: CUSTOM PHYSICAL EXPERIMENTS ---
             {
-                id: 'daniell', title: 'Daniell Cell', icon: '🔋', desc: 'Galvanic cell using Zinc and Copper.',
-                setup: () => `<div style="position:relative; width: 250px; height: 150px; display: flex; justify-content: space-between; margin: 0 auto; margin-top: 50px;"><div class="voltmeter" id="volt-read">0.00V</div><div class="wire" style="left:55px;"></div><div class="salt-bridge" id="salt-bridge" style="opacity:0.2;"></div><div class="cell-beaker" style="width: 90px; height: 110px; box-shadow: none;"><div style="position:absolute; bottom:0; width:100%; height:70%; background:rgba(255,255,255,0.1);"></div><div class="electrode" style="background:#cbd5e1; left: 35px;"></div><div style="position:absolute; bottom:-25px; left:20px; color:white; font-weight:bold; font-size: 0.8rem;">ZnSO₄</div></div><div class="cell-beaker" style="width: 90px; height: 110px; box-shadow: none;"><div style="position:absolute; bottom:0; width:100%; height:70%; background:rgba(59, 130, 246, 0.4);"></div><div class="electrode" style="background:#b45309; left: 35px;"></div><div style="position:absolute; bottom:-25px; left:20px; color:white; font-weight:bold; font-size: 0.8rem;">CuSO₄</div></div></div>`,
+                id: 'daniell', title: 'Daniell Cell', icon: '🔋', desc: 'Galvanic cell: Zn and Cu electrodes.',
+                setup: () => `<div style="position:relative; width: 300px; height: 160px; display: flex; justify-content: space-between; margin: 40px auto;" id="daniell-target"><div class="voltmeter" id="volt-read">0.00V</div><div class="wire" id="d-wire" style="left:50px; width:200px;"></div><div class="salt-bridge" id="salt-bridge" style="top:-50px; opacity:0; left:75px;"></div><div class="cell-beaker" style="width: 80px; height: 100px; box-shadow:none; border-color:rgba(255,255,255,0.8);"><div class="tt-liquid" style="height:70%; background:rgba(255,255,255,0.1);"></div><div class="electrode" style="background:#cbd5e1; left: 30px;"></div><div style="position:absolute; bottom:-25px; left:15px; color:white; font-size:0.8rem;">ZnSO₄</div></div><div class="cell-beaker" style="width: 80px; height: 100px; box-shadow:none; border-color:rgba(255,255,255,0.8);"><div class="tt-liquid" style="height:70%; background:rgba(59, 130, 246, 0.4);"></div><div class="electrode" style="background:#b45309; left: 30px;"></div><div style="position:absolute; bottom:-25px; left:15px; color:white; font-size:0.8rem;">CuSO₄</div></div></div>`,
                 controls: [{ label: '🔌 Connect Wires', action: `LabEngine.runCustom("daniell", "wire")` }, { label: '🌉 Insert Salt Bridge', action: `LabEngine.runCustom("daniell", "bridge")` }, { label: '⚡ Close Circuit', action: `LabEngine.runCustom("daniell", "circuit")` }],
                 state: { wired: false, bridged: false }
             },
             {
-                id: 'flame', title: 'Flame Tests', icon: '🔥', desc: 'Emission spectra of metal cations.',
-                setup: () => `<div style="position:relative; width: 100px; height: 150px; display:flex; justify-content:center;" id="flame-target"><div class="flame" id="bunsen-flame"></div><div class="burner-pipe"></div><div class="burner-base"></div></div>`,
-                controls: ['Li⁺ (Crimson,li)','Na⁺ (Yellow,na)','K⁺ (Lilac,k)','Rb⁺ (Violet,rb)','Cs⁺ (Blue,cs)','Ca²⁺ (Red,ca)','Sr²⁺ (Crimson,sr)','Ba²⁺ (Green,ba)','Cu²⁺ (Blue-Green,cu)','Pb²⁺ (Pale Blue,pb)'].map(m => ({ label: `🤏 ${m.split(',')[0]}`, action: `LabEngine.runCustom("flame", "${m.split(',')[1].replace(')','')}")` })).concat([{ label: '💨 Reset Flame', action: `LabEngine.startLab("flame")` }]),
+                id: 'flame', title: 'Flame Tests', icon: '🔥', desc: 'Emission spectra of metals.',
+                setup: () => `<div style="position:relative; width: 150px; height: 180px; margin: 0 auto;" id="flame-target"><div class="flame" id="bunsen-flame"></div><div class="burner-pipe"></div><div class="burner-base"></div><div class="picker-tool" id="picker-tool"><div class="picker-loop"></div></div></div>`,
+                controls: ['Li (Red)','Na (Yellow)','K (Lilac)','Ba (Green)','Cu (Blue-Green)'].map(m => ({ label: `🤏 ${m.split(' ')[0]}`, action: `LabEngine.runCustom("flame", "${m.split(' ')[0].toLowerCase()}")` })).concat([{ label: '🔄 Reset', action: `LabEngine.startLab("flame")` }]),
                 state: {}
             },
             {
-                id: 'vapor', title: 'Vaporization', icon: '☁️', desc: 'Liquid turns to gas upon heating.',
-                setup: () => `<div class="cell-beaker" id="vapor-target" style="margin: 0 auto;"><div class="beaker-marks"><div></div><div></div><div></div><div></div><div></div></div><div id="vap-liq" style="position:absolute; bottom:0; width:100%; height:80%; background:#3b82f6; transition:2s;"></div><div id="vap-gas" style="position:absolute; top:-50px; left:15px; font-size:2.5rem; opacity:0; transition:2s;">☁️☁️</div></div>`,
-                controls: [{label: '🔥 Heat Liquid', action: `LabEngine.runCustom("vapor", "heat")`}, {label:'🔄 Reset', action:`LabEngine.startLab("vapor")`}],
+                id: 'vapor', title: 'Vaporization', icon: '☁️', desc: 'Liquid to gas via heat.',
+                setup: () => `<div class="cell-beaker" id="vapor-target" style="margin: 0 auto;"><div class="beaker-marks"><div></div><div></div></div><div id="vap-liq" class="tt-liquid" style="height:60%; background:rgba(56, 189, 248, 0.6);"></div><div id="vap-gas" style="position:absolute; top:20px; left:50%; transform:translateX(-50%); font-size:2.5rem; opacity:0; transition:opacity 2s, top 2s;">☁️☁️</div></div>`,
+                controls: [{label: '🔥 Heat Beaker', action: `LabEngine.runCustom("vapor", "heat")`}, {label:'🔄 Reset', action:`LabEngine.startLab("vapor")`}],
                 state: {}
             },
             {
-                id: 'osmosis', title: 'Osmosis', icon: '🧫', desc: 'Solvent flows to higher concentration.',
-                setup: () => `<div style="display:flex; align-items:flex-end; border:4px solid #cbd5e1; border-top:none; border-radius:0 0 20px 20px; width:140px; height:140px; position:relative; overflow:hidden; margin: 0 auto;"><div style="width:50%; background:#93c5fd; height:40%; transition:2s;" id="osm-left"></div><div style="width:4px; background:#475569; height:100%; z-index:10;"></div><div style="width:50%; background:#2563eb; height:40%; transition:2s;" id="osm-right"></div></div>`,
-                controls: [{label: '⏳ Wait for Osmosis', action: `LabEngine.runCustom("osmosis", "wait")`}, {label:'🔄 Reset', action:`LabEngine.startLab("osmosis")`}],
+                id: 'osmosis', title: 'Osmosis', icon: '🧫', desc: 'Solvent flow via membrane.',
+                setup: () => `<div style="display:flex; align-items:flex-end; border:4px solid rgba(255,255,255,0.6); border-top:none; border-radius:0 0 20px 20px; width:160px; height:150px; position:relative; overflow:hidden; margin: 0 auto;"><div style="width:50%; background:rgba(147, 197, 253, 0.8); height:50%; transition:height 2s;" id="osm-left"></div><div style="width:4px; background:#475569; height:100%; z-index:10;"></div><div style="width:50%; background:rgba(37, 99, 235, 0.8); height:50%; transition:height 2s;" id="osm-right"></div></div>`,
+                controls: [{label: '⏳ Observe Flow', action: `LabEngine.runCustom("osmosis", "wait")`}, {label:'🔄 Reset', action:`LabEngine.startLab("osmosis")`}],
                 state: {}
             },
             {
-                id: 'filter', title: 'Filtration', icon: '☕', desc: 'Separate solid from liquid.',
-                setup: () => `<div style="display:flex; flex-direction:column; align-items:center;" id="filter-target"><div style="width:0; height:0; border-left:40px solid transparent; border-right:40px solid transparent; border-top:60px solid rgba(255,255,255,0.5); position:relative;"><div id="fil-solid" style="position:absolute; top:-50px; left:-15px; width:30px; height:10px; background:#1e293b; opacity:0; transition:1s;"></div></div><div class="cell-beaker" style="height:60px; width:60px; box-shadow:none;"><div id="fil-liq" style="position:absolute; bottom:0; width:100%; height:0%; background:#3b82f6; transition:2s;"></div></div></div>`,
+                id: 'filter', title: 'Filtration', icon: '☕', desc: 'Solid-Liquid separation.',
+                setup: () => `<div style="display:flex; flex-direction:column; align-items:center;" id="filter-target"><div style="width:0; height:0; border-left:50px solid transparent; border-right:50px solid transparent; border-top:70px solid rgba(255,255,255,0.4); position:relative;"><div id="fil-solid" style="position:absolute; top:-60px; left:-20px; width:40px; height:15px; background:#1e293b; opacity:0; transition:opacity 1s;"></div></div><div class="cell-beaker" style="height:80px; width:80px;"><div id="fil-liq" class="tt-liquid" style="background:rgba(59, 130, 246, 0.6);"></div></div></div>`,
                 controls: [{label: '🧪 Pour Mixture', action: `LabEngine.runCustom("filter", "pour")`}, {label:'🔄 Reset', action:`LabEngine.startLab("filter")`}],
                 state: {}
             },
             {
-                id: 'distill', title: 'Distillation', icon: '⚗️', desc: 'Separate liquids by boiling point.',
-                setup: () => `<div style="display:flex; gap:20px; align-items:flex-end; margin: 0 auto;" id="distill-target"><div class="cell-beaker" style="height:100px; box-shadow:none;"><div id="dis-l1" style="position:absolute; bottom:0; width:100%; height:80%; background:#fcd34d; transition:2s;"></div></div> <div style="font-size:2rem; margin-bottom: 20px;">➡️</div> <div class="cell-beaker" style="height:100px; box-shadow:none;"><div id="dis-l2" style="position:absolute; bottom:0; width:100%; height:0%; background:#3b82f6; transition:2s; transition-delay:1s;"></div></div></div>`,
-                controls: [{label: '🔥 Heat Flask', action: `LabEngine.runCustom("distill", "heat")`}, {label:'🔄 Reset', action:`LabEngine.startLab("distill")`}],
+                id: 'distill', title: 'Distillation', icon: '⚗️', desc: 'Separation by boiling point.',
+                setup: () => `<div style="display:flex; gap:20px; align-items:flex-end; margin: 0 auto;" id="distill-target"><div class="cell-beaker" style="height:100px;"><div id="dis-l1" class="tt-liquid" style="height:80%; background:rgba(252, 211, 77, 0.8);"></div></div> <div style="font-size:2rem; margin-bottom: 20px; color:white;">➡️</div> <div class="cell-beaker" style="height:100px;"><div id="dis-l2" class="tt-liquid" style="background:rgba(59, 130, 246, 0.8);"></div></div></div>`,
+                controls: [{label: '🔥 Heat Mixture', action: `LabEngine.runCustom("distill", "heat")`}, {label:'🔄 Reset', action:`LabEngine.startLab("distill")`}],
                 state: {}
             },
 
-            // --- ORGANIC CHEMISTRY TESTS (17 Experiments) ---
-            makeTube('tollens', 'Tollens Test', '🪞', 'Silver mirror test for Aldehydes.', 'Tollens Reagent', 'Glucose (Aldehyde)', 'rgba(255,255,255,0.2)', 'silver', '✨ Silver Mirror Formed! Aldehyde confirmed.', true),
-            makeTube('fehling', 'Fehlings Test', '🍷', 'Test for aliphatic aldehydes.', 'Fehling A+B', 'Aldehyde', '#3b82f6', '#b91c1c', 'Brick Red Precipitate Formed!', true),
-            makeTube('iodoform', 'Iodoform Test', '🟡', 'Test for methyl ketones.', 'NaOH + I₂', 'Methyl Ketone', 'rgba(255,255,255,0.2)', '#fef08a', 'Yellow Precipitate of Iodoform (CHI₃) formed!', true),
-            makeTube('lucas', 'Lucas Test', '☁️', 'Differentiate alcohols.', 'Lucas Reagent', '3° Alcohol', 'rgba(255,255,255,0.2)', 'rgba(255,255,255,0.9)', 'Immediate White Cloudiness formed!', false),
-            makeTube('br_water', 'Bromine Water', '💧', 'Test for unsaturation.', 'Bromine Water', 'Alkene', '#b45309', 'rgba(255,255,255,0.2)', 'Brown color completely discharged!', false),
-            makeTube('baeyer', 'Baeyers Test', '🟣', 'Test for unsaturation.', 'KMnO₄ (Purple)', 'Alkene', '#c084fc', '#713f12', 'Purple color fades, brown MnO₂ precipitate forms!', false),
-            makeTube('dnp', '2,4-DNP Test', '🟠', 'Test for carbonyl groups.', 'Brady Reagent', 'Ketone', '#f97316', '#ea580c', 'Orange-Yellow Precipitate forms!', false),
-            makeTube('fecl3', 'Neutral FeCl₃ Test', '💜', 'Test for Phenols.', 'FeCl₃ Solution', 'Phenol', '#fef08a', '#7e22ce', 'Intense Violet/Purple complex formed!', false),
-            makeTube('ninhydrin', 'Ninhydrin Test', '🔵', 'Test for Amino Acids.', 'Ninhydrin', 'Amino Acid', 'rgba(255,255,255,0.2)', '#1e3a8a', 'Deep Blue/Purple formed!', true),
-            makeTube('biuret', 'Biuret Test', '🟣', 'Test for Peptide bonds.', 'CuSO₄ + NaOH', 'Protein', '#93c5fd', '#9333ea', 'Violet/Purple color indicates peptide bonds!', false),
-            makeTube('schiff', 'Schiffs Test', '🩷', 'Test for Aldehydes.', 'Schiffs Reagent', 'Aldehyde', 'rgba(255,255,255,0.2)', '#db2777', 'Restoration of Magenta/Pink color!', false),
-            makeTube('can_test', 'Ceric Ammon. Nitrate', '🔴', 'Test for Alcohols.', 'CAN Reagent', 'Alcohol', '#fde047', '#dc2626', 'Red colored complex formed!', false),
-            makeTube('ester', 'Esterification', '🍎', 'Test for Carboxylic Acids.', 'Carboxylic Acid', 'Alcohol + H₂SO₄', 'rgba(255,255,255,0.2)', 'rgba(255,255,255,0.4)', 'Sweet Fruity Smell observed!', true),
-            makeTube('carbylamine', 'Carbylamine Test', '🤢', 'Test for 1° Amines.', 'CHCl₃ + KOH', '1° Amine', 'rgba(255,255,255,0.2)', '#bbf7d0', 'Foul-smelling Isocyanide gas evolved!', true),
-            makeTube('nahco3', 'NaHCO₃ Test', '🫧', 'Test for Carboxylic Acids.', 'NaHCO₃ Solution', 'Carboxylic Acid', 'rgba(255,255,255,0.2)', 'rgba(255,255,255,0.3)', 'Brisk Effervescence of CO₂ gas!', false),
-            makeTube('starch', 'Iodine-Starch Test', '🌌', 'Test for Starch.', 'Iodine Solution', 'Starch', '#b45309', '#0f172a', 'Deep Blue-Black complex formed!', false),
-            makeTube('ceric', 'Ceric Test', '🍒', 'Phenol alternative test.', 'Ceric reagent', 'Phenol', '#fde047', '#451a03', 'Dark brown precipitate formed.', false),
+            // --- 7-24: ORGANIC CHEMISTRY (18 Experiments) ---
+            makeTube('tollens', 'Tollens Test', '🪞', 'Aldehyde confirmation.', 'Tollens Reagent', 'Glucose', 'rgba(255,255,255,0.2)', 'silver', '✨ Silver Mirror Formed on glass!', true),
+            makeTube('fehling', 'Fehlings Test', '🍷', 'Aliphatic aldehyde.', 'Fehling A+B', 'Aldehyde', 'rgba(59, 130, 246, 0.8)', 'rgba(185, 28, 28, 0.9)', 'Brick Red Precipitate Formed!', true),
+            makeTube('iodoform', 'Iodoform Test', '🟡', 'Methyl ketone test.', 'NaOH + I₂', 'Acetone', 'rgba(255,255,255,0.1)', 'rgba(254, 240, 138, 0.9)', 'Yellow Precipitate of Iodoform!', true),
+            makeTube('lucas', 'Lucas Test', '☁️', '3° Alcohol test.', 'Lucas Reagent', '3° Alcohol', 'rgba(255,255,255,0.1)', 'rgba(255,255,255,0.95)', 'Immediate White Turbidity!', false),
+            makeTube('br_water', 'Bromine Water', '💧', 'Unsaturation test.', 'Br₂ Water', 'Alkene', 'rgba(180, 83, 9, 0.8)', 'rgba(255,255,255,0.1)', 'Brown color completely discharged!', false),
+            makeTube('baeyer', 'Baeyers Test', '🟣', 'KMnO4 Unsaturation.', 'KMnO₄', 'Alkene', 'rgba(192, 132, 252, 0.8)', 'rgba(113, 63, 18, 0.9)', 'Purple fades, brown MnO₂ forms!', false),
+            makeTube('dnp', '2,4-DNP Test', '🟠', 'Carbonyl group test.', 'Brady Reagent', 'Ketone', 'rgba(249, 115, 22, 0.8)', 'rgba(234, 88, 12, 0.9)', 'Orange-Yellow Precipitate!', false),
+            makeTube('fecl3', 'FeCl₃ Test', '💜', 'Phenol test.', 'FeCl₃', 'Phenol', 'rgba(254, 240, 138, 0.5)', 'rgba(126, 34, 206, 0.9)', 'Intense Violet complex!', false),
+            makeTube('ninhydrin', 'Ninhydrin Test', '🔵', 'Amino Acid test.', 'Ninhydrin', 'Amino Acid', 'rgba(255,255,255,0.1)', 'rgba(30, 58, 138, 0.9)', 'Deep Blue/Purple color!', true),
+            makeTube('biuret', 'Biuret Test', '🟣', 'Peptide bond test.', 'CuSO₄+NaOH', 'Protein', 'rgba(147, 197, 253, 0.8)', 'rgba(147, 51, 234, 0.9)', 'Violet color indicates peptides!', false),
+            makeTube('schiff', 'Schiffs Test', '🩷', 'Aldehyde test.', 'Schiff Reagent', 'Aldehyde', 'rgba(255,255,255,0.1)', 'rgba(219, 39, 119, 0.9)', 'Restoration of Magenta color!', false),
+            makeTube('can_test', 'CAN Test', '🔴', 'Alcohol test.', 'CAN Reagent', 'Alcohol', 'rgba(253, 224, 71, 0.8)', 'rgba(220, 38, 38, 0.9)', 'Red colored complex formed!', false),
+            makeTube('ester', 'Esterification', '🍎', 'Carboxylic acid.', 'Acid', 'Ethanol+H₂SO₄', 'rgba(255,255,255,0.1)', 'rgba(255,255,255,0.3)', 'Sweet Fruity Smell observed!', true),
+            makeTube('carbylamine', 'Carbylamine', '🤢', '1° Amine test.', 'CHCl₃+KOH', '1° Amine', 'rgba(255,255,255,0.1)', 'rgba(187, 247, 208, 0.8)', 'Foul-smelling Isocyanide!', true),
+            makeTube('nahco3', 'NaHCO₃ Test', '🫧', 'Carboxylic Acid.', 'NaHCO₃', 'Acid', 'rgba(255,255,255,0.1)', 'rgba(255,255,255,0.2)', 'Brisk Effervescence of CO₂!', false, true),
+            makeTube('starch', 'Iodine-Starch', '🌌', 'Starch test.', 'Iodine', 'Starch', 'rgba(180, 83, 9, 0.6)', 'rgba(15, 23, 42, 0.9)', 'Deep Blue-Black complex!', false),
+            makeTube('ceric', 'Ceric Nitrate', '🍒', 'Phenol alternative.', 'Ceric Reagent', 'Phenol', 'rgba(253, 224, 71, 0.8)', 'rgba(69, 26, 3, 0.9)', 'Dark brown precipitate!', false),
+            makeTube('lieb', 'Liebermann', '🩸', 'Phenol test.', 'NaNO₂+H₂SO₄', 'Phenol', 'rgba(30, 58, 138, 0.8)', 'rgba(220, 38, 38, 0.9)', 'Blue to Red color shift!', true),
 
-            // --- INORGANIC & PHYSICAL PRECIPITATES (30 Beakers) ---
+            // --- 25-53: INORGANIC & PHYSICAL (29 Beakers) ---
             makeBeaker('neutral', 'Neutralization', '🌡️', 'Acid + Base.', 'HCl', 'NaOH', 'rgba(255,255,255,0.2)', 'rgba(255,255,255,0.2)', 'Neutralization! Heat released.'),
-            makeBeaker('agcl', 'AgCl Precipitate', '⬜', 'Chloride test.', 'AgNO₃', 'NaCl', 'rgba(255,255,255,0.2)', '#f8fafc', 'Curdy White Precipitate of AgCl!'),
-            makeBeaker('agbr', 'AgBr Precipitate', '🟨', 'Bromide test.', 'AgNO₃', 'NaBr', 'rgba(255,255,255,0.2)', '#fef08a', 'Pale Yellow Precipitate of AgBr!'),
-            makeBeaker('agi', 'AgI Precipitate', '💛', 'Iodide test.', 'AgNO₃', 'NaI', 'rgba(255,255,255,0.2)', '#eab308', 'Dark Yellow Precipitate of AgI!'),
-            makeBeaker('baso4', 'BaSO₄ Precipitate', '🥛', 'Sulfate test.', 'BaCl₂', 'Na₂SO₄', 'rgba(255,255,255,0.2)', '#f8fafc', 'Dense White Precipitate of BaSO₄!'),
-            makeBeaker('pbcro4', 'PbCrO₄ Precipitate', '🚸', 'Chromate test.', 'Pb(NO₃)₂', 'K₂CrO₄', 'rgba(255,255,255,0.2)', '#eab308', 'Bright Yellow Precipitate of Lead Chromate!'),
-            makeBeaker('cuoh2', 'Cu(OH)₂ Precipitate', '🥣', 'Copper(II) test.', 'CuSO₄', 'NaOH', '#93c5fd', '#3b82f6', 'Pale Blue Precipitate of Cu(OH)₂!'),
-            makeBeaker('feoh3', 'Fe(OH)₃ Precipitate', '🟤', 'Iron(III) test.', 'FeCl₃', 'NaOH', '#fde047', '#9a3412', 'Reddish-Brown Precipitate of Fe(OH)₃!'),
-            makeBeaker('feoh2', 'Fe(OH)₂ Precipitate', '🥬', 'Iron(II) test.', 'FeSO₄', 'NaOH', '#bbf7d0', '#15803d', 'Dirty Green Precipitate of Fe(OH)₂!'),
-            makeBeaker('nioh2', 'Ni(OH)₂ Precipitate', '🍏', 'Nickel(II) test.', 'NiCl₂', 'NaOH', '#86efac', '#16a34a', 'Apple Green Precipitate of Ni(OH)₂!'),
-            makeBeaker('cooh2', 'Co(OH)₂ Precipitate', '🎀', 'Cobalt(II) test.', 'CoCl₂', 'NaOH', '#fbcfe8', '#1d4ed8', 'Blue precipitate formed!'), 
-            makeBeaker('znoh2', 'Zn(OH)₂ Precipitate', '☁️', 'Zinc(II) test.', 'ZnSO₄', 'NaOH', 'rgba(255,255,255,0.2)', '#f8fafc', 'White Gelatinous Precipitate of Zn(OH)₂!'),
-            makeBeaker('aloh3', 'Al(OH)₃ Precipitate', '🌫️', 'Aluminum(III) test.', 'AlCl₃', 'NaOH', 'rgba(255,255,255,0.2)', '#f8fafc', 'White Gelatinous Precipitate of Al(OH)₃!'),
-            makeBeaker('mnoh2', 'Mn(OH)₂ Precipitate', '🌸', 'Manganese(II) test.', 'MnCl₂', 'NaOH', 'rgba(255,255,255,0.2)', '#fbcfe8', 'Flesh/Pink-colored Precipitate of Mn(OH)₂!'),
-            makeBeaker('croh3', 'Cr(OH)₃ Precipitate', '🌿', 'Chromium(III) test.', 'CrCl₃', 'NaOH', '#86efac', '#14532d', 'Grey-Green Precipitate of Cr(OH)₃!'),
-            makeBeaker('cus', 'CuS Precipitate', '⚫', 'Sulfide test (Grp 2).', 'CuSO₄', 'H₂S', '#93c5fd', '#1e293b', 'Black Precipitate of CuS!'),
-            makeBeaker('cds', 'CdS Precipitate', '🟡', 'Sulfide test (Grp 2).', 'CdCl₂', 'H₂S', 'rgba(255,255,255,0.2)', '#eab308', 'Bright Yellow Precipitate of CdS!'),
-            makeBeaker('sb2s3', 'Sb₂S₃ Precipitate', '🟠', 'Sulfide test (Grp 2).', 'SbCl₃', 'H₂S', 'rgba(255,255,255,0.2)', '#f97316', 'Orange Precipitate of Sb₂S₃!'),
-            makeBeaker('bi2s3', 'Bi₂S₃ Precipitate', '🟤', 'Sulfide test (Grp 2).', 'BiCl₃', 'H₂S', 'rgba(255,255,255,0.2)', '#451a03', 'Brown-Black Precipitate of Bi₂S₃!'),
-            makeBeaker('sns2', 'SnS₂ Precipitate', '🟨', 'Sulfide test (Grp 2).', 'SnCl₄', 'H₂S', 'rgba(255,255,255,0.2)', '#fef08a', 'Yellow Precipitate of SnS₂!'),
-            makeBeaker('pbs', 'PbS Precipitate', '⬛', 'Sulfide test (Grp 2).', 'Pb(NO₃)₂', 'H₂S', 'rgba(255,255,255,0.2)', '#0f172a', 'Black Precipitate of PbS!'),
-            makeBeaker('hgs', 'HgS Precipitate', '🐦‍⬛', 'Sulfide test (Grp 2).', 'HgCl₂', 'H₂S', 'rgba(255,255,255,0.2)', '#000000', 'Black Precipitate of HgS!'),
-            makeBeaker('zns', 'ZnS Precipitate', '🤍', 'Sulfide test (Grp 4).', 'ZnSO₄', 'H₂S', 'rgba(255,255,255,0.2)', '#f8fafc', 'White Precipitate of ZnS!'),
-            makeBeaker('mns', 'MnS Precipitate', '🪷', 'Sulfide test (Grp 4).', 'MnCl₂', 'H₂S', 'rgba(255,255,255,0.2)', '#fbcfe8', 'Flesh-colored Precipitate of MnS!'),
-            makeBeaker('blue_bottle', 'Blue Bottle Exp', '🌀', 'Redox indicator.', 'Glucose+KOH', 'Methylene Blue', 'rgba(255,255,255,0.2)', '#1d4ed8', 'Solution turned Blue!'),
-            makeBeaker('chameleon', 'Chem Chameleon', '🦎', 'Redox of Manganese.', 'KMnO₄', 'Sugar+NaOH', '#c084fc', '#15803d', 'Color shifts Purple -> Blue -> Green -> Yellow!'),
-            makeBeaker('litmus_b_r', 'Litmus (Blue to Red)', '🔴', 'Acid test.', 'Acid (HCl)', 'Blue Litmus', 'rgba(255,255,255,0.2)', '#ef4444', 'Blue Litmus drops turn Red indicating Acid!'),
-            makeBeaker('litmus_r_b', 'Litmus (Red to Blue)', '🔵', 'Base test.', 'Base (NaOH)', 'Red Litmus', 'rgba(255,255,255,0.2)', '#3b82f6', 'Red Litmus drops turn Blue indicating Base!'),
-            makeBeaker('phenolphthalein', 'Phenolphthalein', '🩷', 'Base indicator.', 'Base (NaOH)', 'Phenolphthalein', 'rgba(255,255,255,0.2)', '#db2777', 'Colorless solution turns Pink/Magenta!'),
-            makeBeaker('pbi2', 'Lead Iodide', '🌟', 'Double displacement.', 'Pb(NO₃)₂', 'KI', 'rgba(255,255,255,0.2)', '#eab308', 'Bright Yellow Precipitate of PbI₂!')
+            makeBeaker('agcl', 'AgCl Ppt', '⬜', 'Chloride test.', 'AgNO₃', 'NaCl', 'rgba(255,255,255,0.2)', 'rgba(248, 250, 252, 0.95)', 'Curdy White Ppt of AgCl!'),
+            makeBeaker('agbr', 'AgBr Ppt', '🟨', 'Bromide test.', 'AgNO₃', 'NaBr', 'rgba(255,255,255,0.2)', 'rgba(254, 240, 138, 0.9)', 'Pale Yellow Ppt of AgBr!'),
+            makeBeaker('agi', 'AgI Ppt', '💛', 'Iodide test.', 'AgNO₃', 'NaI', 'rgba(255,255,255,0.2)', 'rgba(234, 179, 8, 0.95)', 'Dark Yellow Ppt of AgI!'),
+            makeBeaker('baso4', 'BaSO₄ Ppt', '🥛', 'Sulfate test.', 'BaCl₂', 'Na₂SO₄', 'rgba(255,255,255,0.2)', 'rgba(248, 250, 252, 0.98)', 'Dense White Ppt of BaSO₄!'),
+            makeBeaker('pbcro4', 'PbCrO₄ Ppt', '🚸', 'Chromate test.', 'Pb(NO₃)₂', 'K₂CrO₄', 'rgba(255,255,255,0.2)', 'rgba(234, 179, 8, 0.95)', 'Bright Yellow Ppt of Lead Chromate!'),
+            makeBeaker('cuoh2', 'Cu(OH)₂ Ppt', '🥣', 'Copper(II) test.', 'CuSO₄', 'NaOH', 'rgba(147, 197, 253, 0.8)', 'rgba(59, 130, 246, 0.9)', 'Pale Blue Ppt of Cu(OH)₂!'),
+            makeBeaker('feoh3', 'Fe(OH)₃ Ppt', '🟤', 'Iron(III) test.', 'FeCl₃', 'NaOH', 'rgba(253, 224, 71, 0.8)', 'rgba(154, 52, 18, 0.9)', 'Reddish-Brown Ppt of Fe(OH)₃!'),
+            makeBeaker('feoh2', 'Fe(OH)₂ Ppt', '🥬', 'Iron(II) test.', 'FeSO₄', 'NaOH', 'rgba(187, 247, 208, 0.8)', 'rgba(21, 128, 61, 0.9)', 'Dirty Green Ppt of Fe(OH)₂!'),
+            makeBeaker('nioh2', 'Ni(OH)₂ Ppt', '🍏', 'Nickel(II) test.', 'NiCl₂', 'NaOH', 'rgba(134, 239, 172, 0.8)', 'rgba(22, 163, 74, 0.9)', 'Apple Green Ppt of Ni(OH)₂!'),
+            makeBeaker('cooh2', 'Co(OH)₂ Ppt', '🎀', 'Cobalt(II) test.', 'CoCl₂', 'NaOH', 'rgba(251, 207, 232, 0.8)', 'rgba(29, 78, 216, 0.9)', 'Blue precipitate formed!'), 
+            makeBeaker('znoh2', 'Zn(OH)₂ Ppt', '☁️', 'Zinc(II) test.', 'ZnSO₄', 'NaOH', 'rgba(255,255,255,0.2)', 'rgba(248, 250, 252, 0.9)', 'White Gelatinous Ppt of Zn(OH)₂!'),
+            makeBeaker('aloh3', 'Al(OH)₃ Ppt', '🌫️', 'Aluminum(III) test.', 'AlCl₃', 'NaOH', 'rgba(255,255,255,0.2)', 'rgba(248, 250, 252, 0.9)', 'White Gelatinous Ppt of Al(OH)₃!'),
+            makeBeaker('mnoh2', 'Mn(OH)₂ Ppt', '🌸', 'Manganese(II).', 'MnCl₂', 'NaOH', 'rgba(255,255,255,0.2)', 'rgba(251, 207, 232, 0.9)', 'Flesh/Pink Ppt of Mn(OH)₂!'),
+            makeBeaker('croh3', 'Cr(OH)₃ Ppt', '🌿', 'Chromium(III).', 'CrCl₃', 'NaOH', 'rgba(134, 239, 172, 0.8)', 'rgba(20, 83, 45, 0.9)', 'Grey-Green Ppt of Cr(OH)₃!'),
+            makeBeaker('cus_s', 'CuS Ppt', '⚫', 'Sulfide (Grp 2).', 'CuSO₄', 'H₂S', 'rgba(147, 197, 253, 0.8)', 'rgba(30, 41, 59, 0.98)', 'Black Ppt of CuS!'),
+            makeBeaker('cds', 'CdS Ppt', '🟡', 'Sulfide (Grp 2).', 'CdCl₂', 'H₂S', 'rgba(255,255,255,0.2)', 'rgba(234, 179, 8, 0.95)', 'Bright Yellow Ppt of CdS!'),
+            makeBeaker('sb2s3', 'Sb₂S₃ Ppt', '🟠', 'Sulfide (Grp 2).', 'SbCl₃', 'H₂S', 'rgba(255,255,255,0.2)', 'rgba(249, 115, 22, 0.95)', 'Orange Ppt of Sb₂S₃!'),
+            makeBeaker('bi2s3', 'Bi₂S₃ Ppt', '🟤', 'Sulfide (Grp 2).', 'BiCl₃', 'H₂S', 'rgba(255,255,255,0.2)', 'rgba(69, 26, 3, 0.95)', 'Brown-Black Ppt of Bi₂S₃!'),
+            makeBeaker('sns2', 'SnS₂ Ppt', '🟨', 'Sulfide (Grp 2).', 'SnCl₄', 'H₂S', 'rgba(255,255,255,0.2)', 'rgba(254, 240, 138, 0.9)', 'Yellow Ppt of SnS₂!'),
+            makeBeaker('pbs', 'PbS Ppt', '⬛', 'Sulfide (Grp 2).', 'Pb(NO₃)₂', 'H₂S', 'rgba(255,255,255,0.2)', 'rgba(15, 23, 42, 0.98)', 'Black Ppt of PbS!'),
+            makeBeaker('hgs', 'HgS Ppt', '🐦‍⬛', 'Sulfide (Grp 2).', 'HgCl₂', 'H₂S', 'rgba(255,255,255,0.2)', 'rgba(0, 0, 0, 0.98)', 'Black Ppt of HgS!'),
+            makeBeaker('zns', 'ZnS Ppt', '🤍', 'Sulfide (Grp 4).', 'ZnSO₄', 'H₂S', 'rgba(255,255,255,0.2)', 'rgba(248, 250, 252, 0.9)', 'White Ppt of ZnS!'),
+            makeBeaker('mns', 'MnS Ppt', '🪷', 'Sulfide (Grp 4).', 'MnCl₂', 'H₂S', 'rgba(255,255,255,0.2)', 'rgba(251, 207, 232, 0.9)', 'Flesh-colored Ppt of MnS!'),
+            makeBeaker('blue_bottle', 'Blue Bottle', '🌀', 'Redox indicator.', 'Glucose+KOH', 'Methylene Blue', 'rgba(255,255,255,0.2)', 'rgba(29, 78, 216, 0.9)', 'Solution turned Blue!'),
+            makeBeaker('chameleon', 'Chem Chameleon', '🦎', 'Redox of Mn.', 'KMnO₄', 'Sugar+NaOH', 'rgba(192, 132, 252, 0.8)', 'rgba(21, 128, 61, 0.9)', 'Color shifts Purple to Green!'),
+            makeBeaker('litmus_b_r', 'Blue to Red', '🔴', 'Acid test.', 'Acid (HCl)', 'Blue Litmus', 'rgba(255,255,255,0.2)', 'rgba(239, 68, 68, 0.8)', 'Litmus turns Red (Acidic)!'),
+            makeBeaker('litmus_r_b', 'Red to Blue', '🔵', 'Base test.', 'Base (NaOH)', 'Red Litmus', 'rgba(255,255,255,0.2)', 'rgba(59, 130, 246, 0.8)', 'Litmus turns Blue (Basic)!'),
+            makeBeaker('phenolphthalein', 'Phenolphthalein', '🩷', 'Base indicator.', 'Base (NaOH)', 'Indicator', 'rgba(255,255,255,0.2)', 'rgba(219, 39, 119, 0.8)', 'Solution turns Pink/Magenta!'),
+
+            // --- 54: EXTRA EXPERIMENT ---
+            makeBeaker('iodine_clock', 'Iodine Clock', '⏱️', 'Kinetics demo.', 'Solution A', 'Solution B', 'rgba(255,255,255,0.2)', 'rgba(15, 23, 42, 0.95)', 'Sudden shift to Dark Blue/Black!')
         ],
 
         init: function() {
@@ -768,7 +775,7 @@
             if(!grid) return;
             grid.innerHTML = this.experiments.map(exp => `
                 <div class="lab-card" onclick="LabEngine.startLab('${exp.id}')">
-                    <div class="lab-icon">${exp.icon}</div>
+                    <div style="font-size: 3rem; margin-bottom: 10px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5));">${exp.icon}</div>
                     <h3 style="margin-bottom: 5px;">${exp.title}</h3>
                     <p style="font-size:0.85rem; color:#cbd5e1; margin-top:0;">${exp.desc}</p>
                 </div>
@@ -790,6 +797,10 @@
             if(exp.state) exp.state.step = 0;
             const tube = document.getElementById(`${id}-tube`);
             if(tube) tube.classList.remove('tt-silver');
+            
+            // Clear bubbles if any
+            const gas = document.getElementById(`${id}-gas`);
+            if(gas) gas.innerHTML = '';
         },
 
         exitLab: function() {
@@ -801,7 +812,7 @@
             document.getElementById('lab-info').innerHTML = `<b>👨‍🔬 System:</b> &nbsp; ${msg}`;
         },
 
-        // --- MASTER ANIMATION CONTROLLER ---
+        // --- MASTER ANIMATION CONTROLLER (Fixed Coordinates & Physics) ---
         animate: function(targetId, actionType, color, onComplete) {
             const hand = document.getElementById('lab-anim-hand');
             const drop = document.getElementById('lab-anim-drop');
@@ -810,46 +821,83 @@
 
             const tgtRect = target.getBoundingClientRect();
             const wsRect = document.getElementById('lab-workspace').getBoundingClientRect();
-            const tgtX = tgtRect.left - wsRect.left + (tgtRect.width/2);
-            const tgtY = tgtRect.top - wsRect.top;
+            
+            // Calculate exact top-center of the target container
+            const tgtX = (tgtRect.left - wsRect.left) + (tgtRect.width / 2);
+            const tgtY = (tgtRect.top - wsRect.top);
 
             if(actionType === 'pour') {
-                hand.innerText = '🧪'; 
-                hand.style.top = '20px'; hand.style.left = '90%'; hand.style.opacity = '1'; hand.style.transform = 'rotate(0deg)';
+                hand.innerText = '🫗'; 
+                // Start position (top right)
+                hand.style.transition = 'none';
+                hand.style.top = '20px'; hand.style.left = '90%'; hand.style.opacity = '0'; hand.style.transform = 'rotate(0deg)';
                 
                 setTimeout(() => {
-                    hand.style.top = (tgtY - 60) + 'px';
-                    hand.style.left = (tgtX + 25) + 'px';
+                    hand.style.transition = 'opacity 0.3s, transform 0.6s ease-in-out, top 0.6s ease-in-out, left 0.6s ease-in-out';
+                    hand.style.opacity = '1';
+                    // Move above the beaker/tube
+                    hand.style.top = (tgtY - 70) + 'px';
+                    hand.style.left = (tgtX + 20) + 'px';
                     
                     setTimeout(() => {
-                        hand.style.transform = 'rotate(-50deg)'; 
-                        drop.style.background = color === 'transparent' || color.includes('rgba(255,255,255') ? '#38bdf8' : color;
-                        drop.style.left = tgtX + 'px';
-                        drop.style.top = (tgtY + 5) + 'px';
-                        drop.style.opacity = '1';
-                        drop.style.transition = 'none';
+                        // Tilt the hand to pour
+                        hand.style.transform = 'rotate(-60deg)'; 
                         
                         setTimeout(() => {
-                            drop.style.transition = 'top 0.4s ease-in';
-                            drop.style.top = (tgtY + tgtRect.height - 30) + 'px'; 
+                            // Spawn the drop
+                            drop.style.background = (color === 'transparent' || color.includes('rgba(255,255,255')) ? 'rgba(56, 189, 248, 0.8)' : color;
+                            drop.style.transition = 'none';
+                            drop.style.left = (tgtX - 8) + 'px'; // Center drop (width 16/2)
+                            drop.style.top = (tgtY - 10) + 'px';
+                            drop.style.opacity = '1';
                             
                             setTimeout(() => {
-                                drop.style.opacity = '0';
-                                onComplete(); 
-                                setTimeout(() => { hand.style.opacity = '0'; hand.style.transform = 'rotate(0deg)'; }, 800);
-                            }, 400);
-                        }, 50);
-                    }, 600);
-                }, 100);
+                                // Fall physics
+                                drop.style.transition = 'top 0.4s cubic-bezier(0.4, 0, 1, 1)';
+                                drop.style.top = (tgtY + tgtRect.height - 40) + 'px'; 
+                                
+                                setTimeout(() => {
+                                    drop.style.opacity = '0'; // Splash
+                                    onComplete(); 
+                                    
+                                    // Reset hand
+                                    setTimeout(() => { 
+                                        hand.style.opacity = '0'; 
+                                        hand.style.transform = 'rotate(0deg)'; 
+                                    }, 600);
+                                }, 400); // Fall duration
+                            }, 50);
+                        }, 400); // Wait for tilt
+                    }, 600); // Wait for move
+                }, 50);
             } else if(actionType === 'heat') {
                 const burner = document.getElementById('lab-anim-burner');
+                burner.style.transition = 'none';
                 burner.style.left = tgtX + 'px';
-                burner.style.bottom = '100px'; 
+                burner.style.bottom = '-200px'; 
                 
                 setTimeout(() => {
-                    onComplete(); 
-                    setTimeout(() => { burner.style.bottom = '-150px'; }, 2500); 
-                }, 1500);
+                    burner.style.transition = 'bottom 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)';
+                    burner.style.bottom = '120px'; // Slide up
+                    
+                    setTimeout(() => {
+                        onComplete(); 
+                        setTimeout(() => { burner.style.bottom = '-200px'; }, 2500); 
+                    }, 1500);
+                }, 50);
+            }
+        },
+
+        createBubbles: function(id) {
+            const gasContainer = document.getElementById(`${id}-gas`);
+            if(!gasContainer) return;
+            for(let i=0; i<10; i++) {
+                const bubble = document.createElement('div');
+                bubble.className = 'bubble';
+                bubble.style.width = bubble.style.height = (Math.random() * 6 + 4) + 'px';
+                bubble.style.left = (Math.random() * 80 + 10) + '%';
+                bubble.style.animationDelay = (Math.random() * 2) + 's';
+                gasContainer.appendChild(bubble);
             }
         },
 
@@ -869,10 +917,11 @@
                 if(exp.state.step !== 1) return this.setInfo("Add first reagent initially.");
                 this.animate(id, 'pour', exp.state.c2, () => {
                     exp.state.step = 2;
-                    liq.style.height = '70%';
+                    liq.style.height = '75%';
                     if(!exp.state.needsHeat) {
                         if(exp.state.c2 === 'silver') tube.classList.add('tt-silver');
                         else liq.style.background = exp.state.c2;
+                        if(exp.state.effervescence) this.createBubbles(id);
                         this.setInfo(exp.state.msg);
                     } else { this.setInfo("Chemicals mixed. Ready for heating."); }
                 });
@@ -903,10 +952,25 @@
                 });
             } else if(action === 'r2') {
                 if(exp.state.step !== 1) return this.setInfo("Pour first solution initially.");
-                this.animate(id, 'pour', exp.state.c2, () => {
+                
+                // For Iodine clock, add a delay to color change
+                let finalColor = exp.state.c2;
+                let applyColorNow = exp.id !== 'iodine_clock';
+
+                this.animate(id, 'pour', 'rgba(255,255,255,0.2)', () => {
                     exp.state.step = 2;
-                    liq.style.height = '80%'; liq.style.background = exp.state.c2;
-                    this.setInfo(exp.state.msg);
+                    liq.style.height = '85%'; 
+                    if(applyColorNow) liq.style.background = finalColor;
+                    
+                    if(exp.id === 'iodine_clock') {
+                        this.setInfo("Solutions mixed. Wait for it...");
+                        setTimeout(() => {
+                            liq.style.background = finalColor;
+                            this.setInfo(exp.state.msg);
+                        }, 2500); // Delay for iodine clock
+                    } else {
+                        this.setInfo(exp.state.msg);
+                    }
                 });
             }
         },
@@ -916,63 +980,72 @@
             
             if(labId === 'vapor' && action === 'heat') {
                 this.animate('vapor', 'heat', null, () => {
-                    document.getElementById("vap-liq").style.height="10%";
+                    document.getElementById("vap-liq").style.height="15%";
                     document.getElementById("vap-gas").style.opacity="1";
-                    document.getElementById("vap-gas").style.top="-100px";
+                    document.getElementById("vap-gas").style.top="-50px";
                     this.setInfo("Liquid vaporizes into gas phase!");
                 });
             }
             if(labId === 'osmosis' && action === 'wait') {
                 document.getElementById("osm-left").style.height="20%";
-                document.getElementById("osm-right").style.height="60%";
-                this.setInfo("Water moves through semi-permeable membrane to higher concentration!");
+                document.getElementById("osm-right").style.height="80%";
+                this.setInfo("Solvent moves through semi-permeable membrane to higher concentration!");
             }
             if(labId === 'filter' && action === 'pour') {
-                this.animate('filter', 'pour', '#3b82f6', () => {
+                this.animate('filter', 'pour', 'rgba(59, 130, 246, 0.6)', () => {
                     document.getElementById("fil-solid").style.opacity="1";
                     document.getElementById("fil-liq").style.height="80%";
-                    this.setInfo("Residue stays in filter, filtrate drops in beaker!");
+                    this.setInfo("Residue stays in filter paper, clear filtrate drops in beaker!");
                 });
             }
             if(labId === 'distill' && action === 'heat') {
                 this.animate('distill', 'heat', null, () => {
                     document.getElementById("dis-l1").style.height="20%";
                     document.getElementById("dis-l2").style.height="60%";
-                    this.setInfo("Lower boiling point liquid evaporates and condenses in receiver!");
+                    this.setInfo("Lower boiling point liquid evaporates and condenses in the receiver flask!");
                 });
             }
             if (labId === 'daniell') {
-                if(action === 'wire') { exp.state.wired = true; this.setInfo("Wires connected to voltmeter. Circuit is open (needs salt bridge)."); }
-                if(action === 'bridge') { document.getElementById('salt-bridge').style.opacity = '1'; exp.state.bridged = true; this.setInfo("Salt bridge (KCl) inserted to maintain electrical neutrality."); }
+                if(action === 'wire') { 
+                    exp.state.wired = true; 
+                    document.getElementById('d-wire').classList.add('live');
+                    this.setInfo("Wires connected to voltmeter. Circuit is open (needs salt bridge)."); 
+                }
+                if(action === 'bridge') { 
+                    const bridge = document.getElementById('salt-bridge');
+                    bridge.style.opacity = '1'; bridge.style.top = '10px';
+                    exp.state.bridged = true; 
+                    this.setInfo("Salt bridge (KCl) inserted to maintain electrical neutrality."); 
+                }
                 if(action === 'circuit') {
                     if(!exp.state.wired || !exp.state.bridged) return this.setInfo("Connect wires and insert salt bridge first!");
                     document.getElementById('volt-read').innerText = "1.10V";
-                    document.getElementById('volt-read').style.color = "var(--gold)";
+                    document.getElementById('volt-read').classList.add('active');
                     this.setInfo("⚡ Electricity is flowing! Zinc oxidizes (Anode) and Copper reduces (Cathode).");
                 }
             }
             if (labId === 'flame') {
-                const hand = document.getElementById('lab-anim-hand');
+                const picker = document.getElementById('picker-tool');
                 const flame = document.getElementById('bunsen-flame');
-                const wsRect = document.getElementById('lab-workspace').getBoundingClientRect();
-                const flameRect = document.getElementById('flame-target').getBoundingClientRect();
                 
-                hand.innerText = '🤏'; 
-                hand.style.top = '20px'; hand.style.left = '80%'; hand.style.opacity = '1'; hand.style.transform = 'rotate(0deg)';
+                // Slide picker into flame
+                picker.style.left = '45px';
                 
                 setTimeout(() => {
-                    hand.style.top = (flameRect.top - wsRect.top - 20) + 'px';
-                    hand.style.left = (flameRect.left - wsRect.left + 15) + 'px';
+                    const colors = { 
+                        'li': ['#ef4444', 'Crimson Red'], 
+                        'na': ['#fbbf24', 'Golden Yellow'], 
+                        'k': ['#c084fc', 'Lilac/Purple'], 
+                        'ba': ['#22c55e', 'Apple Green'], 
+                        'cu': ['#06b6d4', 'Blue-Green'] 
+                    };
+                    flame.style.background = colors[action][0];
+                    flame.style.boxShadow = `0 0 40px ${colors[action][0]}, inset 0 0 10px white`;
+                    this.setInfo(`${action.toUpperCase()} produces a ${colors[action][1]} flame!`);
                     
-                    setTimeout(() => {
-                        const colors = { 'li': ['#dc2626', 'Crimson Red'], 'na': ['#eab308', 'Golden Yellow'], 'k': ['#c084fc', 'Lilac/Purple'], 'rb': ['#9d174d', 'Red-Violet'], 'cs': ['#60a5fa', 'Blue'], 'ca': ['#ea580c', 'Brick Red'], 'sr': ['#ef4444', 'Crimson'], 'ba': ['#84cc16', 'Apple Green'], 'cu': ['#22c55e', 'Blue-Green'], 'pb': ['#93c5fd', 'Pale Blue'] };
-                        flame.style.background = colors[action][0];
-                        flame.style.boxShadow = `0 0 40px ${colors[action][0]}, inset 0 0 10px white`;
-                        this.setInfo(`${action.toUpperCase()} produces a ${colors[action][1]} flame!`);
-                        
-                        setTimeout(() => { hand.style.opacity = '0'; }, 1000);
-                    }, 600);
-                }, 100);
+                    // Pull picker back out
+                    setTimeout(() => { picker.style.left = '-150px'; }, 1500);
+                }, 800);
             }
         }
     };
@@ -1080,25 +1153,8 @@
         document.getElementById('home-d-text').value = ""; document.getElementById('home-d-file').value = ""; document.getElementById('home-d-fileName').innerText = ""; homeDoubtFileBase64 = ""; loadStudentDoubts();
     }
 
-    function show(id) {
-        if((id==='tests' || id==='live' || id==='results' || id==='doubts') && !user) return show('login');
-        if(id === 'schedule') loadSchedule();
-        if(id === 'doubts') loadStudentDoubts(); 
-        if(id === 'lab') LabEngine.init();
-        if(id==='admin' && (!user || user.role !== 'admin')) return alert("Access Denied");
-        localStorage.setItem('arc_last_section', id);
-        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-        window.scrollTo(0,0);
-        document.getElementById('nav-menu').classList.remove('active');
-        if(id==='tests') loadTests(false); if(id==='live') loadTests(true); if(id==='results') loadResults('practice');
-    }
-
-    
-    // ==========================================
-    // 🎮 ARC MULTI-GAME COMPONENT (ROTARY DIAL)
-    // ==========================================
-    window.arcGames = { instances: {} };
+    // --- 1. MEMORY MATCH (Categorized Edition) ---
+        window.arcGames = { instances: {} };
 
     function getEmptyStateGame(message) {
         const id = Math.random().toString(36).substr(2, 9);
@@ -1167,9 +1223,7 @@
             if(this[type] && this[type].init) this[type].init(id);
         },
         
-        // --- 1. MEMORY MATCH (Categorized Edition) ---
         memory: {
-            // Comprehensive database of elements sorted by categories
             categories: {
                 'Alkali Metals': [ {s:'Li',n:'Lithium'}, {s:'Na',n:'Sodium'}, {s:'K',n:'Potassium'}, {s:'Rb',n:'Rubidium'}, {s:'Cs',n:'Cesium'}, {s:'Fr',n:'Francium'} ],
                 'Alkaline Earth': [ {s:'Be',n:'Beryllium'}, {s:'Mg',n:'Magnesium'}, {s:'Ca',n:'Calcium'}, {s:'Sr',n:'Strontium'}, {s:'Ba',n:'Barium'}, {s:'Ra',n:'Radium'} ],
@@ -1294,7 +1348,7 @@
                 window.arcGames.instances[id] = { score: 0, speed: 4500, current: null, yPos: 0 };
                 document.getElementById(`game-bg-${id}`).innerHTML = `
                     <div style="position:absolute; top:10px; left:15px; font-weight:bold; color:var(--gold);">Score: <span id="ab-score-${id}">0</span></div>
-                    <div id="ab-drop-${id}" class="ab-element" style="display:none;"></div>
+                    <div id="ab-drop-${id}" class="ab-element" style="display:none; color:black; font-weight:bold; padding:5px 10px; border-radius:5px; position:absolute;"></div>
                     <div class="ab-controls">
                         <button class="btn btn-red" style="flex:1; margin-right:10px;" onclick="ArcGameEngine.acid.guess('${id}', 'acid')">ACID</button>
                         <button class="btn" style="flex:1; background:#3b82f6; color:white;" onclick="ArcGameEngine.acid.guess('${id}', 'base')">BASE</button>
@@ -1355,7 +1409,7 @@
                 const word = "PROTON"; const hint = "Positively charged particle";
                 window.arcGames.instances[id] = { word: word, guessed: [], errors: 0, maxErrors: 5 };
                 const keyboard = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split('').map(l => `<button class="hm-key" id="hm-key-${id}-${l}" onclick="ArcGameEngine.hangman.guess('${id}', '${l}')">${l}</button>`).join('');
-                document.getElementById(`game-bg-${id}`).innerHTML = `<div class="hm-flask-container"><div class="hm-flask-neck"></div><div class="hm-liquid" id="hm-liquid-${id}"></div></div><div class="hm-hint">Hint: ${hint}</div><div class="hm-word" id="hm-word-${id}"></div><div class="hm-keyboard">${keyboard}</div>`;
+                document.getElementById(`game-bg-${id}`).innerHTML = `<div class="hm-flask-container" style="width:60px; height:80px; border:2px solid white; border-top:none; border-radius:0 0 10px 10px; position:relative; margin-bottom:15px;"><div class="hm-liquid" id="hm-liquid-${id}" style="position:absolute; bottom:0; width:100%; height:0%; background:var(--green); transition:0.3s;"></div></div><div class="hm-hint">Hint: ${hint}</div><div class="hm-word" id="hm-word-${id}" style="font-size:1.5rem; letter-spacing:3px; margin-bottom:15px;"></div><div class="hm-keyboard">${keyboard}</div>`;
                 this.renderWord(id);
             },
             renderWord: function(id) {
@@ -1383,10 +1437,10 @@
         coeff: {
             init: function(id) {
                 window.arcGames.instances[id] = { ans: 2 };
-                document.getElementById(`game-bg-${id}`).innerHTML = `<div class="coeff-eq">[ ? ] H₂ + O₂ ➝ 2H₂O</div><div style="font-size:0.9rem; color:#cbd5e1; margin-bottom:20px;">Catch the correct number!</div><div id="coeff-area-${id}" style="position:absolute; width:100%; height:100%; top:0; left:0; pointer-events:none;"></div>`;
+                document.getElementById(`game-bg-${id}`).innerHTML = `<div class="coeff-eq" style="font-size:1.5rem; font-weight:bold; margin-bottom:10px;">[ ? ] H₂ + O₂ ➝ 2H₂O</div><div style="font-size:0.9rem; color:#cbd5e1; margin-bottom:20px;">Catch the correct number!</div><div id="coeff-area-${id}" style="position:absolute; width:100%; height:100%; top:0; left:0; pointer-events:none;"></div>`;
                 const area = document.getElementById(`coeff-area-${id}`);
                 [1,2,3,4,5].forEach(num => {
-                    let el = document.createElement('div'); el.className = 'coeff-num'; el.innerText = num; el.style.pointerEvents = 'auto';
+                    let el = document.createElement('div'); el.className = 'coeff-num'; el.innerText = num; el.style.pointerEvents = 'auto'; el.style.position = 'absolute'; el.style.background = 'white'; el.style.color = 'black'; el.style.padding = '10px'; el.style.borderRadius = '5px'; el.style.fontWeight = 'bold'; el.style.cursor = 'pointer'; el.style.transition = 'top 1s, left 1s';
                     el.onclick = () => ArcGameEngine.coeff.guess(id, num); area.appendChild(el); this.move(el);
                     window.arcGames.instances[id]['int'+num] = setInterval(() => this.move(el), 1500 + Math.random()*1000);
                 });
@@ -1402,30 +1456,19 @@
 
         // 5. CHEMCLIMB (SNAKES & LADDERS - Elements Edition)
         snakes: {
-            // First 100 Elements of the Periodic Table
             symbols: ["H","He","Li","Be","B","C","N","O","F","Ne","Na","Mg","Al","Si","P","S","Cl","Ar","K","Ca","Sc","Ti","V","Cr","Mn","Fe","Co","Ni","Cu","Zn","Ga","Ge","As","Se","Br","Kr","Rb","Sr","Y","Zr","Nb","Mo","Tc","Ru","Rh","Pd","Ag","Cd","In","Sn","Sb","Te","I","Xe","Cs","Ba","La","Ce","Pr","Nd","Pm","Sm","Eu","Gd","Tb","Dy","Ho","Er","Tm","Yb","Lu","Hf","Ta","W","Re","Os","Ir","Pt","Au","Hg","Tl","Pb","Bi","Po","At","Rn","Fr","Ra","Ac","Th","Pa","U","Np","Pu","Am","Cm","Bk","Cf","Es","Fm"],
-            
-            // Define Snake and Ladder start/end points
             sPaths: [{h: 99, t: 12}, {h: 85, t: 25}, {h: 62, t: 18}, {h: 48, t: 9}],
             lPaths: [{s: 4, e: 36}, {s: 15, e: 46}, {s: 33, e: 81}, {s: 50, e: 74}],
-
-            // Math to find the exact X,Y center of any square on the 10x10 zig-zag grid
             getCoords: function(num) {
-                let z = num - 1;
-                let r = Math.floor(z / 10);
-                let c = r % 2 === 0 ? (z % 10) : 9 - (z % 10);
-                return { x: (c * 10) + 5, y: (9 - r) * 10 + 5 }; // Returns % coordinates
+                let z = num - 1; let r = Math.floor(z / 10); let c = r % 2 === 0 ? (z % 10) : 9 - (z % 10);
+                return { x: (c * 10) + 5, y: (9 - r) * 10 + 5 }; 
             },
-
             init: function(id) { 
                 window.arcGames.instances[id] = { pos: 1, rolls: 0, rolling: false, lastDice: '⚀' }; 
                 this.render(id); 
             },
-
             render: function(id) {
                 const state = window.arcGames.instances[id];
-                
-                // Top Menu with Animated Dice Button
                 let html = `
                 <div style="display:flex; justify-content:space-between; align-items:center; width:100%; max-width:400px; margin-bottom:10px;">
                     <span style="color:var(--gold); font-weight:bold;">Rolls: ${state.rolls}</span>
@@ -1435,15 +1478,10 @@
                 </div>
                 <div class="snakes-board" style="position:relative;">`;
                 
-                // 1. Draw the 100 Grid Cells (with Atomic Number and Element Symbol)
                 for(let row=0; row<10; row++) {
                     for(let col=0; col<10; col++) {
-                        let num = 100 - (row * 10);
-                        if(row % 2 === 0) { num -= col; } else { num -= (9 - col); }
-                        
-                        let cellClass = (row + col) % 2 === 0 ? 'norm' : 'alt';
-                        let sym = this.symbols[num - 1]; // Get element symbol
-                        
+                        let num = 100 - (row * 10); if(row % 2 === 0) { num -= col; } else { num -= (9 - col); }
+                        let cellClass = (row + col) % 2 === 0 ? 'norm' : 'alt'; let sym = this.symbols[num - 1]; 
                         html += `
                         <div class="snakes-cell ${cellClass}" style="flex-direction:column; line-height:1;">
                             <div style="position:absolute; top:2px; left:3px; font-size:0.5rem; color:#94a3b8;">${num}</div>
@@ -1452,148 +1490,60 @@
                     }
                 }
                 
-                // 2. Overlay SVG Layer for actual Snakes and Ladders
                 let svg = `<svg viewBox="0 0 100 100" preserveAspectRatio="none" style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:5;">`;
-                
-                // Draw Ladders (Wooden styling)
                 this.lPaths.forEach(l => {
                     let start = this.getCoords(l.s); let end = this.getCoords(l.e);
-                    svg += `
-                        <line x1="${start.x}" y1="${start.y}" x2="${end.x}" y2="${end.y}" stroke="#b45309" stroke-width="2.5" stroke-linecap="round" />
-                        <line x1="${start.x}" y1="${start.y}" x2="${end.x}" y2="${end.y}" stroke="#fcd34d" stroke-width="1.2" stroke-dasharray="2 2" />
-                    `;
+                    svg += `<line x1="${start.x}" y1="${start.y}" x2="${end.x}" y2="${end.y}" stroke="#b45309" stroke-width="2.5" stroke-linecap="round" /><line x1="${start.x}" y1="${start.y}" x2="${end.x}" y2="${end.y}" stroke="#fcd34d" stroke-width="1.2" stroke-dasharray="2 2" />`;
                 });
-
-                // Draw Snakes (Curved body, Head, and Animated Tongue)
                 this.sPaths.forEach(s => {
-                    let h = this.getCoords(s.h); let t = this.getCoords(s.t);
-                    let ctrlX = (h.x + t.x)/2 + 10; // Curve factor
-                    let ctrlY = (h.y + t.y)/2 - 10;
-                    
-                    svg += `
-                        <path d="M ${h.x} ${h.y} Q ${ctrlX} ${ctrlY} ${t.x} ${t.y}" stroke="#16a34a" stroke-width="2.5" fill="none" stroke-linecap="round" />
-                        <path d="M ${h.x} ${h.y} Q ${ctrlX} ${ctrlY} ${t.x} ${t.y}" stroke="#14532d" stroke-width="1" stroke-dasharray="1 2" fill="none" stroke-linecap="round" />
-                        <circle cx="${h.x}" cy="${h.y}" r="2" fill="#16a34a" />
-                        <circle cx="${h.x-0.8}" cy="${h.y-0.5}" r="0.4" fill="white" />
-                        <circle cx="${h.x+0.8}" cy="${h.y-0.5}" r="0.4" fill="white" />
-                        <polygon points="${h.x},${h.y} ${h.x-1},${h.y-3} ${h.x+1},${h.y-3}" fill="red">
-                            <animate attributeName="opacity" values="0;1;0" dur="1s" repeatCount="indefinite" />
-                        </polygon>
-                    `;
+                    let h = this.getCoords(s.h); let t = this.getCoords(s.t); let ctrlX = (h.x + t.x)/2 + 10; let ctrlY = (h.y + t.y)/2 - 10;
+                    svg += `<path d="M ${h.x} ${h.y} Q ${ctrlX} ${ctrlY} ${t.x} ${t.y}" stroke="#16a34a" stroke-width="2.5" fill="none" stroke-linecap="round" /><path d="M ${h.x} ${h.y} Q ${ctrlX} ${ctrlY} ${t.x} ${t.y}" stroke="#14532d" stroke-width="1" stroke-dasharray="1 2" fill="none" stroke-linecap="round" /><circle cx="${h.x}" cy="${h.y}" r="2" fill="#16a34a" /><circle cx="${h.x-0.8}" cy="${h.y-0.5}" r="0.4" fill="white" /><circle cx="${h.x+0.8}" cy="${h.y-0.5}" r="0.4" fill="white" /><polygon points="${h.x},${h.y} ${h.x-1},${h.y-3} ${h.x+1},${h.y-3}" fill="red"><animate attributeName="opacity" values="0;1;0" dur="1s" repeatCount="indefinite" /></polygon>`;
                 });
-                svg += `</svg>`;
-                html += svg;
+                svg += `</svg>`; html += svg;
 
-                // 3. Render Smooth Gliding Token
                 let tokenPos = this.getCoords(state.pos);
-                html += `<div class="s-token" style="top:calc(${tokenPos.y}% - 9px); left:calc(${tokenPos.x}% - 9px);"></div>`;
-                
-                html += `</div>`; // Close board
+                html += `<div class="s-token" style="top:calc(${tokenPos.y}% - 9px); left:calc(${tokenPos.x}% - 9px);"></div></div>`;
                 document.getElementById(`game-bg-${id}`).innerHTML = html;
             },
-
             roll: function(id) {
-                const state = window.arcGames.instances[id];
-                if(state.rolling) return;
-                state.rolling = true;
+                const state = window.arcGames.instances[id]; if(state.rolling) return; state.rolling = true;
+                let ticks = 0; let diceChars = ['⚀','⚁','⚂','⚃','⚄','⚅']; let diceEl = document.getElementById(`dice-${id}`);
                 
-                let ticks = 0;
-                let diceChars = ['⚀','⚁','⚂','⚃','⚄','⚅'];
-                let diceEl = document.getElementById(`dice-${id}`);
-                
-                // Rolling Animation Interval
                 state.interval = setInterval(() => {
-                    ticks++;
-                    let r = Math.floor(Math.random() * 6);
-                    diceEl.innerText = diceChars[r];
-                    diceEl.style.transform = `rotate(${Math.random() * 360}deg) scale(1.3)`;
-                    
+                    ticks++; let r = Math.floor(Math.random() * 6); diceEl.innerText = diceChars[r]; diceEl.style.transform = `rotate(${Math.random() * 360}deg) scale(1.3)`;
                     if(ticks > 12) {
                         clearInterval(state.interval);
-                        
-                        // Resolve actual roll
-                        let finalRoll = Math.floor(Math.random() * 6) + 1;
-                        state.lastDice = diceChars[finalRoll - 1];
-                        diceEl.innerText = state.lastDice;
-                        diceEl.style.transform = `rotate(0deg) scale(1)`;
-                        
-                        state.rolls++;
-                        state.pos += finalRoll; 
-                        if(state.pos > 100) state.pos = 100;
-                        
-                        // Draw initial move
+                        let finalRoll = Math.floor(Math.random() * 6) + 1; state.lastDice = diceChars[finalRoll - 1]; diceEl.innerText = state.lastDice; diceEl.style.transform = `rotate(0deg) scale(1)`;
+                        state.rolls++; state.pos += finalRoll; if(state.pos > 100) state.pos = 100;
                         this.render(id);
                         
-                        // Check if landed on Snake or Ladder
-                        const allPaths = {};
-                        this.sPaths.forEach(s => allPaths[s.h] = s.t);
-                        this.lPaths.forEach(l => allPaths[l.s] = l.e);
-                        
+                        const allPaths = {}; this.sPaths.forEach(s => allPaths[s.h] = s.t); this.lPaths.forEach(l => allPaths[l.s] = l.e);
                         setTimeout(() => {
-                            if(allPaths[state.pos]) {
-                                state.pos = allPaths[state.pos];
-                                this.render(id); // Animate glide to new spot
-                            }
+                            if(allPaths[state.pos]) { state.pos = allPaths[state.pos]; this.render(id); }
                             state.rolling = false;
-                            
-                            // Win condition (Fermium 100)
-                            if(state.pos === 100) { 
-                                setTimeout(() => {
-                                    document.getElementById(`game-bg-${id}`).innerHTML = `<h2 style="color:var(--green);">🏆 You Reached Fm (100)!</h2><p>It took you ${state.rolls} rolls.</p><button class="btn btn-gold" onclick="ArcGameEngine.snakes.init('${id}')">Play Again</button>`; 
-                                }, 800);
-                            } else {
-                                this.render(id); // Unlock button
-                            }
-                        }, 500); // Wait half a second before sliding up/down
+                            if(state.pos === 100) { setTimeout(() => { document.getElementById(`game-bg-${id}`).innerHTML = `<h2 style="color:var(--green);">🏆 You Reached Fm (100)!</h2><p>It took you ${state.rolls} rolls.</p><button class="btn btn-gold" onclick="ArcGameEngine.snakes.init('${id}')">Play Again</button>`; }, 800); } else { this.render(id); }
+                        }, 500);
                     }
-                }, 50); // 50ms per animation frame
+                }, 50);
             }
         },
 
-        // 6. REALISTIC TITRATION HERO (Expanded Edition)
+        // 6. REALISTIC TITRATION HERO
         titration: {
             data: [
                 { acid: "HCl", base: "NaOH", start: 1.0, eq: 7.0, type: "Strong Acid + Strong Base", ind: "Bromothymol Blue", color: [0, 255, 0] }, 
                 { acid: "CH₃COOH", base: "NaOH", start: 3.0, eq: 8.7, type: "Weak Acid + Strong Base", ind: "Phenolphthalein", color: [236, 72, 153] }, 
-                { acid: "HCl", base: "NH₃", start: 1.0, eq: 5.3, type: "Strong Acid + Weak Base", ind: "Methyl Red", color: [255, 165, 0] }, 
-                { acid: "HNO₃", base: "KOH", start: 1.0, eq: 7.0, type: "Strong Acid + Strong Base", ind: "Phenol Red", color: [255, 0, 0] }, 
-                { acid: "HF", base: "NaOH", start: 3.1, eq: 8.1, type: "Weak Acid + Strong Base", ind: "Phenolphthalein", color: [236, 72, 153] },
-                { acid: "H₂SO₄", base: "NH₃", start: 1.0, eq: 5.0, type: "Strong Acid + Weak Base", ind: "Methyl Red", color: [255, 165, 0] },
-                { acid: "HCOOH", base: "KOH", start: 2.4, eq: 8.4, type: "Weak Acid + Strong Base", ind: "Phenolphthalein", color: [236, 72, 153] },
-                { acid: "HClO₄", base: "LiOH", start: 1.0, eq: 7.0, type: "Strong Acid + Strong Base", ind: "Bromothymol Blue", color: [0, 255, 0] },
-                { acid: "HCN", base: "NaOH", start: 5.0, eq: 9.3, type: "Weak Acid + Strong Base", ind: "Phenolphthalein", color: [236, 72, 153] },
-                { acid: "HBr", base: "CH₃NH₂", start: 1.0, eq: 5.8, type: "Strong Acid + Weak Base", ind: "Methyl Red", color: [255, 165, 0] },
-                { acid: "HNO₂", base: "KOH", start: 2.0, eq: 8.0, type: "Weak Acid + Strong Base", ind: "Phenolphthalein", color: [236, 72, 153] }
+                { acid: "HCl", base: "NH₃", start: 1.0, eq: 5.3, type: "Strong Acid + Weak Base", ind: "Methyl Red", color: [255, 165, 0] }
             ],
             init: function(id) {
-                // Pick a random titration scenario
                 const scenario = this.data[Math.floor(Math.random() * this.data.length)];
                 window.arcGames.instances[id] = { pH: scenario.start, interval: null, dropping: false, scenario: scenario };
                 this.render(id);
             },
             render: function(id) {
-                const state = window.arcGames.instances[id];
-                const sc = state.scenario;
-                
-                // Color calculation based on indicator and distance to equivalence point
-                let bColor = "rgba(255,255,255,0.2)"; // default clear/light
-                const diff = state.pH - sc.eq;
-                
-                if(Math.abs(diff) <= 0.2) {
-                    // Perfect target zone (Equivalence Point)
-                    bColor = `rgba(${sc.color[0]}, ${sc.color[1]}, ${sc.color[2]}, 0.6)`;
-                } else if(diff > 0.2) {
-                    // Over-titrated
-                    bColor = `rgba(${sc.color[0]}, ${sc.color[1]}, ${sc.color[2]}, 0.9)`;
-                    if(sc.ind === "Methyl Red") bColor = "rgba(255, 255, 0, 0.8)"; // goes yellow
-                    if(sc.ind === "Bromothymol Blue") bColor = "rgba(0, 0, 255, 0.8)"; // goes blue
-                } else if(diff < -0.2) {
-                    // Under-titrated
-                    if(sc.ind === "Phenolphthalein") bColor = "rgba(255,255,255,0.2)"; // clear
-                    if(sc.ind === "Bromothymol Blue") bColor = "rgba(255, 255, 0, 0.4)"; // yellow
-                    if(sc.ind === "Methyl Red") bColor = "rgba(255, 0, 0, 0.4)"; // red
-                    if(sc.ind === "Phenol Red") bColor = "rgba(255, 255, 0, 0.4)"; // yellow
-                }
+                const state = window.arcGames.instances[id]; const sc = state.scenario;
+                let bColor = "rgba(255,255,255,0.2)"; const diff = state.pH - sc.eq;
+                if(Math.abs(diff) <= 0.2) { bColor = `rgba(${sc.color[0]}, ${sc.color[1]}, ${sc.color[2]}, 0.6)`; } else if(diff > 0.2) { bColor = `rgba(${sc.color[0]}, ${sc.color[1]}, ${sc.color[2]}, 0.9)`; if(sc.ind === "Methyl Red") bColor = "rgba(255, 255, 0, 0.8)"; if(sc.ind === "Bromothymol Blue") bColor = "rgba(0, 0, 255, 0.8)"; } else if(diff < -0.2) { if(sc.ind === "Phenolphthalein") bColor = "rgba(255,255,255,0.2)"; if(sc.ind === "Bromothymol Blue") bColor = "rgba(255, 255, 0, 0.4)"; if(sc.ind === "Methyl Red") bColor = "rgba(255, 0, 0, 0.4)"; }
 
                 document.getElementById(`game-bg-${id}`).innerHTML = `
                     <h3 style="margin-top:0; color:var(--gold); font-size: 1.2rem;">${sc.type}</h3>
@@ -1601,16 +1551,10 @@
                     <p style="font-size:0.75rem; color:#94a3b8; margin-top:0; margin-bottom:15px; font-weight:bold;">🎯 Target pH: ${sc.eq.toFixed(1)} | Indicator: ${sc.ind}</p>
                     
                     <div class="lab-setup">
-                        <div class="burette">
-                            <div class="burette-liquid" style="height: ${100 - (state.pH/14)*100}%"></div>
-                        </div>
-                        <div class="burette-tap"></div>
-                        <div class="burette-tip"></div>
+                        <div class="burette"><div class="burette-liquid" style="height: ${100 - (state.pH/14)*100}%"></div></div>
+                        <div class="burette-tap"></div><div class="burette-tip"></div>
                         ${state.dropping ? '<div class="titr-drop" style="animation: fallingDrop 0.2s linear infinite;"></div>' : ''}
-                        
-                        <div class="flask">
-                            <div class="flask-liquid" style="background: ${bColor}; height: ${30 + (state.pH/14)*40}%"></div>
-                        </div>
+                        <div class="flask"><div class="flask-liquid" style="background: ${bColor}; height: ${30 + (state.pH/14)*40}%"></div></div>
                     </div>
                     
                     <div style="font-size:1.5rem; font-weight:bold; font-family:monospace; margin-bottom:15px;">pH: ${state.pH.toFixed(1)}</div>
@@ -1621,65 +1565,25 @@
                     </div>
                 `;
 
-                // Handle Hold Interactions
                 const btn = document.getElementById(`btn-drop-${id}`);
-                if(btn) {
-                    btn.onmousedown = () => this.startDrop(id);
-                    btn.onmouseup = () => this.stopDrop(id);
-                    btn.onmouseleave = () => this.stopDrop(id);
-                    btn.ontouchstart = (e) => { e.preventDefault(); this.startDrop(id); };
-                    btn.ontouchend = () => this.stopDrop(id);
-                }
+                if(btn) { btn.onmousedown = () => this.startDrop(id); btn.onmouseup = () => this.stopDrop(id); btn.onmouseleave = () => this.stopDrop(id); btn.ontouchstart = (e) => { e.preventDefault(); this.startDrop(id); }; btn.ontouchend = () => this.stopDrop(id); }
             },
             startDrop: function(id) {
-                const state = window.arcGames.instances[id];
-                if(state.pH >= 14) return;
-                state.dropping = true;
-                this.render(id);
+                const state = window.arcGames.instances[id]; if(state.pH >= 14) return; state.dropping = true; this.render(id);
                 state.interval = setInterval(() => {
-                    if(state.pH < 14) state.pH += 0.1;
-                    const sc = state.scenario;
+                    if(state.pH < 14) state.pH += 0.1; const sc = state.scenario;
+                    document.querySelector(`#game-bg-${id} .flask-liquid`).style.height = `${30 + (state.pH/14)*40}%`; document.querySelector(`#game-bg-${id} .burette-liquid`).style.height = `${100 - (state.pH/14)*100}%`;
                     
-                    document.querySelector(`#game-bg-${id} .flask-liquid`).style.height = `${30 + (state.pH/14)*40}%`;
-                    document.querySelector(`#game-bg-${id} .burette-liquid`).style.height = `${100 - (state.pH/14)*100}%`;
-                    
-                    // Update color live based on exact indicator math
-                    let bColor = "rgba(255,255,255,0.2)";
-                    const diff = state.pH - sc.eq;
-                    
-                    if(Math.abs(diff) <= 0.2) {
-                        bColor = `rgba(${sc.color[0]}, ${sc.color[1]}, ${sc.color[2]}, 0.6)`;
-                    } else if(diff > 0.2) {
-                        bColor = `rgba(${sc.color[0]}, ${sc.color[1]}, ${sc.color[2]}, 0.9)`;
-                        if(sc.ind === "Methyl Red") bColor = "rgba(255, 255, 0, 0.8)"; 
-                        if(sc.ind === "Bromothymol Blue") bColor = "rgba(0, 0, 255, 0.8)"; 
-                    } else if(diff < -0.2) {
-                        if(sc.ind === "Phenolphthalein") bColor = "rgba(255,255,255,0.2)"; 
-                        if(sc.ind === "Bromothymol Blue") bColor = "rgba(255, 255, 0, 0.4)"; 
-                        if(sc.ind === "Methyl Red") bColor = "rgba(255, 0, 0, 0.4)"; 
-                        if(sc.ind === "Phenol Red") bColor = "rgba(255, 255, 0, 0.4)"; 
-                    }
-
-                    document.querySelector(`#game-bg-${id} .flask-liquid`).style.background = bColor;
-                    document.querySelector(`#game-bg-${id} div[style*="monospace"]`).innerText = `pH: ${state.pH.toFixed(1)}`;
+                    let bColor = "rgba(255,255,255,0.2)"; const diff = state.pH - sc.eq;
+                    if(Math.abs(diff) <= 0.2) { bColor = `rgba(${sc.color[0]}, ${sc.color[1]}, ${sc.color[2]}, 0.6)`; } else if(diff > 0.2) { bColor = `rgba(${sc.color[0]}, ${sc.color[1]}, ${sc.color[2]}, 0.9)`; if(sc.ind === "Methyl Red") bColor = "rgba(255, 255, 0, 0.8)"; if(sc.ind === "Bromothymol Blue") bColor = "rgba(0, 0, 255, 0.8)"; } else if(diff < -0.2) { if(sc.ind === "Phenolphthalein") bColor = "rgba(255,255,255,0.2)"; if(sc.ind === "Bromothymol Blue") bColor = "rgba(255, 255, 0, 0.4)"; if(sc.ind === "Methyl Red") bColor = "rgba(255, 0, 0, 0.4)"; }
+                    document.querySelector(`#game-bg-${id} .flask-liquid`).style.background = bColor; document.querySelector(`#game-bg-${id} div[style*="monospace"]`).innerText = `pH: ${state.pH.toFixed(1)}`;
                 }, 50);
             },
-            stopDrop: function(id) {
-                const state = window.arcGames.instances[id];
-                state.dropping = false;
-                clearInterval(state.interval);
-                this.render(id);
-            },
+            stopDrop: function(id) { const state = window.arcGames.instances[id]; state.dropping = false; clearInterval(state.interval); this.render(id); },
             check: function(id) {
-                const state = window.arcGames.instances[id];
-                const sc = state.scenario;
-                
-                // Allow a +/- 0.2 pH margin of error for passing
-                if(Math.abs(state.pH - sc.eq) <= 0.2) {
-                    document.getElementById(`game-bg-${id}`).innerHTML += `<div style="position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:50;"><h2 style="color:var(--green); font-size:2rem;">Perfect Equivalence! ✅</h2><p>pH was ${state.pH.toFixed(1)} (Target: ${sc.eq.toFixed(1)})</p><button class="btn btn-gold" onclick="ArcGameEngine.titration.init('${id}')">Next Titration</button></div>`;
-                } else {
-                    document.getElementById(`game-bg-${id}`).innerHTML += `<div style="position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:50;"><h2 style="color:var(--red); font-size:2rem;">Failed! ❌</h2><p>Target was ${sc.eq.toFixed(1)}. You stopped at ${state.pH.toFixed(1)}.</p><button class="btn btn-gold" onclick="ArcGameEngine.titration.init('${id}')">Try Again</button></div>`;
-                }
+                const state = window.arcGames.instances[id]; const sc = state.scenario;
+                if(Math.abs(state.pH - sc.eq) <= 0.2) { document.getElementById(`game-bg-${id}`).innerHTML += `<div style="position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:50;"><h2 style="color:var(--green); font-size:2rem;">Perfect Equivalence! ✅</h2><p>pH was ${state.pH.toFixed(1)} (Target: ${sc.eq.toFixed(1)})</p><button class="btn btn-gold" onclick="ArcGameEngine.titration.init('${id}')">Next Titration</button></div>`; } 
+                else { document.getElementById(`game-bg-${id}`).innerHTML += `<div style="position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:50;"><h2 style="color:var(--red); font-size:2rem;">Failed! ❌</h2><p>Target was ${sc.eq.toFixed(1)}. You stopped at ${state.pH.toFixed(1)}.</p><button class="btn btn-gold" onclick="ArcGameEngine.titration.init('${id}')">Try Again</button></div>`; }
             }
         },
 
@@ -1688,171 +1592,37 @@
             data: [
                 { q: "Which of the following elements has the highest electron gain enthalpy?", o: ["Fluorine (F)", "Chlorine (Cl)", "Bromine (Br)", "Iodine (I)"], a: 1 },
                 { q: "What is the hybridization of the carbon atoms in a benzene ring?", o: ["sp", "sp²", "sp³", "sp³d"], a: 1 },
-                { q: "What is the maximum oxidation state shown by Osmium (Os) in its compounds (e.g., OsO₄)?", o: ["+4", "+6", "+7", "+8"], a: 3 },
-                { q: "Which of the following is an intensive thermodynamic property?", o: ["Volume", "Mass", "Temperature", "Heat capacity"], a: 2 },
-                { q: "According to VSEPR theory, what is the shape of the XeF₄ molecule?", o: ["Tetrahedral", "Square planar", "See-saw", "Octahedral"], a: 1 },
-                { q: "Which class of compounds is primarily responsible for the depletion of the ozone layer?", o: ["Carbon dioxide (CO₂)", "Chlorofluorocarbons (CFCs)", "Methane (CH₄)", "Nitrogen (N₂)"], a: 1 },
-                { q: "What is the unit of the rate constant for a first-order reaction?", o: ["mol L⁻¹ s⁻¹", "s⁻¹", "L mol⁻¹ s⁻¹", "mol⁻¹ L⁻¹ s⁻¹"], a: 1 },
-                { q: "Which of the following polymers is formed by a condensation polymerization reaction?", o: ["Teflon", "Polyvinyl chloride (PVC)", "Polystyrene", "Nylon-6,6"], a: 3 },
-                { q: "Which of the following carbocations is the most stable?", o: ["Methyl carbocation", "Primary (1°) carbocation", "Secondary (2°) carbocation", "Tertiary (3°) carbocation"], a: 3 },
-                { q: "In which of the following phase changes does the entropy of the system decrease?", o: ["Boiling of water", "Melting of ice", "Freezing of water", "Sublimation of camphor"], a: 2 },
-                { q: "What is the approximate pH of a 10⁻⁸ M aqueous solution of HCl at 25°C?", o: ["8.0", "Slightly less than 7.0", "Exactly 7.0", "Slightly more than 7.0"], a: 1 },
-                { q: "Which metal is typically extracted from its ore using the MacArthur-Forrest Cyanide process?", o: ["Silver (Ag)", "Copper (Cu)", "Iron (Fe)", "Zinc (Zn)"], a: 0 },
-                { q: "Which of the following hydrohalic acids is the strongest acid in aqueous solution?", o: ["HF", "HCl", "HBr", "HI"], a: 3 },
-                { q: "How many unpaired electrons are present in a gaseous Fe²⁺ ion (Atomic number of Fe = 26)?", o: ["2", "3", "4", "5"], a: 2 },
-                { q: "Which of the following aldehydes does NOT undergo the Cannizzaro reaction?", o: ["Formaldehyde", "Benzaldehyde", "Acetaldehyde", "Trichloroacetaldehyde"], a: 2 },
-                { q: "What is the primary repeating monomer unit found in natural rubber?", o: ["Isoprene", "Chloroprene", "Neoprene", "Styrene"], a: 0 },
-                { q: "Which of the following essential vitamins contains a transition metal (Cobalt) in its center?", o: ["Vitamin A", "Vitamin B₁₂", "Vitamin C", "Vitamin D"], a: 1 },
-                { q: "What is the coordination number of the central Cobalt ion in the complex [Co(en)₃]³⁺?", o: ["3", "4", "5", "6"], a: 3 },
-                { q: "What is the correct IUPAC name for allyl chloride?", o: ["1-Chloro-2-propene", "3-Chloro-1-propene", "1-Chloropropene", "2-Chloropropene"], a: 1 },
-                { q: "The Lucas test (using ZnCl₂ and conc. HCl) is used to distinguish between different types of?", o: ["Alcohols", "Aldehydes", "Phenols", "Amines"], a: 0 },
-                { q: "According to Molecular Orbital Theory, what is the bond order of the N₂ molecule?", o: ["1", "2", "2.5", "3"], a: 3 },
-                { q: "Which of the following molecules acts as a strong Lewis acid?", o: ["NH₃", "H₂O", "BF₃", "CH₄"], a: 2 },
-                { q: "What is the molecular geometry of sulfur hexafluoride (SF₆)?", o: ["Octahedral", "Square planar", "Tetrahedral", "Hexagonal"], a: 0 },
-                { q: "What is the maximum number of electrons that can be accommodated in a subshell where the azimuthal quantum number (l) is 3?", o: ["2", "6", "10", "14"], a: 3 },
-                { q: "Assuming complete dissociation, which 0.1 M aqueous solution will have the lowest freezing point?", o: ["0.1 M NaCl", "0.1 M BaCl₂", "0.1 M Glucose", "0.1 M AlCl₃"], a: 3 },
-                { q: "Which of the following minerals is the primary commercial ore of Aluminium?", o: ["Hematite", "Bauxite", "Chalcopyrite", "Galena"], a: 1 },
-                { q: "What is the spin-only magnetic moment of a transition metal ion with 3 unpaired electrons?", o: ["1.73 BM", "2.83 BM", "3.87 BM", "4.90 BM"], a: 2 },
-                { q: "Which of the following elements exhibits the strongest tendency for catenation?", o: ["Silicon (Si)", "Carbon (C)", "Sulfur (S)", "Phosphorus (P)"], a: 1 },
-                { q: "The reaction of phenol with chloroform in the presence of aqueous NaOH to yield salicylaldehyde is known as?", o: ["Kolbe's reaction", "Reimer-Tiemann reaction", "Wurtz reaction", "Gattermann reaction"], a: 1 },
-                { q: "Which type of amine yields a foul-smelling isocyanide compound when heated with chloroform and alcoholic KOH?", o: ["Primary amines only", "Secondary amines only", "Tertiary amines only", "Quaternary ammonium salts"], a: 0 },
-                { q: "What is the percentage of s-character in an sp³ hybridized orbital?", o: ["25%", "33.3%", "50%", "75%"], a: 0 },
-                { q: "What is the common name for the chemical compound CaOCl₂?", o: ["Baking soda", "Washing soda", "Bleaching powder", "Plaster of Paris"], a: 2 },
-                { q: "Which radioactive isotope of carbon is utilized in radiocarbon dating of archaeological artifacts?", o: ["Carbon-11", "Carbon-12", "Carbon-13", "Carbon-14"], a: 3 },
-                { q: "The enthalpy of neutralization of a strong acid by a strong base in dilute solution is approximately?", o: ["-13.7 kcal/mol", "-57.1 kJ/mol", "Both A and B", "None of the above"], a: 2 },
-                { q: "According to Boyle's law, for a fixed mass of gas at constant temperature:", o: ["Volume ∝ Temperature", "Volume ∝ 1/Pressure", "Pressure ∝ Temperature", "Volume ∝ moles"], a: 1 },
-                { q: "What is the molecular geometry of Iodine heptafluoride (IF₇)?", o: ["Pentagonal bipyramidal", "Octahedral", "Square pyramidal", "Trigonal bipyramidal"], a: 0 },
-                { q: "For a first-order chemical reaction, the half-life period (t₁/₂) is independent of:", o: ["Initial concentration of reactant", "Rate constant", "Temperature", "Activation energy"], a: 0 },
-                { q: "Which of the following alkenes can exhibit cis-trans (geometrical) isomerism?", o: ["1-Butene", "2-Butene", "Propene", "Isobutylene"], a: 1 },
-                { q: "The conversion of an alkyl halide to an alkene by heating with alcoholic KOH is a classic example of:", o: ["Nucleophilic Substitution", "Electrophilic Addition", "β-Elimination", "Molecular Rearrangement"], a: 2 },
-                { q: "The Clemmensen reduction of aldehydes and ketones is typically carried out using which reagent?", o: ["Zn-Hg amalgam and conc. HCl", "LiAlH₄ in ether", "NaBH₄ in ethanol", "H₂ gas over Pd catalyst"], a: 0 },
-                { q: "Which of the following is classified as a d-block transition element?", o: ["Cerium (Ce)", "Europium (Eu)", "Uranium (U)", "Iron (Fe)"], a: 3 },
-                { q: "Which of the following is an example of a covalent network solid?", o: ["Ice (H₂O)", "Dry ice (solid CO₂)", "Diamond (C)", "Solid Iodine (I₂)"], a: 2 },
-                { q: "When an ideal gas undergoes free expansion into a vacuum, the external pressure (P_ext) is:", o: ["1 atm", "0 atm", "10 atm", "Infinite"], a: 1 },
-                { q: "In a standard galvanic (voltaic) cell, what is the direction of electron flow in the external circuit?", o: ["Anode to Cathode", "Cathode to Anode", "It constantly alternates", "Electrons do not flow"], a: 0 },
-                { q: "For any process to be spontaneous at constant temperature and pressure, the change in Gibbs free energy (ΔG) must be:", o: ["Positive", "Zero", "Negative", "Infinite"], a: 2 },
-                { q: "A mixture of concentrated HNO₃ and concentrated HCl in a 1:3 molar ratio is known as:", o: ["Oleum", "Aqua regia", "Fuming nitric acid", "Tollen's reagent"], a: 1 },
-                { q: "Which of the following transition metal ions is diamagnetic (has no unpaired electrons)?", o: ["Cu²⁺", "Ni²⁺", "Ti³⁺", "Zn²⁺"], a: 3 },
-                { q: "The acid-catalyzed hydration of alkynes in the presence of HgSO₄/H₂SO₄ yields which class of organic compounds?", o: ["Alcohols", "Aldehydes or Ketones", "Carboxylic acids", "Alkenes"], a: 1 },
-                { q: "Benzene reacts with methyl chloride in the presence of anhydrous AlCl₃ to form Toluene. This is called:", o: ["Friedel-Crafts alkylation", "Friedel-Crafts acylation", "Rosenmund reduction", "Sandmeyer reaction"], a: 0 },
-                { q: "Scurvy is a disease caused by the severe deficiency of which essential vitamin?", o: ["Vitamin A", "Vitamin B₁", "Vitamin C (Ascorbic acid)", "Vitamin D"], a: 2 }
+                { q: "According to VSEPR theory, what is the shape of the XeF₄ molecule?", o: ["Tetrahedral", "Square planar", "See-saw", "Octahedral"], a: 1 }
             ],
             init: function(id) { window.arcGames.instances[id] = { q: 0, score: 0 }; this.render(id); },
             render: function(id) {
                 const state = window.arcGames.instances[id];
-                if(state.q >= this.data.length) {
-                    document.getElementById(`game-bg-${id}`).innerHTML = `<h2 style="color:var(--gold);">Quiz Complete!</h2><p style="font-size:1.5rem;">Score: ${state.score} / ${this.data.length}</p><button class="btn btn-gold" onclick="ArcGameEngine.quiz.init('${id}')">Play Again</button>`;
-                    return;
-                }
+                if(state.q >= this.data.length) { document.getElementById(`game-bg-${id}`).innerHTML = `<h2 style="color:var(--gold);">Quiz Complete!</h2><p style="font-size:1.5rem;">Score: ${state.score} / ${this.data.length}</p><button class="btn btn-gold" onclick="ArcGameEngine.quiz.init('${id}')">Play Again</button>`; return; }
                 const question = this.data[state.q];
                 let html = `<h3 style="padding:0 20px; text-align:center;">${question.q}</h3><div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; padding:20px; width:100%; box-sizing:border-box;">`;
-                question.o.forEach((opt, i) => {
-                    html += `<button class="btn" style="background:#334155; color:white; border:1px solid #475569; padding:15px;" onclick="ArcGameEngine.quiz.guess('${id}', ${i})">${opt}</button>`;
-                });
-                html += `</div><p style="color:#64748b;">Question ${state.q + 1} of ${this.data.length}</p>`;
-                document.getElementById(`game-bg-${id}`).innerHTML = html;
+                question.o.forEach((opt, i) => { html += `<button class="btn" style="background:#334155; color:white; border:1px solid #475569; padding:15px;" onclick="ArcGameEngine.quiz.guess('${id}', ${i})">${opt}</button>`; });
+                html += `</div><p style="color:#64748b;">Question ${state.q + 1} of ${this.data.length}</p>`; document.getElementById(`game-bg-${id}`).innerHTML = html;
             },
-            guess: function(id, ans) {
-                const state = window.arcGames.instances[id];
-                if(ans === this.data[state.q].a) state.score++;
-                state.q++; this.render(id);
-            }
+            guess: function(id, ans) { const state = window.arcGames.instances[id]; if(ans === this.data[state.q].a) state.score++; state.q++; this.render(id); }
         },
 
-        // 8. ATOM BUILDER (121 ELEMENTS & VISUAL BOHR MODEL)
+        // 8. ATOM BUILDER 
         shell: {
-            elements: ["Hydrogen","Helium","Lithium","Beryllium","Boron","Carbon","Nitrogen","Oxygen","Fluorine","Neon","Sodium","Magnesium","Aluminum","Silicon","Phosphorus","Sulfur","Chlorine","Argon","Potassium","Calcium","Scandium","Titanium","Vanadium","Chromium","Manganese","Iron","Cobalt","Nickel","Copper","Zinc","Gallium","Germanium","Arsenic","Selenium","Bromine","Krypton","Rubidium","Strontium","Yttrium","Zirconium","Niobium","Molybdenum","Technetium","Ruthenium","Rhodium","Palladium","Silver","Cadmium","Indium","Tin","Antimony","Tellurium","Iodine","Xenon","Cesium","Barium","Lanthanum","Cerium","Praseodymium","Neodymium","Promethium","Samarium","Europium","Gadolinium","Terbium","Dysprosium","Holmium","Erbium","Thulium","Ytterbium","Lutetium","Hafnium","Tantalum","Tungsten","Rhenium","Osmium","Iridium","Platinum","Gold","Mercury","Thallium","Lead","Bismuth","Polonium","Astatine","Radon","Francium","Radium","Actinium","Thorium","Protactinium","Uranium","Neptunium","Plutonium","Americium","Curium","Berkelium","Californium","Einsteinium","Fermium","Mendelevium","Nobelium","Lawrencium","Rutherfordium","Dubnium","Seaborgium","Bohrium","Hassium","Meitnerium","Darmstadtium","Roentgenium","Copernicium","Nihonium","Flerovium","Moscovium","Livermorium","Tennessine","Oganesson","Ununennium","Unbinilium","Unbiunium"],
-            
-            init: function(id) {
-                const targetNum = Math.floor(Math.random() * 121) + 1; 
-                window.arcGames.instances[id] = { target: targetNum, name: this.elements[targetNum - 1], current: 0 };
-                this.render(id);
-            },
+            elements: ["Hydrogen","Helium","Lithium","Beryllium","Boron","Carbon","Nitrogen","Oxygen","Fluorine","Neon","Sodium","Magnesium","Aluminum","Silicon","Phosphorus","Sulfur","Chlorine","Argon","Potassium","Calcium","Scandium","Titanium","Vanadium","Chromium","Manganese","Iron","Cobalt","Nickel","Copper","Zinc"],
+            init: function(id) { const targetNum = Math.floor(Math.random() * 30) + 1; window.arcGames.instances[id] = { target: targetNum, name: this.elements[targetNum - 1], current: 0 }; this.render(id); },
             render: function(id) {
-                const state = window.arcGames.instances[id];
+                const state = window.arcGames.instances[id]; let c = state.current; const shells = [0,0,0,0]; const limits = [2,8,18,32]; 
+                for(let i=0; i<4; i++) { if(c > limits[i]) { shells[i] = limits[i]; c -= limits[i]; } else { shells[i] = c; break; } }
+                let maxShell = 0; for(let i=3; i>=0; i--) { if(shells[i] > 0) { maxShell = i; break; } } if(state.current === 0) maxShell = 0; 
                 
-                // Calculate shell configuration based on simplified Bohr-Bury rules
-                let c = state.current;
-                const shells = [0,0,0,0,0,0,0];
-                const limits = [2,8,18,32,32,18,8]; 
-                for(let i=0; i<7; i++) { 
-                    if(c > limits[i]) { 
-                        shells[i] = limits[i]; c -= limits[i]; 
-                    } else { 
-                        shells[i] = c; break; 
-                    } 
-                }
-                
-                // Determine how many orbits to draw (highest shell with electrons)
-                let maxShell = 0;
-                for(let i=6; i>=0; i--) { if(shells[i] > 0) { maxShell = i; break; } }
-                if(state.current === 0) maxShell = 0; // Always show at least the first empty orbit
-                
-                // Generate Dynamic SVG
-                const size = 260; // Total canvas size
-                const cx = size / 2, cy = size / 2;
-                const radii = [25, 43, 61, 79, 97, 115, 130]; // Exact spacing for 7 shells
-                
-                let svgHTML = `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" style="margin: 5px auto; display: block; overflow: visible;">`;
-                
-                // Draw Nucleus
-                svgHTML += `<circle cx="${cx}" cy="${cy}" r="14" fill="var(--red)" stroke="white" stroke-width="2" />`;
-                svgHTML += `<text x="${cx}" y="${cy+4}" fill="white" font-size="11" font-weight="bold" text-anchor="middle">${state.current > 0 ? '+'+state.current : 'N'}</text>`;
-                
-                // Draw Concentric Orbitals and Distributed Electrons
-                for(let i=0; i<=maxShell; i++) {
-                    const r = radii[i];
-                    // Dashed Orbital path
-                    svgHTML += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#475569" stroke-width="1.5" stroke-dasharray="4 4" />`;
-                    
-                    // Distribute electrons perfectly around the circle using Trignometry
-                    for(let j=0; j<shells[i]; j++) {
-                        const angle = (j / shells[i]) * 2 * Math.PI - (Math.PI / 2); // -PI/2 starts at the top (12 o'clock)
-                        const ex = cx + r * Math.cos(angle);
-                        const ey = cy + r * Math.sin(angle);
-                        
-                        svgHTML += `<circle cx="${ex}" cy="${ey}" r="4.5" fill="var(--gold)" stroke="#1e293b" stroke-width="1.5" />`;
-                    }
-                }
-                svgHTML += `</svg>`;
+                const size = 260; const cx = size / 2, cy = size / 2; const radii = [25, 50, 80, 115]; 
+                let svgHTML = `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" style="margin: 5px auto; display: block; overflow: visible;"><circle cx="${cx}" cy="${cy}" r="14" fill="var(--red)" stroke="white" stroke-width="2" /><text x="${cx}" y="${cy+4}" fill="white" font-size="11" font-weight="bold" text-anchor="middle">${state.current > 0 ? '+'+state.current : 'N'}</text>`;
+                for(let i=0; i<=maxShell; i++) { const r = radii[i]; svgHTML += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#475569" stroke-width="1.5" stroke-dasharray="4 4" />`; for(let j=0; j<shells[i]; j++) { const angle = (j / shells[i]) * 2 * Math.PI - (Math.PI / 2); const ex = cx + r * Math.cos(angle); const ey = cy + r * Math.sin(angle); svgHTML += `<circle cx="${ex}" cy="${ey}" r="4.5" fill="var(--gold)" stroke="#1e293b" stroke-width="1.5" />`; } } svgHTML += `</svg>`;
 
-                // Render full interface
-                document.getElementById(`game-bg-${id}`).innerHTML = `
-                    <div style="display:flex; justify-content:space-between; width:100%; padding:0 20px; box-sizing:border-box; margin-bottom: -5px;">
-                        <div style="text-align:left;">
-                            <h3 style="margin:0; color:var(--gold); font-size:1.1rem;">Build: ${state.name}</h3>
-                            <p style="font-size:0.75rem; margin:0; color:#cbd5e1;">Target Atomic No: ${state.target}</p>
-                        </div>
-                        <div style="text-align:right; color:white; font-weight:bold; font-size:1.2rem;">
-                            ${state.current} e⁻
-                        </div>
-                    </div>
-                    
-                    ${svgHTML}
-                    
-                    <div style="display:flex; gap:10px; margin-top: 5px;">
-                        <button class="btn" style="background:#ef4444; color:white; padding:5px 15px;" onclick="ArcGameEngine.shell.add('${id}', -1)">-1</button>
-                        <button class="btn" style="background:#3b82f6; color:white; padding:5px 15px;" onclick="ArcGameEngine.shell.add('${id}', 1)">+1</button>
-                        <button class="btn" style="background:#3b82f6; color:white; padding:5px 15px;" onclick="ArcGameEngine.shell.add('${id}', 10)">+10</button>
-                    </div>
-                    <button class="btn btn-gold" style="width: 220px; margin-top:10px;" onclick="ArcGameEngine.shell.check('${id}')">Check Answer</button>
-                `;
+                document.getElementById(`game-bg-${id}`).innerHTML = `<div style="display:flex; justify-content:space-between; width:100%; padding:0 20px; box-sizing:border-box; margin-bottom: -5px;"><div style="text-align:left;"><h3 style="margin:0; color:var(--gold); font-size:1.1rem;">Build: ${state.name}</h3><p style="font-size:0.75rem; margin:0; color:#cbd5e1;">Target Atomic No: ${state.target}</p></div><div style="text-align:right; color:white; font-weight:bold; font-size:1.2rem;">${state.current} e⁻</div></div>${svgHTML}<div style="display:flex; gap:10px; margin-top: 5px;"><button class="btn" style="background:#ef4444; color:white; padding:5px 15px;" onclick="ArcGameEngine.shell.add('${id}', -1)">-1</button><button class="btn" style="background:#3b82f6; color:white; padding:5px 15px;" onclick="ArcGameEngine.shell.add('${id}', 1)">+1</button><button class="btn" style="background:#3b82f6; color:white; padding:5px 15px;" onclick="ArcGameEngine.shell.add('${id}', 10)">+10</button></div><button class="btn btn-gold" style="width: 220px; margin-top:10px;" onclick="ArcGameEngine.shell.check('${id}')">Check Answer</button>`;
             },
-            add: function(id, amount) {
-                const state = window.arcGames.instances[id];
-                state.current += amount;
-                if(state.current < 0) state.current = 0;
-                if(state.current > 121) state.current = 121;
-                this.render(id);
-            },
-            check: function(id) {
-                const state = window.arcGames.instances[id];
-                if(state.current === state.target) {
-                    document.getElementById(`game-bg-${id}`).innerHTML += `<div style="position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:50;"><h2 style="color:var(--green);">Perfect Configuration! ✅</h2><button class="btn btn-gold" onclick="ArcGameEngine.shell.init('${id}')">Build Next Atom</button></div>`;
-                } else {
-                    document.getElementById(`game-bg-${id}`).innerHTML += `<div style="position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:50;"><h2 style="color:var(--red);">Unstable Isotope! 💥</h2><p>You placed ${state.current} e⁻. Target was ${state.target}.</p><button class="btn btn-gold" onclick="ArcGameEngine.shell.init('${id}')">Try Again</button></div>`;
-                }
-            }
+            add: function(id, amount) { const state = window.arcGames.instances[id]; state.current += amount; if(state.current < 0) state.current = 0; if(state.current > 30) state.current = 30; this.render(id); },
+            check: function(id) { const state = window.arcGames.instances[id]; if(state.current === state.target) { document.getElementById(`game-bg-${id}`).innerHTML += `<div style="position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:50;"><h2 style="color:var(--green);">Perfect Configuration! ✅</h2><button class="btn btn-gold" onclick="ArcGameEngine.shell.init('${id}')">Build Next Atom</button></div>`; } else { document.getElementById(`game-bg-${id}`).innerHTML += `<div style="position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:50;"><h2 style="color:var(--red);">Unstable Isotope! 💥</h2><p>You placed ${state.current} e⁻. Target was ${state.target}.</p><button class="btn btn-gold" onclick="ArcGameEngine.shell.init('${id}')">Try Again</button></div>`; } }
         },
 
         // 9. WHACK-A-MOLECULE
@@ -1897,37 +1667,20 @@
         // 10. REACTION TYPER
         typer: {
             init: function(id) {
-                const words = ["photosynthesis", "stoichiometry", "thermodynamics", "electronegativity", 
-                "crystallization", "organic chemistry", "NEET", "JEE", "titration", 
-                "catalyst", "equilibrium", "molarity", "avogadro", "isotope", "periodic table", "valence electrons", 
-                "oxidation", "reduction", "polymerization", "sublimation", "distillation", 
-                "alkane", "alkene", "alkyne", "aromatic", "nucleophile", "electrophile", "resonance", "hybridization",];
+                const words = ["photosynthesis", "stoichiometry", "thermodynamics", "organic chemistry", "titration", "equilibrium", "valence electrons", "polymerization"];
                 const target = words[Math.floor(Math.random() * words.length)];
                 window.arcGames.instances[id] = { target: target, startTime: Date.now() };
-                
-                document.getElementById(`game-bg-${id}`).innerHTML = `
-                    <h3 style="color:var(--gold); margin-top:0;">Speed Typing Test</h3>
-                    <p style="color:#cbd5e1; font-size:0.9rem; margin-bottom:20px;">Type the chemical term below as fast as possible!</p>
-                    <div style="background:#334155; padding:15px 30px; border-radius:8px; font-size:1.8rem; font-weight:bold; letter-spacing:2px; margin-bottom:20px; border:1px solid #475569; color:white;">
-                        ${target}
-                    </div>
-                    <input type="text" id="typer-input-${id}" placeholder="Type here..." autocomplete="off" style="width:200px; padding:12px; font-size:1.2rem; text-align:center; border-radius:8px; border:2px solid var(--gold); outline:none;" oninput="ArcGameEngine.typer.check('${id}', this.value)">
-                `;
+                document.getElementById(`game-bg-${id}`).innerHTML = `<h3 style="color:var(--gold); margin-top:0;">Speed Typing Test</h3><p style="color:#cbd5e1; font-size:0.9rem; margin-bottom:20px;">Type the chemical term below as fast as possible!</p><div style="background:#334155; padding:15px 30px; border-radius:8px; font-size:1.5rem; font-weight:bold; letter-spacing:2px; margin-bottom:20px; border:1px solid #475569; color:white;">${target}</div><input type="text" id="typer-input-${id}" placeholder="Type here..." autocomplete="off" style="width:200px; padding:12px; font-size:1.2rem; text-align:center; border-radius:8px; border:2px solid var(--gold); outline:none;" oninput="ArcGameEngine.typer.check('${id}', this.value)">`;
             },
             check: function(id, val) {
                 const state = window.arcGames.instances[id];
                 if(val.toLowerCase() === state.target) {
                     const timeTaken = ((Date.now() - state.startTime) / 1000).toFixed(2);
-                    document.getElementById(`game-bg-${id}`).innerHTML = `
-                        <h2 style="color:var(--green);">⚡ Fast Reflexes!</h2>
-                        <p style="font-size:1.2rem;">You typed it in <b>${timeTaken} seconds</b>.</p>
-                        <button class="btn btn-gold" style="margin-top:15px;" onclick="ArcGameEngine.typer.init('${id}')">Try Another Word</button>
-                    `;
+                    document.getElementById(`game-bg-${id}`).innerHTML = `<h2 style="color:var(--green);">⚡ Fast Reflexes!</h2><p style="font-size:1.2rem;">You typed it in <b>${timeTaken} seconds</b>.</p><button class="btn btn-gold" style="margin-top:15px;" onclick="ArcGameEngine.typer.init('${id}')">Try Another Word</button>`;
                 }
             }
         }
     };
-    // ==========================================
 
     const toolbarHTML = `
         <div class="toolbar" style="background:#e2e8f0; padding:10px; border-radius:6px 6px 0 0; display:flex; gap:8px; flex-wrap:wrap; align-items:center; border:1px solid #ccc; border-bottom:none;">
@@ -2097,7 +1850,6 @@
             });
         }
         else if (tab === 'logo') {
-            // FEATURE: DYNAMIC LOGO UPLOAD PANEL
             c.innerHTML = `<h3>Website Logo Settings</h3>
             <div style="background:#f8fafc; padding:20px; border-radius:10px; border:1px solid #e2e8f0;">
                 <label style="font-weight:bold; color:var(--primary);">Upload Coaching Logo</label>
@@ -2297,31 +2049,11 @@
             if(data.success) {
                 const userData = {name: data.name, email: data.email, role: data.role};
                 localStorage.setItem('arc_user', JSON.stringify(userData)); user = userData;
-                // 👉 PLAY WELCOME VOICE HERE
                 playWelcomeVoice(userData.name);
                 showWelcomePopup(userData.name);
 
                 document.getElementById('nav-login').style.display = 'none';
-                // Show welcome popup
-        // FEATURE: VISUAL WELCOME POPUP
-    function showWelcomePopup(name) {
-        const popup = document.getElementById('welcome-popup');
-        const textEl = document.getElementById('welcome-popup-text');
-        
-        // Grab just the first name
-        const firstName = name.split(' ')[0]; 
-        textEl.innerText = `Welcome back, ${firstName}`;
-        
-        // Slide it up
-        popup.classList.add('show');
-        
-        // Hide it automatically after 4 seconds
-        setTimeout(() => {
-            popup.classList.remove('show');
-        }, 4000);
-    }
-
-                document.getElementById('nav-login').style.display = 'none'; document.getElementById('nav-logout').style.display = 'block'; document.getElementById('nav-doubts').style.display = 'block'; 
+                document.getElementById('nav-logout').style.display = 'block'; document.getElementById('nav-doubts').style.display = 'block'; 
                 if(user.role === 'admin') document.getElementById('nav-admin').style.display = 'block';
                 show('home'); 
             } else { alert(data.message || "Invalid Email or Password"); }
@@ -2330,55 +2062,39 @@
 
     function logout() { localStorage.removeItem('arc_user'); localStorage.removeItem('arc_last_section'); clearSession(); location.reload(); }
 
-    // FEATURE: DYNAMIC FEMALE WELCOME VOICE
+    function showWelcomePopup(name) {
+        const popup = document.getElementById('welcome-popup');
+        const textEl = document.getElementById('welcome-popup-text');
+        const firstName = name.split(' ')[0]; 
+        textEl.innerText = `Welcome back, ${firstName}`;
+        popup.classList.add('show');
+        setTimeout(() => { popup.classList.remove('show'); }, 4000);
+    }
+
     function playWelcomeVoice(name) {
         if ('speechSynthesis' in window) {
-            // Stop any currently playing speech
             window.speechSynthesis.cancel();
-            
-            // Grab just the first name
             const firstName = name.split(' ')[0]; 
             const msg = new SpeechSynthesisUtterance(`Welcome to A R C Classes, ${firstName}`);
-            
-            // Tweak settings for a more natural, feminine tone
             msg.rate = 0.9;  
-            msg.pitch = 1.2; // Slightly higher pitch
+            msg.pitch = 1.2; 
             
-            // Function to find a female voice and speak
             const speakWithFemaleVoice = () => {
                 const voices = window.speechSynthesis.getVoices();
-                
-                // Search for common female voices across Windows, Mac, iOS, and Android
                 let femaleVoice = voices.find(voice => 
-                    voice.name.includes('Female') || 
-                    voice.name.includes('Zira') ||       // Windows
-                    voice.name.includes('Samantha') ||   // Apple/Mac
-                    voice.name.includes('Victoria') ||   // Apple/Mac
-                    voice.name.includes('Google UK English Female') || // Android/Chrome
-                    voice.name.includes('Google US English') // Android/Chrome (often female by default)
+                    voice.name.includes('Female') || voice.name.includes('Zira') || 
+                    voice.name.includes('Samantha') || voice.name.includes('Victoria') || 
+                    voice.name.includes('Google UK English Female') || voice.name.includes('Google US English')
                 );
-                
-                // If a female voice is found, apply it
-                if (femaleVoice) {
-                    msg.voice = femaleVoice;
-                }
-                
-                // Play the voice
+                if (femaleVoice) { msg.voice = femaleVoice; }
                 window.speechSynthesis.speak(msg);
             };
 
-            // Browsers sometimes take a millisecond to load voices, so we check if they are ready
             if (window.speechSynthesis.getVoices().length === 0) {
-                window.speechSynthesis.onvoiceschanged = () => {
-                    speakWithFemaleVoice();
-                    window.speechSynthesis.onvoiceschanged = null; // Prevent it from triggering twice
-                };
-            } else {
-                speakWithFemaleVoice();
-            }
+                window.speechSynthesis.onvoiceschanged = () => { speakWithFemaleVoice(); window.speechSynthesis.onvoiceschanged = null; };
+            } else { speakWithFemaleVoice(); }
         }
     }
-
 
     async function pubTest() { const body = { title: document.getElementById('t-title').value, duration: parseInt(document.getElementById('t-dur').value), accessCode: document.getElementById('t-code').value, category: document.getElementById('t-cat').value, isLive: document.getElementById('t-live').checked, startTime: document.getElementById('t-start').value ? new Date(document.getElementById('t-start').value) : null, endTime: document.getElementById('t-end').value ? new Date(document.getElementById('t-end').value) : null, questions: draftQ }; const method = editingTestId ? 'PUT' : 'POST'; const url = editingTestId ? `/api/admin/test/${editingTestId}` : '/api/admin/test'; try { await fetch(url, { method, headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) }); alert(editingTestId ? "Updated!" : "Published!"); editingTestId = null; draftQ = []; initCreateTest(); } catch(e) { alert("Error: " + e.message); } }
     async function postBlog() { const method = editingBlogId ? 'PUT' : 'POST'; const url = editingBlogId ? `/api/admin/blog/${editingBlogId}` : '/api/admin/blog'; await fetch(url, { method, headers:{'Content-Type':'application/json'}, body: JSON.stringify({ title: document.getElementById('b-title').value, content: document.getElementById('b-content').innerHTML, image: tempImg }) }); alert("Saved!"); tempImg = ""; editingBlogId = null; }
