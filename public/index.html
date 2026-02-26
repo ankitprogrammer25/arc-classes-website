@@ -640,7 +640,7 @@
     // 🧪 VIRTUAL COLORFUL LAB ENGINE
     // ==========================================
    // ==========================================
-    // 🧪 VIRTUAL COLORFUL LAB ENGINE (54 EXPERIMENTS)
+    // 🧪 VIRTUAL COLORFUL LAB ENGINE (53 EXPERIMENTS)
     // ==========================================
     
     // 🛠️ FACTORY HELPERS
@@ -673,54 +673,94 @@
 
     const LabEngine = {
         experiments: [
-            // Custom Adv Experiments
+            // --- CUSTOM PHYSICAL EXPERIMENTS ---
             {
                 id: 'daniell', title: 'Daniell Cell', icon: '🔋', desc: 'Galvanic cell using Zinc and Copper.',
-                setup: () => `<div style="position:relative; width: 250px; height: 150px; display: flex; justify-content: space-between; margin: 0 auto; margin-top: 50px;">
-                    <div class="voltmeter" id="volt-read">0.00V</div>
-                    <div class="wire" style="left:55px;"></div>
-                    <div class="salt-bridge" id="salt-bridge" style="opacity:0.2;"></div>
-                    <div class="cell-beaker" style="width: 90px; height: 110px; box-shadow: none;">
-                        <div style="position:absolute; bottom:0; width:100%; height:70%; background:rgba(255,255,255,0.1);"></div>
-                        <div class="electrode" style="background:#cbd5e1; left: 35px;"></div>
-                        <div style="position:absolute; bottom:-25px; left:20px; color:white; font-weight:bold; font-size: 0.8rem;">ZnSO₄</div>
-                    </div>
-                    <div class="cell-beaker" style="width: 90px; height: 110px; box-shadow: none;">
-                        <div style="position:absolute; bottom:0; width:100%; height:70%; background:rgba(59, 130, 246, 0.4);"></div>
-                        <div class="electrode" style="background:#b45309; left: 35px;"></div>
-                        <div style="position:absolute; bottom:-25px; left:20px; color:white; font-weight:bold; font-size: 0.8rem;">CuSO₄</div>
-                    </div>
-                </div>`,
-                controls: [{ label: '🔌 Connect Wires', action: 'LabEngine.runCustom("daniell", "wire")' }, { label: '🌉 Insert Salt Bridge', action: 'LabEngine.runCustom("daniell", "bridge")' }, { label: '⚡ Close Circuit', action: 'LabEngine.runCustom("daniell", "circuit")' }],
+                setup: () => `<div style="position:relative; width: 250px; height: 150px; display: flex; justify-content: space-between; margin: 0 auto; margin-top: 50px;"><div class="voltmeter" id="volt-read">0.00V</div><div class="wire" style="left:55px;"></div><div class="salt-bridge" id="salt-bridge" style="opacity:0.2;"></div><div class="cell-beaker" style="width: 90px; height: 110px; box-shadow: none;"><div style="position:absolute; bottom:0; width:100%; height:70%; background:rgba(255,255,255,0.1);"></div><div class="electrode" style="background:#cbd5e1; left: 35px;"></div><div style="position:absolute; bottom:-25px; left:20px; color:white; font-weight:bold; font-size: 0.8rem;">ZnSO₄</div></div><div class="cell-beaker" style="width: 90px; height: 110px; box-shadow: none;"><div style="position:absolute; bottom:0; width:100%; height:70%; background:rgba(59, 130, 246, 0.4);"></div><div class="electrode" style="background:#b45309; left: 35px;"></div><div style="position:absolute; bottom:-25px; left:20px; color:white; font-weight:bold; font-size: 0.8rem;">CuSO₄</div></div></div>`,
+                controls: [{ label: '🔌 Connect Wires', action: `LabEngine.runCustom("daniell", "wire")` }, { label: '🌉 Insert Salt Bridge', action: `LabEngine.runCustom("daniell", "bridge")` }, { label: '⚡ Close Circuit', action: `LabEngine.runCustom("daniell", "circuit")` }],
                 state: { wired: false, bridged: false }
             },
             {
-                id: 'flame', title: 'Flame Tests', icon: '🔥', desc: 'Emission spectra of 10 different metal cations.',
+                id: 'flame', title: 'Flame Tests', icon: '🔥', desc: 'Emission spectra of metal cations.',
                 setup: () => `<div style="position:relative; width: 100px; height: 150px; display:flex; justify-content:center;" id="flame-target"><div class="flame" id="bunsen-flame"></div><div class="burner-pipe"></div><div class="burner-base"></div></div>`,
-                controls: ['Li⁺ (Crimson,li)','Na⁺ (Yellow,na)','K⁺ (Lilac,k)','Rb⁺ (Red-Violet,rb)','Cs⁺ (Blue,cs)','Ca²⁺ (Brick Red,ca)','Sr²⁺ (Crimson,sr)','Ba²⁺ (Apple Green,ba)','Cu²⁺ (Blue-Green,cu)','Pb²⁺ (Pale Blue,pb)'].map(m => ({ label: `🤏 ${m.split(',')[0]}`, action: `LabEngine.runFlame("${m.split(',')[1].replace(')','')}")` })).concat([{ label: '💨 Reset Flame', action: 'LabEngine.startLab("flame")' }]),
+                controls: ['Li⁺ (Crimson,li)','Na⁺ (Yellow,na)','K⁺ (Lilac,k)','Rb⁺ (Violet,rb)','Cs⁺ (Blue,cs)','Ca²⁺ (Red,ca)','Sr²⁺ (Crimson,sr)','Ba²⁺ (Green,ba)','Cu²⁺ (Blue-Green,cu)','Pb²⁺ (Pale Blue,pb)'].map(m => ({ label: `🤏 ${m.split(',')[0]}`, action: `LabEngine.runCustom("flame", "${m.split(',')[1].replace(')','')}")` })).concat([{ label: '💨 Reset Flame', action: `LabEngine.startLab("flame")` }]),
                 state: {}
             },
             {
                 id: 'vapor', title: 'Vaporization', icon: '☁️', desc: 'Liquid turns to gas upon heating.',
                 setup: () => `<div class="cell-beaker" id="vapor-target" style="margin: 0 auto;"><div class="beaker-marks"><div></div><div></div><div></div><div></div><div></div></div><div id="vap-liq" style="position:absolute; bottom:0; width:100%; height:80%; background:#3b82f6; transition:2s;"></div><div id="vap-gas" style="position:absolute; top:-50px; left:15px; font-size:2.5rem; opacity:0; transition:2s;">☁️☁️</div></div>`,
-                controls: [{label: '🔥 Heat Liquid', action: 'LabEngine.animate("vapor", "heat", null, () => { document.getElementById("vap-liq").style.height="10%"; document.getElementById("vap-gas").style.opacity="1"; document.getElementById("vap-gas").style.top="-100px"; LabEngine.setInfo("Liquid vaporizes into gas phase!"); })'}, {label:'🔄 Reset', action:'LabEngine.startLab("vapor")'}],
+                controls: [{label: '🔥 Heat Liquid', action: `LabEngine.runCustom("vapor", "heat")`}, {label:'🔄 Reset', action:`LabEngine.startLab("vapor")`}],
                 state: {}
             },
-            // Generative Tubes (Subset)
+            {
+                id: 'osmosis', title: 'Osmosis', icon: '🧫', desc: 'Solvent flows to higher concentration.',
+                setup: () => `<div style="display:flex; align-items:flex-end; border:4px solid #cbd5e1; border-top:none; border-radius:0 0 20px 20px; width:140px; height:140px; position:relative; overflow:hidden; margin: 0 auto;"><div style="width:50%; background:#93c5fd; height:40%; transition:2s;" id="osm-left"></div><div style="width:4px; background:#475569; height:100%; z-index:10;"></div><div style="width:50%; background:#2563eb; height:40%; transition:2s;" id="osm-right"></div></div>`,
+                controls: [{label: '⏳ Wait for Osmosis', action: `LabEngine.runCustom("osmosis", "wait")`}, {label:'🔄 Reset', action:`LabEngine.startLab("osmosis")`}],
+                state: {}
+            },
+            {
+                id: 'filter', title: 'Filtration', icon: '☕', desc: 'Separate solid from liquid.',
+                setup: () => `<div style="display:flex; flex-direction:column; align-items:center;" id="filter-target"><div style="width:0; height:0; border-left:40px solid transparent; border-right:40px solid transparent; border-top:60px solid rgba(255,255,255,0.5); position:relative;"><div id="fil-solid" style="position:absolute; top:-50px; left:-15px; width:30px; height:10px; background:#1e293b; opacity:0; transition:1s;"></div></div><div class="cell-beaker" style="height:60px; width:60px; box-shadow:none;"><div id="fil-liq" style="position:absolute; bottom:0; width:100%; height:0%; background:#3b82f6; transition:2s;"></div></div></div>`,
+                controls: [{label: '🧪 Pour Mixture', action: `LabEngine.runCustom("filter", "pour")`}, {label:'🔄 Reset', action:`LabEngine.startLab("filter")`}],
+                state: {}
+            },
+            {
+                id: 'distill', title: 'Distillation', icon: '⚗️', desc: 'Separate liquids by boiling point.',
+                setup: () => `<div style="display:flex; gap:20px; align-items:flex-end; margin: 0 auto;" id="distill-target"><div class="cell-beaker" style="height:100px; box-shadow:none;"><div id="dis-l1" style="position:absolute; bottom:0; width:100%; height:80%; background:#fcd34d; transition:2s;"></div></div> <div style="font-size:2rem; margin-bottom: 20px;">➡️</div> <div class="cell-beaker" style="height:100px; box-shadow:none;"><div id="dis-l2" style="position:absolute; bottom:0; width:100%; height:0%; background:#3b82f6; transition:2s; transition-delay:1s;"></div></div></div>`,
+                controls: [{label: '🔥 Heat Flask', action: `LabEngine.runCustom("distill", "heat")`}, {label:'🔄 Reset', action:`LabEngine.startLab("distill")`}],
+                state: {}
+            },
+
+            // --- ORGANIC CHEMISTRY TESTS (17 Experiments) ---
             makeTube('tollens', 'Tollens Test', '🪞', 'Silver mirror test for Aldehydes.', 'Tollens Reagent', 'Glucose (Aldehyde)', 'rgba(255,255,255,0.2)', 'silver', '✨ Silver Mirror Formed! Aldehyde confirmed.', true),
             makeTube('fehling', 'Fehlings Test', '🍷', 'Test for aliphatic aldehydes.', 'Fehling A+B', 'Aldehyde', '#3b82f6', '#b91c1c', 'Brick Red Precipitate Formed!', true),
             makeTube('iodoform', 'Iodoform Test', '🟡', 'Test for methyl ketones.', 'NaOH + I₂', 'Methyl Ketone', 'rgba(255,255,255,0.2)', '#fef08a', 'Yellow Precipitate of Iodoform (CHI₃) formed!', true),
-            makeTube('ninhydrin', 'Ninhydrin Test', '🔵', 'Test for Amino Acids.', 'Ninhydrin', 'Amino Acid', 'rgba(255,255,255,0.2)', '#1e3a8a', 'Deep Blue/Purple (Ruhemanns Purple) formed!', true),
-            makeTube('golden_rain', 'Golden Rain', '🌧️', 'Crystallization of PbI₂.', 'Pb(NO₃)₂', 'KI', 'rgba(255,255,255,0.2)', '#eab308', 'Brilliant Golden Spangles of PbI₂ crystallize!', true),
-            
-            // Generative Beakers (Subset)
-            makeBeaker('neutral', 'Neutralization', '🌡️', 'Acid + Base reaction.', 'Acid (HCl)', 'Base (NaOH)', 'rgba(255,255,255,0.2)', 'rgba(255,255,255,0.2)', 'Neutralization! Heat is released (Exothermic).'),
+            makeTube('lucas', 'Lucas Test', '☁️', 'Differentiate alcohols.', 'Lucas Reagent', '3° Alcohol', 'rgba(255,255,255,0.2)', 'rgba(255,255,255,0.9)', 'Immediate White Cloudiness formed!', false),
+            makeTube('br_water', 'Bromine Water', '💧', 'Test for unsaturation.', 'Bromine Water', 'Alkene', '#b45309', 'rgba(255,255,255,0.2)', 'Brown color completely discharged!', false),
+            makeTube('baeyer', 'Baeyers Test', '🟣', 'Test for unsaturation.', 'KMnO₄ (Purple)', 'Alkene', '#c084fc', '#713f12', 'Purple color fades, brown MnO₂ precipitate forms!', false),
+            makeTube('dnp', '2,4-DNP Test', '🟠', 'Test for carbonyl groups.', 'Brady Reagent', 'Ketone', '#f97316', '#ea580c', 'Orange-Yellow Precipitate forms!', false),
+            makeTube('fecl3', 'Neutral FeCl₃ Test', '💜', 'Test for Phenols.', 'FeCl₃ Solution', 'Phenol', '#fef08a', '#7e22ce', 'Intense Violet/Purple complex formed!', false),
+            makeTube('ninhydrin', 'Ninhydrin Test', '🔵', 'Test for Amino Acids.', 'Ninhydrin', 'Amino Acid', 'rgba(255,255,255,0.2)', '#1e3a8a', 'Deep Blue/Purple formed!', true),
+            makeTube('biuret', 'Biuret Test', '🟣', 'Test for Peptide bonds.', 'CuSO₄ + NaOH', 'Protein', '#93c5fd', '#9333ea', 'Violet/Purple color indicates peptide bonds!', false),
+            makeTube('schiff', 'Schiffs Test', '🩷', 'Test for Aldehydes.', 'Schiffs Reagent', 'Aldehyde', 'rgba(255,255,255,0.2)', '#db2777', 'Restoration of Magenta/Pink color!', false),
+            makeTube('can_test', 'Ceric Ammon. Nitrate', '🔴', 'Test for Alcohols.', 'CAN Reagent', 'Alcohol', '#fde047', '#dc2626', 'Red colored complex formed!', false),
+            makeTube('ester', 'Esterification', '🍎', 'Test for Carboxylic Acids.', 'Carboxylic Acid', 'Alcohol + H₂SO₄', 'rgba(255,255,255,0.2)', 'rgba(255,255,255,0.4)', 'Sweet Fruity Smell observed!', true),
+            makeTube('carbylamine', 'Carbylamine Test', '🤢', 'Test for 1° Amines.', 'CHCl₃ + KOH', '1° Amine', 'rgba(255,255,255,0.2)', '#bbf7d0', 'Foul-smelling Isocyanide gas evolved!', true),
+            makeTube('nahco3', 'NaHCO₃ Test', '🫧', 'Test for Carboxylic Acids.', 'NaHCO₃ Solution', 'Carboxylic Acid', 'rgba(255,255,255,0.2)', 'rgba(255,255,255,0.3)', 'Brisk Effervescence of CO₂ gas!', false),
+            makeTube('starch', 'Iodine-Starch Test', '🌌', 'Test for Starch.', 'Iodine Solution', 'Starch', '#b45309', '#0f172a', 'Deep Blue-Black complex formed!', false),
+            makeTube('ceric', 'Ceric Test', '🍒', 'Phenol alternative test.', 'Ceric reagent', 'Phenol', '#fde047', '#451a03', 'Dark brown precipitate formed.', false),
+
+            // --- INORGANIC & PHYSICAL PRECIPITATES (30 Beakers) ---
+            makeBeaker('neutral', 'Neutralization', '🌡️', 'Acid + Base.', 'HCl', 'NaOH', 'rgba(255,255,255,0.2)', 'rgba(255,255,255,0.2)', 'Neutralization! Heat released.'),
+            makeBeaker('agcl', 'AgCl Precipitate', '⬜', 'Chloride test.', 'AgNO₃', 'NaCl', 'rgba(255,255,255,0.2)', '#f8fafc', 'Curdy White Precipitate of AgCl!'),
+            makeBeaker('agbr', 'AgBr Precipitate', '🟨', 'Bromide test.', 'AgNO₃', 'NaBr', 'rgba(255,255,255,0.2)', '#fef08a', 'Pale Yellow Precipitate of AgBr!'),
+            makeBeaker('agi', 'AgI Precipitate', '💛', 'Iodide test.', 'AgNO₃', 'NaI', 'rgba(255,255,255,0.2)', '#eab308', 'Dark Yellow Precipitate of AgI!'),
+            makeBeaker('baso4', 'BaSO₄ Precipitate', '🥛', 'Sulfate test.', 'BaCl₂', 'Na₂SO₄', 'rgba(255,255,255,0.2)', '#f8fafc', 'Dense White Precipitate of BaSO₄!'),
             makeBeaker('pbcro4', 'PbCrO₄ Precipitate', '🚸', 'Chromate test.', 'Pb(NO₃)₂', 'K₂CrO₄', 'rgba(255,255,255,0.2)', '#eab308', 'Bright Yellow Precipitate of Lead Chromate!'),
             makeBeaker('cuoh2', 'Cu(OH)₂ Precipitate', '🥣', 'Copper(II) test.', 'CuSO₄', 'NaOH', '#93c5fd', '#3b82f6', 'Pale Blue Precipitate of Cu(OH)₂!'),
-            makeBeaker('chameleon', 'Chem Chameleon', '🦎', 'Redox states of Manganese.', 'KMnO₄', 'Sugar + NaOH', '#c084fc', '#15803d', 'Color shifts Purple -> Blue -> Green -> Yellow!'),
+            makeBeaker('feoh3', 'Fe(OH)₃ Precipitate', '🟤', 'Iron(III) test.', 'FeCl₃', 'NaOH', '#fde047', '#9a3412', 'Reddish-Brown Precipitate of Fe(OH)₃!'),
+            makeBeaker('feoh2', 'Fe(OH)₂ Precipitate', '🥬', 'Iron(II) test.', 'FeSO₄', 'NaOH', '#bbf7d0', '#15803d', 'Dirty Green Precipitate of Fe(OH)₂!'),
+            makeBeaker('nioh2', 'Ni(OH)₂ Precipitate', '🍏', 'Nickel(II) test.', 'NiCl₂', 'NaOH', '#86efac', '#16a34a', 'Apple Green Precipitate of Ni(OH)₂!'),
+            makeBeaker('cooh2', 'Co(OH)₂ Precipitate', '🎀', 'Cobalt(II) test.', 'CoCl₂', 'NaOH', '#fbcfe8', '#1d4ed8', 'Blue precipitate formed!'), 
+            makeBeaker('znoh2', 'Zn(OH)₂ Precipitate', '☁️', 'Zinc(II) test.', 'ZnSO₄', 'NaOH', 'rgba(255,255,255,0.2)', '#f8fafc', 'White Gelatinous Precipitate of Zn(OH)₂!'),
+            makeBeaker('aloh3', 'Al(OH)₃ Precipitate', '🌫️', 'Aluminum(III) test.', 'AlCl₃', 'NaOH', 'rgba(255,255,255,0.2)', '#f8fafc', 'White Gelatinous Precipitate of Al(OH)₃!'),
+            makeBeaker('mnoh2', 'Mn(OH)₂ Precipitate', '🌸', 'Manganese(II) test.', 'MnCl₂', 'NaOH', 'rgba(255,255,255,0.2)', '#fbcfe8', 'Flesh/Pink-colored Precipitate of Mn(OH)₂!'),
+            makeBeaker('croh3', 'Cr(OH)₃ Precipitate', '🌿', 'Chromium(III) test.', 'CrCl₃', 'NaOH', '#86efac', '#14532d', 'Grey-Green Precipitate of Cr(OH)₃!'),
+            makeBeaker('cus', 'CuS Precipitate', '⚫', 'Sulfide test (Grp 2).', 'CuSO₄', 'H₂S', '#93c5fd', '#1e293b', 'Black Precipitate of CuS!'),
+            makeBeaker('cds', 'CdS Precipitate', '🟡', 'Sulfide test (Grp 2).', 'CdCl₂', 'H₂S', 'rgba(255,255,255,0.2)', '#eab308', 'Bright Yellow Precipitate of CdS!'),
+            makeBeaker('sb2s3', 'Sb₂S₃ Precipitate', '🟠', 'Sulfide test (Grp 2).', 'SbCl₃', 'H₂S', 'rgba(255,255,255,0.2)', '#f97316', 'Orange Precipitate of Sb₂S₃!'),
+            makeBeaker('bi2s3', 'Bi₂S₃ Precipitate', '🟤', 'Sulfide test (Grp 2).', 'BiCl₃', 'H₂S', 'rgba(255,255,255,0.2)', '#451a03', 'Brown-Black Precipitate of Bi₂S₃!'),
+            makeBeaker('sns2', 'SnS₂ Precipitate', '🟨', 'Sulfide test (Grp 2).', 'SnCl₄', 'H₂S', 'rgba(255,255,255,0.2)', '#fef08a', 'Yellow Precipitate of SnS₂!'),
+            makeBeaker('pbs', 'PbS Precipitate', '⬛', 'Sulfide test (Grp 2).', 'Pb(NO₃)₂', 'H₂S', 'rgba(255,255,255,0.2)', '#0f172a', 'Black Precipitate of PbS!'),
+            makeBeaker('hgs', 'HgS Precipitate', '🐦‍⬛', 'Sulfide test (Grp 2).', 'HgCl₂', 'H₂S', 'rgba(255,255,255,0.2)', '#000000', 'Black Precipitate of HgS!'),
+            makeBeaker('zns', 'ZnS Precipitate', '🤍', 'Sulfide test (Grp 4).', 'ZnSO₄', 'H₂S', 'rgba(255,255,255,0.2)', '#f8fafc', 'White Precipitate of ZnS!'),
+            makeBeaker('mns', 'MnS Precipitate', '🪷', 'Sulfide test (Grp 4).', 'MnCl₂', 'H₂S', 'rgba(255,255,255,0.2)', '#fbcfe8', 'Flesh-colored Precipitate of MnS!'),
+            makeBeaker('blue_bottle', 'Blue Bottle Exp', '🌀', 'Redox indicator.', 'Glucose+KOH', 'Methylene Blue', 'rgba(255,255,255,0.2)', '#1d4ed8', 'Solution turned Blue!'),
+            makeBeaker('chameleon', 'Chem Chameleon', '🦎', 'Redox of Manganese.', 'KMnO₄', 'Sugar+NaOH', '#c084fc', '#15803d', 'Color shifts Purple -> Blue -> Green -> Yellow!'),
             makeBeaker('litmus_b_r', 'Litmus (Blue to Red)', '🔴', 'Acid test.', 'Acid (HCl)', 'Blue Litmus', 'rgba(255,255,255,0.2)', '#ef4444', 'Blue Litmus drops turn Red indicating Acid!'),
             makeBeaker('litmus_r_b', 'Litmus (Red to Blue)', '🔵', 'Base test.', 'Base (NaOH)', 'Red Litmus', 'rgba(255,255,255,0.2)', '#3b82f6', 'Red Litmus drops turn Blue indicating Base!'),
-            makeBeaker('phenolphthalein', 'Phenolphthalein', '🩷', 'Base indicator test.', 'Base (NaOH)', 'Phenolphthalein', 'rgba(255,255,255,0.2)', '#db2777', 'Colorless solution turns Pink/Magenta!')
+            makeBeaker('phenolphthalein', 'Phenolphthalein', '🩷', 'Base indicator.', 'Base (NaOH)', 'Phenolphthalein', 'rgba(255,255,255,0.2)', '#db2777', 'Colorless solution turns Pink/Magenta!'),
+            makeBeaker('pbi2', 'Lead Iodide', '🌟', 'Double displacement.', 'Pb(NO₃)₂', 'KI', 'rgba(255,255,255,0.2)', '#eab308', 'Bright Yellow Precipitate of PbI₂!')
         ],
 
         init: function() {
@@ -765,7 +805,7 @@
         animate: function(targetId, actionType, color, onComplete) {
             const hand = document.getElementById('lab-anim-hand');
             const drop = document.getElementById('lab-anim-drop');
-            const target = document.getElementById(targetId + '-target') || document.getElementById('flame-target');
+            const target = document.getElementById(targetId + '-target');
             if(!target && actionType !== 'heat') { onComplete(); return; }
 
             const tgtRect = target.getBoundingClientRect();
@@ -774,7 +814,7 @@
             const tgtY = tgtRect.top - wsRect.top;
 
             if(actionType === 'pour') {
-                hand.innerText = '🧪'; // Flask emoji for pouring
+                hand.innerText = '🧪'; 
                 hand.style.top = '20px'; hand.style.left = '90%'; hand.style.opacity = '1'; hand.style.transform = 'rotate(0deg)';
                 
                 setTimeout(() => {
@@ -782,7 +822,7 @@
                     hand.style.left = (tgtX + 25) + 'px';
                     
                     setTimeout(() => {
-                        hand.style.transform = 'rotate(-50deg)'; // Tilt flask
+                        hand.style.transform = 'rotate(-50deg)'; 
                         drop.style.background = color === 'transparent' || color.includes('rgba(255,255,255') ? '#38bdf8' : color;
                         drop.style.left = tgtX + 'px';
                         drop.style.top = (tgtY + 5) + 'px';
@@ -791,11 +831,11 @@
                         
                         setTimeout(() => {
                             drop.style.transition = 'top 0.4s ease-in';
-                            drop.style.top = (tgtY + tgtRect.height - 30) + 'px'; // Fall into container
+                            drop.style.top = (tgtY + tgtRect.height - 30) + 'px'; 
                             
                             setTimeout(() => {
                                 drop.style.opacity = '0';
-                                onComplete(); // Trigger liquid fill
+                                onComplete(); 
                                 setTimeout(() => { hand.style.opacity = '0'; hand.style.transform = 'rotate(0deg)'; }, 800);
                             }, 400);
                         }, 50);
@@ -804,11 +844,11 @@
             } else if(actionType === 'heat') {
                 const burner = document.getElementById('lab-anim-burner');
                 burner.style.left = tgtX + 'px';
-                burner.style.bottom = '100px'; // Slide burner up from bench
+                burner.style.bottom = '100px'; 
                 
                 setTimeout(() => {
-                    onComplete(); // Trigger boiling reaction
-                    setTimeout(() => { burner.style.bottom = '-150px'; }, 2500); // Slide burner away
+                    onComplete(); 
+                    setTimeout(() => { burner.style.bottom = '-150px'; }, 2500); 
                 }, 1500);
             }
         },
@@ -871,28 +911,69 @@
             }
         },
 
-        runFlame: function(metal) {
-            const hand = document.getElementById('lab-anim-hand');
-            const flame = document.getElementById('bunsen-flame');
-            const wsRect = document.getElementById('lab-workspace').getBoundingClientRect();
-            const flameRect = document.getElementById('flame-target').getBoundingClientRect();
+        runCustom: function(labId, action) {
+            const exp = this.experiments.find(e => e.id === labId);
             
-            hand.innerText = '🤏'; // Hand holding wire
-            hand.style.top = '20px'; hand.style.left = '80%'; hand.style.opacity = '1'; hand.style.transform = 'rotate(0deg)';
-            
-            setTimeout(() => {
-                hand.style.top = (flameRect.top - wsRect.top - 20) + 'px';
-                hand.style.left = (flameRect.left - wsRect.left + 15) + 'px';
+            if(labId === 'vapor' && action === 'heat') {
+                this.animate('vapor', 'heat', null, () => {
+                    document.getElementById("vap-liq").style.height="10%";
+                    document.getElementById("vap-gas").style.opacity="1";
+                    document.getElementById("vap-gas").style.top="-100px";
+                    this.setInfo("Liquid vaporizes into gas phase!");
+                });
+            }
+            if(labId === 'osmosis' && action === 'wait') {
+                document.getElementById("osm-left").style.height="20%";
+                document.getElementById("osm-right").style.height="60%";
+                this.setInfo("Water moves through semi-permeable membrane to higher concentration!");
+            }
+            if(labId === 'filter' && action === 'pour') {
+                this.animate('filter', 'pour', '#3b82f6', () => {
+                    document.getElementById("fil-solid").style.opacity="1";
+                    document.getElementById("fil-liq").style.height="80%";
+                    this.setInfo("Residue stays in filter, filtrate drops in beaker!");
+                });
+            }
+            if(labId === 'distill' && action === 'heat') {
+                this.animate('distill', 'heat', null, () => {
+                    document.getElementById("dis-l1").style.height="20%";
+                    document.getElementById("dis-l2").style.height="60%";
+                    this.setInfo("Lower boiling point liquid evaporates and condenses in receiver!");
+                });
+            }
+            if (labId === 'daniell') {
+                if(action === 'wire') { exp.state.wired = true; this.setInfo("Wires connected to voltmeter. Circuit is open (needs salt bridge)."); }
+                if(action === 'bridge') { document.getElementById('salt-bridge').style.opacity = '1'; exp.state.bridged = true; this.setInfo("Salt bridge (KCl) inserted to maintain electrical neutrality."); }
+                if(action === 'circuit') {
+                    if(!exp.state.wired || !exp.state.bridged) return this.setInfo("Connect wires and insert salt bridge first!");
+                    document.getElementById('volt-read').innerText = "1.10V";
+                    document.getElementById('volt-read').style.color = "var(--gold)";
+                    this.setInfo("⚡ Electricity is flowing! Zinc oxidizes (Anode) and Copper reduces (Cathode).");
+                }
+            }
+            if (labId === 'flame') {
+                const hand = document.getElementById('lab-anim-hand');
+                const flame = document.getElementById('bunsen-flame');
+                const wsRect = document.getElementById('lab-workspace').getBoundingClientRect();
+                const flameRect = document.getElementById('flame-target').getBoundingClientRect();
+                
+                hand.innerText = '🤏'; 
+                hand.style.top = '20px'; hand.style.left = '80%'; hand.style.opacity = '1'; hand.style.transform = 'rotate(0deg)';
                 
                 setTimeout(() => {
-                    const colors = { 'li': ['#dc2626', 'Crimson Red'], 'na': ['#eab308', 'Golden Yellow'], 'k': ['#c084fc', 'Lilac/Purple'], 'rb': ['#9d174d', 'Red-Violet'], 'cs': ['#60a5fa', 'Blue'], 'ca': ['#ea580c', 'Brick Red'], 'sr': ['#ef4444', 'Crimson'], 'ba': ['#84cc16', 'Apple Green'], 'cu': ['#22c55e', 'Blue-Green'], 'pb': ['#93c5fd', 'Pale Blue'] };
-                    flame.style.background = colors[metal][0];
-                    flame.style.boxShadow = `0 0 40px ${colors[metal][0]}, inset 0 0 10px white`;
-                    this.setInfo(`${metal.toUpperCase()} produces a ${colors[metal][1]} flame!`);
+                    hand.style.top = (flameRect.top - wsRect.top - 20) + 'px';
+                    hand.style.left = (flameRect.left - wsRect.left + 15) + 'px';
                     
-                    setTimeout(() => { hand.style.opacity = '0'; }, 1000);
-                }, 600);
-            }, 100);
+                    setTimeout(() => {
+                        const colors = { 'li': ['#dc2626', 'Crimson Red'], 'na': ['#eab308', 'Golden Yellow'], 'k': ['#c084fc', 'Lilac/Purple'], 'rb': ['#9d174d', 'Red-Violet'], 'cs': ['#60a5fa', 'Blue'], 'ca': ['#ea580c', 'Brick Red'], 'sr': ['#ef4444', 'Crimson'], 'ba': ['#84cc16', 'Apple Green'], 'cu': ['#22c55e', 'Blue-Green'], 'pb': ['#93c5fd', 'Pale Blue'] };
+                        flame.style.background = colors[action][0];
+                        flame.style.boxShadow = `0 0 40px ${colors[action][0]}, inset 0 0 10px white`;
+                        this.setInfo(`${action.toUpperCase()} produces a ${colors[action][1]} flame!`);
+                        
+                        setTimeout(() => { hand.style.opacity = '0'; }, 1000);
+                    }, 600);
+                }, 100);
+            }
         }
     };
     // ==========================================
