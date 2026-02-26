@@ -404,10 +404,12 @@
 <div id="welcome-popup">
     <svg class="namaste-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
         <circle cx="50" cy="25" r="16" fill="#fca5a5" />
+        <path d="M 34 25 Q 50 -8 66 25 Q 75 40 65 55 Q 50 60 35 55 Q 25 40 34 25 Z" fill="#333" />
         <rect x="44" y="38" width="12" height="10" fill="#fca5a5" />
-        <path d="M 32 25 Q 50 -5 68 25 Q 68 15 50 10 Q 32 15 32 25 Z" fill="#333" />
+        
         <path d="M 25 100 L 25 55 Q 25 42 50 42 Q 75 42 75 55 L 75 100 Z" fill="var(--primary)" />
         <text x="50" y="65" font-family="Arial" font-size="14" font-weight="bold" fill="var(--gold)" text-anchor="middle">ARC</text>
+        
         <path d="M 25 55 Q 35 85 50 70 Q 65 85 75 55" fill="none" stroke="#fca5a5" stroke-width="8" stroke-linecap="round"/>
         <polygon points="46,72 50,55 54,72" fill="#fca5a5" />
     </svg>
@@ -1200,24 +1202,52 @@
 
     function logout() { localStorage.removeItem('arc_user'); localStorage.removeItem('arc_last_section'); clearSession(); location.reload(); }
 
-    // FEATURE: DYNAMIC WELCOME VOICE
+    // FEATURE: DYNAMIC FEMALE WELCOME VOICE
     function playWelcomeVoice(name) {
         if ('speechSynthesis' in window) {
             // Stop any currently playing speech
             window.speechSynthesis.cancel();
             
-            // Grab just the first name for a friendlier greeting
+            // Grab just the first name
             const firstName = name.split(' ')[0]; 
-            
-            // Create the speech (Spelled A R C so the bot doesn't say "ark")
             const msg = new SpeechSynthesisUtterance(`Welcome to A R C Classes, ${firstName}`);
             
-            // Tweak the voice settings to make it sound natural
-            msg.rate = 0.9;  // Slightly slower speed
-            msg.pitch = 1;   // Normal pitch
+            // Tweak settings for a more natural, feminine tone
+            msg.rate = 0.9;  
+            msg.pitch = 1.2; // Slightly higher pitch
             
-            // Play the voice
-            window.speechSynthesis.speak(msg);
+            // Function to find a female voice and speak
+            const speakWithFemaleVoice = () => {
+                const voices = window.speechSynthesis.getVoices();
+                
+                // Search for common female voices across Windows, Mac, iOS, and Android
+                let femaleVoice = voices.find(voice => 
+                    voice.name.includes('Female') || 
+                    voice.name.includes('Zira') ||       // Windows
+                    voice.name.includes('Samantha') ||   // Apple/Mac
+                    voice.name.includes('Victoria') ||   // Apple/Mac
+                    voice.name.includes('Google UK English Female') || // Android/Chrome
+                    voice.name.includes('Google US English') // Android/Chrome (often female by default)
+                );
+                
+                // If a female voice is found, apply it
+                if (femaleVoice) {
+                    msg.voice = femaleVoice;
+                }
+                
+                // Play the voice
+                window.speechSynthesis.speak(msg);
+            };
+
+            // Browsers sometimes take a millisecond to load voices, so we check if they are ready
+            if (window.speechSynthesis.getVoices().length === 0) {
+                window.speechSynthesis.onvoiceschanged = () => {
+                    speakWithFemaleVoice();
+                    window.speechSynthesis.onvoiceschanged = null; // Prevent it from triggering twice
+                };
+            } else {
+                speakWithFemaleVoice();
+            }
         }
     }
 
