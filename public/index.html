@@ -110,43 +110,51 @@
         .desk-scene.is-on .on-form { display: block; animation: fadeIn 0.5s; }
         #reg-link-container { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); width: 100%; text-align: center; z-index: 10; }
 
-         /* 🎮 --- ARC MULTI-GAME COMPONENT CSS --- */
-        .empty-game-wrapper { grid-column: 1 / -1; width: 100%; text-align: center; padding: 20px 10px 40px; background: white; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); box-sizing: border-box; }
+    
+        /* 🎮 --- ARC MULTI-GAME COMPONENT CSS --- */
+        .empty-game-wrapper { grid-column: 1 / -1; width: 100%; text-align: center; padding: 30px 10px; background: white; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); box-sizing: border-box; overflow: hidden; }
         
-        /* ☎️ Telephone Dial Menu */
-        .dial-container { position: relative; width: 300px; height: 300px; margin: 25px auto 40px; border-radius: 50%; background: radial-gradient(circle, #1e293b, #0f172a); border: 5px solid var(--gold); box-shadow: 0 10px 25px rgba(0,0,0,0.3), inset 0 0 30px rgba(0,0,0,0.8); }
-        .dial-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 80px; height: 80px; background: var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; border: 4px solid white; z-index: 10; box-shadow: 0 4px 15px rgba(0,0,0,0.3); animation: pulseDial 2s infinite; }
+        /* ☎️ Smoothed Telephone Dial Menu */
+        .dial-container { position: relative; width: 360px; height: 360px; margin: 30px auto 40px; border-radius: 50%; background: radial-gradient(circle, #1e293b, #0f172a); border: 5px solid var(--gold); box-shadow: 0 10px 25px rgba(0,0,0,0.3), inset 0 0 30px rgba(0,0,0,0.8); }
+        .dial-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 80px; height: 80px; background: var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; border: 4px solid white; z-index: 10; box-shadow: 0 4px 15px rgba(0,0,0,0.3); animation: pulseDial 2s infinite; pointer-events: none; }
         @keyframes pulseDial { 0% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(251, 191, 36, 0); } 100% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0); } }
-        .dial-btn { position: absolute; top: 50%; left: 50%; width: 70px; height: 70px; margin: -35px; background: white; border: 2px solid var(--gold); border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; font-size: 0.65rem; font-weight: bold; cursor: pointer; transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); color: var(--primary); z-index: 5; box-shadow: 0 4px 8px rgba(0,0,0,0.3); line-height: 1.1; padding: 2px; }
-        .dial-btn:hover, .dial-btn.active { background: var(--gold); color: var(--primary); transform: scale(1.15) !important; z-index: 20; border-color: white; }
-        .dial-btn-icon { font-size: 1.5rem; margin-bottom: 2px; }
-
-        .empty-game-board { position: relative; width: 100%; max-width: 450px; height: 380px; background: linear-gradient(135deg, #1e293b, #0f172a); border-radius: 12px; margin: 0 auto; overflow: hidden; border: 2px solid var(--gold); box-shadow: inset 0 0 20px rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; flex-direction: column; color: white; }
         
-        /* Game Specifics */
-        .memory-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding: 10px; width: 100%; height: 100%; box-sizing: border-box; align-content: center; }
+        .dial-btn { position: absolute; top: 50%; left: 50%; width: 66px; height: 66px; margin: -33px 0 0 -33px; background: white; border: 2px solid var(--gold); border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; font-size: 0.65rem; font-weight: bold; cursor: pointer; color: var(--primary); z-index: 5; box-shadow: 0 4px 8px rgba(0,0,0,0.3); line-height: 1.1; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.2s, z-index 0s; }
+        /* Smooth hover zoom fixing alignment */
+        .dial-btn:hover, .dial-btn.active { background: var(--gold); color: var(--primary); z-index: 20 !important; border-color: white; transform: scale(1.25) !important; }
+        .dial-btn-icon { font-size: 1.4rem; margin-bottom: 2px; }
+
+        .empty-game-board { position: relative; width: 100%; max-width: 500px; min-height: 380px; background: linear-gradient(135deg, #1e293b, #0f172a); border-radius: 12px; margin: 0 auto; overflow: hidden; border: 2px solid var(--gold); box-shadow: inset 0 0 20px rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; flex-direction: column; color: white; padding: 15px; box-sizing: border-box; }
+        
+        /* Game 1: Memory */
+        .memory-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding: 10px; width: 100%; box-sizing: border-box; align-content: center; }
         .memory-card { background: #334155; border: 2px solid var(--gold); height: 42px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: bold; cursor: pointer; font-size: 0.8rem; color: transparent; transition: background 0.3s; user-select: none; text-align: center; line-height: 1.1; overflow: hidden; }
         .memory-card.flipped { background: white; color: var(--primary); border-color: white; }
         .memory-card.matched { background: var(--green); color: white; border-color: var(--green); visibility: hidden; }
 
-        .ab-element { position: absolute; top: 0; left: 50%; transform: translateX(-50%); background: white; color: var(--primary); font-weight: bold; font-size: 1.5rem; padding: 10px 20px; border-radius: 8px; border: 2px solid var(--gold); }
-        .ab-controls { position: absolute; bottom: 15px; width: 100%; display: flex; justify-content: space-around; padding: 0 20px; box-sizing: border-box; }
+        /* Game 5: ChemClimb Grid */
+        .snakes-board { display: grid; grid-template-columns: repeat(10, 1fr); gap: 2px; width: 100%; max-width: 400px; height: 280px; background: #1e293b; padding: 5px; border-radius: 8px; border: 2px solid #475569; }
+        .snakes-cell { display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: bold; position: relative; border-radius: 2px; }
+        .snakes-cell.alt { background: #334155; } .snakes-cell.norm { background: #475569; }
+        .s-token { position: absolute; width: 18px; height: 18px; background: var(--green); border-radius: 50%; border: 2px solid white; box-shadow: 0 0 5px black; z-index: 10; transition: all 0.3s; }
 
-        .hm-word { font-size: 1.5rem; letter-spacing: 4px; font-weight: bold; margin-bottom: 10px; color: var(--gold); text-align: center; padding: 0 10px; }
-        .hm-hint { font-size: 0.85rem; color: #cbd5e1; margin-bottom: 15px; font-style: italic; text-align: center; padding: 0 15px; }
+        /* Game 6: Realistic Titration */
+        .lab-setup { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 250px; position: relative; margin-bottom: 20px; }
+        .burette { width: 24px; height: 120px; border: 2px solid rgba(255,255,255,0.7); border-bottom: none; border-radius: 12px 12px 0 0; position: relative; background: rgba(255,255,255,0.1); overflow: hidden; }
+        .burette-liquid { position: absolute; bottom: 0; left: 0; width: 100%; height: 100%; background: #38bdf8; transition: height 0.1s linear; }
+        .burette-tap { width: 40px; height: 10px; background: #94a3b8; border-radius: 5px; margin-top: 0px; z-index: 5; }
+        .burette-tip { width: 6px; height: 15px; border: 2px solid rgba(255,255,255,0.7); border-top: none; background: rgba(255,255,255,0.1); }
+        .flask { width: 80px; height: 80px; border: 3px solid rgba(255,255,255,0.8); border-top: none; border-radius: 0 0 20px 20px; position: relative; margin-top: 5px; background: rgba(255,255,255,0.1); overflow: hidden; }
+        .flask::before { content: ''; position: absolute; top: -20px; left: 25px; width: 24px; height: 20px; border: 3px solid rgba(255,255,255,0.8); border-bottom: none; }
+        .flask-liquid { position: absolute; bottom: 0; left: 0; width: 100%; height: 30%; background: rgba(255,255,255,0.2); transition: height 0.1s linear, background 0.3s linear; }
+        .titr-drop { position: absolute; width: 6px; height: 10px; background: #38bdf8; border-radius: 50%; opacity: 0; top: 145px; }
+        @keyframes fallingDrop { 0% { top: 145px; opacity: 1; } 100% { top: 200px; opacity: 0; } }
+
+        /* General Controls */
+        .ab-controls { display: flex; justify-content: center; gap: 10px; margin-top: 15px; width: 100%; }
         .hm-keyboard { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; max-width: 400px; padding: 0 10px; }
         .hm-key { background: #334155; color: white; border: 1px solid #475569; padding: 6px; width: 32px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.9rem; }
-        .hm-key:disabled { opacity: 0.5; cursor: not-allowed; }
-        .hm-flask-container { width: 50px; height: 70px; border: 3px solid white; border-radius: 25px 25px 10px 10px; position: relative; margin-bottom: 15px; overflow: hidden; flex-shrink: 0; }
-        .hm-flask-neck { width: 16px; height: 25px; border: 3px solid white; border-bottom: none; position: absolute; top: -25px; left: 14px; }
-        .hm-liquid { position: absolute; bottom: 0; left: 0; width: 100%; height: 0%; background: var(--green); transition: height 0.3s, background 0.3s; }
 
-        .coeff-eq { font-size: 1.3rem; font-weight: bold; background: rgba(0,0,0,0.5); padding: 10px 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #475569; text-align: center; max-width: 90%; }
-        .coeff-num { position: absolute; width: 40px; height: 40px; border-radius: 50%; background: var(--gold); color: var(--primary); font-weight: bold; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 10; }
-
-        .whack-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 250px; height: 250px; margin: auto; }
-        .whack-hole { background: #334155; border-radius: 50%; border: 4px solid #1e293b; position: relative; overflow: hidden; cursor: pointer; box-shadow: inset 0 10px 20px rgba(0,0,0,0.5); }
-        .whack-mole { position: absolute; bottom: -100%; left: 10%; width: 80%; height: 80%; background: var(--green); border-radius: 50% 50% 10% 10%; transition: bottom 0.2s; display: flex; align-items: center; justify-content: center; font-size: 2rem; }
 
          /* 🎇 WELCOME POPUP CSS */
         #welcome-popup {
@@ -659,6 +667,7 @@
     }
 
     
+    // ==========================================
     // 🎮 ARC MULTI-GAME COMPONENT (ROTARY DIAL)
     // ==========================================
     window.arcGames = { instances: {} };
@@ -668,10 +677,10 @@
         
         // Define all 10 games
         const gamesList = [
-            { id: 'memory', name: 'Memory Match', icon: '🧠' },
+            { id: 'memory', name: 'Memory', icon: '🧠' },
             { id: 'acid', name: 'Acid/Base', icon: '🧪' },
             { id: 'hangman', name: 'Save Flask', icon: '⚗️' },
-            { id: 'coeff', name: 'Balance Eq', icon: '⚖️' },
+            { id: 'coeff', name: 'Balance', icon: '⚖️' },
             { id: 'snakes', name: 'ChemClimb', icon: '🐍' },
             { id: 'titration', name: 'Titration', icon: '💧' },
             { id: 'quiz', name: 'ChemQuiz', icon: '📝' },
@@ -685,13 +694,14 @@
         const totalGames = gamesList.length;
         
         gamesList.forEach((g, i) => {
-            // Calculate circular positioning math (starts from top -90deg)
+            // Perfect circular placement math
             const angle = (i * (360 / totalGames)) - 90;
-            const radius = 125; // Distance from center
-            // Apply transform dynamically to each dial button
+            const radius = 145; // Distance from center 
+            
+            // We apply the transform in a wrapper via JS logic to allow clean CSS hover scaling
             dialHTML += `
                 <div class="dial-btn" id="btn-${id}-${g.id}" onclick="ArcGameEngine.load('${id}', '${g.id}', this)" 
-                     style="transform: translate(-50%, -50%) rotate(${angle}deg) translate(${radius}px) rotate(${-angle}deg);">
+                     style="left: calc(50% + ${radius * Math.cos(angle * Math.PI / 180)}px); top: calc(50% + ${radius * Math.sin(angle * Math.PI / 180)}px);">
                     <span class="dial-btn-icon">${g.icon}</span><span>${g.name}</span>
                 </div>`;
         });
@@ -699,8 +709,8 @@
 
         return `
         <div class="empty-game-wrapper" id="game-wrap-${id}">
-            <h3 style="color: var(--primary); margin-top:0;">${message}</h3>
-            <p style="color: #666; margin-bottom: 5px; font-size: 0.9rem;">Teacher hasn't added data here yet. Play a game!</p>
+            <h3 style="color: var(--primary); margin-top:0; font-size:1.5rem;">${message}</h3>
+            <p style="color: #666; margin-bottom: 5px; font-weight: bold;">Teacher hasn't added data here yet. Pick a game from the dial!</p>
             ${dialHTML}
             <div class="empty-game-board" id="game-bg-${id}">
                 <p style="color:#cbd5e1; font-size:1.2rem; padding: 20px;">Use the dial above to select a game! ⚛️</p>
@@ -710,8 +720,9 @@
 
     const ArcGameEngine = {
         clearState: function(id) {
-            if(window.arcGames.instances[id] && window.arcGames.instances[id].interval) {
+            if(window.arcGames.instances[id]) {
                 clearInterval(window.arcGames.instances[id].interval);
+                clearTimeout(window.arcGames.instances[id].timeout);
             }
             window.arcGames.instances[id] = {};
             const bg = document.getElementById(`game-bg-${id}`);
@@ -721,48 +732,112 @@
             const dial = document.getElementById(`dial-${id}`);
             if(dial) {
                 const btns = dial.getElementsByClassName('dial-btn');
-                for(let b of btns) {
-                    b.classList.remove('active');
-                    // Reset transform to non-active state mathematically by stripping important scale
-                    b.style.zIndex = '5';
-                }
-                if(btnElem) {
-                    btnElem.classList.add('active');
-                    btnElem.style.zIndex = '20';
-                }
+                for(let b of btns) b.classList.remove('active');
+                if(btnElem) btnElem.classList.add('active');
             }
             this.clearState(id);
             if(this[type] && this[type].init) this[type].init(id);
         },
         
-        // 1. MEMORY MATCH
+        // --- 1. MEMORY MATCH (Categorized Edition) ---
         memory: {
-            data: [ {s: 'H', n: 'Hydrogen'}, {s: 'O', n: 'Oxygen'}, {s: 'Na', n: 'Sodium'}, {s: 'Cl', n: 'Chlorine'}, {s: 'C', n: 'Carbon'} ],
-            init: function(id) {
-                let deck = [];
-                this.data.forEach((item, idx) => { deck.push({ text: item.s, matchId: idx }); deck.push({ text: item.n, matchId: idx }); });
-                deck.sort(() => Math.random() - 0.5);
-                window.arcGames.instances[id] = { deck, flipped: [], matched: 0, lock: false };
-                let html = `<div class="memory-grid" style="grid-template-columns: repeat(5, 1fr);">`;
-                deck.forEach((card, i) => { html += `<div class="memory-card" id="mem-${id}-${i}" onclick="ArcGameEngine.memory.flip('${id}', ${i})">?</div>`; });
-                html += `</div>`; document.getElementById(`game-bg-${id}`).innerHTML = html;
+            // Comprehensive database of elements sorted by categories
+            categories: {
+                'Alkali Metals': [ {s:'Li',n:'Lithium'}, {s:'Na',n:'Sodium'}, {s:'K',n:'Potassium'}, {s:'Rb',n:'Rubidium'}, {s:'Cs',n:'Cesium'}, {s:'Fr',n:'Francium'} ],
+                'Alkaline Earth': [ {s:'Be',n:'Beryllium'}, {s:'Mg',n:'Magnesium'}, {s:'Ca',n:'Calcium'}, {s:'Sr',n:'Strontium'}, {s:'Ba',n:'Barium'}, {s:'Ra',n:'Radium'} ],
+                'Boron Family': [ {s:'B',n:'Boron'}, {s:'Al',n:'Aluminum'}, {s:'Ga',n:'Gallium'}, {s:'In',n:'Indium'}, {s:'Tl',n:'Thallium'} ],
+                'Carbon Family': [ {s:'C',n:'Carbon'}, {s:'Si',n:'Silicon'}, {s:'Ge',n:'Germanium'}, {s:'Sn',n:'Tin'}, {s:'Pb',n:'Lead'} ],
+                'Pnictogens': [ {s:'N',n:'Nitrogen'}, {s:'P',n:'Phosphorus'}, {s:'As',n:'Arsenic'}, {s:'Sb',n:'Antimony'}, {s:'Bi',n:'Bismuth'} ],
+                'Chalcogens': [ {s:'O',n:'Oxygen'}, {s:'S',n:'Sulfur'}, {s:'Se',n:'Selenium'}, {s:'Te',n:'Tellurium'}, {s:'Po',n:'Polonium'} ],
+                'Halogens': [ {s:'F',n:'Fluorine'}, {s:'Cl',n:'Chlorine'}, {s:'Br',n:'Bromine'}, {s:'I',n:'Iodine'}, {s:'At',n:'Astatine'} ],
+                'Noble Gases': [ {s:'He',n:'Helium'}, {s:'Ne',n:'Neon'}, {s:'Ar',n:'Argon'}, {s:'Kr',n:'Krypton'}, {s:'Xe',n:'Xenon'}, {s:'Rn',n:'Radon'} ],
+                '3d Series': [ {s:'Sc',n:'Scandium'}, {s:'Ti',n:'Titanium'}, {s:'V',n:'Vanadium'}, {s:'Cr',n:'Chromium'}, {s:'Mn',n:'Manganese'}, {s:'Fe',n:'Iron'}, {s:'Co',n:'Cobalt'}, {s:'Ni',n:'Nickel'}, {s:'Cu',n:'Copper'}, {s:'Zn',n:'Zinc'} ],
+                '4d Series': [ {s:'Y',n:'Yttrium'}, {s:'Zr',n:'Zirconium'}, {s:'Nb',n:'Niobium'}, {s:'Mo',n:'Molybdenum'}, {s:'Tc',n:'Technetium'}, {s:'Ru',n:'Ruthenium'}, {s:'Rh',n:'Rhodium'}, {s:'Pd',n:'Palladium'}, {s:'Ag',n:'Silver'}, {s:'Cd',n:'Cadmium'} ],
+                '5d Series': [ {s:'La',n:'Lanthanum'}, {s:'Hf',n:'Hafnium'}, {s:'Ta',n:'Tantalum'}, {s:'W',n:'Tungsten'}, {s:'Re',n:'Rhenium'}, {s:'Os',n:'Osmium'}, {s:'Ir',n:'Iridium'}, {s:'Pt',n:'Platinum'}, {s:'Au',n:'Gold'}, {s:'Hg',n:'Mercury'} ],
+                'Lanthanides': [ {s:'Ce',n:'Cerium'}, {s:'Pr',n:'Praseodymium'}, {s:'Nd',n:'Neodymium'}, {s:'Pm',n:'Promethium'}, {s:'Sm',n:'Samarium'}, {s:'Eu',n:'Europium'}, {s:'Gd',n:'Gadolinium'}, {s:'Tb',n:'Terbium'}, {s:'Dy',n:'Dysprosium'}, {s:'Ho',n:'Holmium'}, {s:'Er',n:'Erbium'}, {s:'Tm',n:'Thulium'}, {s:'Yb',n:'Ytterbium'}, {s:'Lu',n:'Lutetium'} ],
+                'Actinides': [ {s:'Th',n:'Thorium'}, {s:'Pa',n:'Protactinium'}, {s:'U',n:'Uranium'}, {s:'Np',n:'Neptunium'}, {s:'Pu',n:'Plutonium'}, {s:'Am',n:'Americium'}, {s:'Cm',n:'Curium'}, {s:'Bk',n:'Berkelium'}, {s:'Cf',n:'Californium'}, {s:'Es',n:'Einsteinium'}, {s:'Fm',n:'Fermium'} ],
+                'Radioactive': [ {s:'U',n:'Uranium'}, {s:'Pu',n:'Plutonium'}, {s:'Ra',n:'Radium'}, {s:'Rn',n:'Radon'}, {s:'Po',n:'Polonium'}, {s:'Fr',n:'Francium'}, {s:'Th',n:'Thorium'}, {s:'Np',n:'Neptunium'}, {s:'Am',n:'Americium'} ],
+                's-block': [ {s:'H',n:'Hydrogen'}, {s:'Li',n:'Lithium'}, {s:'Na',n:'Sodium'}, {s:'K',n:'Potassium'}, {s:'Rb',n:'Rubidium'}, {s:'Cs',n:'Cesium'}, {s:'Be',n:'Beryllium'}, {s:'Mg',n:'Magnesium'}, {s:'Ca',n:'Calcium'}, {s:'Sr',n:'Strontium'}, {s:'Ba',n:'Barium'} ],
+                'p-block': [ {s:'B',n:'Boron'}, {s:'C',n:'Carbon'}, {s:'N',n:'Nitrogen'}, {s:'O',n:'Oxygen'}, {s:'F',n:'Fluorine'}, {s:'Ne',n:'Neon'}, {s:'Al',n:'Aluminum'}, {s:'Si',n:'Silicon'}, {s:'P',n:'Phosphorus'}, {s:'S',n:'Sulfur'}, {s:'Cl',n:'Chlorine'}, {s:'Ar',n:'Argon'}, {s:'Br',n:'Bromine'}, {s:'I',n:'Iodine'} ],
+                'd-block': [ {s:'Sc',n:'Scandium'}, {s:'Ti',n:'Titanium'}, {s:'V',n:'Vanadium'}, {s:'Cr',n:'Chromium'}, {s:'Mn',n:'Manganese'}, {s:'Fe',n:'Iron'}, {s:'Co',n:'Cobalt'}, {s:'Ni',n:'Nickel'}, {s:'Cu',n:'Copper'}, {s:'Zn',n:'Zinc'}, {s:'Ag',n:'Silver'}, {s:'Au',n:'Gold'}, {s:'Pt',n:'Platinum'}, {s:'Hg',n:'Mercury'} ]
             },
+            
+            init: function(id) {
+                let catHTML = `<h3 style="color:var(--gold); margin-top:0; margin-bottom:15px;">Select Category</h3>`;
+                catHTML += `<div style="display:flex; flex-wrap:wrap; gap:8px; justify-content:center; padding:10px; overflow-y:auto; max-height:280px; width:100%; box-sizing:border-box;">`;
+                
+                Object.keys(this.categories).forEach(cat => {
+                    catHTML += `<button class="btn" style="background:#334155; color:white; border:1px solid var(--gold); padding:8px 12px; font-size:0.85rem; border-radius:6px; cursor:pointer;" onclick="ArcGameEngine.memory.start('${id}', '${cat}')" onmouseover="this.style.background='var(--gold)'; this.style.color='var(--primary)';" onmouseout="this.style.background='#334155'; this.style.color='white';">${cat}</button>`;
+                });
+                
+                catHTML += `</div>`;
+                document.getElementById(`game-bg-${id}`).innerHTML = catHTML;
+            },
+            
+            start: function(id, catKey) {
+                let sourceData = [...this.categories[catKey]];
+                
+                // Shuffle source data and limit to max 12 pairs (24 cards) to prevent board overflow
+                sourceData.sort(() => Math.random() - 0.5);
+                let selectedData = sourceData.slice(0, 12); 
+                
+                let deck = [];
+                selectedData.forEach((item, idx) => {
+                    deck.push({ text: item.s, matchId: idx });
+                    deck.push({ text: item.n, matchId: idx });
+                });
+                
+                // Final shuffle of the deck
+                deck.sort(() => Math.random() - 0.5);
+                
+                window.arcGames.instances[id] = { deck: deck, flipped: [], matched: 0, lock: false, catKey: catKey };
+                
+                // Dynamically adjust grid columns depending on how many elements are in the category
+                let cols = deck.length <= 12 ? 4 : (deck.length <= 20 ? 5 : 6);
+                
+                let html = `<div style="width:100%; text-align:center; color:var(--gold); font-weight:bold; margin-bottom:10px; font-size:1.1rem;">${catKey} Match</div>`;
+                html += `<div class="memory-grid" style="grid-template-columns: repeat(${cols}, 1fr); padding:0;">`;
+                
+                deck.forEach((card, i) => {
+                    html += `<div class="memory-card" id="mem-${id}-${i}" onclick="ArcGameEngine.memory.flip('${id}', ${i})">?</div>`;
+                });
+                html += `</div>`;
+                
+                document.getElementById(`game-bg-${id}`).innerHTML = html;
+            },
+            
             flip: function(id, index) {
                 const state = window.arcGames.instances[id];
                 if(state.lock || state.flipped.includes(index) || document.getElementById(`mem-${id}-${index}`).classList.contains('matched')) return;
+                
                 const cardEl = document.getElementById(`mem-${id}-${index}`);
-                cardEl.innerText = state.deck[index].text; cardEl.classList.add('flipped'); state.flipped.push(index);
+                cardEl.innerText = state.deck[index].text;
+                cardEl.classList.add('flipped');
+                state.flipped.push(index);
+
                 if(state.flipped.length === 2) {
-                    state.lock = true; const match1 = state.deck[state.flipped[0]].matchId; const match2 = state.deck[state.flipped[1]].matchId;
+                    state.lock = true;
+                    const match1 = state.deck[state.flipped[0]].matchId;
+                    const match2 = state.deck[state.flipped[1]].matchId;
+                    
                     setTimeout(() => {
                         if(match1 === match2) {
-                            document.getElementById(`mem-${id}-${state.flipped[0]}`).classList.add('matched'); document.getElementById(`mem-${id}-${state.flipped[1]}`).classList.add('matched'); state.matched += 2;
-                            if(state.matched === state.deck.length) { document.getElementById(`game-bg-${id}`).innerHTML = `<h2 style="color:var(--green);">🧠 Master Chemist!</h2><button class="btn btn-gold" onclick="ArcGameEngine.memory.init('${id}')">Play Again</button>`; }
+                            document.getElementById(`mem-${id}-${state.flipped[0]}`).classList.add('matched');
+                            document.getElementById(`mem-${id}-${state.flipped[1]}`).classList.add('matched');
+                            state.matched += 2;
+                            
+                            // Check for win condition
+                            if(state.matched === state.deck.length) {
+                                document.getElementById(`game-bg-${id}`).innerHTML = `<h2 style="color:var(--green);">🧠 Master Chemist!</h2><p>Completed: <b>${state.catKey}</b></p><button class="btn btn-gold" onclick="ArcGameEngine.memory.init('${id}')">Choose Another Category</button>`;
+                            }
                         } else {
-                            const c1 = document.getElementById(`mem-${id}-${state.flipped[0]}`); const c2 = document.getElementById(`mem-${id}-${state.flipped[1]}`);
-                            c1.innerText = '?'; c1.classList.remove('flipped'); c2.innerText = '?'; c2.classList.remove('flipped');
+                            const c1 = document.getElementById(`mem-${id}-${state.flipped[0]}`);
+                            const c2 = document.getElementById(`mem-${id}-${state.flipped[1]}`);
+                            c1.innerText = '?'; c1.classList.remove('flipped');
+                            c2.innerText = '?'; c2.classList.remove('flipped');
                         }
-                        state.flipped = []; state.lock = false;
+                        state.flipped = [];
+                        state.lock = false;
                     }, 800);
                 }
             }
@@ -770,10 +845,25 @@
 
         // 2. ACID OR BASE
         acid: {
-            data: [ {f: 'HCl', t: 'acid'}, {f: 'NaOH', t: 'base'}, {f: 'H₂SO₄', t: 'acid'}, {f: 'KOH', t: 'base'} ],
+            data: [
+                // Original 4
+                {f: 'HCl', t: 'acid'}, {f: 'NaOH', t: 'base'}, {f: 'H₂SO₄', t: 'acid'}, {f: 'KOH', t: 'base'},
+                
+                // 30+ New Acids and Bases
+                {f: 'HNO₃', t: 'acid'}, {f: 'HBr', t: 'acid'}, {f: 'HI', t: 'acid'}, {f: 'HClO₄', t: 'acid'},
+                {f: 'CH₃COOH', t: 'acid'}, {f: 'H₂CO₃', t: 'acid'}, {f: 'H₃PO₄', t: 'acid'}, {f: 'HF', t: 'acid'},
+                {f: 'H₂SO₃', t: 'acid'}, {f: 'HNO₂', t: 'acid'}, {f: 'HCN', t: 'acid'}, {f: 'HCOOH', t: 'acid'},
+                {f: 'H₂C₂O₄', t: 'acid'}, {f: 'HBrO₄', t: 'acid'}, {f: 'HClO', t: 'acid'}, {f: 'H₃BO₃', t: 'acid'},
+                {f: 'H₂S', t: 'acid'}, {f: 'H₂CrO₄', t: 'acid'}, {f: 'HClO₃', t: 'acid'}, {f: 'C₆H₅COOH', t: 'acid'},
+                
+                {f: 'LiOH', t: 'base'}, {f: 'Ba(OH)₂', t: 'base'}, {f: 'Ca(OH)₂', t: 'base'}, {f: 'NH₃', t: 'base'},
+                {f: 'CH₃NH₂', t: 'base'}, {f: 'C₅H₅N', t: 'base'}, {f: 'Mg(OH)₂', t: 'base'}, {f: 'Al(OH)₃', t: 'base'},
+                {f: 'RbOH', t: 'base'}, {f: 'CsOH', t: 'base'}, {f: 'Sr(OH)₂', t: 'base'}, {f: 'NaHCO₃', t: 'base'},
+                {f: 'Na₂CO₃', t: 'base'}, {f: 'C₂H₅NH₂', t: 'base'}, {f: '(CH₃)₂NH', t: 'base'}, {f: 'N₂H₄', t: 'base'}
+            ],
             init: function(id) {
-                window.arcGames.instances[id] = { score: 0, speed: 2000, current: null, yPos: 0 };
-                document.getElementById(`game-bg-${id}`).innerHTML = `<div style="position:absolute; top:10px; left:15px; font-weight:bold; color:var(--gold);">Score: <span id="ab-score-${id}">0</span></div><div id="ab-drop-${id}" class="ab-element" style="display:none;"></div><div class="ab-controls"><button class="btn btn-red" style="flex:1; margin-right:10px;" onclick="ArcGameEngine.acid.guess('${id}', 'acid')">ACID</button><button class="btn" style="flex:1; background:#3b82f6; color:white;" onclick="ArcGameEngine.acid.guess('${id}', 'base')">BASE</button></div>`;
+                window.arcGames.instances[id] = { score: 0, speed: 1000, current: null, yPos: 0 };
+                document.getElementById(`game-bg-${id}`).innerHTML = `<div style="position:absolute; top:10px; left:15px; font-weight:bold; color:var(--gold);">Score: <span id="ab-score-${id}">0</span></div><div id="ab-drop-${id}" style="position:absolute; top:0; left:50%; transform:translateX(-50%); background:white; color:var(--primary); font-weight:bold; font-size:1.5rem; padding:10px 20px; border-radius:8px; display:none;"></div><div class="ab-controls" style="position:absolute; bottom:15px; width:100%; display:flex; justify-content:space-around;"><button class="btn btn-red" style="width:40%;" onclick="ArcGameEngine.acid.guess('${id}', 'acid')">ACID</button><button class="btn" style="width:40%; background:#3b82f6; color:white;" onclick="ArcGameEngine.acid.guess('${id}', 'base')">BASE</button></div>`;
                 this.spawn(id);
             },
             spawn: function(id) {
@@ -849,74 +939,190 @@
             }
         },
 
-        // 5. CHEMCLIMB (SNAKES & LADDERS)
+        // 5. CHEMCLIMB (SOLO SNAKES & LADDERS)
         snakes: {
-            init: function(id) { window.arcGames.instances[id] = { pos: 1, bot: 1 }; this.render(id); },
+            init: function(id) { window.arcGames.instances[id] = { pos: 1, rolls: 0 }; this.render(id); },
             render: function(id) {
                 const state = window.arcGames.instances[id];
-                let html = `<div style="display:grid; grid-template-columns:repeat(5, 1fr); gap:4px; width:90%; height:250px; padding:10px; box-sizing:border-box;">`;
-                for(let i=25; i>=1; i--) { // Reverse order so 25 is top left
-                    let bg = (i%2===0) ? '#334155' : '#475569';
-                    let text = i;
-                    // Define Ladders (Catalysts) and Snakes (Inhibitors)
-                    if(i===4) { bg='#047857'; text='4 📈'; } // Ladder to 14
-                    if(i===22) { bg='#be123c'; text='22 📉'; } // Snake to 8
-                    
-                    html += `<div style="background:${bg}; border-radius:4px; display:flex; align-items:center; justify-content:center; position:relative; font-size:0.8rem; font-weight:bold;">${text}
-                        ${state.pos === i ? '<div style="position:absolute; width:15px; height:15px; background:var(--green); border-radius:50%; top:-5px; left:-5px; box-shadow:0 0 5px black;"></div>' : ''}
-                        ${state.bot === i ? '<div style="position:absolute; width:15px; height:15px; background:var(--red); border-radius:50%; bottom:-5px; right:-5px; box-shadow:0 0 5px black;"></div>' : ''}
-                    </div>`;
+                // Generate Zig-Zag 10x10 Board
+                let html = `<div style="display:flex; justify-content:space-between; width:100%; max-width:400px; margin-bottom:10px;">
+                    <span style="color:var(--gold); font-weight:bold;">Rolls: ${state.rolls}</span>
+                    <button class="btn btn-gold btn-small" onclick="ArcGameEngine.snakes.roll('${id}')">🎲 Roll Dice</button>
+                </div><div class="snakes-board">`;
+                
+                for(let row=0; row<10; row++) {
+                    for(let col=0; col<10; col++) {
+                        let num = 100 - (row * 10);
+                        if(row % 2 === 0) { num -= col; } else { num -= (9 - col); }
+                        
+                        let cellClass = (row + col) % 2 === 0 ? 'norm' : 'alt';
+                        let content = num;
+                        
+                        // Define Snakes 🐍 & Ladders 🪜
+                        const snakes = { 99: '🐍⬇12', 85: '🐍⬇25', 62: '🐍⬇18', 48: '🐍⬇9' };
+                        const ladders = { 4: '🪜⬆36', 15: '🪜⬆46', 33: '🪜⬆81', 50: '🪜⬆74' };
+                        
+                        if(snakes[num]) { content = snakes[num]; cellClass = 'norm'; } // highlight
+                        if(ladders[num]) { content = ladders[num]; cellClass = 'alt'; }
+                        
+                        html += `<div class="snakes-cell ${cellClass}" style="${snakes[num] ? 'color:#fca5a5' : ladders[num] ? 'color:#86efac' : '#cbd5e1'}">
+                            ${content}
+                            ${state.pos === num ? '<div class="s-token"></div>' : ''}
+                        </div>`;
+                    }
                 }
-                html += `</div><div style="display:flex; gap:20px; align-items:center; margin-top:10px;">
-                    <span style="color:var(--green); font-weight:bold;">You: ${state.pos}</span>
-                    <button class="btn btn-gold" onclick="ArcGameEngine.snakes.roll('${id}')">🎲 Roll Dice</button>
-                    <span style="color:var(--red); font-weight:bold;">Bot: ${state.bot}</span>
-                </div>`;
+                html += `</div>`;
                 document.getElementById(`game-bg-${id}`).innerHTML = html;
             },
             roll: function(id) {
                 const state = window.arcGames.instances[id];
                 const pRoll = Math.floor(Math.random()*6)+1;
-                state.pos += pRoll; if(state.pos>25) state.pos=25;
-                if(state.pos===4) state.pos=14; if(state.pos===22) state.pos=8;
-
-                const bRoll = Math.floor(Math.random()*6)+1;
-                state.bot += bRoll; if(state.bot>25) state.bot=25;
-                if(state.bot===4) state.bot=14; if(state.bot===22) state.bot=8;
+                state.rolls++;
+                state.pos += pRoll; 
+                if(state.pos > 100) state.pos = 100; // Cap at 100
+                
+                // Snake & Ladder Logic
+                const paths = { 99:12, 85:25, 62:18, 48:9, 4:36, 15:46, 33:81, 50:74 };
+                if(paths[state.pos]) { state.pos = paths[state.pos]; }
 
                 this.render(id);
-                if(state.pos === 25) { document.getElementById(`game-bg-${id}`).innerHTML = `<h2 style="color:var(--green);">🏆 You reached 25 First!</h2><button class="btn btn-gold" onclick="ArcGameEngine.snakes.init('${id}')">Play Again</button>`; }
-                else if(state.bot === 25) { document.getElementById(`game-bg-${id}`).innerHTML = `<h2 style="color:var(--red);">🤖 Bot Wins!</h2><button class="btn btn-gold" onclick="ArcGameEngine.snakes.init('${id}')">Play Again</button>`; }
+                if(state.pos === 100) { 
+                    setTimeout(() => {
+                        document.getElementById(`game-bg-${id}`).innerHTML = `<h2 style="color:var(--green);">🏆 You Reached 100!</h2><p>It took you ${state.rolls} rolls.</p><button class="btn btn-gold" onclick="ArcGameEngine.snakes.init('${id}')">Play Again</button>`; 
+                    }, 500);
+                }
             }
         },
 
-        // 6. TITRATION HERO
+        // 6. REALISTIC TITRATION HERO (Expanded Edition)
         titration: {
+            data: [
+                { acid: "HCl", base: "NaOH", start: 1.0, eq: 7.0, type: "Strong Acid + Strong Base", ind: "Bromothymol Blue", color: [0, 255, 0] }, 
+                { acid: "CH₃COOH", base: "NaOH", start: 3.0, eq: 8.7, type: "Weak Acid + Strong Base", ind: "Phenolphthalein", color: [236, 72, 153] }, 
+                { acid: "HCl", base: "NH₃", start: 1.0, eq: 5.3, type: "Strong Acid + Weak Base", ind: "Methyl Red", color: [255, 165, 0] }, 
+                { acid: "HNO₃", base: "KOH", start: 1.0, eq: 7.0, type: "Strong Acid + Strong Base", ind: "Phenol Red", color: [255, 0, 0] }, 
+                { acid: "HF", base: "NaOH", start: 3.1, eq: 8.1, type: "Weak Acid + Strong Base", ind: "Phenolphthalein", color: [236, 72, 153] },
+                { acid: "H₂SO₄", base: "NH₃", start: 1.0, eq: 5.0, type: "Strong Acid + Weak Base", ind: "Methyl Red", color: [255, 165, 0] },
+                { acid: "HCOOH", base: "KOH", start: 2.4, eq: 8.4, type: "Weak Acid + Strong Base", ind: "Phenolphthalein", color: [236, 72, 153] },
+                { acid: "HClO₄", base: "LiOH", start: 1.0, eq: 7.0, type: "Strong Acid + Strong Base", ind: "Bromothymol Blue", color: [0, 255, 0] },
+                { acid: "HCN", base: "NaOH", start: 5.0, eq: 9.3, type: "Weak Acid + Strong Base", ind: "Phenolphthalein", color: [236, 72, 153] },
+                { acid: "HBr", base: "CH₃NH₂", start: 1.0, eq: 5.8, type: "Strong Acid + Weak Base", ind: "Methyl Red", color: [255, 165, 0] },
+                { acid: "HNO₂", base: "KOH", start: 2.0, eq: 8.0, type: "Weak Acid + Strong Base", ind: "Phenolphthalein", color: [236, 72, 153] }
+            ],
             init: function(id) {
-                window.arcGames.instances[id] = { pos: 0, dir: 1, interval: null };
-                document.getElementById(`game-bg-${id}`).innerHTML = `
-                    <h3 style="margin-top:0; color:var(--gold);">Titration Hero</h3>
-                    <p style="font-size:0.85rem; color:#cbd5e1; margin-bottom:20px;">Stop the bar EXACTLY in the green Neutral zone!</p>
-                    <div style="width:40px; height:200px; border:3px solid white; border-radius:20px; position:relative; background:#334155; margin:0 auto; overflow:hidden; box-shadow: inset 0 0 10px rgba(0,0,0,0.8);">
-                        <div style="position:absolute; top:45%; height:10%; width:100%; background:var(--green); box-shadow: 0 0 10px var(--green);"></div>
-                        <div id="titr-ind-${id}" style="position:absolute; top:0%; left:0; width:100%; height:8px; background:var(--red); box-shadow:0 0 10px var(--red); transition: top 0.02s linear;"></div>
-                    </div>
-                    <button class="btn btn-gold" style="margin-top:20px; width: 200px; font-size:1.2rem;" onclick="ArcGameEngine.titration.stop('${id}')">🛑 STOP DROP</button>
-                `;
-                window.arcGames.instances[id].interval = setInterval(() => {
-                    let state = window.arcGames.instances[id]; if(!state) return;
-                    state.pos += 3 * state.dir; // Speed
-                    if(state.pos >= 98 || state.pos <= 0) state.dir *= -1;
-                    document.getElementById(`titr-ind-${id}`).style.top = state.pos + '%';
-                }, 20);
+                // Pick a random titration scenario
+                const scenario = this.data[Math.floor(Math.random() * this.data.length)];
+                window.arcGames.instances[id] = { pH: scenario.start, interval: null, dropping: false, scenario: scenario };
+                this.render(id);
             },
-            stop: function(id) {
-                let state = window.arcGames.instances[id]; clearInterval(state.interval);
-                // Green zone is 45% to 55%
-                if(state.pos >= 45 && state.pos <= 55) {
-                    document.getElementById(`game-bg-${id}`).innerHTML += `<div style="position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); display:flex; flex-direction:column; align-items:center; justify-content:center;"><h2 style="color:var(--green); font-size:2rem;">Perfect Neutrality! ✅</h2><button class="btn btn-gold" onclick="ArcGameEngine.titration.init('${id}')">Play Again</button></div>`;
+            render: function(id) {
+                const state = window.arcGames.instances[id];
+                const sc = state.scenario;
+                
+                // Color calculation based on indicator and distance to equivalence point
+                let bColor = "rgba(255,255,255,0.2)"; // default clear/light
+                const diff = state.pH - sc.eq;
+                
+                if(Math.abs(diff) <= 0.2) {
+                    // Perfect target zone (Equivalence Point)
+                    bColor = `rgba(${sc.color[0]}, ${sc.color[1]}, ${sc.color[2]}, 0.6)`;
+                } else if(diff > 0.2) {
+                    // Over-titrated
+                    bColor = `rgba(${sc.color[0]}, ${sc.color[1]}, ${sc.color[2]}, 0.9)`;
+                    if(sc.ind === "Methyl Red") bColor = "rgba(255, 255, 0, 0.8)"; // goes yellow
+                    if(sc.ind === "Bromothymol Blue") bColor = "rgba(0, 0, 255, 0.8)"; // goes blue
+                } else if(diff < -0.2) {
+                    // Under-titrated
+                    if(sc.ind === "Phenolphthalein") bColor = "rgba(255,255,255,0.2)"; // clear
+                    if(sc.ind === "Bromothymol Blue") bColor = "rgba(255, 255, 0, 0.4)"; // yellow
+                    if(sc.ind === "Methyl Red") bColor = "rgba(255, 0, 0, 0.4)"; // red
+                    if(sc.ind === "Phenol Red") bColor = "rgba(255, 255, 0, 0.4)"; // yellow
+                }
+
+                document.getElementById(`game-bg-${id}`).innerHTML = `
+                    <h3 style="margin-top:0; color:var(--gold); font-size: 1.2rem;">${sc.type}</h3>
+                    <p style="font-size:0.85rem; color:#cbd5e1; margin-bottom:5px;">Titrate <b>${sc.acid}</b> with <b>${sc.base}</b></p>
+                    <p style="font-size:0.75rem; color:#94a3b8; margin-top:0; margin-bottom:15px; font-weight:bold;">🎯 Target pH: ${sc.eq.toFixed(1)} | Indicator: ${sc.ind}</p>
+                    
+                    <div class="lab-setup">
+                        <div class="burette">
+                            <div class="burette-liquid" style="height: ${100 - (state.pH/14)*100}%"></div>
+                        </div>
+                        <div class="burette-tap"></div>
+                        <div class="burette-tip"></div>
+                        ${state.dropping ? '<div class="titr-drop" style="animation: fallingDrop 0.2s linear infinite;"></div>' : ''}
+                        
+                        <div class="flask">
+                            <div class="flask-liquid" style="background: ${bColor}; height: ${30 + (state.pH/14)*40}%"></div>
+                        </div>
+                    </div>
+                    
+                    <div style="font-size:1.5rem; font-weight:bold; font-family:monospace; margin-bottom:15px;">pH: ${state.pH.toFixed(1)}</div>
+                    
+                    <div style="display:flex; gap:10px;">
+                        <button class="btn btn-gold" id="btn-drop-${id}">💧 HOLD TO DROP</button>
+                        <button class="btn btn-red" onclick="ArcGameEngine.titration.check('${id}')">✅ FINISH</button>
+                    </div>
+                `;
+
+                // Handle Hold Interactions
+                const btn = document.getElementById(`btn-drop-${id}`);
+                if(btn) {
+                    btn.onmousedown = () => this.startDrop(id);
+                    btn.onmouseup = () => this.stopDrop(id);
+                    btn.onmouseleave = () => this.stopDrop(id);
+                    btn.ontouchstart = (e) => { e.preventDefault(); this.startDrop(id); };
+                    btn.ontouchend = () => this.stopDrop(id);
+                }
+            },
+            startDrop: function(id) {
+                const state = window.arcGames.instances[id];
+                if(state.pH >= 14) return;
+                state.dropping = true;
+                this.render(id);
+                state.interval = setInterval(() => {
+                    if(state.pH < 14) state.pH += 0.1;
+                    const sc = state.scenario;
+                    
+                    document.querySelector(`#game-bg-${id} .flask-liquid`).style.height = `${30 + (state.pH/14)*40}%`;
+                    document.querySelector(`#game-bg-${id} .burette-liquid`).style.height = `${100 - (state.pH/14)*100}%`;
+                    
+                    // Update color live based on exact indicator math
+                    let bColor = "rgba(255,255,255,0.2)";
+                    const diff = state.pH - sc.eq;
+                    
+                    if(Math.abs(diff) <= 0.2) {
+                        bColor = `rgba(${sc.color[0]}, ${sc.color[1]}, ${sc.color[2]}, 0.6)`;
+                    } else if(diff > 0.2) {
+                        bColor = `rgba(${sc.color[0]}, ${sc.color[1]}, ${sc.color[2]}, 0.9)`;
+                        if(sc.ind === "Methyl Red") bColor = "rgba(255, 255, 0, 0.8)"; 
+                        if(sc.ind === "Bromothymol Blue") bColor = "rgba(0, 0, 255, 0.8)"; 
+                    } else if(diff < -0.2) {
+                        if(sc.ind === "Phenolphthalein") bColor = "rgba(255,255,255,0.2)"; 
+                        if(sc.ind === "Bromothymol Blue") bColor = "rgba(255, 255, 0, 0.4)"; 
+                        if(sc.ind === "Methyl Red") bColor = "rgba(255, 0, 0, 0.4)"; 
+                        if(sc.ind === "Phenol Red") bColor = "rgba(255, 255, 0, 0.4)"; 
+                    }
+
+                    document.querySelector(`#game-bg-${id} .flask-liquid`).style.background = bColor;
+                    document.querySelector(`#game-bg-${id} div[style*="monospace"]`).innerText = `pH: ${state.pH.toFixed(1)}`;
+                }, 50);
+            },
+            stopDrop: function(id) {
+                const state = window.arcGames.instances[id];
+                state.dropping = false;
+                clearInterval(state.interval);
+                this.render(id);
+            },
+            check: function(id) {
+                const state = window.arcGames.instances[id];
+                const sc = state.scenario;
+                
+                // Allow a +/- 0.2 pH margin of error for passing
+                if(Math.abs(state.pH - sc.eq) <= 0.2) {
+                    document.getElementById(`game-bg-${id}`).innerHTML += `<div style="position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:50;"><h2 style="color:var(--green); font-size:2rem;">Perfect Equivalence! ✅</h2><p>pH was ${state.pH.toFixed(1)} (Target: ${sc.eq.toFixed(1)})</p><button class="btn btn-gold" onclick="ArcGameEngine.titration.init('${id}')">Next Titration</button></div>`;
                 } else {
-                    document.getElementById(`game-bg-${id}`).innerHTML += `<div style="position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); display:flex; flex-direction:column; align-items:center; justify-content:center;"><h2 style="color:var(--red); font-size:2rem;">Over-titrated! ❌</h2><p>You missed the equivalence point.</p><button class="btn btn-gold" onclick="ArcGameEngine.titration.init('${id}')">Try Again</button></div>`;
+                    document.getElementById(`game-bg-${id}`).innerHTML += `<div style="position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:50;"><h2 style="color:var(--red); font-size:2rem;">Failed! ❌</h2><p>Target was ${sc.eq.toFixed(1)}. You stopped at ${state.pH.toFixed(1)}.</p><button class="btn btn-gold" onclick="ArcGameEngine.titration.init('${id}')">Try Again</button></div>`;
                 }
             }
         },
@@ -924,9 +1130,56 @@
         // 7. CHEMQUIZ
         quiz: {
             data: [
-                { q: "What is the pH of pure water at 25°C?", o: ["1", "7", "14", "0"], a: 1 },
-                { q: "Which element is a liquid at room temp?", o: ["Iron", "Bromine", "Mercury", "Both B & C"], a: 3 },
-                { q: "What is the hardest natural substance?", o: ["Gold", "Iron", "Diamond", "Platinum"], a: 2 }
+                { q: "Which of the following elements has the highest electron gain enthalpy?", o: ["Fluorine (F)", "Chlorine (Cl)", "Bromine (Br)", "Iodine (I)"], a: 1 },
+                { q: "What is the hybridization of the carbon atoms in a benzene ring?", o: ["sp", "sp²", "sp³", "sp³d"], a: 1 },
+                { q: "What is the maximum oxidation state shown by Osmium (Os) in its compounds (e.g., OsO₄)?", o: ["+4", "+6", "+7", "+8"], a: 3 },
+                { q: "Which of the following is an intensive thermodynamic property?", o: ["Volume", "Mass", "Temperature", "Heat capacity"], a: 2 },
+                { q: "According to VSEPR theory, what is the shape of the XeF₄ molecule?", o: ["Tetrahedral", "Square planar", "See-saw", "Octahedral"], a: 1 },
+                { q: "Which class of compounds is primarily responsible for the depletion of the ozone layer?", o: ["Carbon dioxide (CO₂)", "Chlorofluorocarbons (CFCs)", "Methane (CH₄)", "Nitrogen (N₂)"], a: 1 },
+                { q: "What is the unit of the rate constant for a first-order reaction?", o: ["mol L⁻¹ s⁻¹", "s⁻¹", "L mol⁻¹ s⁻¹", "mol⁻¹ L⁻¹ s⁻¹"], a: 1 },
+                { q: "Which of the following polymers is formed by a condensation polymerization reaction?", o: ["Teflon", "Polyvinyl chloride (PVC)", "Polystyrene", "Nylon-6,6"], a: 3 },
+                { q: "Which of the following carbocations is the most stable?", o: ["Methyl carbocation", "Primary (1°) carbocation", "Secondary (2°) carbocation", "Tertiary (3°) carbocation"], a: 3 },
+                { q: "In which of the following phase changes does the entropy of the system decrease?", o: ["Boiling of water", "Melting of ice", "Freezing of water", "Sublimation of camphor"], a: 2 },
+                { q: "What is the approximate pH of a 10⁻⁸ M aqueous solution of HCl at 25°C?", o: ["8.0", "Slightly less than 7.0", "Exactly 7.0", "Slightly more than 7.0"], a: 1 },
+                { q: "Which metal is typically extracted from its ore using the MacArthur-Forrest Cyanide process?", o: ["Silver (Ag)", "Copper (Cu)", "Iron (Fe)", "Zinc (Zn)"], a: 0 },
+                { q: "Which of the following hydrohalic acids is the strongest acid in aqueous solution?", o: ["HF", "HCl", "HBr", "HI"], a: 3 },
+                { q: "How many unpaired electrons are present in a gaseous Fe²⁺ ion (Atomic number of Fe = 26)?", o: ["2", "3", "4", "5"], a: 2 },
+                { q: "Which of the following aldehydes does NOT undergo the Cannizzaro reaction?", o: ["Formaldehyde", "Benzaldehyde", "Acetaldehyde", "Trichloroacetaldehyde"], a: 2 },
+                { q: "What is the primary repeating monomer unit found in natural rubber?", o: ["Isoprene", "Chloroprene", "Neoprene", "Styrene"], a: 0 },
+                { q: "Which of the following essential vitamins contains a transition metal (Cobalt) in its center?", o: ["Vitamin A", "Vitamin B₁₂", "Vitamin C", "Vitamin D"], a: 1 },
+                { q: "What is the coordination number of the central Cobalt ion in the complex [Co(en)₃]³⁺?", o: ["3", "4", "5", "6"], a: 3 },
+                { q: "What is the correct IUPAC name for allyl chloride?", o: ["1-Chloro-2-propene", "3-Chloro-1-propene", "1-Chloropropene", "2-Chloropropene"], a: 1 },
+                { q: "The Lucas test (using ZnCl₂ and conc. HCl) is used to distinguish between different types of?", o: ["Alcohols", "Aldehydes", "Phenols", "Amines"], a: 0 },
+                { q: "According to Molecular Orbital Theory, what is the bond order of the N₂ molecule?", o: ["1", "2", "2.5", "3"], a: 3 },
+                { q: "Which of the following molecules acts as a strong Lewis acid?", o: ["NH₃", "H₂O", "BF₃", "CH₄"], a: 2 },
+                { q: "What is the molecular geometry of sulfur hexafluoride (SF₆)?", o: ["Octahedral", "Square planar", "Tetrahedral", "Hexagonal"], a: 0 },
+                { q: "What is the maximum number of electrons that can be accommodated in a subshell where the azimuthal quantum number (l) is 3?", o: ["2", "6", "10", "14"], a: 3 },
+                { q: "Assuming complete dissociation, which 0.1 M aqueous solution will have the lowest freezing point?", o: ["0.1 M NaCl", "0.1 M BaCl₂", "0.1 M Glucose", "0.1 M AlCl₃"], a: 3 },
+                { q: "Which of the following minerals is the primary commercial ore of Aluminium?", o: ["Hematite", "Bauxite", "Chalcopyrite", "Galena"], a: 1 },
+                { q: "What is the spin-only magnetic moment of a transition metal ion with 3 unpaired electrons?", o: ["1.73 BM", "2.83 BM", "3.87 BM", "4.90 BM"], a: 2 },
+                { q: "Which of the following elements exhibits the strongest tendency for catenation?", o: ["Silicon (Si)", "Carbon (C)", "Sulfur (S)", "Phosphorus (P)"], a: 1 },
+                { q: "The reaction of phenol with chloroform in the presence of aqueous NaOH to yield salicylaldehyde is known as?", o: ["Kolbe's reaction", "Reimer-Tiemann reaction", "Wurtz reaction", "Gattermann reaction"], a: 1 },
+                { q: "Which type of amine yields a foul-smelling isocyanide compound when heated with chloroform and alcoholic KOH?", o: ["Primary amines only", "Secondary amines only", "Tertiary amines only", "Quaternary ammonium salts"], a: 0 },
+                { q: "What is the percentage of s-character in an sp³ hybridized orbital?", o: ["25%", "33.3%", "50%", "75%"], a: 0 },
+                { q: "What is the common name for the chemical compound CaOCl₂?", o: ["Baking soda", "Washing soda", "Bleaching powder", "Plaster of Paris"], a: 2 },
+                { q: "Which radioactive isotope of carbon is utilized in radiocarbon dating of archaeological artifacts?", o: ["Carbon-11", "Carbon-12", "Carbon-13", "Carbon-14"], a: 3 },
+                { q: "The enthalpy of neutralization of a strong acid by a strong base in dilute solution is approximately?", o: ["-13.7 kcal/mol", "-57.1 kJ/mol", "Both A and B", "None of the above"], a: 2 },
+                { q: "According to Boyle's law, for a fixed mass of gas at constant temperature:", o: ["Volume ∝ Temperature", "Volume ∝ 1/Pressure", "Pressure ∝ Temperature", "Volume ∝ moles"], a: 1 },
+                { q: "What is the molecular geometry of Iodine heptafluoride (IF₇)?", o: ["Pentagonal bipyramidal", "Octahedral", "Square pyramidal", "Trigonal bipyramidal"], a: 0 },
+                { q: "For a first-order chemical reaction, the half-life period (t₁/₂) is independent of:", o: ["Initial concentration of reactant", "Rate constant", "Temperature", "Activation energy"], a: 0 },
+                { q: "Which of the following alkenes can exhibit cis-trans (geometrical) isomerism?", o: ["1-Butene", "2-Butene", "Propene", "Isobutylene"], a: 1 },
+                { q: "The conversion of an alkyl halide to an alkene by heating with alcoholic KOH is a classic example of:", o: ["Nucleophilic Substitution", "Electrophilic Addition", "β-Elimination", "Molecular Rearrangement"], a: 2 },
+                { q: "The Clemmensen reduction of aldehydes and ketones is typically carried out using which reagent?", o: ["Zn-Hg amalgam and conc. HCl", "LiAlH₄ in ether", "NaBH₄ in ethanol", "H₂ gas over Pd catalyst"], a: 0 },
+                { q: "Which of the following is classified as a d-block transition element?", o: ["Cerium (Ce)", "Europium (Eu)", "Uranium (U)", "Iron (Fe)"], a: 3 },
+                { q: "Which of the following is an example of a covalent network solid?", o: ["Ice (H₂O)", "Dry ice (solid CO₂)", "Diamond (C)", "Solid Iodine (I₂)"], a: 2 },
+                { q: "When an ideal gas undergoes free expansion into a vacuum, the external pressure (P_ext) is:", o: ["1 atm", "0 atm", "10 atm", "Infinite"], a: 1 },
+                { q: "In a standard galvanic (voltaic) cell, what is the direction of electron flow in the external circuit?", o: ["Anode to Cathode", "Cathode to Anode", "It constantly alternates", "Electrons do not flow"], a: 0 },
+                { q: "For any process to be spontaneous at constant temperature and pressure, the change in Gibbs free energy (ΔG) must be:", o: ["Positive", "Zero", "Negative", "Infinite"], a: 2 },
+                { q: "A mixture of concentrated HNO₃ and concentrated HCl in a 1:3 molar ratio is known as:", o: ["Oleum", "Aqua regia", "Fuming nitric acid", "Tollen's reagent"], a: 1 },
+                { q: "Which of the following transition metal ions is diamagnetic (has no unpaired electrons)?", o: ["Cu²⁺", "Ni²⁺", "Ti³⁺", "Zn²⁺"], a: 3 },
+                { q: "The acid-catalyzed hydration of alkynes in the presence of HgSO₄/H₂SO₄ yields which class of organic compounds?", o: ["Alcohols", "Aldehydes or Ketones", "Carboxylic acids", "Alkenes"], a: 1 },
+                { q: "Benzene reacts with methyl chloride in the presence of anhydrous AlCl₃ to form Toluene. This is called:", o: ["Friedel-Crafts alkylation", "Friedel-Crafts acylation", "Rosenmund reduction", "Sandmeyer reaction"], a: 0 },
+                { q: "Scurvy is a disease caused by the severe deficiency of which essential vitamin?", o: ["Vitamin A", "Vitamin B₁", "Vitamin C (Ascorbic acid)", "Vitamin D"], a: 2 }
             ],
             init: function(id) { window.arcGames.instances[id] = { q: 0, score: 0 }; this.render(id); },
             render: function(id) {
@@ -950,49 +1203,58 @@
             }
         },
 
-        // 8. ATOM BUILDER (ELECTRON SHELLS)
+        // 8. ATOM BUILDER (121 ELEMENTS)
         shell: {
+            elements: ["Hydrogen","Helium","Lithium","Beryllium","Boron","Carbon","Nitrogen","Oxygen","Fluorine","Neon","Sodium","Magnesium","Aluminum","Silicon","Phosphorus","Sulfur","Chlorine","Argon","Potassium","Calcium","Scandium","Titanium","Vanadium","Chromium","Manganese","Iron","Cobalt","Nickel","Copper","Zinc","Gallium","Germanium","Arsenic","Selenium","Bromine","Krypton","Rubidium","Strontium","Yttrium","Zirconium","Niobium","Molybdenum","Technetium","Ruthenium","Rhodium","Palladium","Silver","Cadmium","Indium","Tin","Antimony","Tellurium","Iodine","Xenon","Cesium","Barium","Lanthanum","Cerium","Praseodymium","Neodymium","Promethium","Samarium","Europium","Gadolinium","Terbium","Dysprosium","Holmium","Erbium","Thulium","Ytterbium","Lutetium","Hafnium","Tantalum","Tungsten","Rhenium","Osmium","Iridium","Platinum","Gold","Mercury","Thallium","Lead","Bismuth","Polonium","Astatine","Radon","Francium","Radium","Actinium","Thorium","Protactinium","Uranium","Neptunium","Plutonium","Americium","Curium","Berkelium","Californium","Einsteinium","Fermium","Mendelevium","Nobelium","Lawrencium","Rutherfordium","Dubnium","Seaborgium","Bohrium","Hassium","Meitnerium","Darmstadtium","Roentgenium","Copernicium","Nihonium","Flerovium","Moscovium","Livermorium","Tennessine","Oganesson","Ununennium","Unbinilium","Unbiunium"],
+            
             init: function(id) {
-                window.arcGames.instances[id] = { target: 8, name: "Oxygen (O)", current: 0 }; // Target Atomic Number 8
+                // Pick a random element from 1 to 121
+                const targetNum = Math.floor(Math.random() * 121) + 1; 
+                window.arcGames.instances[id] = { target: targetNum, name: this.elements[targetNum - 1], current: 0 };
                 this.render(id);
             },
             render: function(id) {
                 const state = window.arcGames.instances[id];
-                let inner = Math.min(state.current, 2);
-                let outer = Math.max(0, state.current - 2);
+                // Calculate shell configuration for fun visualization (K, L, M, N...)
+                let c = state.current;
+                const shells = [0,0,0,0,0,0,0];
+                const limits = [2,8,18,32,32,18,8]; // Simplified Bohr model
+                for(let i=0; i<7; i++) { if(c > limits[i]) { shells[i] = limits[i]; c -= limits[i]; } else { shells[i] = c; break; } }
                 
                 document.getElementById(`game-bg-${id}`).innerHTML = `
-                    <h3 style="margin-top:0;">Build: ${state.name}</h3>
-                    <p style="font-size:0.8rem; margin-top:-10px; margin-bottom:15px; color:#cbd5e1;">Atomic Number: ${state.target}</p>
-                    <div style="position:relative; width:160px; height:160px; border-radius:50%; border:2px dashed #475569; display:flex; align-items:center; justify-content:center;">
-                        <div style="position:relative; width:80px; height:80px; border-radius:50%; border:2px dashed #64748b; display:flex; align-items:center; justify-content:center;">
-                            <div style="width:30px; height:30px; background:var(--red); border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold;">+8</div>
-                            <div style="position:absolute; top:-6px; font-weight:bold; color:var(--gold);">${inner > 0 ? 'e⁻' : ''}</div>
-                            <div style="position:absolute; bottom:-6px; font-weight:bold; color:var(--gold);">${inner > 1 ? 'e⁻' : ''}</div>
-                        </div>
-                        <div style="position:absolute; top:-10px; font-weight:bold; color:var(--gold);">${outer > 0 ? 'e⁻' : ''}</div>
-                        <div style="position:absolute; right:-10px; font-weight:bold; color:var(--gold);">${outer > 1 ? 'e⁻' : ''}</div>
-                        <div style="position:absolute; bottom:-10px; font-weight:bold; color:var(--gold);">${outer > 2 ? 'e⁻' : ''}</div>
-                        <div style="position:absolute; left:-10px; font-weight:bold; color:var(--gold);">${outer > 3 ? 'e⁻' : ''}</div>
-                        <div style="position:absolute; top:15px; left:15px; font-weight:bold; color:var(--gold);">${outer > 4 ? 'e⁻' : ''}</div>
-                        <div style="position:absolute; bottom:15px; right:15px; font-weight:bold; color:var(--gold);">${outer > 5 ? 'e⁻' : ''}</div>
+                    <h3 style="margin-top:0; color:var(--gold);">Build: ${state.name}</h3>
+                    <p style="font-size:0.8rem; margin-top:-10px; margin-bottom:15px; color:#cbd5e1;">Target Atomic Number: ${state.target}</p>
+                    
+                    <div style="background:#1e293b; padding:15px; border-radius:50%; border:4px dashed #475569; margin-bottom:20px; text-align:center; width: 140px; height: 140px; display:flex; flex-direction:column; justify-content:center;">
+                        <div style="font-size:3rem; font-weight:bold; color:white;">${state.current}</div>
+                        <div style="font-size:0.8rem; color:var(--gold);">Electrons</div>
                     </div>
-                    <div style="margin-top:20px; display:flex; gap:10px;">
-                        <button class="btn" style="background:#3b82f6; color:white;" onclick="ArcGameEngine.shell.add('${id}')">➕ Add Electron</button>
-                        <button class="btn btn-gold" onclick="ArcGameEngine.shell.check('${id}')">Check Answer</button>
+                    
+                    <div style="font-size:0.7rem; color:#94a3b8; font-family:monospace; margin-bottom:15px;">
+                        K:${shells[0]} | L:${shells[1]} | M:${shells[2]} | N:${shells[3]} | O:${shells[4]} | P:${shells[5]} | Q:${shells[6]}
                     </div>
+                    
+                    <div style="display:flex; gap:10px; margin-bottom: 15px;">
+                        <button class="btn" style="background:#ef4444; color:white; padding:5px 10px;" onclick="ArcGameEngine.shell.add('${id}', -1)">-1</button>
+                        <button class="btn" style="background:#3b82f6; color:white; padding:5px 10px;" onclick="ArcGameEngine.shell.add('${id}', 1)">+1</button>
+                        <button class="btn" style="background:#3b82f6; color:white; padding:5px 10px;" onclick="ArcGameEngine.shell.add('${id}', 10)">+10</button>
+                    </div>
+                    <button class="btn btn-gold" style="width: 200px;" onclick="ArcGameEngine.shell.check('${id}')">Check Answer</button>
                 `;
             },
-            add: function(id) {
+            add: function(id, amount) {
                 const state = window.arcGames.instances[id];
-                if(state.current < 10) { state.current++; this.render(id); }
+                state.current += amount;
+                if(state.current < 0) state.current = 0;
+                if(state.current > 121) state.current = 121;
+                this.render(id);
             },
             check: function(id) {
                 const state = window.arcGames.instances[id];
                 if(state.current === state.target) {
-                    document.getElementById(`game-bg-${id}`).innerHTML += `<div style="position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); display:flex; flex-direction:column; align-items:center; justify-content:center;"><h2 style="color:var(--green);">Correct Isotope! ✅</h2><button class="btn btn-gold" onclick="ArcGameEngine.shell.init('${id}')">Play Again</button></div>`;
+                    document.getElementById(`game-bg-${id}`).innerHTML += `<div style="position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); display:flex; flex-direction:column; align-items:center; justify-content:center;"><h2 style="color:var(--green);">Correct Element! ✅</h2><button class="btn btn-gold" onclick="ArcGameEngine.shell.init('${id}')">Play Again</button></div>`;
                 } else {
-                    document.getElementById(`game-bg-${id}`).innerHTML += `<div style="position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); display:flex; flex-direction:column; align-items:center; justify-content:center;"><h2 style="color:var(--red);">Unstable Atom! 💥</h2><p>You added ${state.current} electrons. Target was ${state.target}.</p><button class="btn btn-gold" onclick="ArcGameEngine.shell.init('${id}')">Try Again</button></div>`;
+                    document.getElementById(`game-bg-${id}`).innerHTML += `<div style="position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); display:flex; flex-direction:column; align-items:center; justify-content:center;"><h2 style="color:var(--red);">Unstable Isotope! 💥</h2><p>You set ${state.current}e⁻. Target was ${state.target}.</p><button class="btn btn-gold" onclick="ArcGameEngine.shell.init('${id}')">Try Again</button></div>`;
                 }
             }
         },
@@ -1006,28 +1268,20 @@
                         <span style="color:var(--gold)">Score: <span id="whack-score-${id}">0</span></span>
                         <span style="color:var(--red)">Time: <span id="whack-time-${id}">15</span>s</span>
                     </div>
-                    <div class="whack-grid">
-                        ${[0,1,2,3,4,5,6,7,8].map(i => `<div class="whack-hole" onclick="ArcGameEngine.whack.hit('${id}', ${i})"><div class="whack-mole" id="mole-${id}-${i}">⚛️</div></div>`).join('')}
+                    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px; width:250px; height:250px;">
+                        ${[0,1,2,3,4,5,6,7,8].map(i => `<div style="background:#334155; border-radius:50%; border:4px solid #1e293b; position:relative; overflow:hidden; cursor:pointer;" onclick="ArcGameEngine.whack.hit('${id}', ${i})"><div id="mole-${id}-${i}" style="position:absolute; bottom:-100%; left:10%; width:80%; height:80%; background:var(--green); border-radius:50% 50% 10% 10%; transition:bottom 0.2s; display:flex; align-items:center; justify-content:center; font-size:2rem; user-select:none;">⚛️</div></div>`).join('')}
                     </div>
                 `;
                 
-                // Game Loop
                 window.arcGames.instances[id].interval = setInterval(() => {
                     let state = window.arcGames.instances[id]; if(!state) return;
-                    
-                    // Hide previous
                     if(state.active > -1) document.getElementById(`mole-${id}-${state.active}`).style.bottom = '-100%';
-                    
-                    // Time check
-                    state.timeLeft--;
-                    document.getElementById(`whack-time-${id}`).innerText = state.timeLeft;
+                    state.timeLeft--; document.getElementById(`whack-time-${id}`).innerText = state.timeLeft;
                     if(state.timeLeft <= 0) {
                         clearInterval(state.interval);
                         document.getElementById(`game-bg-${id}`).innerHTML = `<h2 style="color:var(--gold);">Time's Up!</h2><p style="font-size:1.5rem;">Score: ${state.score}</p><button class="btn btn-gold" onclick="ArcGameEngine.whack.init('${id}')">Play Again</button>`;
                         return;
                     }
-
-                    // Show new
                     state.active = Math.floor(Math.random() * 9);
                     document.getElementById(`mole-${id}-${state.active}`).style.bottom = '10%';
                 }, 800);
@@ -1035,10 +1289,9 @@
             hit: function(id, index) {
                 const state = window.arcGames.instances[id];
                 if(state.active === index) {
-                    state.score++;
-                    document.getElementById(`whack-score-${id}`).innerText = state.score;
-                    document.getElementById(`mole-${id}-${index}`).style.bottom = '-100%'; // Hide immediately
-                    document.getElementById(`mole-${id}-${index}`).innerText = "💥"; // Effect
+                    state.score++; document.getElementById(`whack-score-${id}`).innerText = state.score;
+                    document.getElementById(`mole-${id}-${index}`).style.bottom = '-100%'; 
+                    document.getElementById(`mole-${id}-${index}`).innerText = "💥"; 
                     setTimeout(() => { document.getElementById(`mole-${id}-${index}`).innerText = "⚛️"; }, 300);
                     state.active = -1;
                 }
@@ -1048,7 +1301,11 @@
         // 10. REACTION TYPER
         typer: {
             init: function(id) {
-                const words = ["photosynthesis", "stoichiometry", "thermodynamics", "electronegativity", "crystallization"];
+                const words = ["photosynthesis", "stoichiometry", "thermodynamics", "electronegativity", 
+                "crystallization", "organic chemistry", "NEET", "JEE", "titration", 
+                "catalyst", "equilibrium", "molarity", "avogadro", "isotope", "periodic table", "valence electrons", 
+                "oxidation", "reduction", "polymerization", "sublimation", "distillation", 
+                "alkane", "alkene", "alkyne", "aromatic", "nucleophile", "electrophile", "resonance", "hybridization",];
                 const target = words[Math.floor(Math.random() * words.length)];
                 window.arcGames.instances[id] = { target: target, startTime: Date.now() };
                 
@@ -1060,8 +1317,6 @@
                     </div>
                     <input type="text" id="typer-input-${id}" placeholder="Type here..." autocomplete="off" style="width:200px; padding:12px; font-size:1.2rem; text-align:center; border-radius:8px; border:2px solid var(--gold); outline:none;" oninput="ArcGameEngine.typer.check('${id}', this.value)">
                 `;
-                // Auto focus doesn't always work on mobile without user interaction, but we can try
-                setTimeout(() => document.getElementById(`typer-input-${id}`).focus(), 100);
             },
             check: function(id, val) {
                 const state = window.arcGames.instances[id];
@@ -1076,6 +1331,7 @@
             }
         }
     };
+    // ==========================================
 
     const toolbarHTML = `
         <div class="toolbar" style="background:#e2e8f0; padding:10px; border-radius:6px 6px 0 0; display:flex; gap:8px; flex-wrap:wrap; align-items:center; border:1px solid #ccc; border-bottom:none;">
