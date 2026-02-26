@@ -6,8 +6,6 @@ const path = require('path');
 const fetch = require('node-fetch');
 
 // --- 0. GLOBAL ERROR CATCHERS ---
-// This prevents Render.com / Node from crashing entirely and causing a 500 error 
-// if a background process fails (crucial for Android wrappers).
 process.on('uncaughtException', (err) => console.error('Uncaught Exception:', err));
 process.on('unhandledRejection', (err) => console.error('Unhandled Rejection:', err));
 
@@ -19,7 +17,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 // --- 1. DATABASE CONNECTION ---
 const dbLink = "mongodb+srv://ankitprogrammer25:a32x05sYvukG178G@cluster0.0dhqpzv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 
-// Added timeouts to ensure DB drops don't hold the server hostage
 mongoose.connect(dbLink, { 
     serverSelectionTimeoutMS: 5000, 
     socketTimeoutMS: 45000 
@@ -188,6 +185,20 @@ app.put('/api/admin/offline-result/:id', async (req, res) => {
 });
 app.delete('/api/admin/offline-result/:id', async (req, res) => { await OfflineResult.findByIdAndDelete(req.params.id); res.json({ success: true }); });
 
+// NEW LOGO SETTINGS ROUTES
+app.get('/api/logo', async (req, res) => { 
+    try {
+        const c = await Config.findOne({ type: 'site_logo' });
+        res.json({ success: true, logo: c && c.list.length > 0 ? c.list[0] : "" });
+    } catch(e) { res.json({ success: false }); }
+});
+app.post('/api/admin/logo', async (req, res) => {
+    try {
+        await Config.findOneAndUpdate({ type: 'site_logo' }, { list: [req.body.logoBase64] }, { upsert: true });
+        res.json({ success: true });
+    } catch(e) { res.json({ success: false }); }
+});
+
 app.get('/api/announcement', async (req, res) => { 
     try {
         const c = await Config.findOne({ type: 'announce_list' });
@@ -355,7 +366,7 @@ app.post('/api/student/analytics', async (req, res) => {
 const RENDER_EXTERNAL_URL = "https://arc-classes-ankit.onrender.com"; 
 function keepAlive() {
     fetch(RENDER_EXTERNAL_URL + '/api/schedule')
-        .then(res => res.text()) // FIX: Read the response completely to prevent socket leak!
+        .then(res => res.text())
         .then(() => console.log("⏰ Self-Ping Successful"))
         .catch(err => console.error("Self-Ping Failed:", err.message));
     setTimeout(keepAlive, 2 * 60 * 1000); 

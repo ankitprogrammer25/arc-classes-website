@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ARC CLASSES</title>
+    <link id="dynamic-favicon" rel="icon" type="image/png" href="">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root { --primary: #0f172a; --gold: #fbbf24; --light: #f8fafc; --red: #ef4444; --green: #22c55e; }
@@ -12,7 +13,7 @@
         body.modal-open { overflow: hidden; height: 100vh; }
 
         nav { background: var(--primary); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
-        .logo { font-size: 1.5rem; font-weight: 900; background: linear-gradient(90deg, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff); background-size: 400%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: rainbow 8s linear infinite; cursor: pointer; }
+        .logo { font-size: 1.5rem; font-weight: 900; background: linear-gradient(90deg, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff); background-size: 400%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: rainbow 8s linear infinite; cursor: pointer; display: flex; align-items: center; }
         @keyframes rainbow { 0% { background-position: 0%; } 100% { background-position: 400%; } }
 
         .menu-toggle { display: none; color: white; font-size: 1.8rem; cursor: pointer; }
@@ -89,7 +90,6 @@
         .doubt-card { border-left: 5px solid var(--red); margin-bottom: 15px; }
         .doubt-card.answered { border-left-color: var(--green); }
 
-        /* 💡 --- LAMP LOGIN CSS --- */
         .desk-scene { position: relative; width: 100%; max-width: 500px; height: 650px; margin: 40px auto; background: #1e1e24; overflow: hidden; border-radius: 12px; box-shadow: inset 0 0 50px rgba(0,0,0,0.5); transition: background 0.5s; }
         .desk-scene.is-on { background: #2a2a35; }
         .lamp-container { position: absolute; top: 0; left: 50%; transform: translateX(-50%); z-index: 10; width: 200px; }
@@ -110,25 +110,17 @@
         .desk-scene.is-on .on-form { display: block; animation: fadeIn 0.5s; }
         #reg-link-container { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); width: 100%; text-align: center; z-index: 10; }
 
-        /* 🎮 --- ARC MULTI-GAME COMPONENT CSS --- */
         .empty-game-wrapper { grid-column: 1 / -1; width: 100%; text-align: center; padding: 30px 10px; background: white; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); box-sizing: border-box; }
         .game-selector-nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 15px 0; }
         .game-selector-nav button { background: #f1f5f9; border: 1px solid #cbd5e1; padding: 8px 12px; border-radius: 20px; cursor: pointer; font-size: 0.85rem; font-weight: bold; color: var(--primary); transition: 0.2s; }
         .game-selector-nav button:hover, .game-selector-nav button.active { background: var(--primary); color: var(--gold); border-color: var(--primary); }
-        
         .empty-game-board { position: relative; width: 100%; max-width: 450px; height: 350px; background: linear-gradient(135deg, #1e293b, #0f172a); border-radius: 12px; margin: 0 auto; overflow: hidden; border: 2px solid var(--gold); box-shadow: inset 0 0 20px rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; flex-direction: column; color: white; }
-        
-        /* Game 1: Memory (Updated for 30 boxes / 5x6 grid) */
         .memory-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding: 10px; width: 100%; height: 100%; box-sizing: border-box; align-content: center; }
         .memory-card { background: #334155; border: 2px solid var(--gold); height: 42px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: bold; cursor: pointer; font-size: 0.8rem; color: transparent; transition: background 0.3s; user-select: none; text-align: center; line-height: 1.1; overflow: hidden; }
         .memory-card.flipped { background: white; color: var(--primary); border-color: white; }
         .memory-card.matched { background: var(--green); color: white; border-color: var(--green); visibility: hidden; }
-
-        /* Game 2: Acid/Base */
         .ab-element { position: absolute; top: 0; left: 50%; transform: translateX(-50%); background: white; color: var(--primary); font-weight: bold; font-size: 1.5rem; padding: 10px 20px; border-radius: 8px; border: 2px solid var(--gold); box-shadow: 0 4px 10px rgba(0,0,0,0.5); transition: top 0.1s linear; }
         .ab-controls { position: absolute; bottom: 15px; width: 100%; display: flex; justify-content: space-around; padding: 0 20px; box-sizing: border-box; }
-
-        /* Game 3: Hangman (Save Flask) */
         .hm-word { font-size: 1.5rem; letter-spacing: 4px; font-weight: bold; margin-bottom: 10px; color: var(--gold); text-align: center; padding: 0 10px; }
         .hm-hint { font-size: 0.85rem; color: #cbd5e1; margin-bottom: 15px; font-style: italic; text-align: center; padding: 0 15px; }
         .hm-keyboard { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; max-width: 400px; padding: 0 10px; }
@@ -137,8 +129,6 @@
         .hm-flask-container { width: 50px; height: 70px; border: 3px solid white; border-radius: 25px 25px 10px 10px; position: relative; margin-bottom: 15px; overflow: hidden; flex-shrink: 0; }
         .hm-flask-neck { width: 16px; height: 25px; border: 3px solid white; border-bottom: none; position: absolute; top: -25px; left: 14px; }
         .hm-liquid { position: absolute; bottom: 0; left: 0; width: 100%; height: 0%; background: var(--green); transition: height 0.3s, background 0.3s; }
-
-        /* Game 4: Coefficient */
         .coeff-eq { font-size: 1.3rem; font-weight: bold; background: rgba(0,0,0,0.5); padding: 10px 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #475569; text-align: center; max-width: 90%; }
         .coeff-num { position: absolute; width: 40px; height: 40px; border-radius: 50%; background: var(--gold); color: var(--primary); font-weight: bold; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3); user-select: none; z-index: 10; }
     </style>
@@ -146,7 +136,10 @@
 <body>
 
 <nav>
-    <div class="logo" onclick="show('home')">ARC CLASSES</div>
+    <div class="logo" onclick="show('home')">
+        <img id="nav-logo" src="" alt="Logo" style="display:none; height:30px; width:30px; object-fit:contain; margin-right:10px; border-radius:50%; background:white;">
+        ARC CLASSES
+    </div>
     <div class="menu-toggle" onclick="toggleMenu()">☰</div>
     <div class="menu" id="nav-menu">
         <a onclick="show('home')">Home</a>
@@ -248,8 +241,8 @@
                 <form onsubmit="event.preventDefault(); doLogin()">
                     <label style="font-weight:bold;">Email / Username:</label>
                     <div id="student-input">
-                    <input id="l-email" placeholder="username" style="margin-top:5px;" oninput="this.value = this.value.replace(/@.*/, '')">
-                    <div style="text-align:right; font-size:0.8rem; color:#777;">@arcstudent.com</div>
+                        <input id="l-email" placeholder="username" style="margin-top:5px;" oninput="this.value = this.value.replace(/@.*/, '')">
+                        <div style="text-align:right; font-size:0.8rem; color:#777;">@arcstudent.com</div>
                     </div>
                     <div id="teacher-input" style="display:none;"><input id="l-admin-email" placeholder="admin@arc.com" style="margin-top:5px;"></div>
                     
@@ -269,9 +262,9 @@
             <h2 style="text-align:center;">Register</h2>
             <input id="r-name" placeholder="Full Name">
             <div style="display:flex; align-items:center; border:1px solid #ccc; border-radius:6px; background:white; margin:10px 0;">
-    <input id="r-prefix" placeholder="username" style="border:none; margin:0;" oninput="this.value = this.value.replace(/@.*/, '')"> 
-    <div style="padding:10px; background:#f1f5f9; color:#64748b; border-left:1px solid #ccc;">@arcstudent.com</div>
-</div>
+                <input id="r-prefix" placeholder="username" style="border:none; margin:0;" oninput="this.value = this.value.replace(/@.*/, '')"> 
+                <div style="padding:10px; background:#f1f5f9; color:#64748b; border-left:1px solid #ccc;">@arcstudent.com</div>
+            </div>
             <input id="r-phone" placeholder="10-digit Phone Number" maxlength="10" oninput="document.getElementById('phone-sec-msg').style.display='block'">
             <div id="phone-sec-msg" style="color:var(--red); display:none; font-size:0.8rem; margin:-5px 0 10px 5px; font-weight:bold;">🔒 Your phone number is secured and only shared with the teacher.</div>
             <input id="r-pass" type="password" placeholder="Password">
@@ -292,6 +285,7 @@
         <button class="btn btn-gold btn-small" onclick="showAdm('doubts')">🤔 Doubts</button>
         <button class="btn btn-gold btn-small" onclick="showAdm('reftool')">🛠️ Ref Tools</button>
         <button class="btn btn-gold btn-small" onclick="showAdm('announce')">📢 News</button>
+        <button class="btn btn-gold btn-small" onclick="showAdm('logo')">🖼️ Logo</button>
         <button class="btn btn-gold btn-small" onclick="showAdm('results')">📈 Online</button>
         <button class="btn btn-gold btn-small" onclick="showAdm('offline')">📊 Offline</button>
         <button class="btn btn-gold btn-small" onclick="showAdm('students')">👥 Students</button>
@@ -472,11 +466,9 @@
     <div class="modal-content" style="max-width: 800px; min-height: 50vh; display: flex; flex-direction: column;">
         <div class="close-corner" onclick="closeModal('blog-modal')">&times;</div>
         <h2 id="bm-title" style="margin-top:0; padding-right: 40px; color:var(--primary);"></h2>
-        <p id="bm-date" style="color:#777; font-size:0.9rem;"></p>
+        <p id="bm-date" style="color:#777; font-size:0.9rem"></p>
         <img id="bm-img" style="width:100%; max-height:300px; object-fit:contain; margin-bottom:20px; display:none; background:#f0f0f0;">
-        
         <div id="bm-content" style="line-height:1.6; padding-bottom:20px; flex-grow: 1;"></div>
-        
         <div style="display:flex; justify-content:space-between; align-items:center; border-top: 2px solid #eee; padding-top: 15px; margin-top: auto;">
             <button id="bm-prev" class="btn btn-gold" onclick="changeBlogPage(-1)">⬅ Previous</button>
             <span id="bm-page-info" style="font-weight:bold; color:#666;">Page 1 of 1</span>
@@ -491,6 +483,7 @@
     function closeModal(id) { document.getElementById(id).style.display = 'none'; document.body.classList.remove('modal-open'); }
 
     window.onload = function() {
+        loadSiteLogo(); // FEATURE: FETCH DYNAMIC LOGO ON STARTUP
         loadMaterials(); loadAnnouncements(); loadBlogs(); loadStories(); 
         loadPOTD(); loadVideosList(); loadRefToolsStudent(); 
         
@@ -536,6 +529,27 @@
     let testEndTime = null; 
     let topicRadarInstance = null; 
 
+    // FEATURE: DYNAMIC LOGO LOAD & SAVE
+    async function loadSiteLogo() {
+        try {
+            const res = await fetch('/api/logo');
+            const data = await res.json();
+            if(data.logo) {
+                document.getElementById('dynamic-favicon').href = data.logo;
+                document.getElementById('nav-logo').src = data.logo;
+                document.getElementById('nav-logo').style.display = 'block';
+            }
+        } catch(e) {}
+    }
+
+    async function saveSiteLogo() {
+        if(!tempImg) return alert("Please select an image first!");
+        await fetch('/api/admin/logo', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ logoBase64: tempImg }) });
+        alert("Logo Updated Successfully!");
+        tempImg = "";
+        loadSiteLogo(); // apply instantly
+    }
+
     function saveSession(endTime) { 
         if(!currentTest) return; 
         const finalEndTime = endTime || testEndTime || JSON.parse(localStorage.getItem('arc_test_session'))?.endTime;
@@ -545,50 +559,30 @@
 
     let homeDoubtFileBase64 = "";
 
-function encodeHomeDoubtFile(input) {
-    if (input.files && input.files[0]) {
-        // Prevent huge PDFs from crashing the database
-        if(input.files[0].size > 5 * 1024 * 1024) {
-            input.value = "";
-            return alert("File is too large! Please keep it under 5MB.");
+    function encodeHomeDoubtFile(input) {
+        if (input.files && input.files[0]) {
+            if(input.files[0].size > 5 * 1024 * 1024) {
+                input.value = "";
+                return alert("File is too large! Please keep it under 5MB.");
+            }
+            document.getElementById('home-d-fileName').innerText = "✅ Attached: " + input.files[0].name;
+            const reader = new FileReader();
+            reader.onload = function(e) { homeDoubtFileBase64 = e.target.result; };
+            reader.readAsDataURL(input.files[0]);
         }
-        
-        document.getElementById('home-d-fileName').innerText = "✅ Attached: " + input.files[0].name;
-        
-        const reader = new FileReader();
-        reader.onload = function(e) { homeDoubtFileBase64 = e.target.result; };
-        reader.readAsDataURL(input.files[0]);
     }
-}
 
-async function submitHomeDoubt() {
-    if(!user) return alert("Please login first to ask a question.");
-    
-    const text = document.getElementById('home-d-text').value;
-    if(!text && !homeDoubtFileBase64) return alert("Please type a question or attach a file.");
-    
-    // Uses your existing API endpoint!
-    await fetch('/api/doubt', { 
-        method: 'POST', 
-        headers: {'Content-Type':'application/json'}, 
-        body: JSON.stringify({ 
-            studentEmail: user.email, 
-            studentName: user.name, 
-            text: text, 
-            image: homeDoubtFileBase64 // Schema holds 'image' but it handles base64 PDFs fine
-        }) 
-    });
-    
-    alert("Doubt sent successfully! The teacher will review it soon.");
-    
-    // Reset form
-    document.getElementById('home-d-text').value = "";
-    document.getElementById('home-d-file').value = "";
-    document.getElementById('home-d-fileName').innerText = "";
-    homeDoubtFileBase64 = "";
-    loadStudentDoubts(); // Refresh doubts list
-}
-
+    async function submitHomeDoubt() {
+        if(!user) return alert("Please login first to ask a question.");
+        const text = document.getElementById('home-d-text').value;
+        if(!text && !homeDoubtFileBase64) return alert("Please type a question or attach a file.");
+        await fetch('/api/doubt', { 
+            method: 'POST', headers: {'Content-Type':'application/json'}, 
+            body: JSON.stringify({ studentEmail: user.email, studentName: user.name, text: text, image: homeDoubtFileBase64 }) 
+        });
+        alert("Doubt sent successfully! The teacher will review it soon.");
+        document.getElementById('home-d-text').value = ""; document.getElementById('home-d-file').value = ""; document.getElementById('home-d-fileName').innerText = ""; homeDoubtFileBase64 = ""; loadStudentDoubts();
+    }
 
     function show(id) {
         if((id==='tests' || id==='live' || id==='results' || id==='doubts') && !user) return show('login');
@@ -603,34 +597,16 @@ async function submitHomeDoubt() {
         if(id==='tests') loadTests(false); if(id==='live') loadTests(true); if(id==='results') loadResults('practice');
     }
 
-    // ==========================================
     // 🎮 ARC MULTI-GAME EMPTY STATE COMPONENT
-    // ==========================================
     window.arcGames = { instances: {} };
-
     function getEmptyStateGame(message) {
         const id = Math.random().toString(36).substr(2, 9);
-        return `
-        <div class="empty-game-wrapper" id="game-wrap-${id}">
-            <h3 style="color: var(--primary); margin-top:0;">${message}</h3>
-            <p style="color: #666; margin-bottom: 5px; font-size: 0.9rem;">Teacher hasn't added data here yet. Play a quick game while you wait!</p>
-            <div class="game-selector-nav" id="game-nav-${id}">
-                <button onclick="ArcGameEngine.load('${id}', 'memory', this)">Memory Match</button>
-                <button onclick="ArcGameEngine.load('${id}', 'acid', this)">Acid or Base</button>
-                <button onclick="ArcGameEngine.load('${id}', 'hangman', this)">Save Flask</button>
-                <button onclick="ArcGameEngine.load('${id}', 'coeff', this)">Balance Eq</button>
-            </div>
-            <div class="empty-game-board" id="game-bg-${id}">
-                <p style="color:#cbd5e1;">Select a game above to start! ⚛️</p>
-            </div>
-        </div>`;
+        return `<div class="empty-game-wrapper" id="game-wrap-${id}"><h3 style="color: var(--primary); margin-top:0;">${message}</h3><p style="color: #666; margin-bottom: 5px; font-size: 0.9rem;">Teacher hasn't added data here yet. Play a quick game while you wait!</p><div class="game-selector-nav" id="game-nav-${id}"><button onclick="ArcGameEngine.load('${id}', 'memory', this)">Memory Match</button><button onclick="ArcGameEngine.load('${id}', 'acid', this)">Acid or Base</button><button onclick="ArcGameEngine.load('${id}', 'hangman', this)">Save Flask</button><button onclick="ArcGameEngine.load('${id}', 'coeff', this)">Balance Eq</button></div><div class="empty-game-board" id="game-bg-${id}"><p style="color:#cbd5e1;">Select a game above to start! ⚛️</p></div></div>`;
     }
 
     const ArcGameEngine = {
         clearState: function(id) {
-            if(window.arcGames.instances[id] && window.arcGames.instances[id].interval) {
-                clearInterval(window.arcGames.instances[id].interval);
-            }
+            if(window.arcGames.instances[id] && window.arcGames.instances[id].interval) { clearInterval(window.arcGames.instances[id].interval); }
             window.arcGames.instances[id] = {};
             const bg = document.getElementById(`game-bg-${id}`);
             if(bg) bg.innerHTML = '';
@@ -648,130 +624,73 @@ async function submitHomeDoubt() {
             if(type === 'hangman') this.hangman.init(id);
             if(type === 'coeff') this.coeff.init(id);
         },
-        
-        // --- 1. MEMORY MATCH (Expanded to 30 Boxes / 15 Pairs) ---
         memory: {
-            data: [
-                {s: 'H', n: 'Hydrogen'}, {s: 'He', n: 'Helium'}, {s: 'Li', n: 'Lithium'},
-                {s: 'Be', n: 'Beryllium'}, {s: 'B', n: 'Boron'}, {s: 'C', n: 'Carbon'},
-                {s: 'N', n: 'Nitrogen'}, {s: 'O', n: 'Oxygen'}, {s: 'F', n: 'Fluorine'},
-                {s: 'Ne', n: 'Neon'}, {s: 'Na', n: 'Sodium'}, {s: 'Mg', n: 'Magnesium'},
-                {s: 'Al', n: 'Aluminum'}, {s: 'Si', n: 'Silicon'}, {s: 'P', n: 'Phosphorus'}
-            ],
+            data: [ {s: 'H', n: 'Hydrogen'}, {s: 'He', n: 'Helium'}, {s: 'Li', n: 'Lithium'}, {s: 'Be', n: 'Beryllium'}, {s: 'B', n: 'Boron'}, {s: 'C', n: 'Carbon'}, {s: 'N', n: 'Nitrogen'}, {s: 'O', n: 'Oxygen'}, {s: 'F', n: 'Fluorine'}, {s: 'Ne', n: 'Neon'}, {s: 'Na', n: 'Sodium'}, {s: 'Mg', n: 'Magnesium'}, {s: 'Al', n: 'Aluminum'}, {s: 'Si', n: 'Silicon'}, {s: 'P', n: 'Phosphorus'} ],
             init: function(id) {
                 let deck = [];
-                this.data.forEach((item, idx) => {
-                    deck.push({ text: item.s, matchId: idx, type: 'sym' });
-                    deck.push({ text: item.n, matchId: idx, type: 'name' });
-                });
+                this.data.forEach((item, idx) => { deck.push({ text: item.s, matchId: idx, type: 'sym' }); deck.push({ text: item.n, matchId: idx, type: 'name' }); });
                 deck.sort(() => Math.random() - 0.5);
-                
                 window.arcGames.instances[id] = { deck, flipped: [], matched: 0, lock: false };
-                
                 let html = `<div class="memory-grid">`;
-                deck.forEach((card, i) => {
-                    html += `<div class="memory-card" id="mem-${id}-${i}" onclick="ArcGameEngine.memory.flip('${id}', ${i})">?</div>`;
-                });
+                deck.forEach((card, i) => { html += `<div class="memory-card" id="mem-${id}-${i}" onclick="ArcGameEngine.memory.flip('${id}', ${i})">?</div>`; });
                 html += `</div>`;
                 document.getElementById(`game-bg-${id}`).innerHTML = html;
             },
             flip: function(id, index) {
                 const state = window.arcGames.instances[id];
                 if(state.lock || state.flipped.includes(index) || document.getElementById(`mem-${id}-${index}`).classList.contains('matched')) return;
-                
                 const cardEl = document.getElementById(`mem-${id}-${index}`);
                 cardEl.innerText = state.deck[index].text;
                 cardEl.classList.add('flipped');
                 state.flipped.push(index);
-
                 if(state.flipped.length === 2) {
                     state.lock = true;
                     const match1 = state.deck[state.flipped[0]].matchId;
                     const match2 = state.deck[state.flipped[1]].matchId;
-                    
                     setTimeout(() => {
                         if(match1 === match2) {
                             document.getElementById(`mem-${id}-${state.flipped[0]}`).classList.add('matched');
                             document.getElementById(`mem-${id}-${state.flipped[1]}`).classList.add('matched');
                             state.matched += 2;
-                            if(state.matched === state.deck.length) {
-                                document.getElementById(`game-bg-${id}`).innerHTML = `<h2 style="color:var(--green);">🧠 Master Chemist!</h2><button class="btn btn-gold" onclick="ArcGameEngine.memory.init('${id}')">Play Again</button>`;
-                            }
+                            if(state.matched === state.deck.length) { document.getElementById(`game-bg-${id}`).innerHTML = `<h2 style="color:var(--green);">🧠 Master Chemist!</h2><button class="btn btn-gold" onclick="ArcGameEngine.memory.init('${id}')">Play Again</button>`; }
                         } else {
-                            const c1 = document.getElementById(`mem-${id}-${state.flipped[0]}`);
-                            const c2 = document.getElementById(`mem-${id}-${state.flipped[1]}`);
-                            c1.innerText = '?'; c1.classList.remove('flipped');
-                            c2.innerText = '?'; c2.classList.remove('flipped');
+                            const c1 = document.getElementById(`mem-${id}-${state.flipped[0]}`); const c2 = document.getElementById(`mem-${id}-${state.flipped[1]}`);
+                            c1.innerText = '?'; c1.classList.remove('flipped'); c2.innerText = '?'; c2.classList.remove('flipped');
                         }
-                        state.flipped = [];
-                        state.lock = false;
+                        state.flipped = []; state.lock = false;
                     }, 800);
                 }
             }
         },
-
-        // --- 2. ACID OR BASE (Expanded to 40 items) ---
         acid: {
-            data: [
-                {f: 'HCl', t: 'acid'}, {f: 'HNO₃', t: 'acid'}, {f: 'H₂SO₄', t: 'acid'}, {f: 'HBr', t: 'acid'},
-                {f: 'HI', t: 'acid'}, {f: 'HClO₄', t: 'acid'}, {f: 'CH₃COOH', t: 'acid'}, {f: 'H₂CO₃', t: 'acid'},
-                {f: 'H₃PO₄', t: 'acid'}, {f: 'HF', t: 'acid'}, {f: 'H₂SO₃', t: 'acid'}, {f: 'HNO₂', t: 'acid'},
-                {f: 'HCN', t: 'acid'}, {f: 'HCOOH', t: 'acid'}, {f: 'H₂C₂O₄', t: 'acid'}, {f: 'HBrO₄', t: 'acid'},
-                {f: 'HClO', t: 'acid'}, {f: 'H₃BO₃', t: 'acid'}, {f: 'H₂S', t: 'acid'}, {f: 'H₂CrO₄', t: 'acid'},
-                {f: 'NaOH', t: 'base'}, {f: 'KOH', t: 'base'}, {f: 'LiOH', t: 'base'}, {f: 'Ba(OH)₂', t: 'base'},
-                {f: 'Ca(OH)₂', t: 'base'}, {f: 'NH₃', t: 'base'}, {f: 'CH₃NH₂', t: 'base'}, {f: 'C₅H₅N', t: 'base'},
-                {f: 'Mg(OH)₂', t: 'base'}, {f: 'Al(OH)₃', t: 'base'}, {f: 'RbOH', t: 'base'}, {f: 'CsOH', t: 'base'},
-                {f: 'Sr(OH)₂', t: 'base'}, {f: 'NaHCO₃', t: 'base'}, {f: 'Na₂CO₃', t: 'base'}, {f: 'K₂CO₃', t: 'base'},
-                {f: 'C₂H₅NH₂', t: 'base'}, {f: '(CH₃)₂NH', t: 'base'}, {f: '(CH₃)₃N', t: 'base'}, {f: 'N₂H₄', t: 'base'}
-            ],
+            data: [ {f: 'HCl', t: 'acid'}, {f: 'NaOH', t: 'base'}, {f: 'HNO₃', t: 'acid'}, {f: 'KOH', t: 'base'}, {f: 'H₂SO₄', t: 'acid'}, {f: 'NH₃', t: 'base'} ],
             init: function(id) {
                 window.arcGames.instances[id] = { score: 0, speed: 2000, current: null, yPos: 0 };
-                document.getElementById(`game-bg-${id}`).innerHTML = `
-                    <div style="position:absolute; top:10px; left:15px; font-weight:bold; color:var(--gold);">Score: <span id="ab-score-${id}">0</span></div>
-                    <div id="ab-drop-${id}" class="ab-element" style="display:none;"></div>
-                    <div class="ab-controls">
-                        <button class="btn btn-red" style="flex:1; margin-right:10px;" onclick="ArcGameEngine.acid.guess('${id}', 'acid')">ACID</button>
-                        <button class="btn" style="flex:1; background:#3b82f6; color:white;" onclick="ArcGameEngine.acid.guess('${id}', 'base')">BASE</button>
-                    </div>`;
+                document.getElementById(`game-bg-${id}`).innerHTML = `<div style="position:absolute; top:10px; left:15px; font-weight:bold; color:var(--gold);">Score: <span id="ab-score-${id}">0</span></div><div id="ab-drop-${id}" class="ab-element" style="display:none;"></div><div class="ab-controls"><button class="btn btn-red" style="flex:1; margin-right:10px;" onclick="ArcGameEngine.acid.guess('${id}', 'acid')">ACID</button><button class="btn" style="flex:1; background:#3b82f6; color:white;" onclick="ArcGameEngine.acid.guess('${id}', 'base')">BASE</button></div>`;
                 this.spawn(id);
             },
             spawn: function(id) {
-                const state = window.arcGames.instances[id];
-                if(!state) return;
+                const state = window.arcGames.instances[id]; if(!state) return;
                 state.current = this.data[Math.floor(Math.random() * this.data.length)];
                 state.yPos = 0;
-                const el = document.getElementById(`ab-drop-${id}`);
-                if(!el) return;
-                el.innerText = state.current.f;
-                el.style.top = '0px';
-                el.style.display = 'block';
-                el.style.background = 'white';
-                
+                const el = document.getElementById(`ab-drop-${id}`); if(!el) return;
+                el.innerText = state.current.f; el.style.top = '0px'; el.style.display = 'block'; el.style.background = 'white';
                 state.interval = setInterval(() => {
                     if(!window.arcGames.instances[id]) return clearInterval(state.interval);
-                    state.yPos += 5;
-                    el.style.top = state.yPos + 'px';
-                    if(state.yPos > 250) {
-                        clearInterval(state.interval);
-                        this.gameOver(id);
-                    }
+                    state.yPos += 5; el.style.top = state.yPos + 'px';
+                    if(state.yPos > 250) { clearInterval(state.interval); this.gameOver(id); }
                 }, state.speed / 100);
             },
             guess: function(id, type) {
-                const state = window.arcGames.instances[id];
-                if(!state || !state.current) return;
+                const state = window.arcGames.instances[id]; if(!state || !state.current) return;
                 clearInterval(state.interval);
                 const el = document.getElementById(`ab-drop-${id}`);
-                
                 if(state.current.t === type) {
-                    state.score++;
-                    document.getElementById(`ab-score-${id}`).innerText = state.score;
-                    el.style.background = 'var(--green)';
-                    state.speed = Math.max(500, state.speed - 100); 
+                    state.score++; document.getElementById(`ab-score-${id}`).innerText = state.score;
+                    el.style.background = 'var(--green)'; state.speed = Math.max(500, state.speed - 100); 
                     setTimeout(() => this.spawn(id), 300);
                 } else {
-                    el.style.background = 'var(--red)';
-                    setTimeout(() => this.gameOver(id), 300);
+                    el.style.background = 'var(--red)'; setTimeout(() => this.gameOver(id), 300);
                 }
             },
             gameOver: function(id) {
@@ -779,165 +698,63 @@ async function submitHomeDoubt() {
                 document.getElementById(`game-bg-${id}`).innerHTML = `<h2 style="color:var(--red);">Game Over</h2><p>Score: ${score}</p><button class="btn btn-gold" onclick="ArcGameEngine.acid.init('${id}')">Restart</button>`;
             }
         },
-
-        // --- 3. HANGMAN (Expanded to 50 Words) ---
         hangman: {
-            data: [
-                {w: 'PROTON', h: 'Positively charged subatomic particle'}, {w: 'NEUTRON', h: 'Neutral subatomic particle in the nucleus'},
-                {w: 'ELECTRON', h: 'Negatively charged subatomic particle'}, {w: 'ISOTOPE', h: 'Same atomic number, different mass'},
-                {w: 'CATION', h: 'A positively charged ion'}, {w: 'ANION', h: 'A negatively charged ion'},
-                {w: 'ANODE', h: 'Electrode where oxidation occurs'}, {w: 'CATHODE', h: 'Electrode where reduction occurs'},
-                {w: 'CATALYST', h: 'Lowers activation energy of a reaction'}, {w: 'MOLE', h: 'Avogadro’s number of particles'},
-                {w: 'TITRATION', h: 'Method to determine concentration'}, {w: 'POLYMER', h: 'Large molecule made of repeating subunits'},
-                {w: 'ISOMER', h: 'Same formula, different structure'}, {w: 'ORBITAL', h: 'Region of high electron probability'},
-                {w: 'VALENCE', h: 'Outermost electrons of an atom'}, {w: 'ENTHALPY', h: 'Total heat content of a system'},
-                {w: 'ENTROPY', h: 'Measure of disorder or randomness'}, {w: 'KINETICS', h: 'Study of reaction rates'},
-                {w: 'EQUILIBRIUM', h: 'Forward and reverse rates are equal'}, {w: 'OXIDATION', h: 'Loss of electrons in a reaction'},
-                {w: 'REDUCTION', h: 'Gain of electrons in a reaction'}, {w: 'HALOGEN', h: 'Group 17 non-metal elements'},
-                {w: 'NOBLEGAS', h: 'Highly unreactive Group 18 elements'}, {w: 'ALKALI', h: 'Highly reactive Group 1 metals'},
-                {w: 'COVALENT', h: 'Bond formed by sharing electrons'}, {w: 'IONIC', h: 'Bond formed by electron transfer'},
-                {w: 'METALLIC', h: 'Bond with a "sea of electrons"'}, {w: 'SUBLIMATION', h: 'Solid changing directly to gas'},
-                {w: 'SOLVENT', h: 'Substance that dissolves a solute'}, {w: 'SOLUTE', h: 'Substance dissolved in a solvent'},
-                {w: 'MOLARITY', h: 'Moles of solute per liter of solution'}, {w: 'YIELD', h: 'Amount of product produced'},
-                {w: 'BUFFER', h: 'Solution that resists pH changes'}, {w: 'INDICATOR', h: 'Changes color at specific pH'},
-                {w: 'ALKANE', h: 'Hydrocarbon with only single bonds'}, {w: 'ALKENE', h: 'Hydrocarbon with a double bond'},
-                {w: 'ALKYNE', h: 'Hydrocarbon with a triple bond'}, {w: 'AROMATIC', h: 'Contains a benzene ring'},
-                {w: 'KETONE', h: 'Carbonyl group bonded to two carbons'}, {w: 'ALDEHYDE', h: 'Carbonyl group bonded to a hydrogen'},
-                {w: 'ALCOHOL', h: 'Contains an -OH functional group'}, {w: 'AMINE', h: 'Derivative of ammonia (NH3)'},
-                {w: 'AMIDE', h: 'Carbonyl group bonded to nitrogen'}, {w: 'ESTER', h: 'Formed from carboxylic acid and alcohol'},
-                {w: 'ETHER', h: 'Oxygen bonded to two alkyl groups'}, {w: 'CARBOXYLIC', h: 'Contains a -COOH group'},
-                {w: 'CHIRAL', h: 'Molecule with non-superimposable mirror image'}, {w: 'RACEMIC', h: 'Equal mixture of two enantiomers'},
-                {w: 'NUCLEOPHILE', h: 'Electron-rich species (nucleus lover)'}, {w: 'ELECTROPHILE', h: 'Electron-poor species (electron lover)'},
-                {w: 'RADICAL', h: 'Species with an unpaired electron'}, {w: 'RESONANCE', h: 'Delocalization of electrons in a molecule'}
-            ],
+            data: [ {w: 'PROTON', h: 'Positively charged subatomic particle'}, {w: 'MOLE', h: 'Avogadro’s number of particles'} ],
             init: function(id) {
                 const item = this.data[Math.floor(Math.random() * this.data.length)];
                 window.arcGames.instances[id] = { word: item.w, guessed: [], errors: 0, maxErrors: 5 };
-                
-                const keyboard = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split('').map(l => 
-                    `<button class="hm-key" id="hm-key-${id}-${l}" onclick="ArcGameEngine.hangman.guess('${id}', '${l}')">${l}</button>`
-                ).join('');
-
-                document.getElementById(`game-bg-${id}`).innerHTML = `
-                    <div class="hm-flask-container">
-                        <div class="hm-flask-neck"></div>
-                        <div class="hm-liquid" id="hm-liquid-${id}"></div>
-                    </div>
-                    <div class="hm-hint">Hint: ${item.h}</div>
-                    <div class="hm-word" id="hm-word-${id}"></div>
-                    <div class="hm-keyboard">${keyboard}</div>`;
+                const keyboard = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split('').map(l => `<button class="hm-key" id="hm-key-${id}-${l}" onclick="ArcGameEngine.hangman.guess('${id}', '${l}')">${l}</button>`).join('');
+                document.getElementById(`game-bg-${id}`).innerHTML = `<div class="hm-flask-container"><div class="hm-flask-neck"></div><div class="hm-liquid" id="hm-liquid-${id}"></div></div><div class="hm-hint">Hint: ${item.h}</div><div class="hm-word" id="hm-word-${id}"></div><div class="hm-keyboard">${keyboard}</div>`;
                 this.renderWord(id);
             },
             renderWord: function(id) {
-                const state = window.arcGames.instances[id];
-                if(!state) return;
+                const state = window.arcGames.instances[id]; if(!state) return;
                 let display = state.word.split('').map(l => state.guessed.includes(l) ? l : '_').join(' ');
                 document.getElementById(`hm-word-${id}`).innerText = display;
-                
-                if(!display.includes('_')) {
-                    document.getElementById(`game-bg-${id}`).innerHTML = `<h2 style="color:var(--green);">🧪 Reaction Complete!</h2><button class="btn btn-gold" onclick="ArcGameEngine.hangman.init('${id}')">Play Again</button>`;
-                }
+                if(!display.includes('_')) { document.getElementById(`game-bg-${id}`).innerHTML = `<h2 style="color:var(--green);">🧪 Reaction Complete!</h2><button class="btn btn-gold" onclick="ArcGameEngine.hangman.init('${id}')">Play Again</button>`; }
             },
             guess: function(id, letter) {
-                const state = window.arcGames.instances[id];
-                if(!state) return;
-                
-                const btn = document.getElementById(`hm-key-${id}-${letter}`);
-                btn.disabled = true;
+                const state = window.arcGames.instances[id]; if(!state) return;
+                const btn = document.getElementById(`hm-key-${id}-${letter}`); btn.disabled = true;
                 state.guessed.push(letter);
-                
                 if(!state.word.includes(letter)) {
                     state.errors++;
                     const liquid = document.getElementById(`hm-liquid-${id}`);
                     const pct = (state.errors / state.maxErrors) * 100;
                     liquid.style.height = pct + '%';
-                    
                     if(state.errors >= 3) liquid.style.background = 'orange';
                     if(state.errors >= state.maxErrors) {
                         liquid.style.background = 'var(--red)';
-                        setTimeout(() => {
-                            document.getElementById(`game-bg-${id}`).innerHTML = `<h2 style="color:var(--red);">💥 Flask Exploded!</h2><p style="font-size:1.2rem;">Word was: <b>${state.word}</b></p><button class="btn btn-gold" onclick="ArcGameEngine.hangman.init('${id}')">Try Again</button>`;
-                        }, 500);
-                        return;
+                        setTimeout(() => { document.getElementById(`game-bg-${id}`).innerHTML = `<h2 style="color:var(--red);">💥 Flask Exploded!</h2><p style="font-size:1.2rem;">Word was: <b>${state.word}</b></p><button class="btn btn-gold" onclick="ArcGameEngine.hangman.init('${id}')">Try Again</button>`; }, 500); return;
                     }
                 }
                 this.renderWord(id);
             }
         },
-
-        // --- 4. COEFFICIENT CATCHER (Expanded to 100 Equations) ---
         coeff: {
-            data: [
-                {eq: '[ ? ] H₂ + O₂ ➝ 2H₂O', a: 2}, {eq: 'H₂ + [ ? ] Cl₂ ➝ 2HCl', a: 1}, {eq: 'N₂ + [ ? ] H₂ ➝ 2NH₃', a: 3}, {eq: '[ ? ] Na + Cl₂ ➝ 2NaCl', a: 2},
-                {eq: 'CH₄ + [ ? ] O₂ ➝ CO₂ + 2H₂O', a: 2}, {eq: '2H₂O₂ ➝ 2H₂O + [ ? ] O₂', a: 1}, {eq: '[ ? ] K + Br₂ ➝ 2KBr', a: 2}, {eq: 'Mg + [ ? ] HCl ➝ MgCl₂ + H₂', a: 2},
-                {eq: '[ ? ] Fe + 3O₂ ➝ 2Fe₂O₃', a: 4}, {eq: '2Al + [ ? ] Cl₂ ➝ 2AlCl₃', a: 3}, {eq: 'C₃H₈ + [ ? ] O₂ ➝ 3CO₂ + 4H₂O', a: 5}, {eq: '[ ? ] Li + F₂ ➝ 2LiF', a: 2},
-                {eq: 'Ca + [ ? ] H₂O ➝ Ca(OH)₂ + H₂', a: 2}, {eq: '[ ? ] Ag + S ➝ Ag₂S', a: 2}, {eq: 'P₄ + [ ? ] O₂ ➝ P₄O₁₀', a: 5}, {eq: '[ ? ] SO₂ + O₂ ➝ 2SO₃', a: 2},
-                {eq: 'N₂ + [ ? ] O₂ ➝ 2NO₂', a: 2}, {eq: '[ ? ] KClO₃ ➝ 2KCl + 3O₂', a: 2}, {eq: '2Na + [ ? ] H₂O ➝ 2NaOH + H₂', a: 2}, {eq: '[ ? ] NH₃ + H₂SO₄ ➝ (NH₄)₂SO₄', a: 2},
-                {eq: 'Zn + [ ? ] HCl ➝ ZnCl₂ + H₂', a: 2}, {eq: '[ ? ] Cu + O₂ ➝ 2CuO', a: 2}, {eq: 'C₂H₄ + [ ? ] O₂ ➝ 2CO₂ + 2H₂O', a: 3}, {eq: '[ ? ] K + I₂ ➝ 2KI', a: 2},
-                {eq: 'BaCl₂ + [ ? ] AgNO₃ ➝ 2AgCl + Ba(NO₃)₂', a: 2}, {eq: '[ ? ] Al + 3H₂SO₄ ➝ Al₂(SO₄)₃ + 3H₂', a: 2}, {eq: 'SiO₂ + [ ? ] HF ➝ SiF₄ + 2H₂O', a: 4}, {eq: '[ ? ] H₂S + 3O₂ ➝ 2SO₂ + 2H₂O', a: 2},
-                {eq: 'CS₂ + [ ? ] O₂ ➝ CO₂ + 2SO₂', a: 3}, {eq: '[ ? ] Fe + 3Cl₂ ➝ 2FeCl₃', a: 2}, {eq: 'MnO₂ + [ ? ] HCl ➝ MnCl₂ + Cl₂ + 2H₂O', a: 4}, {eq: '[ ? ] Na + O₂ ➝ Na₂O₂', a: 2},
-                {eq: 'C₂H₆ + [ ? ] O₂ ➝ 4CO₂ + 6H₂O (x2)', a: 7}, /* Special case but handled */ {eq: '[ ? ] CO + O₂ ➝ 2CO₂', a: 2}, {eq: '2NO + [ ? ] O₂ ➝ 2NO₂', a: 1}, {eq: '[ ? ] H₂ + CO ➝ CH₃OH', a: 2},
-                {eq: 'C + [ ? ] H₂ ➝ CH₄', a: 2}, {eq: '[ ? ] LiOH + CO₂ ➝ Li₂CO₃ + H₂O', a: 2}, {eq: 'CaCO₃ ➝ CaO + [ ? ] CO₂', a: 1}, {eq: '[ ? ] Al + 3Br₂ ➝ 2AlBr₃', a: 2},
-                {eq: 'Fe₂O₃ + [ ? ] CO ➝ 2Fe + 3CO₂', a: 3}, {eq: '[ ? ] K + 2H₂O ➝ 2KOH + H₂', a: 2}, {eq: '2H₂S + [ ? ] O₂ ➝ 2H₂O + 2S', a: 1}, {eq: '[ ? ] Mg + O₂ ➝ 2MgO', a: 2},
-                {eq: 'SO₂ + [ ? ] H₂S ➝ 3S + 2H₂O', a: 2}, {eq: '[ ? ] NO₂ + H₂O ➝ HNO₃ + HNO₂', a: 2}, {eq: 'N₂O₄ ➝ [ ? ] NO₂', a: 2}, {eq: '[ ? ] P + 3Cl₂ ➝ 2PCl₃', a: 2},
-                {eq: '3Fe + [ ? ] H₂O ➝ Fe₃O₄ + 4H₂', a: 4}, {eq: '[ ? ] NaN₃ ➝ 2Na + 3N₂', a: 2}, {eq: '2HNO₃ + [ ? ] NO ➝ 3NO₂ + H₂O', a: 1}, {eq: '[ ? ] KOH + H₂SO₄ ➝ K₂SO₄ + 2H₂O', a: 2},
-                {eq: 'C₂H₂ + [ ? ] H₂ ➝ C₂H₆', a: 2}, {eq: '[ ? ] B + 3O₂ ➝ 2B₂O₃', a: 4}, {eq: 'TiCl₄ + [ ? ] Mg ➝ Ti + 2MgCl₂', a: 2}, {eq: '[ ? ] Rb + 2H₂O ➝ 2RbOH + H₂', a: 2},
-                {eq: 'SiCl₄ + [ ? ] H₂O ➝ H₄SiO₄ + 4HCl', a: 4}, {eq: '[ ? ] HI ➝ H₂ + I₂', a: 2}, {eq: '2Au₂O₃ ➝ 4Au + [ ? ] O₂', a: 3}, {eq: '[ ? ] C + O₂ ➝ 2CO', a: 2},
-                {eq: 'Cl₂ + [ ? ] NaBr ➝ 2NaCl + Br₂', a: 2}, {eq: '[ ? ] O₃ ➝ 3O₂', a: 2}, {eq: 'H₂SO₄ + [ ? ] NaOH ➝ Na₂SO₄ + 2H₂O', a: 2}, {eq: '[ ? ] Cu + S ➝ Cu₂S', a: 2},
-                {eq: 'Pb(NO₃)₂ + [ ? ] KI ➝ PbI₂ + 2KNO₃', a: 2}, {eq: '[ ? ] Al + 6HCl ➝ 2AlCl₃ + 3H₂', a: 2}, {eq: 'FeCl₃ + [ ? ] NaOH ➝ Fe(OH)₃ + 3NaCl', a: 3}, {eq: '[ ? ] C₂H₄ + O₂ ➝ 2CO + 4H₂', a: 2},
-                {eq: 'N₂H₄ + [ ? ] H₂O₂ ➝ N₂ + 4H₂O', a: 2}, {eq: '[ ? ] KClO₃ ➝ 2KCl + 3O₂', a: 2}, {eq: 'PCl₅ + [ ? ] H₂O ➝ H₃PO₄ + 5HCl', a: 4}, {eq: '[ ? ] Na + 2H₂O ➝ 2NaOH + H₂', a: 2},
-                {eq: 'SF₄ + [ ? ] H₂O ➝ SO₂ + 4HF', a: 2}, {eq: '[ ? ] Fe + O₂ ➝ 2FeO', a: 2}, {eq: '2C₂H₆ + [ ? ] O₂ ➝ 4CO₂ + 6H₂O', a: 7}, {eq: '[ ? ] Ag + Cl₂ ➝ 2AgCl', a: 2},
-                {eq: 'Na₂CO₃ + [ ? ] HCl ➝ 2NaCl + H₂O + CO₂', a: 2}, {eq: '[ ? ] Al + 3CuCl₂ ➝ 2AlCl₃ + 3Cu', a: 2}, {eq: 'C + [ ? ] O₂ ➝ CO₂', a: 1}, {eq: '[ ? ] NaHCO₃ ➝ Na₂CO₃ + H₂O + CO₂', a: 2},
-                {eq: 'Mg(OH)₂ + [ ? ] HCl ➝ MgCl₂ + 2H₂O', a: 2}, {eq: '[ ? ] K + Cl₂ ➝ 2KCl', a: 2}, {eq: 'C₂H₅OH + [ ? ] O₂ ➝ 2CO₂ + 3H₂O', a: 3}, {eq: '[ ? ] H₂ + C ➝ CH₄', a: 2},
-                {eq: '2H₃PO₄ + [ ? ] Ca(OH)₂ ➝ Ca₃(PO₄)₂ + 6H₂O', a: 3}, {eq: '[ ? ] NO + O₂ ➝ 2NO₂', a: 2}, {eq: 'H₂ + [ ? ] F₂ ➝ 2HF', a: 1}, {eq: '[ ? ] P + 5Cl₂ ➝ 2PCl₅', a: 2},
-                {eq: '2Cr + [ ? ] Cl₂ ➝ 2CrCl₃', a: 3}, {eq: '[ ? ] N₂O ➝ 2N₂ + O₂', a: 2}, {eq: 'ZnS + [ ? ] O₂ ➝ 2ZnO + 2SO₂', a: 3}, {eq: '[ ? ] CO + O₂ ➝ 2CO₂', a: 2},
-                {eq: '2KMnO₄ + [ ? ] HCl ➝ 2KCl+2MnCl₂+5Cl₂+8H₂O', a: 16}, /* Trick question but floating 1-5 will miss, lets fix to simple */ 
-                {eq: '[ ? ] Cu + S ➝ Cu₂S', a: 2}, {eq: 'H₂SO₄ + [ ? ] NH₃ ➝ (NH₄)₂SO₄', a: 2}, {eq: '[ ? ] Fe + 3H₂O ➝ Fe₂O₃ + 3H₂', a: 2}, {eq: 'CaC₂ + [ ? ] H₂O ➝ Ca(OH)₂ + C₂H₂', a: 2},
-                {eq: '[ ? ] Na + O₂ ➝ Na₂O₂', a: 2}, {eq: 'CH₄ + [ ? ] Cl₂ ➝ CCl₄ + 4HCl', a: 4}, {eq: '[ ? ] Al + 3O₂ ➝ 2Al₂O₃', a: 4}, {eq: 'N₂ + [ ? ] O₂ ➝ 2NO', a: 1}
-            ],
+            data: [ {eq: '[ ? ] H₂ + O₂ ➝ 2H₂O', a: 2}, {eq: 'H₂ + [ ? ] Cl₂ ➝ 2HCl', a: 1} ],
             init: function(id) {
-                // Ensure we only pick equations where the answer is between 1 and 5
                 const validData = this.data.filter(item => item.a >= 1 && item.a <= 5);
                 const item = validData[Math.floor(Math.random() * validData.length)];
                 window.arcGames.instances[id] = { ans: item.a };
-                
-                document.getElementById(`game-bg-${id}`).innerHTML = `
-                    <div class="coeff-eq">${item.eq}</div>
-                    <div style="font-size:0.9rem; color:#cbd5e1; margin-bottom:20px;">Catch the correct number to balance!</div>
-                    <div id="coeff-area-${id}" style="position:absolute; width:100%; height:100%; top:0; left:0; pointer-events:none;"></div>
-                `;
-                
+                document.getElementById(`game-bg-${id}`).innerHTML = `<div class="coeff-eq">${item.eq}</div><div style="font-size:0.9rem; color:#cbd5e1; margin-bottom:20px;">Catch the correct number to balance!</div><div id="coeff-area-${id}" style="position:absolute; width:100%; height:100%; top:0; left:0; pointer-events:none;"></div>`;
                 const area = document.getElementById(`coeff-area-${id}`);
                 [1,2,3,4,5].forEach(num => {
-                    let el = document.createElement('div');
-                    el.className = 'coeff-num';
-                    el.innerText = num;
-                    el.style.pointerEvents = 'auto';
+                    let el = document.createElement('div'); el.className = 'coeff-num'; el.innerText = num; el.style.pointerEvents = 'auto';
                     el.onclick = () => ArcGameEngine.coeff.guess(id, num);
-                    area.appendChild(el);
-                    this.move(el);
+                    area.appendChild(el); this.move(el);
                     window.arcGames.instances[id]['int'+num] = setInterval(() => this.move(el), 1500 + Math.random()*1000);
                 });
             },
-            move: function(el) {
-                el.style.top = Math.random() * 80 + '%';
-                el.style.left = Math.random() * 85 + '%';
-            },
+            move: function(el) { el.style.top = Math.random() * 80 + '%'; el.style.left = Math.random() * 85 + '%'; },
             guess: function(id, num) {
-                const state = window.arcGames.instances[id];
-                if(!state) return;
-                
+                const state = window.arcGames.instances[id]; if(!state) return;
                 [1,2,3,4,5].forEach(n => clearInterval(state['int'+n]));
-                
-                if(num === state.ans) {
-                    document.getElementById(`game-bg-${id}`).innerHTML = `<h2 style="color:var(--green);">✅ Perfectly Balanced!</h2><button class="btn btn-gold" onclick="ArcGameEngine.coeff.init('${id}')">Next Equation</button>`;
-                } else {
-                    document.getElementById(`game-bg-${id}`).innerHTML = `<h2 style="color:var(--red);">❌ Unbalanced!</h2><button class="btn btn-gold" onclick="ArcGameEngine.coeff.init('${id}')">Try Again</button>`;
-                }
+                if(num === state.ans) { document.getElementById(`game-bg-${id}`).innerHTML = `<h2 style="color:var(--green);">✅ Perfectly Balanced!</h2><button class="btn btn-gold" onclick="ArcGameEngine.coeff.init('${id}')">Next Equation</button>`; } 
+                else { document.getElementById(`game-bg-${id}`).innerHTML = `<h2 style="color:var(--red);">❌ Unbalanced!</h2><button class="btn btn-gold" onclick="ArcGameEngine.coeff.init('${id}')">Try Again</button>`; }
             }
         }
     };
-    // ==========================================
 
     const toolbarHTML = `
         <div class="toolbar" style="background:#e2e8f0; padding:10px; border-radius:6px 6px 0 0; display:flex; gap:8px; flex-wrap:wrap; align-items:center; border:1px solid #ccc; border-bottom:none;">
@@ -959,13 +776,6 @@ async function submitHomeDoubt() {
                 <option value=" &rarr; ">&rarr; (Reaction)</option>
                 <option value=" &rightleftharpoons; ">&rightleftharpoons; (Equilibrium)</option>
                 <option value=" &longleftrightarrow; ">&longleftrightarrow; (Resonance)</option>
-                <option value=" &#10230; ">&#10230; (Long Reaction)</option>
-                <option value=" &#10234; ">&#10234; (Long Equilibrium)</option>
-                <option value=" &#10231; ">&#10231; (Long Resonance)</option>
-                <option value=" &#10233; ">&#10233; (Long Double)</option>
-                <option value=" &uarr; ">&uarr; (Gas)</option>
-                <option value=" &darr; ">&darr; (Ppt)</option>
-                <option value=" &#8710; ">&#8710; (Heat)</option>
             </select>
         </div>`;
 
@@ -996,9 +806,7 @@ async function submitHomeDoubt() {
                             <h4>Add Question</h4>
                             ${toolbarHTML} 
                             <div id="q-editor" class="editor" contenteditable="true" placeholder="Question text..." style="min-height:100px; border-radius:0 0 6px 6px; margin-bottom:10px;"></div>
-                            
                             <input id="q-topic" placeholder="Chemistry Topic (e.g. Thermodynamics, GOC) for Tracker">
-
                             <div style="margin-bottom:15px;"><label class="btn-small" style="background:#e2e8f0; cursor:pointer;">📷 Q-Image <input type="file" onchange="encodeImg(this, 'q-prev')" style="display:none;"></label><img id="q-prev" style="height:60px; display:none; margin-top:5px;"></div>
                             <div style="background:#f1f5f9; padding:10px; border-radius:6px; margin-bottom:10px;">
                                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
@@ -1115,10 +923,30 @@ async function submitHomeDoubt() {
                 </tr>`).join('');
             });
         }
+        else if (tab === 'logo') {
+            // FEATURE: DYNAMIC LOGO UPLOAD PANEL
+            c.innerHTML = `<h3>Website Logo Settings</h3>
+            <div style="background:#f8fafc; padding:20px; border-radius:10px; border:1px solid #e2e8f0;">
+                <label style="font-weight:bold; color:var(--primary);">Upload Coaching Logo</label>
+                <p style="font-size:0.85rem; color:#666;">This logo will appear in the website header and browser tab. Use a square image for best results.</p>
+                <input type="file" id="logo-input" accept="image/*" onchange="encodeImg(this, 'admin-logo-prev')" style="margin-bottom:10px;">
+                <div style="padding:10px; background:white; border:1px dashed #ccc; border-radius:8px; display:inline-block;">
+                    <img id="admin-logo-prev" style="height:80px; width:80px; object-fit:contain; display:none;">
+                </div>
+                <button class="btn btn-gold" style="width:100%; margin-top:15px;" onclick="saveSiteLogo()">💾 Save Logo</button>
+            </div>`;
+            fetch('/api/logo').then(r=>r.json()).then(d => {
+                if(d.logo) {
+                    document.getElementById('admin-logo-prev').src = d.logo;
+                    document.getElementById('admin-logo-prev').style.display = 'block';
+                    tempImg = d.logo;
+                }
+            });
+        }
         else if (tab === 'doubts') {
             c.innerHTML = `<h3>Manage Student Doubts</h3><div id="admin-doubt-list">Loading...</div>`;
             fetch('/api/admin/doubts').then(r=>r.json()).then(d => {
-                window.adminDoubts = d; // Save the data globally for the Edit function
+                window.adminDoubts = d; 
                 document.getElementById('admin-doubt-list').innerHTML = d.map(db => `
                 <div class="card doubt-card ${db.status === 'Answered' ? 'answered' : ''}">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -1208,15 +1036,13 @@ async function submitHomeDoubt() {
         const newPass = prompt("Pass:", s.password); 
         if(newName && newPass) { 
             await fetch(`/api/admin/student/${id}`, { method: 'PUT', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ name: newName, password: newPass }) }); 
-            alert("Updated!"); 
-            showAdm('students'); 
+            alert("Updated!"); showAdm('students'); 
         } 
     }
 
     async function approveStudent(id) {
         await fetch(`/api/admin/student/${id}`, { method: 'PUT', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ status: 'Approved' }) });
-        alert("Student Approved! They can now log in.");
-        showAdm('students');
+        alert("Student Approved! They can now log in."); showAdm('students');
     }
 
     async function deleteItem(type, id) { 
@@ -1255,23 +1081,14 @@ async function submitHomeDoubt() {
         document.getElementById('m-link').value = mat.link; 
         document.getElementById('m-cat').value = mat.category; 
         document.getElementById('m-code').value = mat.accessCode || ""; 
-        
-        if(mat.image) {
-            document.getElementById('m-prev').src = mat.image;
-            document.getElementById('m-prev').style.display = 'block';
-            tempImg = mat.image; 
-        } else { tempImg = ""; }
+        if(mat.image) { document.getElementById('m-prev').src = mat.image; document.getElementById('m-prev').style.display = 'block'; tempImg = mat.image; } else { tempImg = ""; }
     }
     
     async function editOffline(id) { const res = await fetch(`/api/admin/offline-result/${id}`); const data = await res.json(); editingOfflineId = id; offlineDraft = data.records; showAdm('offline'); document.getElementById('off-title').value = data.title; renderOfflineDraft(); }
 
     async function uploadMat() { 
-        const body = { 
-            title: document.getElementById('m-title').value, link: document.getElementById('m-link').value, 
-            image: tempImg, category: document.getElementById('m-cat').value, accessCode: document.getElementById('m-code').value 
-        }; 
-        const method = editingMaterialId ? 'PUT' : 'POST'; 
-        const url = editingMaterialId ? `/api/admin/material/${editingMaterialId}` : '/api/admin/material'; 
+        const body = { title: document.getElementById('m-title').value, link: document.getElementById('m-link').value, image: tempImg, category: document.getElementById('m-cat').value, accessCode: document.getElementById('m-code').value }; 
+        const method = editingMaterialId ? 'PUT' : 'POST'; const url = editingMaterialId ? `/api/admin/material/${editingMaterialId}` : '/api/admin/material'; 
         await fetch(url, { method, headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) }); 
         alert(editingMaterialId ? "Updated!" : "Uploaded!"); 
         editingMaterialId = null; tempImg = ""; showAdm('upload'); 
@@ -1290,51 +1107,28 @@ async function submitHomeDoubt() {
     async function doReg() { 
         const phone = document.getElementById('r-phone').value;
         if(phone.length !== 10) return alert("Please enter a valid 10-digit phone number.");
-        
-        const res = await fetch('/api/register', { 
-            method: 'POST', headers: {'Content-Type':'application/json'}, 
-            body: JSON.stringify({ name: document.getElementById('r-name').value, emailPart: document.getElementById('r-prefix').value, password: document.getElementById('r-pass').value, phone }) 
-        }); 
-        
+        const res = await fetch('/api/register', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ name: document.getElementById('r-name').value, emailPart: document.getElementById('r-prefix').value, password: document.getElementById('r-pass').value, phone }) }); 
         const data = await res.json(); 
-        if(data.success) { 
-            alert("Registered successfully! Your registration is under review. You will be able to log in once the teacher approves it."); 
-            location.reload(); 
-        } else {
-            alert(data.message); 
-        }
+        if(data.success) { alert("Registered successfully! Your registration is under review. You will be able to log in once the teacher approves it."); location.reload(); } else { alert(data.message); }
     }
 
     async function doLogin() { 
         let email = loginMode === 'student' ? document.getElementById('l-email').value : document.getElementById('l-admin-email').value;
         const password = document.getElementById('l-pass').value;
-        
-        if (!email || !password) {
-            alert("Please enter both email and password.");
-            return;
-        }
-
+        if (!email || !password) { alert("Please enter both email and password."); return; }
         if(loginMode === 'student' && !email.includes('@')) email += '@arcstudent.com';
         
         try {
             const res = await fetch('/api/login', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ email, password, role: loginMode }) });
             const data = await res.json();
-            
             if(data.success) {
                 const userData = {name: data.name, email: data.email, role: data.role};
-                localStorage.setItem('arc_user', JSON.stringify(userData));
-                user = userData;
-                document.getElementById('nav-login').style.display = 'none';
-                document.getElementById('nav-logout').style.display = 'block';
-                document.getElementById('nav-doubts').style.display = 'block'; 
+                localStorage.setItem('arc_user', JSON.stringify(userData)); user = userData;
+                document.getElementById('nav-login').style.display = 'none'; document.getElementById('nav-logout').style.display = 'block'; document.getElementById('nav-doubts').style.display = 'block'; 
                 if(user.role === 'admin') document.getElementById('nav-admin').style.display = 'block';
                 show('home'); 
-            } else { 
-                alert(data.message || "Invalid Email or Password"); 
-            }
-        } catch(e) {
-            alert("Server connection error. Please try again.");
-        } 
+            } else { alert(data.message || "Invalid Email or Password"); }
+        } catch(e) { alert("Server connection error. Please try again."); } 
     }
 
     function logout() { localStorage.removeItem('arc_user'); localStorage.removeItem('arc_last_section'); clearSession(); location.reload(); }
@@ -1349,80 +1143,46 @@ async function submitHomeDoubt() {
     
     async function loadBlogs() { 
         try {
-            const res = await fetch('/api/blogs'); 
-            const blogs = await res.json(); 
-            allBlogs = blogs; 
-            if (blogs.length === 0) {
-                document.getElementById('blog-grid').innerHTML = getEmptyStateGame("No Blogs Published Yet");
-            } else {
-                document.getElementById('blog-grid').innerHTML = blogs.map(b => `<div class="card blog-card" onclick="viewBlog('${b._id}')"><img src="${b.image || 'https://via.placeholder.com/300'}" alt="cover"><div class="blog-content-preview"><h3 class="blog-title">${b.title}</h3><small>${new Date(b.date).toLocaleDateString()}</small></div></div>`).join(''); 
-            }
+            const res = await fetch('/api/blogs'); const blogs = await res.json(); allBlogs = blogs; 
+            if (blogs.length === 0) { document.getElementById('blog-grid').innerHTML = getEmptyStateGame("No Blogs Published Yet"); } 
+            else { document.getElementById('blog-grid').innerHTML = blogs.map(b => `<div class="card blog-card" onclick="viewBlog('${b._id}')"><img src="${b.image || 'https://via.placeholder.com/300'}" alt="cover"><div class="blog-content-preview"><h3 class="blog-title">${b.title}</h3><small>${new Date(b.date).toLocaleDateString()}</small></div></div>`).join(''); }
         } catch(e) { console.error("Could not load blogs"); }
     }
     
-    let blogPages = [];
-let currentBPage = 0;
-
-function viewBlog(id) { 
-    const blog = allBlogs.find(b => b._id === id); 
-    if(!blog) return; 
-    document.getElementById('bm-title').innerText = blog.title; 
-    document.getElementById('bm-date').innerText = new Date(blog.date).toLocaleDateString(); 
-    
-    // Split the content using the horizontal rule inserted by the teacher
-    blogPages = blog.content.split(/<hr[^>]*>/i);
-    if(blogPages.length === 0) blogPages = [blog.content];
-    currentBPage = 0;
-    
-    const img = document.getElementById('bm-img'); 
-    img.style.display = 'none'; // Forces the thumbnail to hide inside the booklet
-    
-    renderBlogPage();
-    openModal('blog-modal'); 
-}
-
-function renderBlogPage() {
-    document.getElementById('bm-content').innerHTML = blogPages[currentBPage] || "";
-    document.getElementById('bm-page-info').innerText = `Page ${currentBPage + 1} of ${blogPages.length}`;
-    document.getElementById('bm-prev').style.visibility = currentBPage === 0 ? 'hidden' : 'visible';
-    document.getElementById('bm-next').style.visibility = currentBPage === blogPages.length - 1 ? 'hidden' : 'visible';
-}
-
-function changeBlogPage(dir) {
-    currentBPage += dir;
-    renderBlogPage();
-    document.getElementById('blog-modal').scrollTo(0, 0); // scroll to top of modal on page change
-}
+    let blogPages = []; let currentBPage = 0;
+    function viewBlog(id) { 
+        const blog = allBlogs.find(b => b._id === id); if(!blog) return; 
+        document.getElementById('bm-title').innerText = blog.title; document.getElementById('bm-date').innerText = new Date(blog.date).toLocaleDateString(); 
+        blogPages = blog.content.split(/<hr[^>]*>/i); if(blogPages.length === 0) blogPages = [blog.content]; currentBPage = 0;
+        document.getElementById('bm-img').style.display = 'none'; 
+        renderBlogPage(); openModal('blog-modal'); 
+    }
+    function renderBlogPage() {
+        document.getElementById('bm-content').innerHTML = blogPages[currentBPage] || "";
+        document.getElementById('bm-page-info').innerText = `Page ${currentBPage + 1} of ${blogPages.length}`;
+        document.getElementById('bm-prev').style.visibility = currentBPage === 0 ? 'hidden' : 'visible';
+        document.getElementById('bm-next').style.visibility = currentBPage === blogPages.length - 1 ? 'hidden' : 'visible';
+    }
+    function changeBlogPage(dir) { currentBPage += dir; renderBlogPage(); document.getElementById('blog-modal').scrollTo(0, 0); }
     
     async function loadTests(isLive) { 
         try {
-            const res = await fetch('/api/tests'); 
-            const tests = await res.json(); 
-            const now = new Date(); 
+            const res = await fetch('/api/tests'); const tests = await res.json(); const now = new Date(); 
             const filteredTests = tests.filter(t => { const tEnd = t.endTime ? new Date(t.endTime) : null; if (isLive) { return t.isLive && tEnd && tEnd > now; } else { return !t.isLive || (t.isLive && tEnd && tEnd <= now); } }); 
             const container = document.getElementById(isLive?'live-list':'test-list');
-            if (filteredTests.length === 0) {
-                container.innerHTML = getEmptyStateGame(`No ${isLive ? 'Live' : 'Practice'} Tests Available`);
-            } else {
-                container.innerHTML = filteredTests.map(t => `<div class="card" style="border-left: 5px solid ${isLive ? 'red' : 'gold'}"><h3>${t.title} ${t.accessCode ? '🔒' : ''}</h3><p>${t.duration} Mins</p>${isLive ? `<p style="color:red">Start: ${new Date(t.startTime).toLocaleString()}</p>` : ''}<button class="btn btn-gold" onclick="startTest('${t._id}', ${t.accessCode ? true : false}, '${t.startTime}')">Start</button></div>`).join(''); 
-            }
+            if (filteredTests.length === 0) { container.innerHTML = getEmptyStateGame(`No ${isLive ? 'Live' : 'Practice'} Tests Available`); } 
+            else { container.innerHTML = filteredTests.map(t => `<div class="card" style="border-left: 5px solid ${isLive ? 'red' : 'gold'}"><h3>${t.title} ${t.accessCode ? '🔒' : ''}</h3><p>${t.duration} Mins</p>${isLive ? `<p style="color:red">Start: ${new Date(t.startTime).toLocaleString()}</p>` : ''}<button class="btn btn-gold" onclick="startTest('${t._id}', ${t.accessCode ? true : false}, '${t.startTime}')">Start</button></div>`).join(''); }
         } catch(e) { console.error("Could not load tests"); }
     }
     
     function startTimer(durationOrTimestamp) { 
-        clearInterval(timer); 
-        const now = Date.now();
-        if (durationOrTimestamp < 1000000) { testEndTime = now + (durationOrTimestamp * 60 * 1000); } 
-        else { testEndTime = durationOrTimestamp; }
+        clearInterval(timer); const now = Date.now();
+        if (durationOrTimestamp < 1000000) { testEndTime = now + (durationOrTimestamp * 60 * 1000); } else { testEndTime = durationOrTimestamp; }
         saveSession(testEndTime);
-
         timer = setInterval(() => { 
-            const currentNow = Date.now(); 
-            const remaining = Math.floor((testEndTime - currentNow) / 1000); 
+            const currentNow = Date.now(); const remaining = Math.floor((testEndTime - currentNow) / 1000); 
             if(remaining < 0) { clearInterval(timer); submitTest(true); return; } 
-            intervalSec++; 
-            const m = Math.floor(remaining / 60); 
-            const s = remaining % 60; 
+            intervalSec++; const m = Math.floor(remaining / 60); const s = remaining % 60; 
             const td = document.getElementById('mobile-timer');
             if(td) { td.innerText = `${m}:${s < 10 ? '0'+s : s}`; td.style.color = remaining < 60 ? "red" : "inherit"; }
         }, 1000); 
@@ -1431,27 +1191,13 @@ function changeBlogPage(dir) {
     async function startTest(id, hasCode, startTimeStr) { if (startTimeStr) { const now = new Date(); const start = new Date(startTimeStr); if (now < start) { document.getElementById('alert-msg').innerText = "Test Locked"; openModal('alert-modal'); return; } } let code = ""; if(hasCode) { code = prompt("Enter Password:"); if(!code) return; } const res = await fetch('/api/test/start', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ id, code, studentEmail: user.email }) }); const data = await res.json(); if(data.success) { currentTest = data.test; answers = new Array(currentTest.questions.length).fill(null); timeTaken = new Array(currentTest.questions.length).fill(0); qIndex = 0; startTimer(currentTest.duration); show('exam'); renderQ(); } else { document.getElementById('alert-msg').innerText = data.message; openModal('alert-modal'); } }
     
     function renderQ() { 
-        const q = currentTest.questions[qIndex]; 
-        document.getElementById('q-no').innerText = `Q${qIndex + 1}`; 
-        const m = q.marks || 4; 
-        const n = q.negative || 0; 
-        document.getElementById('q-marks').innerText = `+${m} / -${n}`; 
-        document.getElementById('q-text').innerHTML = q.text; 
-        const img = document.getElementById('q-img'); 
-        if(q.image) { img.src = q.image; img.style.display = 'block'; 
-        } else img.style.display = 'none'; document.getElementById('q-opts').innerHTML = q.options.map((o, i) => `<label class="mcq-label"><input type="radio" name="opt" value="${i}" ${answers[qIndex] === i ? 'checked' : ''}> <div>${o}</div></label>`).join(''); document.getElementById('palette').innerHTML = answers.map((a, i) => `<div class="p-btn ${a !== null ? 'done' : (i === qIndex ? 'active' : '')}" onclick="gotoQ(${i})">${i+1}</div>`).join(''); 
+        const q = currentTest.questions[qIndex]; document.getElementById('q-no').innerText = `Q${qIndex + 1}`; const m = q.marks || 4; const n = q.negative || 0; document.getElementById('q-marks').innerText = `+${m} / -${n}`; document.getElementById('q-text').innerHTML = q.text; const img = document.getElementById('q-img'); 
+        if(q.image) { img.src = q.image; img.style.display = 'block'; } else img.style.display = 'none'; document.getElementById('q-opts').innerHTML = q.options.map((o, i) => `<label class="mcq-label"><input type="radio" name="opt" value="${i}" ${answers[qIndex] === i ? 'checked' : ''}> <div>${o}</div></label>`).join(''); document.getElementById('palette').innerHTML = answers.map((a, i) => `<div class="p-btn ${a !== null ? 'done' : (i === qIndex ? 'active' : '')}" onclick="gotoQ(${i})">${i+1}</div>`).join(''); 
     }
     
     function saveNext() { 
-        const sel = document.querySelector('input[name="opt"]:checked'); 
-        answers[qIndex] = sel ? parseInt(sel.value) : null; 
-        timeTaken[qIndex] = (timeTaken[qIndex] || 0) + intervalSec; 
-        intervalSec = 0; 
-        saveSession(); 
-        
-        const pBtns = document.getElementById('palette').children;
-        if(answers[qIndex] !== null) pBtns[qIndex].classList.add('done');
-        
+        const sel = document.querySelector('input[name="opt"]:checked'); answers[qIndex] = sel ? parseInt(sel.value) : null; timeTaken[qIndex] = (timeTaken[qIndex] || 0) + intervalSec; intervalSec = 0; saveSession(); 
+        const pBtns = document.getElementById('palette').children; if(answers[qIndex] !== null) pBtns[qIndex].classList.add('done');
         if(qIndex < currentTest.questions.length - 1) { qIndex++; renderQ(); } else { alert("This is the last question."); } 
     }
 
@@ -1460,30 +1206,22 @@ function changeBlogPage(dir) {
     async function submitTest(auto = false) { if(!auto && !confirm("Submit?")) return; clearInterval(timer); const res = await fetch('/api/test/submit', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ testId: currentTest._id, answers, timeTaken, studentName: user.name, studentEmail: user.email }) }); const data = await res.json(); if(data.success) { clearSession(); document.getElementById('exam').classList.remove('active'); show('results'); viewSheet(data.resultId); } }
     
     async function viewSheet(id) { 
-        const res = await fetch('/api/result-details', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ resultId: id }) }); 
-        const data = await res.json(); if(!data.success) return alert(data.message); const r = data.result; 
-        let correct = 0, wrong = 0, skipped = 0;
+        const res = await fetch('/api/result-details', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ resultId: id }) }); const data = await res.json(); if(!data.success) return alert(data.message); const r = data.result; let correct = 0, wrong = 0, skipped = 0;
         data.questions.forEach(q => { if(q.status === 'Correct') correct++; else if(q.status === 'Wrong') wrong++; else skipped++; });
         document.getElementById('review-stats').innerHTML = `<span>Score: ${r.score}/${r.totalMarks}</span> | <span>Rank: #${data.rank}</span> | <span>${r.percentage.toFixed(1)}%</span>`; 
         let html = `<div style="display:flex; flex-wrap:wrap; gap:20px; justify-content:center; margin-bottom:30px;"><div style="flex:1; min-width:300px; max-width:400px;"><canvas id="resultChart"></canvas></div><div style="flex:1; min-width:300px; max-height:300px; overflow-y:auto; border:1px solid #eee; padding:10px; border-radius:8px;"><h3 style="text-align:center; margin-top:0;">Leaderboard</h3><table style="width:100%; font-size:0.9rem;"><tr style="background:#f1f5f9;"><th>#</th><th>Student</th><th>Score</th></tr>${data.leaderboard.map(rec => `<tr style="${rec.rank === data.rank ? 'background:#e0f2fe; font-weight:bold;' : ''}"><td>#${rec.rank}</td><td>${rec.name}</td><td>${rec.score}</td></tr>`).join('')}</table></div></div><hr><h3>Sheet</h3>`;
         html += data.questions.map((q, i) => `<div class="review-row"><p><strong>Q${i+1}:</strong> ${q.text}</p>${q.image ? `<img src="${q.image}" style="height:100px">` : ''}<div style="display:grid; grid-template-columns: 1fr 1fr; gap:5px;">${q.options.map((opt, idx) => `<div style="padding:5px; border:1px solid #ddd; ${idx === q.correct ? 'background:#dcfce7; border-color:green;' : ''} ${idx === q.studentAnswer && idx !== q.correct ? 'background:#fee2e2; border-color:red;' : ''}"> ${opt} </div>`).join('')}</div><p style="margin-top:5px; font-size:0.9rem;">Status: <span class="badge ${q.status==='Correct'?'bg-green':'bg-red'}">${q.status}</span></p>${q.solution || q.solutionImage ? `<div style="background:#f0f9ff; padding:10px; margin-top:5px;"><strong>💡 Solution:</strong><br>${q.solution}${q.solutionImage ? `<br><img src="${q.solutionImage}" style="max-height:150px; margin-top:10px;">` : ''}</div>` : ''}</div>`).join('');
         document.getElementById('review-body').innerHTML = html; openModal('review-modal');
-        const ctx = document.getElementById('resultChart').getContext('2d');
-        if(resultChartInstance) resultChartInstance.destroy();
-        resultChartInstance = new Chart(ctx, { type: 'pie', data: { labels: ['Correct', 'Wrong', 'Skipped'], datasets: [{ data: [correct, wrong, skipped], backgroundColor: ['#22c55e', '#ef4444', '#cbd5e1'] }] } });
+        const ctx = document.getElementById('resultChart').getContext('2d'); if(resultChartInstance) resultChartInstance.destroy(); resultChartInstance = new Chart(ctx, { type: 'pie', data: { labels: ['Correct', 'Wrong', 'Skipped'], datasets: [{ data: [correct, wrong, skipped], backgroundColor: ['#22c55e', '#ef4444', '#cbd5e1'] }] } });
     }
     
     async function loadResults(type) { const res = await fetch('/api/student/results/online', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ email: user.email }) }); const data = await res.json(); document.getElementById('result-list').innerHTML = `<table><tr><th>Date</th><th>Test</th><th>Score</th><th>Action</th></tr>${data.results.filter(r => r.testType === type).map(r => `<tr><td>${new Date(r.date).toLocaleDateString()}</td><td>${r.testTitle}</td><td>${r.score}</td><td><button class="btn btn-gold btn-small" onclick="viewSheet('${r._id}')">View</button></td></tr>`).join('')}</table>`; }
     
     async function loadOfflineResults() { 
         try {
-            const res = await fetch('/api/results/offline'); 
-            const data = await res.json(); 
-            if (data.length === 0) {
-                document.getElementById('result-list').innerHTML = getEmptyStateGame("No Offline Results Uploaded");
-            } else {
-                document.getElementById('result-list').innerHTML = data.map(r => `<h3>${r.title}</h3><table><tr><th>Rank</th><th>Student</th><th>Marks</th><th>Sheet</th></tr>${r.records.map(rec => `<tr><td>#${rec.rank}</td><td>${rec.studentName}</td><td>${rec.obtainedMarks}</td><td>${rec.copyLink ? `<a href="${rec.copyLink}" target="_blank" style="color:blue">View</a>` : '-'}</td></tr>`).join('')}</table>`).join(''); 
-            }
+            const res = await fetch('/api/results/offline'); const data = await res.json(); 
+            if (data.length === 0) { document.getElementById('result-list').innerHTML = getEmptyStateGame("No Offline Results Uploaded"); } 
+            else { document.getElementById('result-list').innerHTML = data.map(r => `<h3>${r.title}</h3><table><tr><th>Rank</th><th>Student</th><th>Marks</th><th>Sheet</th></tr>${r.records.map(rec => `<tr><td>#${rec.rank}</td><td>${rec.studentName}</td><td>${rec.obtainedMarks}</td><td>${rec.copyLink ? `<a href="${rec.copyLink}" target="_blank" style="color:blue">View</a>` : '-'}</td></tr>`).join('')}</table>`).join(''); }
         } catch(e) { console.error(e); }
     }
     
@@ -1492,42 +1230,19 @@ function changeBlogPage(dir) {
     
     function renderLib(cat) { 
         const items = allMats.filter(m => m.category === cat || (cat === '11th Class' && m.category.includes('11'))); 
-        if (items.length === 0) {
-            document.getElementById('lib-content').innerHTML = getEmptyStateGame(`No items available in ${cat}`);
-        } else {
-            document.getElementById('lib-content').innerHTML = items.map(m => `
-                <div class="card">
-                     <img src="${m.image||''}" style="height:180px; width: 100%; background:#f8fafc; object-fit:contain; border-radius: 8px; border: 1px solid #eee;">
-                     <h4 style="margin: 15px 0 10px 0;">${m.title} ${m.accessCode?'🔒':''}</h4>
-                     <button class="btn btn-gold" onclick="openMat('${m._id}')">Open</button>
-                </div>`).join(''); 
-        }
+        if (items.length === 0) { document.getElementById('lib-content').innerHTML = getEmptyStateGame(`No items available in ${cat}`); } 
+        else { document.getElementById('lib-content').innerHTML = items.map(m => `<div class="card"><img src="${m.image||''}" style="height:180px; width: 100%; background:#f8fafc; object-fit:contain; border-radius: 8px; border: 1px solid #eee;"><h4 style="margin: 15px 0 10px 0;">${m.title} ${m.accessCode?'🔒':''}</h4><button class="btn btn-gold" onclick="openMat('${m._id}')">Open</button></div>`).join(''); }
     }
     
     function resetLib() { document.getElementById('lib-cats').style.display = 'grid'; document.getElementById('lib-back').style.display = 'none'; document.getElementById('lib-content').innerHTML = ''; }
 
     async function openMat(id) { 
-    const mat = allMats.find(m => m._id === id);
-    let code = "";
-    
-    // Only prompt for a password if the teacher actually set one!
-    if (mat && mat.accessCode) {
-        code = prompt("Enter Password to unlock:");
-        if (code === null) return; // Stop if the student clicks Cancel
+        const mat = allMats.find(m => m._id === id); let code = "";
+        if (mat && mat.accessCode) { code = prompt("Enter Password to unlock:"); if (code === null) return; }
+        const res = await fetch('/api/material/unlock', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id, code}) }); const data = await res.json(); 
+        if(data.success) { openPdfViewer(mat ? mat.title : 'Library Material', data.link); } else { alert("Wrong Password"); }
     }
     
-    const res = await fetch('/api/material/unlock', { 
-        method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id, code}) 
-    }); 
-    const data = await res.json(); 
-    
-    if(data.success) {
-        // Open inside our new custom viewer instead of window.open()
-        openPdfViewer(mat ? mat.title : 'Library Material', data.link);
-    } else {
-        alert("Wrong Password"); 
-    }
-}
     function renderCreatePalette() { const p = document.getElementById('create-palette'); if(!p) return; p.innerHTML = draftQ.map((q, i) => `<div class="q-btn ${i === editQIndex ? 'active' : ''}" onclick="loadDraftQ(${i})">${i+1}</div>`).join('') + `<div class="q-btn" onclick="clearQForm()" style="color:green; font-size:1.2rem;">+</div>`; document.getElementById('q-count').innerText = draftQ.length; }
     
     function saveDraftQ() { const qData = { text: document.getElementById('q-editor').innerHTML, topic: document.getElementById('q-topic').value, options: [0,1,2,3].map(i => document.getElementById('op'+i).innerHTML), correct: parseInt(document.getElementById('q-corr').value), marks: parseFloat(document.getElementById('q-marks').value) || 4, negative: parseFloat(document.getElementById('q-neg').value) || 0, solution: document.getElementById('q-sol').innerHTML, image: tempImg, solutionImage: tempSolImg }; if(editQIndex > -1) { if(!qData.image) qData.image = draftQ[editQIndex].image; if(!qData.solutionImage) qData.solutionImage = draftQ[editQIndex].solutionImage; draftQ[editQIndex] = qData; } else { draftQ.push(qData); } clearQForm(); }
@@ -1539,21 +1254,14 @@ function changeBlogPage(dir) {
 
     async function loadSchedule() {
         try {
-            const res = await fetch('/api/schedule');
-            const data = await res.json();
-            const list = document.getElementById('schedule-list');
+            const res = await fetch('/api/schedule'); const data = await res.json(); const list = document.getElementById('schedule-list');
             if(list) {
-                if (data.length === 0) {
-                    list.innerHTML = `<tr><td colspan="4" style="border:none; padding:0;">${getEmptyStateGame("No Upcoming Schedule")}</td></tr>`;
-                } else {
+                if (data.length === 0) { list.innerHTML = `<tr><td colspan="4" style="border:none; padding:0;">${getEmptyStateGame("No Upcoming Schedule")}</td></tr>`; } 
+                else {
                     const now = new Date();
                     list.innerHTML = data.map(s => {
-                        const time = new Date(s.time);
-                        const diff = (now - time) / 1000 / 60; 
-                        let status = "", colorClass = "";
-                        if (diff < 0) { status = "Upcoming"; colorClass = "color: blue;"; } 
-                        else if (diff >= 0 && diff <= 10) { status = "Live"; colorClass = "color: var(--green);"; } 
-                        else { status = "Expired"; colorClass = "color: var(--red);"; }
+                        const time = new Date(s.time); const diff = (now - time) / 1000 / 60; let status = "", colorClass = "";
+                        if (diff < 0) { status = "Upcoming"; colorClass = "color: blue;"; } else if (diff >= 0 && diff <= 10) { status = "Live"; colorClass = "color: var(--green);"; } else { status = "Expired"; colorClass = "color: var(--red);"; }
                         return `<tr><td><span class="badge bg-green">${s.cls}</span></td><td><b>${s.topic}</b></td><td>${time.toLocaleString()}</td><td style="font-weight:bold; ${colorClass}" class="blink">${status}</td></tr>`;
                     }).join('');
                 }
@@ -1561,98 +1269,47 @@ function changeBlogPage(dir) {
         } catch(e) { console.error(e); }
     }
 
-    async function loadManageSchedule() {
-        const res = await fetch('/api/schedule');
-        const data = await res.json();
-        document.getElementById('manage-area').innerHTML = `<button class="btn btn-gold btn-small" style="margin-bottom:10px;" onclick="initAddSchedule()">+ Add New Schedule</button><table><tr><th>Topic</th><th>Time</th><th>Action</th></tr>${data.map(s => `<tr><td>${s.topic} (${s.cls})</td><td>${new Date(s.time).toLocaleString()}</td><td><button class="btn-small" onclick="editSchedule('${s._id}')">Edit</button> <button class="btn-small btn-red" onclick="deleteItem('schedule','${s._id}')">Del</button></td></tr>`).join('')}</table>`;
-    }
-
+    async function loadManageSchedule() { const res = await fetch('/api/schedule'); const data = await res.json(); document.getElementById('manage-area').innerHTML = `<button class="btn btn-gold btn-small" style="margin-bottom:10px;" onclick="initAddSchedule()">+ Add New Schedule</button><table><tr><th>Topic</th><th>Time</th><th>Action</th></tr>${data.map(s => `<tr><td>${s.topic} (${s.cls})</td><td>${new Date(s.time).toLocaleString()}</td><td><button class="btn-small" onclick="editSchedule('${s._id}')">Edit</button> <button class="btn-small btn-red" onclick="deleteItem('schedule','${s._id}')">Del</button></td></tr>`).join('')}</table>`; }
     function initAddSchedule() { editingScheduleId = null; showAdm('add-schedule'); }
     
-    async function editSchedule(id) {
-        const res = await fetch('/api/schedule'); 
-        const data = await res.json();
-        const s = data.find(item => item._id === id);
-        if(s) {
-            editingScheduleId = id;
-            showAdm('add-schedule');
-            document.getElementById('s-cls').value = s.cls;
-            document.getElementById('s-topic').value = s.topic;
-            document.getElementById('s-pass').value = s.password || "";
-            const d = new Date(s.time);
-            d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
-            document.getElementById('s-time').value = d.toISOString().slice(0, 16);
-        }
-    }
+    async function editSchedule(id) { const res = await fetch('/api/schedule'); const data = await res.json(); const s = data.find(item => item._id === id); if(s) { editingScheduleId = id; showAdm('add-schedule'); document.getElementById('s-cls').value = s.cls; document.getElementById('s-topic').value = s.topic; document.getElementById('s-pass').value = s.password || ""; const d = new Date(s.time); d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); document.getElementById('s-time').value = d.toISOString().slice(0, 16); } }
 
     async function saveSchedule() {
         const body = { cls: document.getElementById('s-cls').value, topic: document.getElementById('s-topic').value, password: document.getElementById('s-pass').value, time: new Date(document.getElementById('s-time').value) };
-        const method = editingScheduleId ? 'PUT' : 'POST';
-        const url = editingScheduleId ? `/api/admin/schedule/${editingScheduleId}` : '/api/admin/schedule';
-        await fetch(url, { method, headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
-        alert("Saved!"); showAdm('manage'); loadManageSchedule();
+        const method = editingScheduleId ? 'PUT' : 'POST'; const url = editingScheduleId ? `/api/admin/schedule/${editingScheduleId}` : '/api/admin/schedule';
+        await fetch(url, { method, headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) }); alert("Saved!"); showAdm('manage'); loadManageSchedule();
     }
 
     async function loadStories() {
         try {
-            const res = await fetch('/api/stories');
-            const data = await res.json();
-            const track = document.getElementById('story-track');
+            const res = await fetch('/api/stories'); const data = await res.json(); const track = document.getElementById('story-track');
             if(!track || data.length === 0) return;
-            
             const createCard = (s) => {
-                // Generates an initial-based avatar matching your site's theme (Navy background, Gold text)
                 const fallbackImg = `https://ui-avatars.com/api/?name=${encodeURIComponent(s.name)}&background=0f172a&color=fbbf24&bold=true`;
-                
-                return `
-                <div class="story-card">
-                    <div class="story-header">
-                        <img src="${s.image || fallbackImg}" class="story-img" onerror="this.onerror=null; this.src='${fallbackImg}';">
-                        <div class="story-info"><h4>${s.name}</h4><small>${s.status}</small></div>
-                        ${(user && user.role === 'admin') ? `<button onclick="deleteItem('story', '${s._id}')" style="margin-left:auto; color:red; border:none; background:none; cursor:pointer;">X</button>` : ''}
-                    </div>
-                    <div class="story-text">"${s.experience}"</div>
-                </div>`;
+                return `<div class="story-card"><div class="story-header"><img src="${s.image || fallbackImg}" class="story-img" onerror="this.onerror=null; this.src='${fallbackImg}';"><div class="story-info"><h4>${s.name}</h4><small>${s.status}</small></div>${(user && user.role === 'admin') ? `<button onclick="deleteItem('story', '${s._id}')" style="margin-left:auto; color:red; border:none; background:none; cursor:pointer;">X</button>` : ''}</div><div class="story-text">"${s.experience}"</div></div>`;
             };
-            
-            const cardsHTML = data.map(createCard).join('');
-            track.innerHTML = cardsHTML + cardsHTML + cardsHTML; 
+            const cardsHTML = data.map(createCard).join(''); track.innerHTML = cardsHTML + cardsHTML + cardsHTML; 
         } catch(e) { console.error(e); }
     }
 
     async function submitStory() {
         const body = { name: document.getElementById('st-name').value, status: document.getElementById('st-status').value, experience: document.getElementById('st-exp').value, image: tempImg };
         if(!body.name || !body.experience) return alert("Please fill Name and Experience.");
-        const res = await fetch('/api/story', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) });
-        const data = await res.json();
+        const res = await fetch('/api/story', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) }); const data = await res.json();
         if(data.success) { alert("Story Submitted!"); closeModal('story-modal'); tempImg = ""; loadStories(); } else { alert("Error"); }
     }
 
     async function loadVideosList() {
         try {
-            const res = await fetch('/api/videos');
-            const data = await res.json();
-            
-            if (data.length === 0) {
-                document.getElementById('video-list').innerHTML = getEmptyStateGame("No Video Lectures Added");
-            } else {
-                document.getElementById('video-list').innerHTML = data.map(v => `
-                    <div class="card">
-                        <div class="video-wrapper">
-                            <iframe src="${v.link}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                        </div>
-                        <h4 style="margin: 10px 0 5px 0;">${v.title}</h4>
-                        <small style="color:var(--gold); font-weight:bold;">${v.category}</small>
-                    </div>
-                `).join('');
-            }
+            const res = await fetch('/api/videos'); const data = await res.json();
+            if (data.length === 0) { document.getElementById('video-list').innerHTML = getEmptyStateGame("No Video Lectures Added"); } 
+            else { document.getElementById('video-list').innerHTML = data.map(v => `<div class="card"><div class="video-wrapper"><iframe src="${v.link}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div><h4 style="margin: 10px 0 5px 0;">${v.title}</h4><small style="color:var(--gold); font-weight:bold;">${v.category}</small></div>`).join(''); }
         } catch(e) { console.error(e); }
     }
 
     async function uploadVideo() {
         const body = { title: document.getElementById('v-title').value, link: document.getElementById('v-link').value, category: document.getElementById('v-cat').value };
-        await fetch('/api/admin/video', { method: 'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
-        alert("Video Added!"); showAdm('video'); loadVideosList();
+        await fetch('/api/admin/video', { method: 'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) }); alert("Video Added!"); showAdm('video'); loadVideosList();
     }
 
     async function submitDoubt() {
@@ -1660,37 +1317,21 @@ function changeBlogPage(dir) {
         const text = document.getElementById('d-text').value;
         if(!text) return alert("Type your doubt!");
         await fetch('/api/doubt', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ studentEmail: user.email, studentName: user.name, text, image: tempImg }) });
-        alert("Doubt sent! Teacher will review it soon.");
-        closeModal('ask-doubt-modal'); tempImg = ""; loadStudentDoubts();
+        alert("Doubt sent! Teacher will review it soon."); closeModal('ask-doubt-modal'); tempImg = ""; loadStudentDoubts();
     }
 
     async function loadStudentDoubts() {
         if(!user) return;
         const res = await fetch('/api/student/doubts', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ email: user.email }) });
         const data = await res.json();
-        
-        if (data.length === 0) {
-            document.getElementById('doubt-student-list').innerHTML = getEmptyStateGame("You haven't asked any doubts yet.");
-        } else {
-            document.getElementById('doubt-student-list').innerHTML = data.map(db => `
-                <div class="card doubt-card ${db.status === 'Answered' ? 'answered' : ''}">
-                    <div style="display:flex; justify-content:space-between;"><b>My Doubt:</b> <span class="badge ${db.status === 'Answered' ? 'bg-green' : 'bg-red'}">${db.status}</span></div>
-                    <p>${db.text}</p>
-                    ${db.image ? (db.image.startsWith('data:application/pdf') ? 
-    `<div style="margin-top:10px;"><button class="btn btn-gold btn-small" onclick="openPdfViewer('Attached PDF', '${db.image}')">📄 View PDF Attachment</button></div>` : 
-    `<img src="${db.image}" style="height:100px; border:1px solid #ccc; cursor:pointer; margin-top:10px;" onclick="openPdfViewer('Image Attachment', '${db.image}')" title="Click to enlarge">`
-) : ''}
-                    <hr>
-                    ${db.status === 'Answered' ? `<div style="background:#f0f9ff; padding:10px; margin-top:10px; border-radius:6px;"><b>Teacher's Reply:</b><br>${db.replyText} ${db.replyImage ? `<br><img src="${db.replyImage}" style="height:100px; margin-top:5px;">` : ''}</div>` : ''}
-                </div>
-            `).join('');
+        if (data.length === 0) { document.getElementById('doubt-student-list').innerHTML = getEmptyStateGame("You haven't asked any doubts yet."); } 
+        else {
+            document.getElementById('doubt-student-list').innerHTML = data.map(db => `<div class="card doubt-card ${db.status === 'Answered' ? 'answered' : ''}"><div style="display:flex; justify-content:space-between;"><b>My Doubt:</b> <span class="badge ${db.status === 'Answered' ? 'bg-green' : 'bg-red'}">${db.status}</span></div><p>${db.text}</p>${db.image ? (db.image.startsWith('data:application/pdf') ? `<div style="margin-top:10px;"><button class="btn btn-gold btn-small" onclick="openPdfViewer('Attached PDF', '${db.image}')">📄 View PDF Attachment</button></div>` : `<img src="${db.image}" style="height:100px; border:1px solid #ccc; cursor:pointer; margin-top:10px;" onclick="openPdfViewer('Image Attachment', '${db.image}')" title="Click to enlarge">`) : ''}<hr>${db.status === 'Answered' ? `<div style="background:#f0f9ff; padding:10px; margin-top:10px; border-radius:6px;"><b>Teacher's Reply:</b><br>${db.replyText} ${db.replyImage ? `<br><img src="${db.replyImage}" style="height:100px; margin-top:5px;">` : ''}</div>` : ''}</div>`).join('');
         }
     }
 
     async function replyDoubt(id) {
-        const rText = document.getElementById(`reply-text-${id}`).value;
-        const rImg = document.getElementById(`reply-img-${id}`).src;
-        const finalImg = rImg.includes('data:image') ? rImg : "";
+        const rText = document.getElementById(`reply-text-${id}`).value; const rImg = document.getElementById(`reply-img-${id}`).src; const finalImg = rImg.includes('data:image') ? rImg : "";
         await fetch(`/api/admin/doubt/${id}`, { method: 'PUT', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ replyText: rText, replyImage: finalImg }) });
         alert("Reply Sent!"); showAdm('doubts');
     }
@@ -1698,11 +1339,9 @@ function changeBlogPage(dir) {
     let currentPOTD = null;
     async function loadPOTD() {
         try {
-            const res = await fetch('/api/potd/today');
-            const data = await res.json();
+            const res = await fetch('/api/potd/today'); const data = await res.json();
             if(data.success) {
-                currentPOTD = data.potd;
-                document.getElementById('potd-container').style.display = 'block';
+                currentPOTD = data.potd; document.getElementById('potd-container').style.display = 'block';
                 document.getElementById('potd-content').innerHTML = currentPOTD.text + (currentPOTD.image ? `<br><img src="${currentPOTD.image}" style="max-height:150px; margin-top:10px; border-radius:8px;">` : '');
                 document.getElementById('potd-opts').innerHTML = currentPOTD.options.map((opt, i) => `<button class="btn" style="background:rgba(255,255,255,0.1); color:white; border:1px solid rgba(255,255,255,0.3); text-align:left;" onclick="checkPOTD(${i})">${opt}</button>`).join('');
             }
@@ -1710,130 +1349,46 @@ function changeBlogPage(dir) {
     }
 
     function checkPOTD(sel) {
-        const resDiv = document.getElementById('potd-result');
-        resDiv.style.display = 'block';
-        if(sel === currentPOTD.correct) {
-            resDiv.innerHTML = `✅ Correct!<br><br><b>Solution:</b><br>${currentPOTD.solution} ${currentPOTD.solutionImage ? `<br><img src="${currentPOTD.solutionImage}" style="max-height:100px; margin-top:5px;">` : ''}`;
-            resDiv.style.background = 'rgba(34, 197, 94, 0.2)'; 
-        } else {
-            resDiv.innerHTML = `❌ Incorrect. Try again or check later!`;
-            resDiv.style.background = 'rgba(239, 68, 68, 0.2)'; 
-        }
+        const resDiv = document.getElementById('potd-result'); resDiv.style.display = 'block';
+        if(sel === currentPOTD.correct) { resDiv.innerHTML = `✅ Correct!<br><br><b>Solution:</b><br>${currentPOTD.solution} ${currentPOTD.solutionImage ? `<br><img src="${currentPOTD.solutionImage}" style="max-height:100px; margin-top:5px;">` : ''}`; resDiv.style.background = 'rgba(34, 197, 94, 0.2)'; } 
+        else { resDiv.innerHTML = `❌ Incorrect. Try again or check later!`; resDiv.style.background = 'rgba(239, 68, 68, 0.2)'; }
     }
 
     async function uploadPOTD() {
         const body = { dateStr: document.getElementById('potd-date').value, text: document.getElementById('potd-text').innerHTML, image: tempImg, options: [0,1,2,3].map(i => document.getElementById('po'+i).value), correct: parseInt(document.getElementById('potd-corr').value), solution: document.getElementById('potd-sol').innerHTML, solutionImage: tempSolImg };
-        await fetch('/api/admin/potd', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) });
-        alert("POTD Set/Updated!"); tempImg = ""; tempSolImg = ""; showAdm('potd');
+        await fetch('/api/admin/potd', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) }); alert("POTD Set/Updated!"); tempImg = ""; tempSolImg = ""; showAdm('potd');
     }
 
     function editPOTD(index) {
-        if(!window.allPOTDs || !window.allPOTDs[index]) return;
-        const p = window.allPOTDs[index];
-        
-        document.getElementById('potd-date').value = p.dateStr;
-        document.getElementById('potd-text').innerHTML = p.text;
-        
-        if(p.image) { 
-            document.getElementById('potd-img').src = p.image; 
-            document.getElementById('potd-img').style.display = 'inline-block'; 
-            tempImg = p.image; 
-        } else { 
-            document.getElementById('potd-img').style.display = 'none'; 
-            tempImg = ""; 
-        }
-        
-        for(let i=0; i<4; i++) document.getElementById('po'+i).value = p.options[i] || "";
-        document.getElementById('potd-corr').value = p.correct;
-        document.getElementById('potd-sol').innerHTML = p.solution || "";
-        
-        if(p.solutionImage) { 
-            document.getElementById('potd-sol-img').src = p.solutionImage; 
-            document.getElementById('potd-sol-img').style.display = 'inline-block'; 
-            tempSolImg = p.solutionImage; 
-        } else { 
-            document.getElementById('potd-sol-img').style.display = 'none'; 
-            tempSolImg = ""; 
-        }
-
-        window.scrollTo(0, 0); 
+        if(!window.allPOTDs || !window.allPOTDs[index]) return; const p = window.allPOTDs[index]; document.getElementById('potd-date').value = p.dateStr; document.getElementById('potd-text').innerHTML = p.text;
+        if(p.image) { document.getElementById('potd-img').src = p.image; document.getElementById('potd-img').style.display = 'inline-block'; tempImg = p.image; } else { document.getElementById('potd-img').style.display = 'none'; tempImg = ""; }
+        for(let i=0; i<4; i++) document.getElementById('po'+i).value = p.options[i] || ""; document.getElementById('potd-corr').value = p.correct; document.getElementById('potd-sol').innerHTML = p.solution || "";
+        if(p.solutionImage) { document.getElementById('potd-sol-img').src = p.solutionImage; document.getElementById('potd-sol-img').style.display = 'inline-block'; tempSolImg = p.solutionImage; } else { document.getElementById('potd-sol-img').style.display = 'none'; tempSolImg = ""; } window.scrollTo(0, 0); 
     }
 
     async function loadAnalytics() {
         if(!user) return alert("Please Login!");
-        const res = await fetch('/api/student/analytics', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ email: user.email }) });
-        const data = await res.json();
+        const res = await fetch('/api/student/analytics', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ email: user.email }) }); const data = await res.json();
         if(!data.success) return alert("Error loading analytics");
-
         const topics = Object.keys(data.stats);
         if(topics.length === 0) return alert("Take some tests first to generate your analytics!");
-
-        const accuracyData = topics.map(t => {
-            const stat = data.stats[t];
-            let pct = stat.total > 0 ? ((stat.obtained / stat.total) * 100) : 0;
-            if (pct < 0) pct = 0; 
-            return pct.toFixed(1);
-        });
-
+        const accuracyData = topics.map(t => { const stat = data.stats[t]; let pct = stat.total > 0 ? ((stat.obtained / stat.total) * 100) : 0; if (pct < 0) pct = 0; return pct.toFixed(1); });
         openModal('analytics-modal');
-
-        const ctx = document.getElementById('topicRadarChart').getContext('2d');
-        if(topicRadarInstance) topicRadarInstance.destroy();
-        
-        topicRadarInstance = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: topics,
-                datasets: [{
-                    label: 'Score Percentage (%)',
-                    data: accuracyData,
-                    backgroundColor: 'rgba(59, 130, 246, 0.8)',
-                    borderColor: 'rgba(37, 99, 235, 1)',
-                    borderWidth: 1,
-                    borderRadius: 4
-                }]
-            },
-            options: { 
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: { 
-                    y: { beginAtZero: true, max: 100, title: { display: true, text: 'Score Percentage (%)' } },
-                    x: { title: { display: true, text: 'Tests Given' } }
-                },
-                plugins: { legend: { display: false } }
-            }
-        });
-
+        const ctx = document.getElementById('topicRadarChart').getContext('2d'); if(topicRadarInstance) topicRadarInstance.destroy();
+        topicRadarInstance = new Chart(ctx, { type: 'bar', data: { labels: topics, datasets: [{ label: 'Score Percentage (%)', data: accuracyData, backgroundColor: 'rgba(59, 130, 246, 0.8)', borderColor: 'rgba(37, 99, 235, 1)', borderWidth: 1, borderRadius: 4 }] }, options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, max: 100, title: { display: true, text: 'Score Percentage (%)' } }, x: { title: { display: true, text: 'Tests Given' } } }, plugins: { legend: { display: false } } } });
         let weakestTopic = "", minAcc = 101;
-        topics.forEach((t, i) => { 
-            let acc = parseFloat(accuracyData[i]);
-            if(acc < minAcc && data.stats[t].total > 0) { 
-                minAcc = acc; 
-                weakestTopic = t; 
-            } 
-        });
-        
+        topics.forEach((t, i) => { let acc = parseFloat(accuracyData[i]); if(acc < minAcc && data.stats[t].total > 0) { minAcc = acc; weakestTopic = t; } });
         const adviceDiv = document.getElementById('analytics-advice');
-        if(weakestTopic) {
-            adviceDiv.innerHTML = `📉 Based on your history, your weakest test performance is <b>${weakestTopic}</b> (Score: ${minAcc}%). We strongly recommend revising this section!`;
-        } else {
-            adviceDiv.innerHTML = `📈 Great job! Keep giving tests so we can build a stronger profile of your weak areas.`;
-        }
+        if(weakestTopic) { adviceDiv.innerHTML = `📉 Based on your history, your weakest test performance is <b>${weakestTopic}</b> (Score: ${minAcc}%). We strongly recommend revising this section!`; } else { adviceDiv.innerHTML = `📈 Great job! Keep giving tests so we can build a stronger profile of your weak areas.`; }
     }
 
     let allRefTools = [];
     async function loadRefToolsStudent() {
         try {
-            const res = await fetch('/api/reftools');
-            allRefTools = await res.json();
-            const btnContainer = document.getElementById('ref-btn-container');
+            const res = await fetch('/api/reftools'); allRefTools = await res.json(); const btnContainer = document.getElementById('ref-btn-container');
             if(btnContainer) {
-                if(allRefTools.length > 0) {
-                    btnContainer.innerHTML = allRefTools.map((rt, i) => `<button class="btn ${i===0?'btn-red':'btn-gold'} btn-small ref-btn-dynamic" onclick="showRefImg(${i}, this)">${rt.title}</button>`).join('');
-                    showRefImg(0, btnContainer.firstChild);
-                } else {
-                    document.getElementById('ref-img-display').innerHTML = getEmptyStateGame("No Reference Tools Uploaded");
-                }
+                if(allRefTools.length > 0) { btnContainer.innerHTML = allRefTools.map((rt, i) => `<button class="btn ${i===0?'btn-red':'btn-gold'} btn-small ref-btn-dynamic" onclick="showRefImg(${i}, this)">${rt.title}</button>`).join(''); showRefImg(0, btnContainer.firstChild); } 
+                else { document.getElementById('ref-img-display').innerHTML = getEmptyStateGame("No Reference Tools Uploaded"); }
             }
         } catch(e) { console.error(e); }
     }
@@ -1841,126 +1396,61 @@ function changeBlogPage(dir) {
     function showRefImg(idx, btnElem) {
         document.querySelectorAll('.ref-btn-dynamic').forEach(b => { b.classList.remove('btn-red'); b.classList.add('btn-gold'); });
         if(btnElem) { btnElem.classList.remove('btn-gold'); btnElem.classList.add('btn-red'); }
-        const rt = allRefTools[idx];
-        document.getElementById('ref-img-display').innerHTML = `<img src="${rt.image}" style="max-width:100%; border-radius:8px; box-shadow:0 4px 10px rgba(0,0,0,0.5);">`;
+        const rt = allRefTools[idx]; document.getElementById('ref-img-display').innerHTML = `<img src="${rt.image}" style="max-width:100%; border-radius:8px; box-shadow:0 4px 10px rgba(0,0,0,0.5);">`;
     }
 
     async function uploadRefTool() {
-        if(!tempImg) return alert("Please upload an image first!");
-        const title = document.getElementById('rt-title').value;
-        if(!title) return alert("Please provide a title!");
-        
-        const body = { title: title, image: tempImg };
-        await fetch('/api/admin/reftool', { method: 'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
-        
-        alert("Reference Tool Added Successfully!");
-        tempImg = "";
-        showAdm('reftool'); 
-        loadRefToolsStudent(); 
+        if(!tempImg) return alert("Please upload an image first!"); const title = document.getElementById('rt-title').value; if(!title) return alert("Please provide a title!");
+        const body = { title: title, image: tempImg }; await fetch('/api/admin/reftool', { method: 'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) }); alert("Reference Tool Added Successfully!"); tempImg = ""; showAdm('reftool'); loadRefToolsStudent(); 
     }
 
      function editDoubtReply(id) {
-        // Find the doubt data we saved earlier
-        const db = window.adminDoubts.find(d => d._id === id);
-        if(!db) return;
-        
-        // Turn the answered div back into a form
+        const db = window.adminDoubts.find(d => d._id === id); if(!db) return;
         const container = document.getElementById(`doubt-ans-container-${id}`);
-        container.innerHTML = `
-            <textarea id="reply-text-${id}" style="width:100%; padding:8px; border-radius:6px; margin-bottom:10px;">${db.replyText}</textarea>
-            <input type="file" onchange="encodeImg(this, 'reply-img-${id}')" style="margin:5px 0;">
-            <img id="reply-img-${id}" src="${db.replyImage || ''}" style="height:80px; display:${db.replyImage ? 'block' : 'none'}; border:1px solid #ccc;">
-            <br>
-            <button class="btn btn-gold btn-small" style="margin-top:5px;" onclick="replyDoubt('${id}')">Update Reply</button>
-            <button class="btn btn-red btn-small" style="margin-top:5px;" onclick="showAdm('doubts')">Cancel</button>
-        `;
+        container.innerHTML = `<textarea id="reply-text-${id}" style="width:100%; padding:8px; border-radius:6px; margin-bottom:10px;">${db.replyText}</textarea><input type="file" onchange="encodeImg(this, 'reply-img-${id}')" style="margin:5px 0;"><img id="reply-img-${id}" src="${db.replyImage || ''}" style="height:80px; display:${db.replyImage ? 'block' : 'none'}; border:1px solid #ccc;"><br><button class="btn btn-gold btn-small" style="margin-top:5px;" onclick="replyDoubt('${id}')">Update Reply</button> <button class="btn btn-red btn-small" style="margin-top:5px;" onclick="showAdm('doubts')">Cancel</button>`;
     }
 
-    // ==========================================
     // 💡 LAMP PULL-STRING INTERACTION JS
-    // ==========================================
-    const pullStringBtn = document.getElementById('pull-string-btn');
-    const stringLineEl = document.getElementById('string-line-el');
-    let isDraggingString = false;
-    let stringStartY = 0;
+    const pullStringBtn = document.getElementById('pull-string-btn'); const stringLineEl = document.getElementById('string-line-el'); let isDraggingString = false; let stringStartY = 0;
+    if (pullStringBtn) { pullStringBtn.addEventListener('mousedown', startPull); pullStringBtn.addEventListener('touchstart', startPull, {passive: false}); }
+    function startPull(e) { isDraggingString = true; stringStartY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY; stringLineEl.style.transition = 'none'; document.addEventListener('mousemove', pullMove); document.addEventListener('touchmove', pullMove, {passive: false}); document.addEventListener('mouseup', endPull); document.addEventListener('touchend', endPull); }
+    function pullMove(e) { if (!isDraggingString) return; e.preventDefault(); let currentY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY; let deltaY = currentY - stringStartY; if (deltaY < 0) deltaY = 0; if (deltaY > 60) deltaY = 60; stringLineEl.style.height = (120 + deltaY) + 'px'; }
+    function endPull(e) { if (!isDraggingString) return; isDraggingString = false; document.removeEventListener('mousemove', pullMove); document.removeEventListener('touchmove', pullMove); document.removeEventListener('mouseup', endPull); document.removeEventListener('touchend', endPull); let currentHeight = parseInt(stringLineEl.style.height || 120); stringLineEl.style.transition = 'height 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)'; stringLineEl.style.height = '120px'; if (currentHeight > 140) { toggleLampString(); } }
+    function toggleLampString() { const desk = document.getElementById('deskScene'); desk.classList.toggle('is-on'); }
+    function showRegBoxFromLamp() { document.querySelector('.paper-form-container').style.display='none'; document.getElementById('reg-link-container').style.display='none'; document.getElementById('reg-box').style.display='block'; }
+    function hideRegBoxFromLamp() { document.getElementById('reg-box').style.display='none'; document.querySelector('.paper-form-container').style.display='block'; document.getElementById('reg-link-container').style.display='block'; }
 
-    if (pullStringBtn) {
-        pullStringBtn.addEventListener('mousedown', startPull);
-        pullStringBtn.addEventListener('touchstart', startPull, {passive: false});
-    }
+    // FEATURE: SMART UNIVERSAL DOCUMENT VIEWER
+    function openPdfViewer(title, link) {
+        let finalLink = link;
+        const lowerLink = link.toLowerCase();
 
-    function startPull(e) {
-        isDraggingString = true;
-        stringStartY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY;
-        stringLineEl.style.transition = 'none';
-        document.addEventListener('mousemove', pullMove);
-        document.addEventListener('touchmove', pullMove, {passive: false});
-        document.addEventListener('mouseup', endPull);
-        document.addEventListener('touchend', endPull);
-    }
+        // 1. Define what is "safe" to embed inside your website's iframe
+        const isBase64 = link.startsWith('data:'); 
+        const isGoogleDrive = lowerLink.includes('drive.google.com');
+        const isOneDrive = lowerLink.includes('onedrive.live.com') || lowerLink.includes('1drv.ms') || lowerLink.includes('sharepoint.com');
+        const isDirectPdf = lowerLink.endsWith('.pdf');
+        const isDirectImage = lowerLink.match(/\.(jpeg|jpg|gif|png|webp)$/) != null;
 
-    function pullMove(e) {
-        if (!isDraggingString) return;
-        e.preventDefault(); 
-        let currentY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY;
-        let deltaY = currentY - stringStartY;
-        if (deltaY < 0) deltaY = 0;
-        if (deltaY > 60) deltaY = 60; 
-        stringLineEl.style.height = (120 + deltaY) + 'px';
-    }
-
-    function endPull(e) {
-        if (!isDraggingString) return;
-        isDraggingString = false;
-        
-        document.removeEventListener('mousemove', pullMove);
-        document.removeEventListener('touchmove', pullMove);
-        document.removeEventListener('mouseup', endPull);
-        document.removeEventListener('touchend', endPull);
-        
-        let currentHeight = parseInt(stringLineEl.style.height || 120);
-        stringLineEl.style.transition = 'height 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
-        stringLineEl.style.height = '120px'; 
-        
-        if (currentHeight > 140) {
-            toggleLampString();
+        // 2. Check if the link is safe to open in the modal
+        if (isBase64 || isGoogleDrive || isOneDrive || isDirectPdf || isDirectImage) {
+            document.getElementById('pdf-title').innerText = title || "Document Viewer";
+            // Format Google Drive links for embedding
+            if (isGoogleDrive && lowerLink.includes('/view')) {
+                finalLink = link.replace(/\/view.*$/, '/preview');
+            } 
+            // Format direct external PDFs using Google Docs Viewer for better mobile support
+            else if (isDirectPdf && !isBase64) {
+                finalLink = `https://docs.google.com/gview?url=${encodeURIComponent(link)}&embedded=true`;
+            }
+            // Open in the modal
+            document.getElementById('pdf-frame').src = finalLink;
+            openModal('pdf-modal');
+        } else {
+            // 3. If it's an external website (like NCERT), open it in a new tab
+            window.open(link, '_blank');
         }
     }
-
-    function toggleLampString() {
-        const desk = document.getElementById('deskScene');
-        desk.classList.toggle('is-on');
-    }
-
-    function showRegBoxFromLamp() {
-         document.querySelector('.paper-form-container').style.display='none';
-         document.getElementById('reg-link-container').style.display='none';
-         document.getElementById('reg-box').style.display='block';
-    }
-    
-    function hideRegBoxFromLamp() {
-         document.getElementById('reg-box').style.display='none';
-         document.querySelector('.paper-form-container').style.display='block';
-         document.getElementById('reg-link-container').style.display='block';
-    }
-
-    // --- UNIVERSAL DOCUMENT VIEWER ---
-function openPdfViewer(title, link) {
-    document.getElementById('pdf-title').innerText = title || "Document Viewer";
-    let finalLink = link;
-    
-    // 1. If it's a Google Drive link, convert it to 'preview' mode so it works inside an iframe
-    if (link.includes('drive.google.com') && link.includes('/view')) {
-        finalLink = link.replace(/\/view.*$/, '/preview');
-    } 
-    // 2. If it's a direct .pdf link (not a base64 string), use Google's Viewer for better mobile support
-    else if (link.toLowerCase().endsWith('.pdf') && !link.startsWith('data:')) {
-        finalLink = `https://docs.google.com/gview?url=${encodeURIComponent(link)}&embedded=true`;
-    }
-
-    document.getElementById('pdf-frame').src = finalLink;
-    openModal('pdf-modal');
-}
 
 </script>
 </body>
