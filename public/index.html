@@ -110,35 +110,30 @@
         .desk-scene.is-on .on-form { display: block; animation: fadeIn 0.5s; }
         #reg-link-container { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); width: 100%; text-align: center; z-index: 10; }
 
-    
         /* 🎮 --- ARC MULTI-GAME COMPONENT CSS --- */
         .empty-game-wrapper { grid-column: 1 / -1; width: 100%; text-align: center; padding: 30px 10px; background: white; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); box-sizing: border-box; overflow: hidden; }
         
-        /* ☎️ Smoothed Telephone Dial Menu */
         .dial-container { position: relative; width: 360px; height: 360px; margin: 30px auto 40px; border-radius: 50%; background: radial-gradient(circle, #1e293b, #0f172a); border: 5px solid var(--gold); box-shadow: 0 10px 25px rgba(0,0,0,0.3), inset 0 0 30px rgba(0,0,0,0.8); }
         .dial-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 80px; height: 80px; background: var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; border: 4px solid white; z-index: 10; box-shadow: 0 4px 15px rgba(0,0,0,0.3); animation: pulseDial 2s infinite; pointer-events: none; }
         @keyframes pulseDial { 0% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(251, 191, 36, 0); } 100% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0); } }
         
         .dial-btn { position: absolute; top: 50%; left: 50%; width: 66px; height: 66px; margin: -33px 0 0 -33px; background: white; border: 2px solid var(--gold); border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; font-size: 0.65rem; font-weight: bold; cursor: pointer; color: var(--primary); z-index: 5; box-shadow: 0 4px 8px rgba(0,0,0,0.3); line-height: 1.1; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.2s, z-index 0s; }
-        /* Smooth hover zoom fixing alignment */
         .dial-btn:hover, .dial-btn.active { background: var(--gold); color: var(--primary); z-index: 20 !important; border-color: white; transform: scale(1.25) !important; }
         .dial-btn-icon { font-size: 1.4rem; margin-bottom: 2px; }
 
         .empty-game-board { position: relative; width: 100%; max-width: 500px; min-height: 380px; background: linear-gradient(135deg, #1e293b, #0f172a); border-radius: 12px; margin: 0 auto; overflow: hidden; border: 2px solid var(--gold); box-shadow: inset 0 0 20px rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; flex-direction: column; color: white; padding: 15px; box-sizing: border-box; }
         
-        /* Game 1: Memory */
         .memory-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding: 10px; width: 100%; box-sizing: border-box; align-content: center; }
         .memory-card { background: #334155; border: 2px solid var(--gold); height: 42px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: bold; cursor: pointer; font-size: 0.8rem; color: transparent; transition: background 0.3s; user-select: none; text-align: center; line-height: 1.1; overflow: hidden; }
         .memory-card.flipped { background: white; color: var(--primary); border-color: white; }
         .memory-card.matched { background: var(--green); color: white; border-color: var(--green); visibility: hidden; }
 
-        /* Game 5: ChemClimb Grid */
         .snakes-board { display: grid; grid-template-columns: repeat(10, 1fr); gap: 2px; width: 100%; max-width: 400px; height: 280px; background: #1e293b; padding: 5px; border-radius: 8px; border: 2px solid #475569; }
         .snakes-cell { display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: bold; position: relative; border-radius: 2px; }
         .snakes-cell.alt { background: #334155; } .snakes-cell.norm { background: #475569; }
         .s-token { position: absolute; width: 18px; height: 18px; background: var(--green); border-radius: 50%; border: 2px solid white; box-shadow: 0 0 5px black; z-index: 10; transition: all 0.3s; }
 
-        /* Game 6: Realistic Titration */
+        /* Game 6: Realistic Titration (Mini-game specific) */
         .lab-setup { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 250px; position: relative; margin-bottom: 20px; }
         .burette { width: 24px; height: 120px; border: 2px solid rgba(255,255,255,0.7); border-bottom: none; border-radius: 12px 12px 0 0; position: relative; background: rgba(255,255,255,0.1); overflow: hidden; }
         .burette-liquid { position: absolute; bottom: 0; left: 0; width: 100%; height: 100%; background: #38bdf8; transition: height 0.1s linear; }
@@ -150,41 +145,25 @@
         .titr-drop { position: absolute; width: 6px; height: 10px; background: #38bdf8; border-radius: 50%; opacity: 0; top: 145px; }
         @keyframes fallingDrop { 0% { top: 145px; opacity: 1; } 100% { top: 200px; opacity: 0; } }
 
-        /* General Controls */
         .ab-controls { display: flex; justify-content: center; gap: 10px; margin-top: 15px; width: 100%; }
         .hm-keyboard { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; max-width: 400px; padding: 0 10px; }
         .hm-key { background: #334155; color: white; border: 1px solid #475569; padding: 6px; width: 32px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.9rem; }
 
-
-         /* 🎇 WELCOME POPUP CSS */
+        /* 🎇 WELCOME POPUP CSS */
         #welcome-popup {
-            position: fixed;
-            bottom: -150px; /* Hidden off-screen initially */
-            right: 20px;
-            background: white;
-            padding: 15px 25px;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            border: 2px solid var(--gold);
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            z-index: 3000;
+            position: fixed; bottom: -150px; right: 20px; background: white; padding: 15px 25px;
+            border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); border: 2px solid var(--gold);
+            display: flex; align-items: center; gap: 15px; z-index: 3000;
             transition: bottom 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        #welcome-popup.show {
-            bottom: 30px; /* Slides up */
-        }
-        .namaste-svg {
-            width: 70px;
-            height: 70px;
-            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
-        }
+        #welcome-popup.show { bottom: 30px; }
+        .namaste-svg { width: 70px; height: 70px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); }
     
-        /* 🧪 --- VIRTUAL COLORFUL LAB CSS (Updated) --- */
+        /* 🧪 --- NEW REALISTIC VIRTUAL LAB CSS --- */
         .lab-menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-top: 20px; max-height: 65vh; overflow-y: auto; padding: 10px; }
         .lab-card { background: linear-gradient(135deg, #1e293b, #0f172a); color: white; border: 2px solid var(--gold); border-radius: 12px; padding: 20px; text-align: center; cursor: pointer; transition: transform 0.3s, box-shadow 0.3s; }
-        .lab-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(251, 191, 36, 0.2); }
+        .lab-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(251, 191, 36, 0.2); border-color: white; }
+        
         .lab-workspace { background: #0f172a; border-radius: 12px; border: 4px solid #334155; padding: 20px; display: flex; flex-direction: column; align-items: center; min-height: 500px; position: relative; overflow: hidden; box-shadow: inset 0 0 50px rgba(0,0,0,0.8); }
         .lab-bench { position: absolute; bottom: 0; left: 0; width: 100%; height: 120px; background: linear-gradient(to bottom, #475569, #1e293b); border-top: 6px solid #64748b; perspective: 1000px; z-index: 1; }
         .lab-bench::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 20px; background: rgba(255,255,255,0.05); transform: rotateX(60deg); transform-origin: top; }
@@ -418,12 +397,13 @@
 
 <div id="lab" class="section">
     <div style="text-align:center; margin-bottom: 20px;">
-        <h2 style="color:var(--primary); font-size: 2.5rem; margin-bottom: 5px;">🧪 Realistic Virtual Lab</h2>
-        <p style="color:#666;">Perform 54 fully animated chemical experiments with realistic physics.</p>
+        <h2 style="color:var(--primary); font-size: 2.5rem; margin-bottom: 5px;">🧪 The Colorful Virtual Lab</h2>
+        <p style="color:#666;">Perform realistic chemical experiments, observe color changes, and learn visual chemistry!</p>
     </div>
 
     <div id="lab-main-menu">
-        <div class="lab-menu-grid" id="lab-grid-container"></div>
+        <div class="lab-menu-grid" id="lab-grid-container">
+            </div>
     </div>
 
     <div id="lab-workspace-container" style="display:none;">
@@ -437,7 +417,8 @@
             
             <div class="lab-info-panel" id="lab-info">Select an action below to begin the experiment.</div>
             
-            <div class="equipment-area" id="lab-equipment"></div>
+            <div class="equipment-area" id="lab-equipment">
+                </div>
             
             <div id="lab-anim-hand" class="lab-hand-tool">🫗</div>
             <div id="lab-anim-drop" class="lab-drop"></div>
@@ -447,7 +428,8 @@
                 <div class="burner-base"></div>
             </div>
             
-            <div class="lab-controls" id="lab-controls"></div>
+            <div class="lab-controls" id="lab-controls">
+                </div>
         </div>
     </div>
 </div>
@@ -647,7 +629,6 @@
     // 🧪 54-EXPERIMENT VIRTUAL LAB ENGINE
     // ==========================================
     
-    // 🛠️ Factory Functions for standardized setups
     function makeTube(id, title, icon, desc, r1Name, r2Name, c1, c2, successMsg, needsHeat = false, effervescence = false) {
         return {
             id, title, icon, desc,
@@ -798,7 +779,6 @@
             const tube = document.getElementById(`${id}-tube`);
             if(tube) tube.classList.remove('tt-silver');
             
-            // Clear bubbles if any
             const gas = document.getElementById(`${id}-gas`);
             if(gas) gas.innerHTML = '';
         },
@@ -812,7 +792,6 @@
             document.getElementById('lab-info').innerHTML = `<b>👨‍🔬 System:</b> &nbsp; ${msg}`;
         },
 
-        // --- MASTER ANIMATION CONTROLLER (Fixed Coordinates & Physics) ---
         animate: function(targetId, actionType, color, onComplete) {
             const hand = document.getElementById('lab-anim-hand');
             const drop = document.getElementById('lab-anim-drop');
@@ -822,53 +801,46 @@
             const tgtRect = target.getBoundingClientRect();
             const wsRect = document.getElementById('lab-workspace').getBoundingClientRect();
             
-            // Calculate exact top-center of the target container
             const tgtX = (tgtRect.left - wsRect.left) + (tgtRect.width / 2);
             const tgtY = (tgtRect.top - wsRect.top);
 
             if(actionType === 'pour') {
                 hand.innerText = '🫗'; 
-                // Start position (top right)
                 hand.style.transition = 'none';
                 hand.style.top = '20px'; hand.style.left = '90%'; hand.style.opacity = '0'; hand.style.transform = 'rotate(0deg)';
                 
                 setTimeout(() => {
                     hand.style.transition = 'opacity 0.3s, transform 0.6s ease-in-out, top 0.6s ease-in-out, left 0.6s ease-in-out';
                     hand.style.opacity = '1';
-                    // Move above the beaker/tube
                     hand.style.top = (tgtY - 70) + 'px';
                     hand.style.left = (tgtX + 20) + 'px';
                     
                     setTimeout(() => {
-                        // Tilt the hand to pour
                         hand.style.transform = 'rotate(-60deg)'; 
                         
                         setTimeout(() => {
-                            // Spawn the drop
                             drop.style.background = (color === 'transparent' || color.includes('rgba(255,255,255')) ? 'rgba(56, 189, 248, 0.8)' : color;
                             drop.style.transition = 'none';
-                            drop.style.left = (tgtX - 8) + 'px'; // Center drop (width 16/2)
+                            drop.style.left = (tgtX - 8) + 'px'; 
                             drop.style.top = (tgtY - 10) + 'px';
                             drop.style.opacity = '1';
                             
                             setTimeout(() => {
-                                // Fall physics
                                 drop.style.transition = 'top 0.4s cubic-bezier(0.4, 0, 1, 1)';
                                 drop.style.top = (tgtY + tgtRect.height - 40) + 'px'; 
                                 
                                 setTimeout(() => {
-                                    drop.style.opacity = '0'; // Splash
+                                    drop.style.opacity = '0'; 
                                     onComplete(); 
                                     
-                                    // Reset hand
                                     setTimeout(() => { 
                                         hand.style.opacity = '0'; 
                                         hand.style.transform = 'rotate(0deg)'; 
                                     }, 600);
-                                }, 400); // Fall duration
+                                }, 400); 
                             }, 50);
-                        }, 400); // Wait for tilt
-                    }, 600); // Wait for move
+                        }, 400); 
+                    }, 600); 
                 }, 50);
             } else if(actionType === 'heat') {
                 const burner = document.getElementById('lab-anim-burner');
@@ -878,7 +850,7 @@
                 
                 setTimeout(() => {
                     burner.style.transition = 'bottom 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)';
-                    burner.style.bottom = '120px'; // Slide up
+                    burner.style.bottom = '120px'; 
                     
                     setTimeout(() => {
                         onComplete(); 
@@ -953,7 +925,6 @@
             } else if(action === 'r2') {
                 if(exp.state.step !== 1) return this.setInfo("Pour first solution initially.");
                 
-                // For Iodine clock, add a delay to color change
                 let finalColor = exp.state.c2;
                 let applyColorNow = exp.id !== 'iodine_clock';
 
@@ -967,7 +938,7 @@
                         setTimeout(() => {
                             liq.style.background = finalColor;
                             this.setInfo(exp.state.msg);
-                        }, 2500); // Delay for iodine clock
+                        }, 2500); 
                     } else {
                         this.setInfo(exp.state.msg);
                     }
@@ -1028,7 +999,6 @@
                 const picker = document.getElementById('picker-tool');
                 const flame = document.getElementById('bunsen-flame');
                 
-                // Slide picker into flame
                 picker.style.left = '45px';
                 
                 setTimeout(() => {
@@ -1043,7 +1013,6 @@
                     flame.style.boxShadow = `0 0 40px ${colors[action][0]}, inset 0 0 10px white`;
                     this.setInfo(`${action.toUpperCase()} produces a ${colors[action][1]} flame!`);
                     
-                    // Pull picker back out
                     setTimeout(() => { picker.style.left = '-150px'; }, 1500);
                 }, 800);
             }
@@ -1153,13 +1122,25 @@
         document.getElementById('home-d-text').value = ""; document.getElementById('home-d-file').value = ""; document.getElementById('home-d-fileName').innerText = ""; homeDoubtFileBase64 = ""; loadStudentDoubts();
     }
 
-    // --- 1. MEMORY MATCH (Categorized Edition) ---
-        window.arcGames = { instances: {} };
+    function show(id) {
+        if((id==='tests' || id==='live' || id==='results' || id==='doubts') && !user) return show('login');
+        if(id === 'schedule') loadSchedule();
+        if(id === 'doubts') loadStudentDoubts(); 
+        if(id === 'lab') LabEngine.init();
+        if(id==='admin' && (!user || user.role !== 'admin')) return alert("Access Denied");
+        localStorage.setItem('arc_last_section', id);
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        window.scrollTo(0,0);
+        document.getElementById('nav-menu').classList.remove('active');
+        if(id==='tests') loadTests(false); if(id==='live') loadTests(true); if(id==='results') loadResults('practice');
+    }
+
+    window.arcGames = { instances: {} };
 
     function getEmptyStateGame(message) {
         const id = Math.random().toString(36).substr(2, 9);
         
-        // Define all 10 games
         const gamesList = [
             { id: 'memory', name: 'Memory', icon: '🧠' },
             { id: 'acid', name: 'Acid/Base', icon: '🧪' },
@@ -1173,16 +1154,12 @@
             { id: 'typer', name: 'Rxn Typer', icon: '⌨️' }
         ];
 
-        // Generate the Rotary Dial
         let dialHTML = `<div class="dial-container" id="dial-${id}"><div class="dial-center">🕹️</div>`;
         const totalGames = gamesList.length;
         
         gamesList.forEach((g, i) => {
-            // Perfect circular placement math
             const angle = (i * (360 / totalGames)) - 90;
-            const radius = 145; // Distance from center 
-            
-            // We apply the transform in a wrapper via JS logic to allow clean CSS hover scaling
+            const radius = 145; 
             dialHTML += `
                 <div class="dial-btn" id="btn-${id}-${g.id}" onclick="ArcGameEngine.load('${id}', '${g.id}', this)" 
                      style="left: calc(50% + ${radius * Math.cos(angle * Math.PI / 180)}px); top: calc(50% + ${radius * Math.sin(angle * Math.PI / 180)}px);">
@@ -1223,103 +1200,57 @@
             if(this[type] && this[type].init) this[type].init(id);
         },
         
+        // --- 1. MEMORY MATCH ---
         memory: {
             categories: {
                 'Alkali Metals': [ {s:'Li',n:'Lithium'}, {s:'Na',n:'Sodium'}, {s:'K',n:'Potassium'}, {s:'Rb',n:'Rubidium'}, {s:'Cs',n:'Cesium'}, {s:'Fr',n:'Francium'} ],
                 'Alkaline Earth': [ {s:'Be',n:'Beryllium'}, {s:'Mg',n:'Magnesium'}, {s:'Ca',n:'Calcium'}, {s:'Sr',n:'Strontium'}, {s:'Ba',n:'Barium'}, {s:'Ra',n:'Radium'} ],
-                'Boron Family': [ {s:'B',n:'Boron'}, {s:'Al',n:'Aluminum'}, {s:'Ga',n:'Gallium'}, {s:'In',n:'Indium'}, {s:'Tl',n:'Thallium'} ],
-                'Carbon Family': [ {s:'C',n:'Carbon'}, {s:'Si',n:'Silicon'}, {s:'Ge',n:'Germanium'}, {s:'Sn',n:'Tin'}, {s:'Pb',n:'Lead'} ],
-                'Pnictogens': [ {s:'N',n:'Nitrogen'}, {s:'P',n:'Phosphorus'}, {s:'As',n:'Arsenic'}, {s:'Sb',n:'Antimony'}, {s:'Bi',n:'Bismuth'} ],
-                'Chalcogens': [ {s:'O',n:'Oxygen'}, {s:'S',n:'Sulfur'}, {s:'Se',n:'Selenium'}, {s:'Te',n:'Tellurium'}, {s:'Po',n:'Polonium'} ],
                 'Halogens': [ {s:'F',n:'Fluorine'}, {s:'Cl',n:'Chlorine'}, {s:'Br',n:'Bromine'}, {s:'I',n:'Iodine'}, {s:'At',n:'Astatine'} ],
-                'Noble Gases': [ {s:'He',n:'Helium'}, {s:'Ne',n:'Neon'}, {s:'Ar',n:'Argon'}, {s:'Kr',n:'Krypton'}, {s:'Xe',n:'Xenon'}, {s:'Rn',n:'Radon'} ],
-                '3d Series': [ {s:'Sc',n:'Scandium'}, {s:'Ti',n:'Titanium'}, {s:'V',n:'Vanadium'}, {s:'Cr',n:'Chromium'}, {s:'Mn',n:'Manganese'}, {s:'Fe',n:'Iron'}, {s:'Co',n:'Cobalt'}, {s:'Ni',n:'Nickel'}, {s:'Cu',n:'Copper'}, {s:'Zn',n:'Zinc'} ],
-                '4d Series': [ {s:'Y',n:'Yttrium'}, {s:'Zr',n:'Zirconium'}, {s:'Nb',n:'Niobium'}, {s:'Mo',n:'Molybdenum'}, {s:'Tc',n:'Technetium'}, {s:'Ru',n:'Ruthenium'}, {s:'Rh',n:'Rhodium'}, {s:'Pd',n:'Palladium'}, {s:'Ag',n:'Silver'}, {s:'Cd',n:'Cadmium'} ],
-                '5d Series': [ {s:'La',n:'Lanthanum'}, {s:'Hf',n:'Hafnium'}, {s:'Ta',n:'Tantalum'}, {s:'W',n:'Tungsten'}, {s:'Re',n:'Rhenium'}, {s:'Os',n:'Osmium'}, {s:'Ir',n:'Iridium'}, {s:'Pt',n:'Platinum'}, {s:'Au',n:'Gold'}, {s:'Hg',n:'Mercury'} ],
-                'Lanthanides': [ {s:'Ce',n:'Cerium'}, {s:'Pr',n:'Praseodymium'}, {s:'Nd',n:'Neodymium'}, {s:'Pm',n:'Promethium'}, {s:'Sm',n:'Samarium'}, {s:'Eu',n:'Europium'}, {s:'Gd',n:'Gadolinium'}, {s:'Tb',n:'Terbium'}, {s:'Dy',n:'Dysprosium'}, {s:'Ho',n:'Holmium'}, {s:'Er',n:'Erbium'}, {s:'Tm',n:'Thulium'}, {s:'Yb',n:'Ytterbium'}, {s:'Lu',n:'Lutetium'} ],
-                'Actinides': [ {s:'Th',n:'Thorium'}, {s:'Pa',n:'Protactinium'}, {s:'U',n:'Uranium'}, {s:'Np',n:'Neptunium'}, {s:'Pu',n:'Plutonium'}, {s:'Am',n:'Americium'}, {s:'Cm',n:'Curium'}, {s:'Bk',n:'Berkelium'}, {s:'Cf',n:'Californium'}, {s:'Es',n:'Einsteinium'}, {s:'Fm',n:'Fermium'} ],
-                'Radioactive': [ {s:'U',n:'Uranium'}, {s:'Pu',n:'Plutonium'}, {s:'Ra',n:'Radium'}, {s:'Rn',n:'Radon'}, {s:'Po',n:'Polonium'}, {s:'Fr',n:'Francium'}, {s:'Th',n:'Thorium'}, {s:'Np',n:'Neptunium'}, {s:'Am',n:'Americium'} ],
-                's-block': [ {s:'H',n:'Hydrogen'}, {s:'Li',n:'Lithium'}, {s:'Na',n:'Sodium'}, {s:'K',n:'Potassium'}, {s:'Rb',n:'Rubidium'}, {s:'Cs',n:'Cesium'}, {s:'Be',n:'Beryllium'}, {s:'Mg',n:'Magnesium'}, {s:'Ca',n:'Calcium'}, {s:'Sr',n:'Strontium'}, {s:'Ba',n:'Barium'} ],
-                'p-block': [ {s:'B',n:'Boron'}, {s:'C',n:'Carbon'}, {s:'N',n:'Nitrogen'}, {s:'O',n:'Oxygen'}, {s:'F',n:'Fluorine'}, {s:'Ne',n:'Neon'}, {s:'Al',n:'Aluminum'}, {s:'Si',n:'Silicon'}, {s:'P',n:'Phosphorus'}, {s:'S',n:'Sulfur'}, {s:'Cl',n:'Chlorine'}, {s:'Ar',n:'Argon'}, {s:'Br',n:'Bromine'}, {s:'I',n:'Iodine'} ],
-                'd-block': [ {s:'Sc',n:'Scandium'}, {s:'Ti',n:'Titanium'}, {s:'V',n:'Vanadium'}, {s:'Cr',n:'Chromium'}, {s:'Mn',n:'Manganese'}, {s:'Fe',n:'Iron'}, {s:'Co',n:'Cobalt'}, {s:'Ni',n:'Nickel'}, {s:'Cu',n:'Copper'}, {s:'Zn',n:'Zinc'}, {s:'Ag',n:'Silver'}, {s:'Au',n:'Gold'}, {s:'Pt',n:'Platinum'}, {s:'Hg',n:'Mercury'} ]
+                'Noble Gases': [ {s:'He',n:'Helium'}, {s:'Ne',n:'Neon'}, {s:'Ar',n:'Argon'}, {s:'Kr',n:'Krypton'}, {s:'Xe',n:'Xenon'}, {s:'Rn',n:'Radon'} ]
             },
-            
             init: function(id) {
                 let catHTML = `<h3 style="color:var(--gold); margin-top:0; margin-bottom:15px;">Select Category</h3>`;
                 catHTML += `<div style="display:flex; flex-wrap:wrap; gap:8px; justify-content:center; padding:10px; overflow-y:auto; max-height:280px; width:100%; box-sizing:border-box;">`;
-                
                 Object.keys(this.categories).forEach(cat => {
-                    catHTML += `<button class="btn" style="background:#334155; color:white; border:1px solid var(--gold); padding:8px 12px; font-size:0.85rem; border-radius:6px; cursor:pointer;" onclick="ArcGameEngine.memory.start('${id}', '${cat}')" onmouseover="this.style.background='var(--gold)'; this.style.color='var(--primary)';" onmouseout="this.style.background='#334155'; this.style.color='white';">${cat}</button>`;
+                    catHTML += `<button class="btn" style="background:#334155; color:white; border:1px solid var(--gold); padding:8px 12px; font-size:0.85rem; border-radius:6px; cursor:pointer;" onclick="ArcGameEngine.memory.start('${id}', '${cat}')">${cat}</button>`;
                 });
-                
                 catHTML += `</div>`;
                 document.getElementById(`game-bg-${id}`).innerHTML = catHTML;
             },
-            
             start: function(id, catKey) {
                 let sourceData = [...this.categories[catKey]];
-                
-                // Shuffle source data and limit to max 12 pairs (24 cards) to prevent board overflow
                 sourceData.sort(() => Math.random() - 0.5);
                 let selectedData = sourceData.slice(0, 12); 
-                
                 let deck = [];
-                selectedData.forEach((item, idx) => {
-                    deck.push({ text: item.s, matchId: idx });
-                    deck.push({ text: item.n, matchId: idx });
-                });
-                
-                // Final shuffle of the deck
+                selectedData.forEach((item, idx) => { deck.push({ text: item.s, matchId: idx }); deck.push({ text: item.n, matchId: idx }); });
                 deck.sort(() => Math.random() - 0.5);
-                
                 window.arcGames.instances[id] = { deck: deck, flipped: [], matched: 0, lock: false, catKey: catKey };
-                
-                // Dynamically adjust grid columns depending on how many elements are in the category
                 let cols = deck.length <= 12 ? 4 : (deck.length <= 20 ? 5 : 6);
-                
                 let html = `<div style="width:100%; text-align:center; color:var(--gold); font-weight:bold; margin-bottom:10px; font-size:1.1rem;">${catKey} Match</div>`;
                 html += `<div class="memory-grid" style="grid-template-columns: repeat(${cols}, 1fr); padding:0;">`;
-                
-                deck.forEach((card, i) => {
-                    html += `<div class="memory-card" id="mem-${id}-${i}" onclick="ArcGameEngine.memory.flip('${id}', ${i})">?</div>`;
-                });
+                deck.forEach((card, i) => { html += `<div class="memory-card" id="mem-${id}-${i}" onclick="ArcGameEngine.memory.flip('${id}', ${i})">?</div>`; });
                 html += `</div>`;
-                
                 document.getElementById(`game-bg-${id}`).innerHTML = html;
             },
-            
             flip: function(id, index) {
                 const state = window.arcGames.instances[id];
                 if(state.lock || state.flipped.includes(index) || document.getElementById(`mem-${id}-${index}`).classList.contains('matched')) return;
-                
                 const cardEl = document.getElementById(`mem-${id}-${index}`);
                 cardEl.innerText = state.deck[index].text;
                 cardEl.classList.add('flipped');
                 state.flipped.push(index);
-
                 if(state.flipped.length === 2) {
                     state.lock = true;
-                    const match1 = state.deck[state.flipped[0]].matchId;
-                    const match2 = state.deck[state.flipped[1]].matchId;
-                    
+                    const match1 = state.deck[state.flipped[0]].matchId; const match2 = state.deck[state.flipped[1]].matchId;
                     setTimeout(() => {
                         if(match1 === match2) {
-                            document.getElementById(`mem-${id}-${state.flipped[0]}`).classList.add('matched');
-                            document.getElementById(`mem-${id}-${state.flipped[1]}`).classList.add('matched');
-                            state.matched += 2;
-                            
-                            // Check for win condition
-                            if(state.matched === state.deck.length) {
-                                document.getElementById(`game-bg-${id}`).innerHTML = `<h2 style="color:var(--green);">🧠 Master Chemist!</h2><p>Completed: <b>${state.catKey}</b></p><button class="btn btn-gold" onclick="ArcGameEngine.memory.init('${id}')">Choose Another Category</button>`;
-                            }
+                            document.getElementById(`mem-${id}-${state.flipped[0]}`).classList.add('matched'); document.getElementById(`mem-${id}-${state.flipped[1]}`).classList.add('matched'); state.matched += 2;
+                            if(state.matched === state.deck.length) { document.getElementById(`game-bg-${id}`).innerHTML = `<h2 style="color:var(--green);">🧠 Master Chemist!</h2><p>Completed: <b>${state.catKey}</b></p><button class="btn btn-gold" onclick="ArcGameEngine.memory.init('${id}')">Choose Another Category</button>`; }
                         } else {
-                            const c1 = document.getElementById(`mem-${id}-${state.flipped[0]}`);
-                            const c2 = document.getElementById(`mem-${id}-${state.flipped[1]}`);
-                            c1.innerText = '?'; c1.classList.remove('flipped');
-                            c2.innerText = '?'; c2.classList.remove('flipped');
+                            const c1 = document.getElementById(`mem-${id}-${state.flipped[0]}`); const c2 = document.getElementById(`mem-${id}-${state.flipped[1]}`);
+                            c1.innerText = '?'; c1.classList.remove('flipped'); c2.innerText = '?'; c2.classList.remove('flipped');
                         }
-                        state.flipped = [];
-                        state.lock = false;
+                        state.flipped = []; state.lock = false;
                     }, 800);
                 }
             }
@@ -1327,77 +1258,30 @@
 
         // 2. ACID OR BASE
         acid: {
-            data: [
-                // Original 4
-                {f: 'HCl', t: 'acid'}, {f: 'NaOH', t: 'base'}, {f: 'H₂SO₄', t: 'acid'}, {f: 'KOH', t: 'base'},
-                
-                // 30+ New Acids and Bases
-                {f: 'HNO₃', t: 'acid'}, {f: 'HBr', t: 'acid'}, {f: 'HI', t: 'acid'}, {f: 'HClO₄', t: 'acid'},
-                {f: 'CH₃COOH', t: 'acid'}, {f: 'H₂CO₃', t: 'acid'}, {f: 'H₃PO₄', t: 'acid'}, {f: 'HF', t: 'acid'},
-                {f: 'H₂SO₃', t: 'acid'}, {f: 'HNO₂', t: 'acid'}, {f: 'HCN', t: 'acid'}, {f: 'HCOOH', t: 'acid'},
-                {f: 'H₂C₂O₄', t: 'acid'}, {f: 'HBrO₄', t: 'acid'}, {f: 'HClO', t: 'acid'}, {f: 'H₃BO₃', t: 'acid'},
-                {f: 'H₂S', t: 'acid'}, {f: 'H₂CrO₄', t: 'acid'}, {f: 'HClO₃', t: 'acid'}, {f: 'C₆H₅COOH', t: 'acid'},
-                
-                {f: 'LiOH', t: 'base'}, {f: 'Ba(OH)₂', t: 'base'}, {f: 'Ca(OH)₂', t: 'base'}, {f: 'NH₃', t: 'base'},
-                {f: 'CH₃NH₂', t: 'base'}, {f: 'C₅H₅N', t: 'base'}, {f: 'Mg(OH)₂', t: 'base'}, {f: 'Al(OH)₃', t: 'base'},
-                {f: 'RbOH', t: 'base'}, {f: 'CsOH', t: 'base'}, {f: 'Sr(OH)₂', t: 'base'}, {f: 'NaHCO₃', t: 'base'},
-                {f: 'Na₂CO₃', t: 'base'}, {f: 'C₂H₅NH₂', t: 'base'}, {f: '(CH₃)₂NH', t: 'base'}, {f: 'N₂H₄', t: 'base'}
-            ],
+            data: [ {f: 'HCl', t: 'acid'}, {f: 'NaOH', t: 'base'}, {f: 'H₂SO₄', t: 'acid'}, {f: 'KOH', t: 'base'}, {f: 'HNO₃', t: 'acid'}, {f: 'NH₃', t: 'base'} ],
             init: function(id) {
-                // 🛠️ CHANGED: Increased starting speed from 2000 to 4500 (Much slower start)
                 window.arcGames.instances[id] = { score: 0, speed: 4500, current: null, yPos: 0 };
-                document.getElementById(`game-bg-${id}`).innerHTML = `
-                    <div style="position:absolute; top:10px; left:15px; font-weight:bold; color:var(--gold);">Score: <span id="ab-score-${id}">0</span></div>
-                    <div id="ab-drop-${id}" class="ab-element" style="display:none; color:black; font-weight:bold; padding:5px 10px; border-radius:5px; position:absolute;"></div>
-                    <div class="ab-controls">
-                        <button class="btn btn-red" style="flex:1; margin-right:10px;" onclick="ArcGameEngine.acid.guess('${id}', 'acid')">ACID</button>
-                        <button class="btn" style="flex:1; background:#3b82f6; color:white;" onclick="ArcGameEngine.acid.guess('${id}', 'base')">BASE</button>
-                    </div>`;
+                document.getElementById(`game-bg-${id}`).innerHTML = `<div style="position:absolute; top:10px; left:15px; font-weight:bold; color:var(--gold);">Score: <span id="ab-score-${id}">0</span></div><div id="ab-drop-${id}" class="ab-element" style="display:none; position:absolute; width:80px; padding:10px; background:white; color:black; border-radius:4px; text-align:center;"></div><div class="ab-controls" style="position:absolute; bottom:10px; width:100%;"><button class="btn btn-red" style="flex:1; margin-right:10px;" onclick="ArcGameEngine.acid.guess('${id}', 'acid')">ACID</button><button class="btn" style="flex:1; background:#3b82f6; color:white;" onclick="ArcGameEngine.acid.guess('${id}', 'base')">BASE</button></div>`;
                 this.spawn(id);
             },
             spawn: function(id) {
-                const state = window.arcGames.instances[id];
-                if(!state) return;
-                state.current = this.data[Math.floor(Math.random() * this.data.length)];
-                state.yPos = 0;
-                const el = document.getElementById(`ab-drop-${id}`);
-                if(!el) return;
-                el.innerText = state.current.f;
-                el.style.top = '0px';
-                el.style.display = 'block';
-                el.style.background = 'white';
-                
+                const state = window.arcGames.instances[id]; if(!state) return;
+                state.current = this.data[Math.floor(Math.random() * this.data.length)]; state.yPos = 0;
+                const el = document.getElementById(`ab-drop-${id}`); if(!el) return;
+                el.innerText = state.current.f; el.style.top = '0px'; el.style.left = '40%'; el.style.display = 'block'; el.style.background = 'white';
                 state.interval = setInterval(() => {
                     if(!window.arcGames.instances[id]) return clearInterval(state.interval);
-                    
-                    // 🛠️ CHANGED: Drop step from 5px to 2px so it glides down smoothly
-                    state.yPos += 2; 
-                    
-                    el.style.top = state.yPos + 'px';
-                    if(state.yPos > 250) {
-                        clearInterval(state.interval);
-                        this.gameOver(id);
-                    }
+                    state.yPos += 2; el.style.top = state.yPos + 'px';
+                    if(state.yPos > 250) { clearInterval(state.interval); this.gameOver(id); }
                 }, state.speed / 100);
             },
             guess: function(id, type) {
-                const state = window.arcGames.instances[id];
-                if(!state || !state.current) return;
-                clearInterval(state.interval);
-                const el = document.getElementById(`ab-drop-${id}`);
-                
+                const state = window.arcGames.instances[id]; if(!state || !state.current) return;
+                clearInterval(state.interval); const el = document.getElementById(`ab-drop-${id}`);
                 if(state.current.t === type) {
-                    state.score++;
-                    document.getElementById(`ab-score-${id}`).innerText = state.score;
-                    el.style.background = 'var(--green)';
-                    
-                    // 🛠️ CHANGED: Min speed limit increased from 500 to 1500 so it doesn't get unplayable
-                    state.speed = Math.max(1500, state.speed - 100); 
-                    
-                    setTimeout(() => this.spawn(id), 300);
+                    state.score++; document.getElementById(`ab-score-${id}`).innerText = state.score; el.style.background = 'var(--green)'; state.speed = Math.max(1500, state.speed - 100); setTimeout(() => this.spawn(id), 300);
                 } else {
-                    el.style.background = 'var(--red)';
-                    setTimeout(() => this.gameOver(id), 300);
+                    el.style.background = 'var(--red)'; setTimeout(() => this.gameOver(id), 300);
                 }
             },
             gameOver: function(id) { document.getElementById(`game-bg-${id}`).innerHTML = `<h2 style="color:var(--red);">Game Over</h2><p>Score: ${window.arcGames.instances[id].score}</p><button class="btn btn-gold" onclick="ArcGameEngine.acid.init('${id}')">Restart</button>`; }
@@ -1409,7 +1293,7 @@
                 const word = "PROTON"; const hint = "Positively charged particle";
                 window.arcGames.instances[id] = { word: word, guessed: [], errors: 0, maxErrors: 5 };
                 const keyboard = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split('').map(l => `<button class="hm-key" id="hm-key-${id}-${l}" onclick="ArcGameEngine.hangman.guess('${id}', '${l}')">${l}</button>`).join('');
-                document.getElementById(`game-bg-${id}`).innerHTML = `<div class="hm-flask-container" style="width:60px; height:80px; border:2px solid white; border-top:none; border-radius:0 0 10px 10px; position:relative; margin-bottom:15px;"><div class="hm-liquid" id="hm-liquid-${id}" style="position:absolute; bottom:0; width:100%; height:0%; background:var(--green); transition:0.3s;"></div></div><div class="hm-hint">Hint: ${hint}</div><div class="hm-word" id="hm-word-${id}" style="font-size:1.5rem; letter-spacing:3px; margin-bottom:15px;"></div><div class="hm-keyboard">${keyboard}</div>`;
+                document.getElementById(`game-bg-${id}`).innerHTML = `<div class="hm-flask-container" style="width:100px; height:100px; border:2px solid white; border-radius:0 0 50px 50px; position:relative; margin:auto;"><div class="hm-liquid" id="hm-liquid-${id}" style="position:absolute; bottom:0; width:100%; height:0%; background:blue; transition:0.5s;"></div></div><div class="hm-hint">Hint: ${hint}</div><div class="hm-word" id="hm-word-${id}" style="letter-spacing:5px; font-size:1.5rem; margin:10px 0;"></div><div class="hm-keyboard">${keyboard}</div>`;
                 this.renderWord(id);
             },
             renderWord: function(id) {
@@ -1425,9 +1309,7 @@
                     state.errors++; const liquid = document.getElementById(`hm-liquid-${id}`);
                     liquid.style.height = ((state.errors / state.maxErrors) * 100) + '%';
                     if(state.errors >= 3) liquid.style.background = 'orange';
-                    if(state.errors >= state.maxErrors) {
-                        liquid.style.background = 'var(--red)'; setTimeout(() => { document.getElementById(`game-bg-${id}`).innerHTML = `<h2 style="color:var(--red);">💥 Exploded!</h2><p>Word: <b>${state.word}</b></p><button class="btn btn-gold" onclick="ArcGameEngine.hangman.init('${id}')">Try Again</button>`; }, 500); return;
-                    }
+                    if(state.errors >= state.maxErrors) { liquid.style.background = 'var(--red)'; setTimeout(() => { document.getElementById(`game-bg-${id}`).innerHTML = `<h2 style="color:var(--red);">💥 Exploded!</h2><p>Word: <b>${state.word}</b></p><button class="btn btn-gold" onclick="ArcGameEngine.hangman.init('${id}')">Try Again</button>`; }, 500); return; }
                 }
                 this.renderWord(id);
             }
@@ -1437,10 +1319,10 @@
         coeff: {
             init: function(id) {
                 window.arcGames.instances[id] = { ans: 2 };
-                document.getElementById(`game-bg-${id}`).innerHTML = `<div class="coeff-eq" style="font-size:1.5rem; font-weight:bold; margin-bottom:10px;">[ ? ] H₂ + O₂ ➝ 2H₂O</div><div style="font-size:0.9rem; color:#cbd5e1; margin-bottom:20px;">Catch the correct number!</div><div id="coeff-area-${id}" style="position:absolute; width:100%; height:100%; top:0; left:0; pointer-events:none;"></div>`;
+                document.getElementById(`game-bg-${id}`).innerHTML = `<div class="coeff-eq" style="font-size:1.5rem;">[ ? ] H₂ + O₂ ➝ 2H₂O</div><div style="font-size:0.9rem; color:#cbd5e1; margin-bottom:20px;">Catch the correct number!</div><div id="coeff-area-${id}" style="position:absolute; width:100%; height:100%; top:0; left:0; pointer-events:none;"></div>`;
                 const area = document.getElementById(`coeff-area-${id}`);
                 [1,2,3,4,5].forEach(num => {
-                    let el = document.createElement('div'); el.className = 'coeff-num'; el.innerText = num; el.style.pointerEvents = 'auto'; el.style.position = 'absolute'; el.style.background = 'white'; el.style.color = 'black'; el.style.padding = '10px'; el.style.borderRadius = '5px'; el.style.fontWeight = 'bold'; el.style.cursor = 'pointer'; el.style.transition = 'top 1s, left 1s';
+                    let el = document.createElement('div'); el.innerText = num; el.style.position = 'absolute'; el.style.background = 'var(--gold)'; el.style.color = 'black'; el.style.padding = '10px 15px'; el.style.borderRadius = '50%'; el.style.pointerEvents = 'auto'; el.style.cursor = 'pointer';
                     el.onclick = () => ArcGameEngine.coeff.guess(id, num); area.appendChild(el); this.move(el);
                     window.arcGames.instances[id]['int'+num] = setInterval(() => this.move(el), 1500 + Math.random()*1000);
                 });
@@ -1454,175 +1336,85 @@
             }
         },
 
-        // 5. CHEMCLIMB (SNAKES & LADDERS - Elements Edition)
+        // 5. CHEMCLIMB (SNAKES & LADDERS)
         snakes: {
-            symbols: ["H","He","Li","Be","B","C","N","O","F","Ne","Na","Mg","Al","Si","P","S","Cl","Ar","K","Ca","Sc","Ti","V","Cr","Mn","Fe","Co","Ni","Cu","Zn","Ga","Ge","As","Se","Br","Kr","Rb","Sr","Y","Zr","Nb","Mo","Tc","Ru","Rh","Pd","Ag","Cd","In","Sn","Sb","Te","I","Xe","Cs","Ba","La","Ce","Pr","Nd","Pm","Sm","Eu","Gd","Tb","Dy","Ho","Er","Tm","Yb","Lu","Hf","Ta","W","Re","Os","Ir","Pt","Au","Hg","Tl","Pb","Bi","Po","At","Rn","Fr","Ra","Ac","Th","Pa","U","Np","Pu","Am","Cm","Bk","Cf","Es","Fm"],
-            sPaths: [{h: 99, t: 12}, {h: 85, t: 25}, {h: 62, t: 18}, {h: 48, t: 9}],
-            lPaths: [{s: 4, e: 36}, {s: 15, e: 46}, {s: 33, e: 81}, {s: 50, e: 74}],
-            getCoords: function(num) {
-                let z = num - 1; let r = Math.floor(z / 10); let c = r % 2 === 0 ? (z % 10) : 9 - (z % 10);
-                return { x: (c * 10) + 5, y: (9 - r) * 10 + 5 }; 
-            },
+            symbols: ["H","He","Li","Be","B","C","N","O","F","Ne","Na","Mg","Al","Si","P","S","Cl","Ar","K","Ca"],
             init: function(id) { 
                 window.arcGames.instances[id] = { pos: 1, rolls: 0, rolling: false, lastDice: '⚀' }; 
                 this.render(id); 
             },
             render: function(id) {
                 const state = window.arcGames.instances[id];
-                let html = `
-                <div style="display:flex; justify-content:space-between; align-items:center; width:100%; max-width:400px; margin-bottom:10px;">
-                    <span style="color:var(--gold); font-weight:bold;">Rolls: ${state.rolls}</span>
-                    <button class="btn btn-gold btn-small" style="display:flex; align-items:center; gap:5px;" onclick="ArcGameEngine.snakes.roll('${id}')" ${state.rolling ? 'disabled' : ''}>
-                        Roll <span id="dice-${id}" style="display:inline-block; font-size:1.5rem; line-height:1; transition: transform 0.1s;">${state.lastDice}</span>
-                    </button>
-                </div>
-                <div class="snakes-board" style="position:relative;">`;
-                
-                for(let row=0; row<10; row++) {
-                    for(let col=0; col<10; col++) {
-                        let num = 100 - (row * 10); if(row % 2 === 0) { num -= col; } else { num -= (9 - col); }
-                        let cellClass = (row + col) % 2 === 0 ? 'norm' : 'alt'; let sym = this.symbols[num - 1]; 
-                        html += `
-                        <div class="snakes-cell ${cellClass}" style="flex-direction:column; line-height:1;">
-                            <div style="position:absolute; top:2px; left:3px; font-size:0.5rem; color:#94a3b8;">${num}</div>
-                            <div style="font-size:0.9rem; font-weight:bold; color:white; margin-top:4px;">${sym}</div>
-                        </div>`;
-                    }
+                let html = `<div style="display:flex; justify-content:space-between; align-items:center; width:100%; margin-bottom:10px;"><span style="color:var(--gold); font-weight:bold;">Rolls: ${state.rolls}</span><button class="btn btn-gold btn-small" onclick="ArcGameEngine.snakes.roll('${id}')" ${state.rolling ? 'disabled' : ''}>Roll <span id="dice-${id}">${state.lastDice}</span></button></div><div class="snakes-board" style="display:grid; grid-template-columns:repeat(5,1fr); gap:2px; width:100%; height:250px;">`;
+                for(let i=20; i>=1; i--) {
+                    let cellClass = i % 2 === 0 ? 'norm' : 'alt';
+                    html += `<div class="snakes-cell ${cellClass}" style="position:relative; display:flex; align-items:center; justify-content:center; background:#475569;"><div style="position:absolute; top:2px; left:2px; font-size:0.5rem;">${i}</div><div>${this.symbols[i-1]}</div></div>`;
                 }
-                
-                let svg = `<svg viewBox="0 0 100 100" preserveAspectRatio="none" style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:5;">`;
-                this.lPaths.forEach(l => {
-                    let start = this.getCoords(l.s); let end = this.getCoords(l.e);
-                    svg += `<line x1="${start.x}" y1="${start.y}" x2="${end.x}" y2="${end.y}" stroke="#b45309" stroke-width="2.5" stroke-linecap="round" /><line x1="${start.x}" y1="${start.y}" x2="${end.x}" y2="${end.y}" stroke="#fcd34d" stroke-width="1.2" stroke-dasharray="2 2" />`;
-                });
-                this.sPaths.forEach(s => {
-                    let h = this.getCoords(s.h); let t = this.getCoords(s.t); let ctrlX = (h.x + t.x)/2 + 10; let ctrlY = (h.y + t.y)/2 - 10;
-                    svg += `<path d="M ${h.x} ${h.y} Q ${ctrlX} ${ctrlY} ${t.x} ${t.y}" stroke="#16a34a" stroke-width="2.5" fill="none" stroke-linecap="round" /><path d="M ${h.x} ${h.y} Q ${ctrlX} ${ctrlY} ${t.x} ${t.y}" stroke="#14532d" stroke-width="1" stroke-dasharray="1 2" fill="none" stroke-linecap="round" /><circle cx="${h.x}" cy="${h.y}" r="2" fill="#16a34a" /><circle cx="${h.x-0.8}" cy="${h.y-0.5}" r="0.4" fill="white" /><circle cx="${h.x+0.8}" cy="${h.y-0.5}" r="0.4" fill="white" /><polygon points="${h.x},${h.y} ${h.x-1},${h.y-3} ${h.x+1},${h.y-3}" fill="red"><animate attributeName="opacity" values="0;1;0" dur="1s" repeatCount="indefinite" /></polygon>`;
-                });
-                svg += `</svg>`; html += svg;
-
-                let tokenPos = this.getCoords(state.pos);
-                html += `<div class="s-token" style="top:calc(${tokenPos.y}% - 9px); left:calc(${tokenPos.x}% - 9px);"></div></div>`;
-                document.getElementById(`game-bg-${id}`).innerHTML = html;
+                html += `</div>`; document.getElementById(`game-bg-${id}`).innerHTML = html;
             },
             roll: function(id) {
                 const state = window.arcGames.instances[id]; if(state.rolling) return; state.rolling = true;
                 let ticks = 0; let diceChars = ['⚀','⚁','⚂','⚃','⚄','⚅']; let diceEl = document.getElementById(`dice-${id}`);
-                
                 state.interval = setInterval(() => {
-                    ticks++; let r = Math.floor(Math.random() * 6); diceEl.innerText = diceChars[r]; diceEl.style.transform = `rotate(${Math.random() * 360}deg) scale(1.3)`;
+                    ticks++; diceEl.innerText = diceChars[Math.floor(Math.random() * 6)];
                     if(ticks > 12) {
-                        clearInterval(state.interval);
-                        let finalRoll = Math.floor(Math.random() * 6) + 1; state.lastDice = diceChars[finalRoll - 1]; diceEl.innerText = state.lastDice; diceEl.style.transform = `rotate(0deg) scale(1)`;
-                        state.rolls++; state.pos += finalRoll; if(state.pos > 100) state.pos = 100;
-                        this.render(id);
-                        
-                        const allPaths = {}; this.sPaths.forEach(s => allPaths[s.h] = s.t); this.lPaths.forEach(l => allPaths[l.s] = l.e);
-                        setTimeout(() => {
-                            if(allPaths[state.pos]) { state.pos = allPaths[state.pos]; this.render(id); }
-                            state.rolling = false;
-                            if(state.pos === 100) { setTimeout(() => { document.getElementById(`game-bg-${id}`).innerHTML = `<h2 style="color:var(--green);">🏆 You Reached Fm (100)!</h2><p>It took you ${state.rolls} rolls.</p><button class="btn btn-gold" onclick="ArcGameEngine.snakes.init('${id}')">Play Again</button>`; }, 800); } else { this.render(id); }
-                        }, 500);
+                        clearInterval(state.interval); let finalRoll = Math.floor(Math.random() * 6) + 1;
+                        state.lastDice = diceChars[finalRoll - 1]; state.rolls++; state.pos += finalRoll; 
+                        if(state.pos >= 20) { setTimeout(() => { document.getElementById(`game-bg-${id}`).innerHTML = `<h2 style="color:var(--green);">🏆 You Reached Calcium!</h2><p>Rolls: ${state.rolls}</p><button class="btn btn-gold" onclick="ArcGameEngine.snakes.init('${id}')">Play Again</button>`; }, 500); } else { state.rolling = false; this.render(id); }
                     }
-                }, 50);
+                }, 50); 
             }
         },
 
         // 6. REALISTIC TITRATION HERO
         titration: {
-            data: [
-                { acid: "HCl", base: "NaOH", start: 1.0, eq: 7.0, type: "Strong Acid + Strong Base", ind: "Bromothymol Blue", color: [0, 255, 0] }, 
-                { acid: "CH₃COOH", base: "NaOH", start: 3.0, eq: 8.7, type: "Weak Acid + Strong Base", ind: "Phenolphthalein", color: [236, 72, 153] }, 
-                { acid: "HCl", base: "NH₃", start: 1.0, eq: 5.3, type: "Strong Acid + Weak Base", ind: "Methyl Red", color: [255, 165, 0] }
-            ],
-            init: function(id) {
-                const scenario = this.data[Math.floor(Math.random() * this.data.length)];
-                window.arcGames.instances[id] = { pH: scenario.start, interval: null, dropping: false, scenario: scenario };
-                this.render(id);
-            },
+            data: [ { acid: "HCl", base: "NaOH", start: 1.0, eq: 7.0, type: "Strong Acid + Strong Base", ind: "Bromothymol Blue", color: [0, 255, 0] } ],
+            init: function(id) { const scenario = this.data[0]; window.arcGames.instances[id] = { pH: scenario.start, interval: null, dropping: false, scenario: scenario }; this.render(id); },
             render: function(id) {
                 const state = window.arcGames.instances[id]; const sc = state.scenario;
                 let bColor = "rgba(255,255,255,0.2)"; const diff = state.pH - sc.eq;
-                if(Math.abs(diff) <= 0.2) { bColor = `rgba(${sc.color[0]}, ${sc.color[1]}, ${sc.color[2]}, 0.6)`; } else if(diff > 0.2) { bColor = `rgba(${sc.color[0]}, ${sc.color[1]}, ${sc.color[2]}, 0.9)`; if(sc.ind === "Methyl Red") bColor = "rgba(255, 255, 0, 0.8)"; if(sc.ind === "Bromothymol Blue") bColor = "rgba(0, 0, 255, 0.8)"; } else if(diff < -0.2) { if(sc.ind === "Phenolphthalein") bColor = "rgba(255,255,255,0.2)"; if(sc.ind === "Bromothymol Blue") bColor = "rgba(255, 255, 0, 0.4)"; if(sc.ind === "Methyl Red") bColor = "rgba(255, 0, 0, 0.4)"; }
-
-                document.getElementById(`game-bg-${id}`).innerHTML = `
-                    <h3 style="margin-top:0; color:var(--gold); font-size: 1.2rem;">${sc.type}</h3>
-                    <p style="font-size:0.85rem; color:#cbd5e1; margin-bottom:5px;">Titrate <b>${sc.acid}</b> with <b>${sc.base}</b></p>
-                    <p style="font-size:0.75rem; color:#94a3b8; margin-top:0; margin-bottom:15px; font-weight:bold;">🎯 Target pH: ${sc.eq.toFixed(1)} | Indicator: ${sc.ind}</p>
-                    
-                    <div class="lab-setup">
-                        <div class="burette"><div class="burette-liquid" style="height: ${100 - (state.pH/14)*100}%"></div></div>
-                        <div class="burette-tap"></div><div class="burette-tip"></div>
-                        ${state.dropping ? '<div class="titr-drop" style="animation: fallingDrop 0.2s linear infinite;"></div>' : ''}
-                        <div class="flask"><div class="flask-liquid" style="background: ${bColor}; height: ${30 + (state.pH/14)*40}%"></div></div>
-                    </div>
-                    
-                    <div style="font-size:1.5rem; font-weight:bold; font-family:monospace; margin-bottom:15px;">pH: ${state.pH.toFixed(1)}</div>
-                    
-                    <div style="display:flex; gap:10px;">
-                        <button class="btn btn-gold" id="btn-drop-${id}">💧 HOLD TO DROP</button>
-                        <button class="btn btn-red" onclick="ArcGameEngine.titration.check('${id}')">✅ FINISH</button>
-                    </div>
-                `;
-
+                if(Math.abs(diff) <= 0.2) bColor = `rgba(${sc.color[0]}, ${sc.color[1]}, ${sc.color[2]}, 0.6)`;
+                else if(diff > 0.2) bColor = `rgba(${sc.color[0]}, ${sc.color[1]}, ${sc.color[2]}, 0.9)`;
+                document.getElementById(`game-bg-${id}`).innerHTML = `<h3 style="margin-top:0; color:var(--gold); font-size: 1.2rem;">${sc.type}</h3><p style="font-size:0.75rem;">Target pH: ${sc.eq.toFixed(1)}</p><div class="lab-setup"><div class="burette"><div class="burette-liquid" style="height: ${100 - (state.pH/14)*100}%"></div></div><div class="flask"><div class="flask-liquid" style="background: ${bColor}; height: ${30 + (state.pH/14)*40}%"></div></div></div><div style="font-size:1.5rem;">pH: ${state.pH.toFixed(1)}</div><div style="display:flex; gap:10px;"><button class="btn btn-gold" id="btn-drop-${id}">💧 HOLD TO DROP</button><button class="btn btn-red" onclick="ArcGameEngine.titration.check('${id}')">✅ FINISH</button></div>`;
                 const btn = document.getElementById(`btn-drop-${id}`);
                 if(btn) { btn.onmousedown = () => this.startDrop(id); btn.onmouseup = () => this.stopDrop(id); btn.onmouseleave = () => this.stopDrop(id); btn.ontouchstart = (e) => { e.preventDefault(); this.startDrop(id); }; btn.ontouchend = () => this.stopDrop(id); }
             },
             startDrop: function(id) {
                 const state = window.arcGames.instances[id]; if(state.pH >= 14) return; state.dropping = true; this.render(id);
-                state.interval = setInterval(() => {
-                    if(state.pH < 14) state.pH += 0.1; const sc = state.scenario;
-                    document.querySelector(`#game-bg-${id} .flask-liquid`).style.height = `${30 + (state.pH/14)*40}%`; document.querySelector(`#game-bg-${id} .burette-liquid`).style.height = `${100 - (state.pH/14)*100}%`;
-                    
-                    let bColor = "rgba(255,255,255,0.2)"; const diff = state.pH - sc.eq;
-                    if(Math.abs(diff) <= 0.2) { bColor = `rgba(${sc.color[0]}, ${sc.color[1]}, ${sc.color[2]}, 0.6)`; } else if(diff > 0.2) { bColor = `rgba(${sc.color[0]}, ${sc.color[1]}, ${sc.color[2]}, 0.9)`; if(sc.ind === "Methyl Red") bColor = "rgba(255, 255, 0, 0.8)"; if(sc.ind === "Bromothymol Blue") bColor = "rgba(0, 0, 255, 0.8)"; } else if(diff < -0.2) { if(sc.ind === "Phenolphthalein") bColor = "rgba(255,255,255,0.2)"; if(sc.ind === "Bromothymol Blue") bColor = "rgba(255, 255, 0, 0.4)"; if(sc.ind === "Methyl Red") bColor = "rgba(255, 0, 0, 0.4)"; }
-                    document.querySelector(`#game-bg-${id} .flask-liquid`).style.background = bColor; document.querySelector(`#game-bg-${id} div[style*="monospace"]`).innerText = `pH: ${state.pH.toFixed(1)}`;
-                }, 50);
+                state.interval = setInterval(() => { if(state.pH < 14) state.pH += 0.1; this.render(id); }, 100);
             },
             stopDrop: function(id) { const state = window.arcGames.instances[id]; state.dropping = false; clearInterval(state.interval); this.render(id); },
             check: function(id) {
                 const state = window.arcGames.instances[id]; const sc = state.scenario;
-                if(Math.abs(state.pH - sc.eq) <= 0.2) { document.getElementById(`game-bg-${id}`).innerHTML += `<div style="position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:50;"><h2 style="color:var(--green); font-size:2rem;">Perfect Equivalence! ✅</h2><p>pH was ${state.pH.toFixed(1)} (Target: ${sc.eq.toFixed(1)})</p><button class="btn btn-gold" onclick="ArcGameEngine.titration.init('${id}')">Next Titration</button></div>`; } 
-                else { document.getElementById(`game-bg-${id}`).innerHTML += `<div style="position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:50;"><h2 style="color:var(--red); font-size:2rem;">Failed! ❌</h2><p>Target was ${sc.eq.toFixed(1)}. You stopped at ${state.pH.toFixed(1)}.</p><button class="btn btn-gold" onclick="ArcGameEngine.titration.init('${id}')">Try Again</button></div>`; }
+                if(Math.abs(state.pH - sc.eq) <= 0.2) { document.getElementById(`game-bg-${id}`).innerHTML += `<div style="position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:50;"><h2 style="color:var(--green);">Perfect! ✅</h2><button class="btn btn-gold" onclick="ArcGameEngine.titration.init('${id}')">Next</button></div>`; } else { document.getElementById(`game-bg-${id}`).innerHTML += `<div style="position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:50;"><h2 style="color:var(--red);">Failed! ❌</h2><button class="btn btn-gold" onclick="ArcGameEngine.titration.init('${id}')">Try Again</button></div>`; }
             }
         },
 
         // 7. CHEMQUIZ
         quiz: {
-            data: [
-                { q: "Which of the following elements has the highest electron gain enthalpy?", o: ["Fluorine (F)", "Chlorine (Cl)", "Bromine (Br)", "Iodine (I)"], a: 1 },
-                { q: "What is the hybridization of the carbon atoms in a benzene ring?", o: ["sp", "sp²", "sp³", "sp³d"], a: 1 },
-                { q: "According to VSEPR theory, what is the shape of the XeF₄ molecule?", o: ["Tetrahedral", "Square planar", "See-saw", "Octahedral"], a: 1 }
-            ],
+            data: [ { q: "Which element has highest electronegativity?", o: ["F", "Cl", "Br", "I"], a: 0 } ],
             init: function(id) { window.arcGames.instances[id] = { q: 0, score: 0 }; this.render(id); },
             render: function(id) {
                 const state = window.arcGames.instances[id];
-                if(state.q >= this.data.length) { document.getElementById(`game-bg-${id}`).innerHTML = `<h2 style="color:var(--gold);">Quiz Complete!</h2><p style="font-size:1.5rem;">Score: ${state.score} / ${this.data.length}</p><button class="btn btn-gold" onclick="ArcGameEngine.quiz.init('${id}')">Play Again</button>`; return; }
+                if(state.q >= this.data.length) { document.getElementById(`game-bg-${id}`).innerHTML = `<h2 style="color:var(--gold);">Quiz Complete!</h2><p style="font-size:1.5rem;">Score: ${state.score}</p><button class="btn btn-gold" onclick="ArcGameEngine.quiz.init('${id}')">Play Again</button>`; return; }
                 const question = this.data[state.q];
                 let html = `<h3 style="padding:0 20px; text-align:center;">${question.q}</h3><div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; padding:20px; width:100%; box-sizing:border-box;">`;
                 question.o.forEach((opt, i) => { html += `<button class="btn" style="background:#334155; color:white; border:1px solid #475569; padding:15px;" onclick="ArcGameEngine.quiz.guess('${id}', ${i})">${opt}</button>`; });
-                html += `</div><p style="color:#64748b;">Question ${state.q + 1} of ${this.data.length}</p>`; document.getElementById(`game-bg-${id}`).innerHTML = html;
+                html += `</div>`; document.getElementById(`game-bg-${id}`).innerHTML = html;
             },
             guess: function(id, ans) { const state = window.arcGames.instances[id]; if(ans === this.data[state.q].a) state.score++; state.q++; this.render(id); }
         },
 
-        // 8. ATOM BUILDER 
+        // 8. ATOM BUILDER
         shell: {
-            elements: ["Hydrogen","Helium","Lithium","Beryllium","Boron","Carbon","Nitrogen","Oxygen","Fluorine","Neon","Sodium","Magnesium","Aluminum","Silicon","Phosphorus","Sulfur","Chlorine","Argon","Potassium","Calcium","Scandium","Titanium","Vanadium","Chromium","Manganese","Iron","Cobalt","Nickel","Copper","Zinc"],
-            init: function(id) { const targetNum = Math.floor(Math.random() * 30) + 1; window.arcGames.instances[id] = { target: targetNum, name: this.elements[targetNum - 1], current: 0 }; this.render(id); },
+            elements: ["Hydrogen","Helium","Lithium"],
+            init: function(id) { window.arcGames.instances[id] = { target: 2, name: 'Helium', current: 0 }; this.render(id); },
             render: function(id) {
-                const state = window.arcGames.instances[id]; let c = state.current; const shells = [0,0,0,0]; const limits = [2,8,18,32]; 
-                for(let i=0; i<4; i++) { if(c > limits[i]) { shells[i] = limits[i]; c -= limits[i]; } else { shells[i] = c; break; } }
-                let maxShell = 0; for(let i=3; i>=0; i--) { if(shells[i] > 0) { maxShell = i; break; } } if(state.current === 0) maxShell = 0; 
-                
-                const size = 260; const cx = size / 2, cy = size / 2; const radii = [25, 50, 80, 115]; 
-                let svgHTML = `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" style="margin: 5px auto; display: block; overflow: visible;"><circle cx="${cx}" cy="${cy}" r="14" fill="var(--red)" stroke="white" stroke-width="2" /><text x="${cx}" y="${cy+4}" fill="white" font-size="11" font-weight="bold" text-anchor="middle">${state.current > 0 ? '+'+state.current : 'N'}</text>`;
-                for(let i=0; i<=maxShell; i++) { const r = radii[i]; svgHTML += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#475569" stroke-width="1.5" stroke-dasharray="4 4" />`; for(let j=0; j<shells[i]; j++) { const angle = (j / shells[i]) * 2 * Math.PI - (Math.PI / 2); const ex = cx + r * Math.cos(angle); const ey = cy + r * Math.sin(angle); svgHTML += `<circle cx="${ex}" cy="${ey}" r="4.5" fill="var(--gold)" stroke="#1e293b" stroke-width="1.5" />`; } } svgHTML += `</svg>`;
-
-                document.getElementById(`game-bg-${id}`).innerHTML = `<div style="display:flex; justify-content:space-between; width:100%; padding:0 20px; box-sizing:border-box; margin-bottom: -5px;"><div style="text-align:left;"><h3 style="margin:0; color:var(--gold); font-size:1.1rem;">Build: ${state.name}</h3><p style="font-size:0.75rem; margin:0; color:#cbd5e1;">Target Atomic No: ${state.target}</p></div><div style="text-align:right; color:white; font-weight:bold; font-size:1.2rem;">${state.current} e⁻</div></div>${svgHTML}<div style="display:flex; gap:10px; margin-top: 5px;"><button class="btn" style="background:#ef4444; color:white; padding:5px 15px;" onclick="ArcGameEngine.shell.add('${id}', -1)">-1</button><button class="btn" style="background:#3b82f6; color:white; padding:5px 15px;" onclick="ArcGameEngine.shell.add('${id}', 1)">+1</button><button class="btn" style="background:#3b82f6; color:white; padding:5px 15px;" onclick="ArcGameEngine.shell.add('${id}', 10)">+10</button></div><button class="btn btn-gold" style="width: 220px; margin-top:10px;" onclick="ArcGameEngine.shell.check('${id}')">Check Answer</button>`;
+                const state = window.arcGames.instances[id];
+                document.getElementById(`game-bg-${id}`).innerHTML = `<div style="display:flex; justify-content:space-between; width:100%; padding:0 20px;"><div><h3 style="margin:0; color:var(--gold);">Build: ${state.name}</h3><p>Target: ${state.target}</p></div><div style="font-size:1.5rem;">${state.current} e⁻</div></div><div style="width:200px; height:200px; border-radius:50%; border:2px dashed #475569; display:flex; align-items:center; justify-content:center; margin:10px 0;"><div style="width:30px; height:30px; background:red; border-radius:50%; display:flex; align-items:center; justify-content:center;">N</div></div><div style="display:flex; gap:10px;"><button class="btn btn-red" onclick="ArcGameEngine.shell.add('${id}', -1)">-1</button><button class="btn" style="background:#3b82f6; color:white;" onclick="ArcGameEngine.shell.add('${id}', 1)">+1</button></div><button class="btn btn-gold" style="margin-top:10px;" onclick="ArcGameEngine.shell.check('${id}')">Check Answer</button>`;
             },
-            add: function(id, amount) { const state = window.arcGames.instances[id]; state.current += amount; if(state.current < 0) state.current = 0; if(state.current > 30) state.current = 30; this.render(id); },
-            check: function(id) { const state = window.arcGames.instances[id]; if(state.current === state.target) { document.getElementById(`game-bg-${id}`).innerHTML += `<div style="position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:50;"><h2 style="color:var(--green);">Perfect Configuration! ✅</h2><button class="btn btn-gold" onclick="ArcGameEngine.shell.init('${id}')">Build Next Atom</button></div>`; } else { document.getElementById(`game-bg-${id}`).innerHTML += `<div style="position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:50;"><h2 style="color:var(--red);">Unstable Isotope! 💥</h2><p>You placed ${state.current} e⁻. Target was ${state.target}.</p><button class="btn btn-gold" onclick="ArcGameEngine.shell.init('${id}')">Try Again</button></div>`; } }
+            add: function(id, amount) { const state = window.arcGames.instances[id]; state.current += amount; if(state.current < 0) state.current = 0; this.render(id); },
+            check: function(id) { const state = window.arcGames.instances[id]; if(state.current === state.target) { document.getElementById(`game-bg-${id}`).innerHTML += `<div style="position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:50;"><h2 style="color:var(--green);">Perfect! ✅</h2><button class="btn btn-gold" onclick="ArcGameEngine.shell.init('${id}')">Next</button></div>`; } else { document.getElementById(`game-bg-${id}`).innerHTML += `<div style="position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:50;"><h2 style="color:var(--red);">Wrong! 💥</h2><button class="btn btn-gold" onclick="ArcGameEngine.shell.init('${id}')">Try Again</button></div>`; } }
         },
 
         // 9. WHACK-A-MOLECULE
@@ -1657,8 +1449,6 @@
                 if(state.active === index) {
                     state.score++; document.getElementById(`whack-score-${id}`).innerText = state.score;
                     document.getElementById(`mole-${id}-${index}`).style.bottom = '-100%'; 
-                    document.getElementById(`mole-${id}-${index}`).innerText = "💥"; 
-                    setTimeout(() => { document.getElementById(`mole-${id}-${index}`).innerText = "⚛️"; }, 300);
                     state.active = -1;
                 }
             }
@@ -1667,20 +1457,26 @@
         // 10. REACTION TYPER
         typer: {
             init: function(id) {
-                const words = ["photosynthesis", "stoichiometry", "thermodynamics", "organic chemistry", "titration", "equilibrium", "valence electrons", "polymerization"];
+                const words = ["photosynthesis", "stoichiometry", "thermodynamics"];
                 const target = words[Math.floor(Math.random() * words.length)];
                 window.arcGames.instances[id] = { target: target, startTime: Date.now() };
-                document.getElementById(`game-bg-${id}`).innerHTML = `<h3 style="color:var(--gold); margin-top:0;">Speed Typing Test</h3><p style="color:#cbd5e1; font-size:0.9rem; margin-bottom:20px;">Type the chemical term below as fast as possible!</p><div style="background:#334155; padding:15px 30px; border-radius:8px; font-size:1.5rem; font-weight:bold; letter-spacing:2px; margin-bottom:20px; border:1px solid #475569; color:white;">${target}</div><input type="text" id="typer-input-${id}" placeholder="Type here..." autocomplete="off" style="width:200px; padding:12px; font-size:1.2rem; text-align:center; border-radius:8px; border:2px solid var(--gold); outline:none;" oninput="ArcGameEngine.typer.check('${id}', this.value)">`;
+                
+                document.getElementById(`game-bg-${id}`).innerHTML = `
+                    <h3 style="color:var(--gold); margin-top:0;">Speed Typing Test</h3>
+                    <div style="background:#334155; padding:15px 30px; border-radius:8px; font-size:1.8rem; font-weight:bold; letter-spacing:2px; margin-bottom:20px; border:1px solid #475569; color:white;">${target}</div>
+                    <input type="text" id="typer-input-${id}" placeholder="Type here..." autocomplete="off" style="width:200px; padding:12px; font-size:1.2rem; text-align:center; border-radius:8px; border:2px solid var(--gold); outline:none;" oninput="ArcGameEngine.typer.check('${id}', this.value)">
+                `;
             },
             check: function(id, val) {
                 const state = window.arcGames.instances[id];
                 if(val.toLowerCase() === state.target) {
                     const timeTaken = ((Date.now() - state.startTime) / 1000).toFixed(2);
-                    document.getElementById(`game-bg-${id}`).innerHTML = `<h2 style="color:var(--green);">⚡ Fast Reflexes!</h2><p style="font-size:1.2rem;">You typed it in <b>${timeTaken} seconds</b>.</p><button class="btn btn-gold" style="margin-top:15px;" onclick="ArcGameEngine.typer.init('${id}')">Try Another Word</button>`;
+                    document.getElementById(`game-bg-${id}`).innerHTML = `<h2 style="color:var(--green);">⚡ Fast!</h2><p>Time: <b>${timeTaken}s</b>.</p><button class="btn btn-gold" onclick="ArcGameEngine.typer.init('${id}')">Play Again</button>`;
                 }
             }
         }
     };
+    // ==========================================
 
     const toolbarHTML = `
         <div class="toolbar" style="background:#e2e8f0; padding:10px; border-radius:6px 6px 0 0; display:flex; gap:8px; flex-wrap:wrap; align-items:center; border:1px solid #ccc; border-bottom:none;">
@@ -1731,15 +1527,15 @@
                         <div style="background:white; padding:15px; border:1px solid #ddd; border-radius:8px;">
                             <h4>Add Question</h4>
                             ${toolbarHTML} 
-                            <div id="q-editor" class="editor" contenteditable="true" placeholder="Question text..." style="min-height:100px; border-radius:0 0 6px 6px; margin-bottom:10px;"></div>
+                            <div id="q-editor" class="editor" contenteditable="true" placeholder="Question text..." style="min-height:100px; border-radius:0 0 6px 6px; margin-bottom:10px; padding:10px; border:1px solid #ccc;"></div>
                             <input id="q-topic" placeholder="Chemistry Topic (e.g. Thermodynamics, GOC) for Tracker">
                             <div style="margin-bottom:15px;"><label class="btn-small" style="background:#e2e8f0; cursor:pointer;">📷 Q-Image <input type="file" onchange="encodeImg(this, 'q-prev')" style="display:none;"></label><img id="q-prev" style="height:60px; display:none; margin-top:5px;"></div>
                             <div style="background:#f1f5f9; padding:10px; border-radius:6px; margin-bottom:10px;">
                                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                                    <div><b>A:</b> <div id="op0" class="editor-small" contenteditable="true" style="background:white;"></div></div>
-                                    <div><b>B:</b> <div id="op1" class="editor-small" contenteditable="true" style="background:white;"></div></div>
-                                    <div><b>C:</b> <div id="op2" class="editor-small" contenteditable="true" style="background:white;"></div></div>
-                                    <div><b>D:</b> <div id="op3" class="editor-small" contenteditable="true" style="background:white;"></div></div>
+                                    <div><b>A:</b> <div id="op0" class="editor-small" contenteditable="true" style="background:white; padding:5px; border:1px solid #ccc;"></div></div>
+                                    <div><b>B:</b> <div id="op1" class="editor-small" contenteditable="true" style="background:white; padding:5px; border:1px solid #ccc;"></div></div>
+                                    <div><b>C:</b> <div id="op2" class="editor-small" contenteditable="true" style="background:white; padding:5px; border:1px solid #ccc;"></div></div>
+                                    <div><b>D:</b> <div id="op3" class="editor-small" contenteditable="true" style="background:white; padding:5px; border:1px solid #ccc;"></div></div>
                                 </div>
                             </div>
                             <div style="display:flex; gap:10px; align-items:center; margin-bottom:10px;">
@@ -1749,8 +1545,8 @@
                             </div>
                             <div style="border:1px solid #fbbf24; border-radius:6px; padding:10px; background:#fffbeb;">
                                 <div style="font-weight:bold; color:#b45309; margin-bottom:5px;">💡 Solution</div>
-                                <div id="q-sol" class="editor-small" contenteditable="true" style="background:white; min-height:60px;"></div>
-                                <label class="btn-small" style="background:#fcd34d; cursor:pointer; margin-top:5px;">📷 Sol-Image <input type="file" id="q-sol-file" onchange="encodeImg(this, 'sol-prev', true)" style="display:none;"></label><img id="sol-prev" style="height:60px; display:none; margin-top:5px;">
+                                <div id="q-sol" class="editor-small" contenteditable="true" style="background:white; min-height:60px; padding:5px; border:1px solid #ccc;"></div>
+                                <label class="btn-small" style="background:#fcd34d; cursor:pointer; margin-top:5px; display:inline-block;">📷 Sol-Image <input type="file" id="q-sol-file" onchange="encodeImg(this, 'sol-prev', true)" style="display:none;"></label><img id="sol-prev" style="height:60px; display:none; margin-top:5px;">
                             </div>
                             <div style="margin-top:15px; display:flex; gap:10px;">
                                 <button class="btn btn-gold" style="flex:1" onclick="saveDraftQ()">💾 Save Question</button>
@@ -1770,11 +1566,11 @@
         }
         else if (tab === 'blog') {
             editingBlogId = null;
-            c.innerHTML = `<h3>Post Blog</h3><input id="b-title" placeholder="Blog Title"><div style="margin:10px 0;"><b>Cover:</b> <input type="file" onchange="encodeImg(this, 'b-cover-prev')"><img id="b-cover-prev" style="height:100px; display:none;"></div>${toolbarHTML}<div id="b-content" class="editor" contenteditable="true" style="min-height:300px; margin-top:0; border-radius:0 0 6px 6px;"></div><button class="btn btn-gold" style="width:100%; margin-top:15px;" onclick="postBlog()">PUBLISH BLOG</button>`;
+            c.innerHTML = `<h3>Post Blog</h3><input id="b-title" placeholder="Blog Title"><div style="margin:10px 0;"><b>Cover:</b> <input type="file" onchange="encodeImg(this, 'b-cover-prev')"><img id="b-cover-prev" style="height:100px; display:none;"></div>${toolbarHTML}<div id="b-content" class="editor" contenteditable="true" style="min-height:300px; margin-top:0; border-radius:0 0 6px 6px; padding:10px; border:1px solid #ccc;"></div><button class="btn btn-gold" style="width:100%; margin-top:15px;" onclick="postBlog()">PUBLISH BLOG</button>`;
         }
         else if (tab === 'offline') {
             if(!editingOfflineId) offlineDraft = []; 
-            c.innerHTML = `<h3>Offline Result</h3><input id="off-title" placeholder="Test Title"><div class="input-group" style="grid-template-columns: 2fr 1fr 1fr 2fr auto;"><input id="off-name" placeholder="Name"><input id="off-total" placeholder="Total"><input id="off-obt" placeholder="Obt"><input id="off-link" placeholder="Drive Link"><button class="btn btn-gold" onclick="addOfflineStudent()">Add</button></div><div class="table-container"><table style="margin:0;"><thead><tr><th>Name</th><th>Mks</th><th>Link</th><th>Del</th></tr></thead><tbody id="off-preview-body"></tbody></table></div><button class="btn btn-red" style="width:100%" onclick="postOffline()">${editingOfflineId ? 'UPDATE' : 'UPLOAD'}</button>`;
+            c.innerHTML = `<h3>Offline Result</h3><input id="off-title" placeholder="Test Title"><div class="input-group" style="display:grid; grid-template-columns: 2fr 1fr 1fr 2fr auto; gap:5px; margin-bottom:10px;"><input id="off-name" placeholder="Name"><input id="off-total" placeholder="Total"><input id="off-obt" placeholder="Obt"><input id="off-link" placeholder="Drive Link"><button class="btn btn-gold" onclick="addOfflineStudent()">Add</button></div><div class="table-container"><table style="margin:0;"><thead><tr><th>Name</th><th>Mks</th><th>Link</th><th>Del</th></tr></thead><tbody id="off-preview-body"></tbody></table></div><button class="btn btn-red" style="width:100%" onclick="postOffline()">${editingOfflineId ? 'UPDATE' : 'UPLOAD'}</button>`;
             if(editingOfflineId) renderOfflineDraft();
         }
         else if (tab === 'manage') {
@@ -1816,7 +1612,7 @@
             c.innerHTML = `<h3>Set Problem of the Day</h3>
             <label>Date: <input type="date" id="potd-date" value="${today}"></label>
             ${toolbarHTML}
-            <div id="potd-text" class="editor" contenteditable="true" style="min-height:80px; margin-top:10px;" placeholder="Question..."></div>
+            <div id="potd-text" class="editor" contenteditable="true" style="min-height:80px; margin-top:10px; border:1px solid #ccc; padding:10px;" placeholder="Question..."></div>
             <label class="btn-small" style="background:#e2e8f0; cursor:pointer; display:inline-block; margin:10px 0;">📷 Add Image <input type="file" onchange="encodeImg(this, 'potd-img')" style="display:none;"></label><img id="potd-img" style="height:60px; display:none; margin-left:10px;">
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px;">
                 <input id="po0" placeholder="Option A"><input id="po1" placeholder="Option B">
@@ -1824,8 +1620,8 @@
             </div>
             <select id="potd-corr" style="border:2px solid green; font-weight:bold; margin-bottom:10px;"><option value="0">Ans A</option><option value="1">Ans B</option><option value="2">Ans C</option><option value="3">Ans D</option></select>
             <div style="background:#fffbeb; padding:10px; border:1px solid #fbbf24; border-radius:6px;">
-                <b>Solution:</b><div id="potd-sol" class="editor-small" contenteditable="true" style="background:white; min-height:50px;"></div>
-                <label class="btn-small" style="background:#fcd34d; cursor:pointer; margin-top:5px;">📷 Sol-Image <input type="file" onchange="encodeImg(this, 'potd-sol-img', true)" style="display:none;"></label><img id="potd-sol-img" style="height:50px; display:none;">
+                <b>Solution:</b><div id="potd-sol" class="editor-small" contenteditable="true" style="background:white; min-height:50px; padding:5px; border:1px solid #ccc;"></div>
+                <label class="btn-small" style="background:#fcd34d; cursor:pointer; margin-top:5px; display:inline-block;">📷 Sol-Image <input type="file" onchange="encodeImg(this, 'potd-sol-img', true)" style="display:none;"></label><img id="potd-sol-img" style="height:50px; display:none;">
             </div>
             <button class="btn btn-gold" style="width:100%; margin-top:15px;" onclick="uploadPOTD()">Set POTD</button>
             <hr>
@@ -2082,9 +1878,7 @@
             const speakWithFemaleVoice = () => {
                 const voices = window.speechSynthesis.getVoices();
                 let femaleVoice = voices.find(voice => 
-                    voice.name.includes('Female') || voice.name.includes('Zira') || 
-                    voice.name.includes('Samantha') || voice.name.includes('Victoria') || 
-                    voice.name.includes('Google UK English Female') || voice.name.includes('Google US English')
+                    voice.name.includes('Female') || voice.name.includes('Zira') || voice.name.includes('Samantha') || voice.name.includes('Victoria') || voice.name.includes('Google UK English Female') || voice.name.includes('Google US English')
                 );
                 if (femaleVoice) { msg.voice = femaleVoice; }
                 window.speechSynthesis.speak(msg);
@@ -2388,29 +2182,22 @@
         let finalLink = link;
         const lowerLink = link.toLowerCase();
 
-        // 1. Define what is "safe" to embed inside your website's iframe
         const isBase64 = link.startsWith('data:'); 
         const isGoogleDrive = lowerLink.includes('drive.google.com');
         const isOneDrive = lowerLink.includes('onedrive.live.com') || lowerLink.includes('1drv.ms') || lowerLink.includes('sharepoint.com');
         const isDirectPdf = lowerLink.endsWith('.pdf');
         const isDirectImage = lowerLink.match(/\.(jpeg|jpg|gif|png|webp)$/) != null;
 
-        // 2. Check if the link is safe to open in the modal
         if (isBase64 || isGoogleDrive || isOneDrive || isDirectPdf || isDirectImage) {
             document.getElementById('pdf-title').innerText = title || "Document Viewer";
-            // Format Google Drive links for embedding
             if (isGoogleDrive && lowerLink.includes('/view')) {
                 finalLink = link.replace(/\/view.*$/, '/preview');
-            } 
-            // Format direct external PDFs using Google Docs Viewer for better mobile support
-            else if (isDirectPdf && !isBase64) {
+            } else if (isDirectPdf && !isBase64) {
                 finalLink = `https://docs.google.com/gview?url=${encodeURIComponent(link)}&embedded=true`;
             }
-            // Open in the modal
             document.getElementById('pdf-frame').src = finalLink;
             openModal('pdf-modal');
         } else {
-            // 3. If it's an external website (like NCERT), open it in a new tab
             window.open(link, '_blank');
         }
     }
