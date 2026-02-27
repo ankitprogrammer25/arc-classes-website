@@ -677,18 +677,16 @@ body.dark-mode .logo {
        
        
         <div class="book-section" style="padding: 40px 0; display: flex; justify-content: center; align-items: center; overflow: visible;">
-    <div id="book-shadow-container" style="position: relative; perspective: 2000px; transform-style: preserve-3d;">
-        <div class="book-scene">
-            <div class="book-spine"></div>
-            
-            <div id="story-book" class="book-wrapper">
+            <div id="book-shadow-container" style="position: relative; perspective: 2000px; transform-style: preserve-3d;">
+                <div class="book-scene">
+                    <div class="book-spine"></div>
+                    <div id="story-book" class="book-wrapper">
+                    </div>
                 </div>
+            </div>
         </div>
-    </div>
-</div>
 
-
-<div id="login" class="section">
+        </div> </div>  <div id="login" class="section">
     <div class="desk-scene" id="deskScene">
         <div class="lamp-container">
             <div class="lamp-shade"></div>
@@ -1930,7 +1928,7 @@ if (savedTheme === 'dark') {
                     <option value=" &sigma; ">&sigma; (Sigma)</option>
                 </optgroup>
             </select>
-        </div>`;
+        </div>`; 
 
     function showAdm(tab) {
         const c = document.getElementById('adm-content');
@@ -2252,6 +2250,7 @@ if (savedTheme === 'dark') {
     async function postOffline() { if(offlineDraft.length === 0) return alert("No Data"); const method = editingOfflineId?'PUT':'POST'; const url = editingOfflineId?`/api/admin/offline-result/${editingOfflineId}`:'/api/admin/offline-result'; await fetch(url, { method, headers: {'Content-Type':'application/json'}, body: JSON.stringify({ title: document.getElementById('off-title').value, records: offlineDraft }) }); alert("Saved!"); offlineDraft = []; editingOfflineId = null; showAdm('offline'); }
     
     function exec(cmd, val=null) { document.execCommand(cmd, false, val); }
+
     // Inserts an image or SVG directly into the text editor at the cursor position
     function insertInlineImage(input) {
         if (input.files && input.files[0]) {
