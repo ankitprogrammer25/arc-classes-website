@@ -110,6 +110,114 @@
         .desk-scene.is-on .on-form { display: block; animation: fadeIn 0.5s; }
         #reg-link-container { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); width: 100%; text-align: center; z-index: 10; }
 
+        /* 📖 3D Hall of Fame Book */
+.book-scene {
+    position: relative;
+    width: 100%;
+    max-width: 700px;
+    height: 420px;
+    margin: 40px auto;
+    perspective: 1500px;
+}
+
+/* 📖 Drop Shadow for the Book */
+.book-scene::after {
+    content: '';
+    position: absolute;
+    bottom: -15px; /* Adjust this to move the shadow up or down */
+    left: 5%;
+    width: 90%;
+    height: 30px;
+    background: radial-gradient(ellipse at center, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0) 70%);
+    z-index: -1; /* Keeps the shadow behind the book pages */
+    pointer-events: none; /* Ensures it doesn't block hover events */
+}
+
+.book-wrapper {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+}
+
+.book-page {
+    position: absolute;
+    width: 50%;
+    height: 100%;
+    top: 0;
+    right: 0;
+    transform-origin: left center;
+    transition: transform 1.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+    transform-style: preserve-3d;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 0 12px 12px 0;
+    box-shadow: inset 5px 0 15px rgba(0,0,0,0.05), 5px 5px 15px rgba(0,0,0,0.1);
+}
+
+.book-page.flipped {
+    transform: rotateY(-180deg);
+}
+
+.page-content {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    padding: 30px 20px;
+    box-sizing: border-box;
+    backface-visibility: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    border-radius: 0 12px 12px 0;
+    background: linear-gradient(to right, #f8fafc 0%, #ffffff 10%);
+}
+
+.page-back {
+    transform: rotateY(180deg);
+    border-radius: 12px 0 0 12px;
+    background: linear-gradient(to left, #f8fafc 0%, #ffffff 10%);
+}
+
+.book-photo {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    border: 3px solid var(--gold);
+    object-fit: cover;
+    margin-bottom: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.book-quote {
+    font-style: italic;
+    color: #444;
+    font-size: 0.95rem;
+    position: relative;
+    margin-top: 15px;
+    line-height: 1.6;
+    padding: 0 10px;
+}
+
+.book-quote::before {
+    content: '"';
+    font-size: 4rem;
+    color: var(--gold);
+    opacity: 0.2;
+    position: absolute;
+    top: -25px;
+    left: -15px;
+    font-family: Georgia, serif;
+}
+
+/* Mobile Adjustments */
+@media (max-width: 700px) {
+    .book-scene { height: 350px; }
+    .book-photo { width: 70px; height: 70px; }
+    .book-quote { font-size: 0.85rem; line-height: 1.4; }
+    .page-content { padding: 20px 10px; }
+}
     
         /* 🎮 --- ARC MULTI-GAME COMPONENT CSS --- */
         .empty-game-wrapper { grid-column: 1 / -1; width: 100%; text-align: center; padding: 30px 10px; background: white; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); box-sizing: border-box; overflow: hidden; }
@@ -259,9 +367,10 @@
             </div>
             <button class="btn btn-gold btn-small" onclick="openModal('story-modal')">✍️ Add Your Story</button>
         </div>
-        <div class="slider-container" style="margin-top:20px;">
-            <div id="story-track" class="slider-track"></div>
+        <div class="book-scene">
+    <div id="story-book" class="book-wrapper">
         </div>
+</div>
     </div>
 </div>
 
@@ -1989,16 +2098,94 @@
     }
 
     async function loadStories() {
-        try {
-            const res = await fetch('/api/stories'); const data = await res.json(); const track = document.getElementById('story-track');
-            if(!track || data.length === 0) return;
-            const createCard = (s) => {
-                const fallbackImg = `https://ui-avatars.com/api/?name=${encodeURIComponent(s.name)}&background=0f172a&color=fbbf24&bold=true`;
-                return `<div class="story-card"><div class="story-header"><img src="${s.image || fallbackImg}" class="story-img" onerror="this.onerror=null; this.src='${fallbackImg}';"><div class="story-info"><h4>${s.name}</h4><small>${s.status}</small></div>${(user && user.role === 'admin') ? `<button onclick="deleteItem('story', '${s._id}')" style="margin-left:auto; color:red; border:none; background:none; cursor:pointer;">X</button>` : ''}</div><div class="story-text">"${s.experience}"</div></div>`;
-            };
-            const cardsHTML = data.map(createCard).join(''); track.innerHTML = cardsHTML + cardsHTML + cardsHTML; 
-        } catch(e) { console.error(e); }
-    }
+    try {
+        const res = await fetch('/api/stories'); 
+        const data = await res.json(); 
+        const bookContainer = document.getElementById('story-book');
+        
+        if(!bookContainer || data.length === 0) return;
+
+        let html = '';
+        
+        // 1. Create the Cover Page
+        html += `
+        <div class="book-page" style="z-index: ${data.length + 1}">
+            <div class="page-content" style="background: var(--primary); color: white; justify-content: center; border-radius: 0 12px 12px 0;">
+                <h2 style="font-size: 2rem; margin:0; color: var(--gold);">Hall of Fame</h2>
+                <p>ARC Classes</p>
+                <div style="font-size: 3rem; margin-top: 20px;">🏆</div>
+            </div>
+            <div class="page-content page-back" style="background: var(--primary);"></div>
+        </div>`;
+
+        // 2. Create the Story Pages
+        data.forEach((s, index) => {
+            const fallbackImg = `https://ui-avatars.com/api/?name=${encodeURIComponent(s.name)}&background=0f172a&color=fbbf24&bold=true`;
+            const zIndex = data.length - index; 
+            
+            html += `
+            <div class="book-page" style="z-index: ${zIndex}">
+                <div class="page-content">
+                    <img src="${s.image || fallbackImg}" class="book-photo" onerror="this.onerror=null; this.src='${fallbackImg}';">
+                    <h3 style="margin: 5px 0 0 0; color: var(--primary);">${s.name}</h3>
+                    <small style="color: #64748b; font-weight: bold;">${s.status}</small>
+                    <div class="book-quote">${s.experience}</div>
+                    
+                    ${(user && user.role === 'admin') ? `<button class="btn-small btn-red" onclick="deleteItem('story', '${s._id}')" style="margin-top: auto; padding: 5px 10px; z-index: 10;">Delete</button>` : ''}
+                </div>
+                <div class="page-content page-back">
+                    <div style="opacity: 0.1; font-size: 5rem; margin-top: 50px; display: flex; justify-content: center; width: 100%;">🌟</div>
+                </div>
+            </div>`;
+        });
+
+        bookContainer.innerHTML = html;
+
+        // 3. Animation Logic
+        const pages = document.querySelectorAll('.book-page');
+        let currentPage = 0;
+
+        // Clear any existing intervals if function runs twice
+        if(window.bookInterval) clearInterval(window.bookInterval);
+
+        // Define the flipping action
+        const flipNextPage = () => {
+            if(currentPage < pages.length) {
+                // Flip the page
+                pages[currentPage].classList.add('flipped');
+                // Adjust z-index mid-flip so it layers correctly on the left side
+                const currentIdx = currentPage; 
+                setTimeout(() => { pages[currentIdx].style.zIndex = currentIdx; }, 600);
+                currentPage++;
+            } else {
+                // Reset the book (close it)
+                pages.forEach((p, i) => {
+                    p.classList.remove('flipped');
+                    setTimeout(() => { p.style.zIndex = pages.length - i + 1; }, 600);
+                });
+                currentPage = 0;
+            }
+        };
+
+        // Start the automatic flipping
+        window.bookInterval = setInterval(flipNextPage, 4000);
+
+        // 4. Pause on Hover Logic
+        const sceneContainer = document.querySelector('.book-scene');
+        
+        // Stop flipping when mouse enters the book area
+        sceneContainer.addEventListener('mouseenter', () => {
+            clearInterval(window.bookInterval);
+        });
+        
+        // Resume flipping when mouse leaves
+        sceneContainer.addEventListener('mouseleave', () => {
+            clearInterval(window.bookInterval); // Safety clear
+            window.bookInterval = setInterval(flipNextPage, 4000);
+        });
+
+    } catch(e) { console.error(e); }
+}
 
     async function submitStory() {
         const body = { name: document.getElementById('st-name').value, status: document.getElementById('st-status').value, experience: document.getElementById('st-exp').value, image: tempImg };
