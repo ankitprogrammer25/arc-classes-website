@@ -792,7 +792,7 @@
             document.getElementById('lab-info').innerHTML = `<b>👨‍🔬 System:</b> &nbsp; ${msg}`;
         },
 
-        animate: function(targetId, actionType, color, onComplete) {
+        animate: function(targetId, actionType, color, onComplete, isSolid = false) {
             const hand = document.getElementById('lab-anim-hand');
             const drop = document.getElementById('lab-anim-drop');
             const target = document.getElementById(targetId + '-target');
@@ -801,33 +801,48 @@
             const tgtRect = target.getBoundingClientRect();
             const wsRect = document.getElementById('lab-workspace').getBoundingClientRect();
             
+            // Dynamic coordinates to prevent overlapping
             const tgtX = (tgtRect.left - wsRect.left) + (tgtRect.width / 2);
-            const tgtY = (tgtRect.top - wsRect.top);
+            const tgtTopY = (tgtRect.top - wsRect.top);
+            const tgtBottomY = tgtTopY + tgtRect.height;
 
             if(actionType === 'pour') {
-                hand.innerText = '🫗'; 
+                const useSpoon = isSolid;
+                hand.innerText = useSpoon ? '🥄' : '🫗'; 
                 hand.style.transition = 'none';
-                hand.style.top = '20px'; hand.style.left = '90%'; hand.style.opacity = '0'; hand.style.transform = 'rotate(0deg)';
+                hand.style.top = '20px'; 
+                hand.style.left = '90%'; 
+                hand.style.opacity = '0'; 
+                hand.style.transform = 'rotate(0deg)';
                 
                 setTimeout(() => {
                     hand.style.transition = 'opacity 0.3s, transform 0.6s ease-in-out, top 0.6s ease-in-out, left 0.6s ease-in-out';
                     hand.style.opacity = '1';
-                    hand.style.top = (tgtY - 70) + 'px';
-                    hand.style.left = (tgtX + 20) + 'px';
+                    hand.style.top = (tgtTopY - 60) + 'px';
+                    hand.style.left = (tgtX + 15) + 'px';
                     
                     setTimeout(() => {
-                        hand.style.transform = 'rotate(-60deg)'; 
+                        hand.style.transform = useSpoon ? 'rotate(-40deg)' : 'rotate(-60deg)'; 
                         
                         setTimeout(() => {
                             drop.style.background = (color === 'transparent' || color.includes('rgba(255,255,255')) ? 'rgba(56, 189, 248, 0.8)' : color;
+                            
+                            if (useSpoon) {
+                                drop.style.borderRadius = '2px'; 
+                                drop.style.width = '10px'; drop.style.height = '10px';
+                            } else {
+                                drop.style.borderRadius = '50% 50% 50% 50% / 60% 60% 40% 40%'; 
+                                drop.style.width = '16px'; drop.style.height = '24px';
+                            }
+
                             drop.style.transition = 'none';
                             drop.style.left = (tgtX - 8) + 'px'; 
-                            drop.style.top = (tgtY - 10) + 'px';
+                            drop.style.top = (tgtTopY - 10) + 'px';
                             drop.style.opacity = '1';
                             
                             setTimeout(() => {
                                 drop.style.transition = 'top 0.4s cubic-bezier(0.4, 0, 1, 1)';
-                                drop.style.top = (tgtY + tgtRect.height - 40) + 'px'; 
+                                drop.style.top = (tgtBottomY - 40) + 'px'; 
                                 
                                 setTimeout(() => {
                                     drop.style.opacity = '0'; 
@@ -880,13 +895,15 @@
             
             if (action === 'r1') {
                 if(exp.state.step >= 1) return;
+                const isSolid = ['Glucose', 'Starch', 'Amino Acid'].some(s => exp.r1Name && exp.r1Name.includes(s));
                 this.animate(id, 'pour', exp.state.c1, () => {
                     exp.state.step = 1;
                     liq.style.height = '40%'; liq.style.background = exp.state.c1;
-                    this.setInfo(`Added first chemical.`);
-                });
+                    this.setInfo(`Added ${exp.r1Name}.`);
+                }, isSolid);
             } else if (action === 'r2') {
                 if(exp.state.step !== 1) return this.setInfo("Add first reagent initially.");
+                const isSolid = ['Glucose', 'Starch', 'Amino Acid'].some(s => exp.r2Name && exp.r2Name.includes(s));
                 this.animate(id, 'pour', exp.state.c2, () => {
                     exp.state.step = 2;
                     liq.style.height = '75%';
@@ -896,7 +913,7 @@
                         if(exp.state.effervescence) this.createBubbles(id);
                         this.setInfo(exp.state.msg);
                     } else { this.setInfo("Chemicals mixed. Ready for heating."); }
-                });
+                }, isSolid);
             } else if (action === 'heat') {
                 if(exp.state.step !== 2) return this.setInfo("Mix chemicals first!");
                 if(exp.state.step === 3) return;
@@ -915,18 +932,21 @@
         runBeaker: function(id, action) {
             const exp = this.experiments.find(e => e.id === id);
             const liq = document.getElementById(`${id}-liq`);
+            
             if(action === 'r1') {
                 if(exp.state.step >= 1) return;
+                const isSolid = ['NaCl', 'NaBr', 'NaI', 'Na₂SO₄', 'K₂CrO₄', 'Sugar'].some(s => exp.r1Name && exp.r1Name.includes(s));
                 this.animate(id, 'pour', exp.state.c1, () => {
                     exp.state.step = 1;
                     liq.style.height = '40%'; liq.style.background = exp.state.c1;
-                    this.setInfo(`Poured first solution.`);
-                });
+                    this.setInfo(`Added ${exp.r1Name}.`);
+                }, isSolid);
             } else if(action === 'r2') {
-                if(exp.state.step !== 1) return this.setInfo("Pour first solution initially.");
+                if(exp.state.step !== 1) return this.setInfo("Add first reagent initially.");
                 
                 let finalColor = exp.state.c2;
                 let applyColorNow = exp.id !== 'iodine_clock';
+                const isSolid = ['NaCl', 'NaBr', 'NaI', 'Na₂SO₄', 'K₂CrO₄', 'Sugar'].some(s => exp.r2Name && exp.r2Name.includes(s));
 
                 this.animate(id, 'pour', 'rgba(255,255,255,0.2)', () => {
                     exp.state.step = 2;
@@ -942,7 +962,7 @@
                     } else {
                         this.setInfo(exp.state.msg);
                     }
-                });
+                }, isSolid);
             }
         },
 
