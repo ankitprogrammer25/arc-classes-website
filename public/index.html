@@ -914,9 +914,18 @@ body.dark-mode .logo {
                 </div>
                 
                 <hr style="border-color: #475569; margin: 15px 0;">
-                <h4 style="margin-top:0; color: white;">Custom Search</h4>
-                <input type="text" id="custom-mol-input" placeholder="Enter PubChem CID (e.g. 241)" style="background: #0f172a; color: white; border: 1px solid #3b82f6;">
-                <button class="btn" style="background: #3b82f6; color: white; width: 100%;" onclick="searchCustomMolecule()">Load Custom</button>
+                <h4 style="margin-top:0; color: white;">Search by Name</h4>
+                <input type="text" id="custom-mol-input" placeholder="e.g. Paracetamol" style="background: #0f172a; color: white; border: 1px solid #3b82f6; width: 100%; box-sizing: border-box; padding: 10px; border-radius: 4px; margin-bottom: 10px;">
+                <button class="btn" style="background: #3b82f6; color: white; width: 100%;" onclick="searchCustomMolecule()">🔍 Search Molecule</button>
+
+                <hr style="border-color: #475569; margin: 15px 0;">
+                <h4 style="margin-top:0; color: white;">View Style</h4>
+                <select id="mol-style-select" onchange="applyCurrentMolStyle()" style="background: #0f172a; color: white; border: 1px solid #3b82f6; width: 100%; padding: 10px; border-radius: 4px; cursor: pointer;">
+                    <option value="ballAndStick">Ball & Stick</option>
+                    <option value="spacefill">Space-filling (Atoms)</option>
+                    <option value="stick">Stick (Bonds only)</option>
+                    <option value="wireframe">Wireframe</option>
+                </select>
             </div>
 
             <div style="flex: 3; min-width: 300px; background: #000; border-radius: 8px; border: 2px solid #334155; position: relative; overflow: hidden; height: 400px;">
@@ -2937,36 +2946,77 @@ function open3DViewer() {
 function loadMolecule(cid, name) {
     if (!viewer3D) return;
     
+    document.getElementById('mol-loading').innerText = "Fetching Data...";
     document.getElementById('mol-loading').style.display = 'block';
     document.getElementById('current-mol-name').innerText = name || `CID: ${cid}`;
     
     viewer3D.clear(); // Clear the previous molecule
     
-    // Download directly from PubChem API
+    // Download directly from PubChem API using CID
     $3Dmol.download(`cid:${cid}`, viewer3D, {}, function() {
         document.getElementById('mol-loading').style.display = 'none';
         
-        // Set styling: 'Stick' for bonds, 'Sphere' for atoms (Ball-and-Stick model)
-        viewer3D.setStyle({}, {
-            stick: { radius: 0.15, colorscheme: 'Jmol' }, 
-            sphere: { scale: 0.3, colorscheme: 'Jmol' }
-        });
+        // Apply the currently selected visual style
+        applyCurrentMolStyle();
         
         viewer3D.zoomTo();
-        viewer3D.render();
-        
         // Add a gentle auto-spin so it looks dynamic immediately
         viewer3D.spin('y', 0.5); 
     });
 }
 
-function searchCustomMolecule() {
-    const cid = document.getElementById('custom-mol-input').value.trim();
-    if (!cid || isNaN(cid)) {
-        alert("Please enter a valid numeric PubChem CID (e.g., 2244 for Aspirin).");
+// --- NEW: Function to handle visual styles ---
+function applyCurrentMolStyle() {
+    if (!viewer3D) return;
+    const style = document.getElementById('mol-style-select').value;
+    
+    if (style === 'ballAndStick') {
+        viewer3D.setStyle({}, { stick: { radius: 0.15, colorscheme: 'Jmol' }, sphere: { scale: 0.3, colorscheme: 'Jmol' } });
+    } else if (style === 'spacefill') {
+        viewer3D.setStyle({}, { sphere: { colorscheme: 'Jmol' } }); // Full size spheres showing atomic radius
+    } else if (style === 'stick') {
+        viewer3D.setStyle({}, { stick: { radius: 0.2, colorscheme: 'Jmol' } }); // Thicker bonds, no spheres
+    } else if (style === 'wireframe') {
+        viewer3D.setStyle({}, { line: { colorscheme: 'Jmol' } }); // Thin lines for complex structures
+    }
+    viewer3D.render();
+}
+
+// --- UPDATED: Search by Name using PubChem REST API ---
+async function searchCustomMolecule() {
+    const query = document.getElementById('custom-mol-input').value.trim();
+    if (!query) {
+        alert("Please enter a molecule name.");
         return;
     }
-    loadMolecule(cid, `Custom CID: ${cid}`);
+    
+    const loadingText = document.getElementById('mol-loading');
+    loadingText.innerText = "Searching Database...";
+    loadingText.style.display = 'block';
+    
+    try {
+        // Step 1: Translate the chemical name into a PubChem CID behind the scenes
+        const res = await fetch(`https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/${encodeURIComponent(query)}/cids/JSON`);
+        
+        if (!res.ok) {
+            alert(`Could not find "${query}". Please check the spelling.`);
+            loadingText.style.display = 'none';
+            return;
+        }
+        
+        const data = await res.json();
+        
+        // Step 2: Extract the CID and load the 3D model
+        if (data.IdentifierList && data.IdentifierList.CID && data.IdentifierList.CID.length > 0) {
+            const cid = data.IdentifierList.CID[0];
+            // Format the name nicely (e.g., capitalize first letter)
+            const formattedName = query.charAt(0).toUpperCase() + query.slice(1);
+            loadMolecule(cid, formattedName);
+        }
+    } catch (err) {
+        alert("Error connecting to PubChem database.");
+        loadingText.style.display = 'none';
+    }
 }
 
 // --- ⏱️ FOCUS MODE / POMODORO LOGIC ---
