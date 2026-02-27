@@ -15,7 +15,7 @@ app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // --- 1. DATABASE CONNECTION ---
-const dbLink = "mongodb+srv://ankitprogrammer25:a32x05sYvukG178G@cluster0.0dhqpzv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+const dbLink = "mongodb+srv://ankitprogrammer25:MYPASSWORD@cluster0.0dhqpzv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 
 mongoose.connect(dbLink, { 
     serverSelectionTimeoutMS: 5000, 
