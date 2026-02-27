@@ -6,6 +6,8 @@
     <title>ARC CLASSES</title>
     <link id="dynamic-favicon" rel="icon" type="image/png" href="">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://3Dmol.org/build/3Dmol-min.js"></script>
+
     <style>
         :root { --primary: #0f172a; --gold: #fbbf24; --light: #f8fafc; --red: #ef4444; --green: #22c55e; }
         
@@ -25,6 +27,14 @@
             .menu.active { display: flex; }
             .menu-toggle { display: block; }
         }
+ 
+        /* Ensure inline images inside editors and blogs stay responsive */
+.editor img, .editor-small img, #bm-content img {
+    max-width: 100%;
+    height: auto;
+    display: inline-block;
+    vertical-align: middle;
+}
 
         .blink { animation: blinker 1.5s linear infinite; }
         @keyframes blinker { 50% { opacity: 0; } }
@@ -110,66 +120,279 @@
         .desk-scene.is-on .on-form { display: block; animation: fadeIn 0.5s; }
         #reg-link-container { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); width: 100%; text-align: center; z-index: 10; }
 
-        /* 📖 3D Hall of Fame Book */
-.book-scene {
-    position: relative;
-    width: 100%;
-    max-width: 700px;
-    height: 420px;
-    margin: 40px auto;
-    perspective: 1500px;
+
+        /* 🧪 CHEMICAL EXPLOSION CONFETTI */
+#chem-explosion-container {
+    position: fixed; 
+    top: 0; left: 0; 
+    width: 100vw; height: 100vh;
+    pointer-events: none; /* Lets clicks pass through so it doesn't block the UI */
+    z-index: 9999; 
+    overflow: hidden; 
+    display: none;
 }
 
-/* 📖 Drop Shadow for the Book */
-.book-scene::after {
+.chem-particle {
+    position: absolute;
+    bottom: -50px; /* Start slightly below the screen */
+    left: 50%; /* Center of the screen */
+    transform: translateX(-50%);
+    font-size: 2rem;
+    /* The animation uses variables injected by JS for random trajectories */
+    animation: chemExplode var(--dur) cubic-bezier(0.25, 1, 0.5, 1) forwards;
+    animation-delay: var(--delay);
+}
+
+@keyframes chemExplode {
+    0% { 
+        transform: translate(-50%, 0) scale(0.5) rotate(0deg); 
+        opacity: 1; 
+    }
+    70% { 
+        opacity: 1; 
+    }
+    100% { 
+        /* Explode outwards to random X and Y coordinates */
+        transform: translate(var(--tx), var(--ty)) scale(var(--s)) rotate(var(--rot)); 
+        opacity: 0; 
+    }
+}
+
+
+    /* ⏱️ FOCUS MODE WIDGET */
+.focus-widget {
+    position: fixed;
+    bottom: 90px;
+    left: 30px;
+    width: 260px;
+    background: #0f172a; /* Sleek dark slate */
+    border: 2px solid var(--gold);
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    z-index: 2000;
+    display: none; /* Hidden by default */
+    flex-direction: column;
+    overflow: hidden;
+    transform: translateY(20px);
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.focus-widget.show {
+    display: flex;
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.focus-header {
+    background: #1e293b;
+    padding: 10px 15px;
+    color: var(--gold);
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #334155;
+}
+
+.focus-body {
+    padding: 20px;
+    text-align: center;
+}
+
+/* Circular Timer SVG CSS */
+.progress-ring__circle {
+    stroke-dasharray: 326.7; /* 2 * PI * Radius(52) */
+    stroke-dashoffset: 0;
+    transition: stroke-dashoffset 1s linear;
+    transform: rotate(-90deg);
+    transform-origin: 50% 50%;
+}
+
+.focus-time-display {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: white;
+    font-family: monospace;
+}
+
+/* 🧘‍♂️ ZEN MODE OVERRIDES */
+body.zen-mode nav {
+    transform: translateY(-100%);
+    transition: transform 0.4s ease;
+}
+
+body.zen-mode .anno-bar {
+    display: none;
+}
+
+body.zen-mode .floating-btn {
+    opacity: 0.3; /* Dim other buttons so they aren't distracting */
+    transition: opacity 0.3s;
+}
+body.zen-mode .floating-btn:hover {
+    opacity: 1;
+}
+
+
+    /* 🧪 NIGHT LAB (DARK MODE) STYLES */
+body.dark-mode {
+    background: #020617; /* Very deep blue/black */
+    color: #cbd5e1; /* Soft gray for easy reading */
+}
+
+/* Override hardcoded text colors in dark mode */
+body.dark-mode h1, 
+body.dark-mode h2, 
+body.dark-mode h3, 
+body.dark-mode h4, 
+body.dark-mode p,
+body.dark-mode label,
+body.dark-mode b {
+    color: #e2e8f0 !important; 
+}
+
+/* Darken cards, modals, and panels */
+body.dark-mode .card, 
+body.dark-mode .modal-content,
+body.dark-mode .form-box,
+body.dark-mode .question-panel,
+body.dark-mode .palette-panel,
+body.dark-mode .story-card,
+body.dark-mode #adm-content,
+body.dark-mode .potd-box,
+body.dark-mode .doubt-card {
+    background: #0f172a !important; /* Slate 900 */
+    border-color: #1e293b !important;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+}
+
+/* Fix Inputs and Textareas */
+body.dark-mode input, 
+body.dark-mode select, 
+body.dark-mode textarea {
+    background: #1e293b !important;
+    color: #f8fafc !important;
+    border: 1px solid #334155 !important;
+}
+
+/* Tables and Exam Grid */
+body.dark-mode .table-container table { background: #0f172a; }
+body.dark-mode th { background: #1e293b !important; border-color: #334155; }
+body.dark-mode td { border-color: #334155; }
+
+/* Glowing accents for interactive elements */
+body.dark-mode .btn-gold {
+    box-shadow: 0 0 10px rgba(251, 191, 36, 0.3);
+}
+
+body.dark-mode .p-btn {
+    background: #1e293b;
+    border-color: #334155;
+    color: #cbd5e1;
+}
+
+/* Fix inline white backgrounds */
+body.dark-mode [style*="background: white"],
+body.dark-mode [style*="background:white"],
+body.dark-mode [style*="background:#fff"] {
+    background: #0f172a !important;
+}
+
+/* Make the logo look radioactive/cool in dark mode */
+body.dark-mode .logo {
+    text-shadow: 0 0 10px rgba(34, 197, 94, 0.6); 
+}
+
+
+        /* --- 📖 Modern Open Book CSS --- */
+.book-scene {
+    width: 700px; /* Standard wide open book view */
+    height: 450px;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.5s ease;
+}
+
+/* The central spine effect */
+.book-spine {
     content: '';
     position: absolute;
-    bottom: -15px; /* Adjust this to move the shadow up or down */
+    top: 0; left: 50%;
+    width: 2px; height: 100%;
+    background: rgba(0,0,0,0.1);
+    transform: translateX(-50%);
+    z-index: 100;
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+}
+
+/* Base shadow underneath the entire book */
+#book-shadow-container::after {
+    content: '';
+    position: absolute;
+    bottom: -25px;
     left: 5%;
     width: 90%;
-    height: 30px;
+    height: 40px;
     background: radial-gradient(ellipse at center, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0) 70%);
-    z-index: -1; /* Keeps the shadow behind the book pages */
-    pointer-events: none; /* Ensures it doesn't block hover events */
+    z-index: -1;
+    filter: blur(5px);
+    pointer-events: none;
 }
 
 .book-wrapper {
-    width: 100%;
-    height: 100%;
+    width: 100%; height: 100%;
     position: relative;
     transform-style: preserve-3d;
 }
 
-.book-page {
+.book-sheet {
     position: absolute;
-    width: 50%;
-    height: 100%;
-    top: 0;
-    right: 0;
-    transform-origin: left center;
-    transition: transform 1.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+    top: 0; right: 0; /* Stacks everything on the right half initially */
+    width: 50%; height: 100%;
+    transform-origin: left center; /* Pivot from the central spine */
     transform-style: preserve-3d;
-    background: #fff;
-    border: 1px solid #e2e8f0;
-    border-radius: 0 12px 12px 0;
-    box-shadow: inset 5px 0 15px rgba(0,0,0,0.05), 5px 5px 15px rgba(0,0,0,0.1);
+    transition: transform 1.8s cubic-bezier(0.645, 0.045, 0.355, 1); /* Realistic slow flip */
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
 }
 
-.book-page.flipped {
+/* Adds page thickness effect on edges */
+.book-sheet::before {
+    content:'';
+    position: absolute; left: 0; top: 0; width: 100%; height: 100%;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    box-sizing: border-box;
+    backface-visibility: hidden;
+    border-radius: 0 12px 12px 0;
+    z-index: 1;
+}
+
+.book-sheet.flipped {
     transform: rotateY(-180deg);
 }
 
-.page-content {
+/* Individual page styles */
+.page-face {
     position: absolute;
-    width: 100%;
-    height: 100%;
-    padding: 30px 20px;
+    width: 100%; height: 100%;
+    top: 0; left: 0;
+    backface-visibility: hidden; /* Crucial for realistic flipping */
+    -webkit-backface-visibility: hidden;
     box-sizing: border-box;
-    backface-visibility: hidden;
+    background: white;
+    padding: 30px;
+    border: 1px solid #e2e8f0;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    text-align: center;
+}
+
+.page-front {
+    z-index: 2;
     border-radius: 0 12px 12px 0;
     background: linear-gradient(to right, #f8fafc 0%, #ffffff 10%);
 }
@@ -180,43 +403,92 @@
     background: linear-gradient(to left, #f8fafc 0%, #ffffff 10%);
 }
 
-.book-photo {
-    width: 90px;
-    height: 90px;
+/* Dynamic shading at the central spine */
+.page-front::after {
+    content:'';
+    position: absolute; left: 0; top: 0; width: 30px; height: 100%;
+    background: linear-gradient(to right, rgba(0,0,0,0.05), rgba(0,0,0,0));
+    pointer-events: none;
+}
+.page-back::after {
+    content:'';
+    position: absolute; right: 0; top: 0; width: 30px; height: 100%;
+    background: linear-gradient(to left, rgba(0,0,0,0.05), rgba(0,0,0,0));
+    pointer-events: none;
+}
+
+/* --- Content Styling --- */
+.content-wrapper {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Left Page: Large Profile Image */
+.page-back .content-wrapper {
+    justify-content: center;
+    align-items: center;
+}
+.book-photo-large {
+    width: 180px; height: 180px;
     border-radius: 50%;
-    border: 3px solid var(--gold);
+    border: 6px solid var(--gold);
     object-fit: cover;
-    margin-bottom: 10px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
 }
-
-.book-quote {
-    font-style: italic;
-    color: #444;
-    font-size: 0.95rem;
-    position: relative;
-    margin-top: 15px;
-    line-height: 1.6;
-    padding: 0 10px;
-}
-
-.book-quote::before {
-    content: '"';
-    font-size: 4rem;
+.photo-label {
     color: var(--gold);
-    opacity: 0.2;
-    position: absolute;
-    top: -25px;
-    left: -15px;
-    font-family: Georgia, serif;
+    font-weight: bold;
+    font-size: 1.2rem;
+    text-transform: uppercase;
 }
 
-/* Mobile Adjustments */
-@media (max-width: 700px) {
-    .book-scene { height: 350px; }
-    .book-photo { width: 70px; height: 70px; }
-    .book-quote { font-size: 0.85rem; line-height: 1.4; }
-    .page-content { padding: 20px 10px; }
+/* Right Page: Story Text */
+.page-front .content-wrapper {
+    justify-content: flex-start;
+}
+.book-quote-icon {
+    font-size: 5rem;
+    color: var(--gold);
+    opacity: 0.15;
+    position: absolute; top: -10px; left: 15px;
+    font-family: Georgia, serif;
+    pointer-events: none;
+}
+.book-experience {
+    font-style: italic; color: #444;
+    font-size: 1.05rem; line-height: 1.6;
+    margin-top: 30px; margin-bottom: 20px;
+    text-align: left;
+    overflow-y: auto; /* Handles longer stories automatically */
+    padding-right: 5px;
+}
+/* Styling the scrollbar within the book */
+.book-experience::-webkit-scrollbar { width: 5px; }
+.book-experience::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 5px; }
+
+.student-details {
+    margin-top: auto;
+    border-top: 1px solid #e2e8f0;
+    padding-top: 15px;
+    text-align: right;
+}
+.book-name { color: var(--primary); font-size: 1.3rem; font-weight: bold; margin: 0; }
+.book-status { color: #64748b; font-size: 0.9rem; margin: 2px 0 0 0; }
+
+/* Responsive adjustments for mobile */
+@media (max-width: 768px) {
+    .book-scene {
+        width: 90vw;
+        height: 60vh;
+        min-height: 400px;
+    }
+    .book-photo-large { width: 130px; height: 130px; border-width: 4px; }
+    .page-face { padding: 15px; }
+    .book-experience { font-size: 0.9rem; line-height: 1.4; margin-top: 20px; }
+    .book-name { font-size: 1.1rem; }
+    .photo-label { font-size: 1rem; }
 }
     
         /* 🎮 --- ARC MULTI-GAME COMPONENT CSS --- */
@@ -309,6 +581,7 @@
         <a onclick="show('schedule')">📅 Upcoming Test Schedule</a>
         <a onclick="show('results')" id="nav-results">Test Results</a>
         <a onclick="show('doubts')" id="nav-doubts" style="display:none">🤔 Doubts</a>
+        <a onclick="toggleNightLab()" id="night-toggle" style="cursor: pointer; font-weight: bold; transition: 0.3s;">🌙 Night Lab</a>
         <a onclick="show('login')" id="nav-login">Login</a>
         <a onclick="show('admin')" id="nav-admin" style="display:none; background: var(--red); padding: 5px 10px; border-radius: 4px;">TEACHER</a>
         <a onclick="logout()" id="nav-logout" style="display:none">Logout</a>
@@ -319,8 +592,42 @@
     <div class="anno-label" style="background: var(--primary); color: white; padding: 0 15px; z-index: 10;">🔔</div>
     <marquee id="anno-marquee" onmouseover="this.stop()" onmouseout="this.start()">Loading...</marquee>
 </div>
-
+<button class="floating-btn" style="bottom: 90px; background: #3b82f6; color: white;" onclick="open3DViewer()">🧬 3D Molecules</button>
 <button class="floating-btn" onclick="openModal('ref-modal')">🧪 Ref Tools</button>
+<button class="floating-btn" style="bottom: 30px; left: 30px; right: auto; background: #ef4444; color: white;" onclick="toggleFocusWidget()">⏱️ Focus Timer</button>
+
+<div id="focus-widget" class="focus-widget">
+    <div class="focus-header">
+        <span>🧠 Focus Mode</span>
+        <button onclick="toggleFocusWidget()" style="background:none; border:none; color:white; cursor:pointer; font-size: 1.2rem;">&times;</button>
+    </div>
+    <div class="focus-body">
+        
+        <div style="position: relative; width: 120px; height: 120px; margin: 0 auto 15px;">
+            <svg class="progress-ring" width="120" height="120">
+                <circle class="progress-ring__circle-bg" stroke="#334155" stroke-width="8" fill="transparent" r="52" cx="60" cy="60"/>
+                <circle class="progress-ring__circle" id="focus-ring" stroke="var(--gold)" stroke-width="8" fill="transparent" r="52" cx="60" cy="60"/>
+            </svg>
+            <div class="focus-time-display" id="focus-time">25:00</div>
+        </div>
+        
+        <div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 10px;">
+            <button class="btn btn-small" style="background:#3b82f6; color:white; flex: 1;" onclick="setFocusTime(25)">25m</button>
+            <button class="btn btn-small" style="background:#3b82f6; color:white; flex: 1;" onclick="setFocusTime(50)">50m</button>
+            <button class="btn btn-small" style="background:#3b82f6; color:white; flex: 1;" onclick="setFocusTime(5)">5m</button>
+        </div>
+
+        <div style="display: flex; gap: 10px;">
+            <button class="btn btn-gold btn-small" style="flex: 2;" id="focus-start-btn" onclick="toggleFocusTimer()">Start</button>
+            <button class="btn btn-red btn-small" style="flex: 1;" onclick="resetFocusTimer()">Reset</button>
+        </div>
+
+        <label style="margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.85rem; color: #cbd5e1; cursor: pointer;">
+            <input type="checkbox" id="zen-mode-check" onchange="toggleZenMode()" style="width: 16px; height: 16px; margin: 0;"> 
+            Enable Zen Mode
+        </label>
+    </div>
+</div>
 
 <div id="home" class="section active">
     <div style="text-align:center; padding: 40px 10px;">
@@ -367,12 +674,19 @@
             </div>
             <button class="btn btn-gold btn-small" onclick="openModal('story-modal')">✍️ Add Your Story</button>
         </div>
+       
+       
+        <div class="book-section" style="padding: 40px 0; display: flex; justify-content: center; align-items: center; overflow: visible;">
+    <div id="book-shadow-container" style="position: relative; perspective: 2000px; transform-style: preserve-3d;">
         <div class="book-scene">
-    <div id="story-book" class="book-wrapper">
+            <div class="book-spine"></div>
+            
+            <div id="story-book" class="book-wrapper">
+                </div>
         </div>
-</div>
     </div>
 </div>
+
 
 <div id="login" class="section">
     <div class="desk-scene" id="deskScene">
@@ -578,6 +892,45 @@
     </div>
 </div>
 
+<div id="mol-modal" class="modal">
+    <div class="modal-content" style="max-width: 900px; background: #0f172a; border: 2px solid #3b82f6; box-shadow: 0 10px 40px rgba(0,0,0,0.5);">
+        <div class="close-corner" onclick="closeModal('mol-modal')" style="background: var(--red); color: white;">&times;</div>
+        
+        <h2 style="margin-top:0; color: #60a5fa; text-align: center;">Interactive 3D Molecule Viewer</h2>
+        <p style="text-align: center; color: #cbd5e1; font-size: 0.9rem; margin-top: -10px;">Drag to rotate, scroll to zoom. Powered by PubChem.</p>
+
+        <div style="display: flex; flex-wrap: wrap; gap: 15px; margin-top: 20px;">
+            
+            <div style="flex: 1; min-width: 200px; background: #1e293b; padding: 15px; border-radius: 8px; border: 1px solid #334155; max-height: 400px; overflow-y: auto;">
+                <h4 style="margin-top:0; color: white; border-bottom: 1px solid #475569; padding-bottom: 10px;">Select Structure</h4>
+                
+                <div style="display: flex; flex-direction: column; gap: 8px;" id="mol-btn-list">
+                    <button class="btn btn-gold btn-small" onclick="loadMolecule('241', 'Benzene')">Benzene (C₆H₆)</button>
+                    <button class="btn btn-gold btn-small" onclick="loadMolecule('297', 'Methane')">Methane (CH₄)</button>
+                    <button class="btn btn-gold btn-small" onclick="loadMolecule('962', 'Water')">Water (H₂O)</button>
+                    <button class="btn btn-gold btn-small" onclick="loadMolecule('2244', 'Aspirin')">Aspirin</button>
+                    <button class="btn btn-gold btn-small" onclick="loadMolecule('2519', 'Caffeine')">Caffeine</button>
+                    <button class="btn btn-gold btn-small" onclick="loadMolecule('5950', 'Amino Acid (Alanine)')">Alanine</button>
+                    <button class="btn btn-gold btn-small" onclick="loadMolecule('5793', 'Glucose')">Glucose</button>
+                    <button class="btn btn-gold btn-small" onclick="loadMolecule('6331', 'Buckyball (C60)')">Buckminsterfullerene</button>
+                </div>
+                
+                <hr style="border-color: #475569; margin: 15px 0;">
+                <h4 style="margin-top:0; color: white;">Custom Search</h4>
+                <input type="text" id="custom-mol-input" placeholder="Enter PubChem CID (e.g. 241)" style="background: #0f172a; color: white; border: 1px solid #3b82f6;">
+                <button class="btn" style="background: #3b82f6; color: white; width: 100%;" onclick="searchCustomMolecule()">Load Custom</button>
+            </div>
+
+            <div style="flex: 3; min-width: 300px; background: #000; border-radius: 8px; border: 2px solid #334155; position: relative; overflow: hidden; height: 400px;">
+                <div id="viewer-3d" style="width: 100%; height: 100%; position: absolute;"></div>
+                <div id="mol-loading" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: var(--gold); font-weight: bold; font-size: 1.2rem; display: none;">Fetching Data...</div>
+                <div id="current-mol-name" style="position: absolute; top: 10px; left: 10px; color: rgba(255,255,255,0.7); font-weight: bold; font-family: monospace; pointer-events: none;">Benzene</div>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
 <div id="ref-modal" class="modal">
     <div class="modal-content" style="max-width: 900px; padding:20px; background: linear-gradient(135deg, #1e293b, #0f172a); color: white; border: 2px solid var(--gold); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
         <div class="close-corner" onclick="closeModal('ref-modal')" style="background:var(--red); color:white; border:none; display:flex; align-items:center; justify-content:center;">&times;</div>
@@ -657,10 +1010,90 @@
 
 <script>
     function toggleMenu() { document.getElementById('nav-menu').classList.toggle('active'); }
+
+    function toggleNightLab() {
+    const body = document.body;
+    const toggleBtn = document.getElementById('night-toggle');
+    
+    // Toggle the dark-mode class
+    body.classList.toggle('dark-mode');
+    
+    // Check if it's currently dark mode and update UI + LocalStorage
+    if (body.classList.contains('dark-mode')) {
+        localStorage.setItem('arc_theme', 'dark');
+        toggleBtn.innerHTML = '☀️ Day Lab';
+        toggleBtn.style.color = 'var(--gold)'; // Highlight the button
+    } else {
+        localStorage.setItem('arc_theme', 'light');
+        toggleBtn.innerHTML = '🌙 Night Lab';
+        toggleBtn.style.color = 'white'; // Reset button color
+    }
+}
+
     function openModal(id) { document.getElementById(id).style.display = 'flex'; document.body.classList.add('modal-open'); }
     function closeModal(id) { document.getElementById(id).style.display = 'none'; document.body.classList.remove('modal-open'); }
 
+
+    // --- 🎇 Chemical Explosion Logic ---
+function triggerChemicalExplosion() {
+    let container = document.getElementById('chem-explosion-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'chem-explosion-container';
+        document.body.appendChild(container);
+    }
+    container.style.display = 'block';
+    container.innerHTML = ''; // Clear old particles
+
+    // The emojis that will explode
+    const particles = ['⚗️', '🧪', '⚛️', '✨', '🫧', '🟢', '🟡', '🔥'];
+    const numParticles = 70; // How many particles to shoot
+
+    for (let i = 0; i < numParticles; i++) {
+        const p = document.createElement('div');
+        p.className = 'chem-particle';
+        p.innerText = particles[Math.floor(Math.random() * particles.length)];
+        
+        // Calculate random explosive trajectory
+        const tx = (Math.random() - 0.5) * 1000 + 'px'; // Spread wide left/right
+        const ty = -(Math.random() * 800 + 200) + 'px'; // Shoot high up
+        const rot = (Math.random() * 720 - 360) + 'deg'; // Spin randomly
+        const scale = (Math.random() * 1.5 + 0.8); // Random sizes
+        const duration = (Math.random() * 1.5 + 2) + 's'; // 2 to 3.5 seconds
+        const delay = (Math.random() * 0.2) + 's'; // Slight delay for fountain effect
+        
+        // Inject the random math directly into the CSS variables
+        p.style.setProperty('--tx', tx);
+        p.style.setProperty('--ty', ty);
+        p.style.setProperty('--rot', rot);
+        p.style.setProperty('--s', scale);
+        p.style.setProperty('--dur', duration);
+        p.style.setProperty('--delay', delay);
+        
+        container.appendChild(p);
+    }
+
+    // Hide and clean up the container after the animation finishes
+    setTimeout(() => {
+        container.style.display = 'none';
+        container.innerHTML = '';
+    }, 4000);
+}
+
     window.onload = function() {
+
+        // --- ADD THIS INSIDE window.onload ---
+const savedTheme = localStorage.getItem('arc_theme');
+if (savedTheme === 'dark') {
+    document.body.classList.add('dark-mode');
+    const toggleBtn = document.getElementById('night-toggle');
+    if(toggleBtn) {
+        toggleBtn.innerHTML = '☀️ Day Lab';
+        toggleBtn.style.color = 'var(--gold)';
+    }
+}
+// -------------------------------------
+
         loadSiteLogo(); // FEATURE: FETCH DYNAMIC LOGO ON STARTUP
         loadMaterials(); loadAnnouncements(); loadBlogs(); loadStories(); 
         loadPOTD(); loadVideosList(); loadRefToolsStudent(); 
@@ -1456,12 +1889,46 @@
             <button class="tool-btn" onclick="exec('subscript')" title="Sub">X<sub>2</sub></button>
             <button class="tool-btn" onclick="exec('superscript')" title="Super">X<sup>2</sup></button>
             <div style="background:white; border:1px solid #999; border-radius:4px; padding:0 2px;"><input type="color" onchange="exec('foreColor', this.value)" style="height:25px; width:25px; border:none; cursor:pointer;"></div>
+            
             <button class="tool-btn" onclick="exec('insertHorizontalRule')" title="Insert Page Break for Blog" style="background: #fbbf24; border: 1px solid #d97706; border-radius: 4px; padding: 2px 5px; font-weight: bold;">📄 Page Break</button>
-            <select onchange="insChar(this.value); this.value='';" style="padding:5px; border-radius:4px; font-weight:bold; color:#0f172a;" title="Chemistry Arrows">
-                <option value="">⚗️ Arrows</option>
-                <option value=" &rarr; ">&rarr; (Reaction)</option>
-                <option value=" &rightleftharpoons; ">&rightleftharpoons; (Equilibrium)</option>
-                <option value=" &longleftrightarrow; ">&longleftrightarrow; (Resonance)</option>
+            
+            <label class="tool-btn" style="background: #3b82f6; color: white; border: 1px solid #2563eb; border-radius: 4px; padding: 2px 8px; font-weight: bold; cursor: pointer;" title="Insert Image or SVG at cursor">
+                🖼️ Insert Image
+                <input type="file" accept="image/*,.svg" onchange="insertInlineImage(this)" style="display:none;">
+            </label>
+
+            <select onchange="if(this.value.includes('<')) document.execCommand('insertHTML', false, this.value); else document.execCommand('insertText', false, this.value); this.value='';" style="padding:5px; border-radius:4px; font-weight:bold; color:#0f172a; max-width: 160px;" title="Chemistry Symbols & Arrows">
+                <option value="">⚗️ Symbols & Arrows</option>
+                
+                <optgroup label="Reaction Arrows">
+                    <option value=" &rarr; ">&rarr; (Reaction)</option>
+                    <option value=" &rightleftharpoons; ">&rightleftharpoons; (Equilibrium)</option>
+                    <option value=" &longleftrightarrow; ">&longleftrightarrow; (Resonance)</option>
+                    <option value=" &rArr; ">&rArr; (Retrosynthesis)</option>
+                    <option value="&nbsp;<span style='display:inline-flex; flex-direction:column; align-items:center; vertical-align:middle; margin:0 4px;'><span style='font-size:0.75rem; color:#d97706; font-weight:bold;'>Reagent</span><span style='line-height:0.8;'>&#10230;</span></span>&nbsp;">&rarr; (Reagent Above)</option>
+                    <option value=" &uarr; ">&uarr; (Gas Evolved)</option>
+                    <option value=" &darr; ">&darr; (Precipitate)</option>
+                </optgroup>
+                
+                <optgroup label="Bonds & Math">
+                    <option value=" &mdash; ">&mdash; (Single Bond)</option>
+                    <option value=" = ">= (Double Bond)</option>
+                    <option value=" &equiv; ">&equiv; (Triple Bond)</option>
+                    <option value=" &bull; ">&bull; (Radical)</option>
+                    <option value=" &deg; ">&deg; (Degree)</option>
+                    <option value=" &plusmn; ">&plusmn; (Plus-Minus)</option>
+                    <option value=" &approx; ">&approx; (Approx)</option>
+                    <option value=" &Delta; ">&Delta; (Heat/Delta)</option>
+                </optgroup>
+
+                <optgroup label="Greek Letters">
+                    <option value=" &alpha; ">&alpha; (Alpha)</option>
+                    <option value=" &beta; ">&beta; (Beta)</option>
+                    <option value=" &gamma; ">&gamma; (Gamma)</option>
+                    <option value=" &delta; ">&delta; (Delta)</option>
+                    <option value=" &pi; ">&pi; (Pi)</option>
+                    <option value=" &sigma; ">&sigma; (Sigma)</option>
+                </optgroup>
             </select>
         </div>`;
 
@@ -1785,6 +2252,21 @@
     async function postOffline() { if(offlineDraft.length === 0) return alert("No Data"); const method = editingOfflineId?'PUT':'POST'; const url = editingOfflineId?`/api/admin/offline-result/${editingOfflineId}`:'/api/admin/offline-result'; await fetch(url, { method, headers: {'Content-Type':'application/json'}, body: JSON.stringify({ title: document.getElementById('off-title').value, records: offlineDraft }) }); alert("Saved!"); offlineDraft = []; editingOfflineId = null; showAdm('offline'); }
     
     function exec(cmd, val=null) { document.execCommand(cmd, false, val); }
+    // Inserts an image or SVG directly into the text editor at the cursor position
+    function insertInlineImage(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const base64Data = e.target.result;
+                // Uses the browser's native editor command to insert the image
+                document.execCommand('insertImage', false, base64Data);
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+        // Reset the input so you can upload the same image again if needed
+        input.value = ""; 
+    }
+
     function insChar(char) { document.execCommand('insertText', false, char); }
     function encodeImg(input, previewId, isSolution = false) { if (input.files && input.files[0]) { const reader = new FileReader(); reader.onload = function (e) { const result = e.target.result; if (isSolution) tempSolImg = result; else tempImg = result; if (previewId) { const img = document.getElementById(previewId); img.src = result; img.style.display = 'block'; } }; reader.readAsDataURL(input.files[0]); } }
     
@@ -2007,6 +2489,11 @@
     async function viewSheet(id) { 
         const res = await fetch('/api/result-details', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ resultId: id }) }); const data = await res.json(); if(!data.success) return alert(data.message); const r = data.result; let correct = 0, wrong = 0, skipped = 0;
         data.questions.forEach(q => { if(q.status === 'Correct') correct++; else if(q.status === 'Wrong') wrong++; else skipped++; });
+        if (r.percentage === 80) {
+            triggerChemicalExplosion();    // 🔥 Trigger the Chemical Explosion if they got 100%
+        }
+        
+        
         document.getElementById('review-stats').innerHTML = `<span>Score: ${r.score}/${r.totalMarks}</span> | <span>Rank: #${data.rank}</span> | <span>${r.percentage.toFixed(1)}%</span>`; 
         let html = `<div style="display:flex; flex-wrap:wrap; gap:20px; justify-content:center; margin-bottom:30px;"><div style="flex:1; min-width:300px; max-width:400px;"><canvas id="resultChart"></canvas></div><div style="flex:1; min-width:300px; max-height:300px; overflow-y:auto; border:1px solid #eee; padding:10px; border-radius:8px;"><h3 style="text-align:center; margin-top:0;">Leaderboard</h3><table style="width:100%; font-size:0.9rem;"><tr style="background:#f1f5f9;"><th>#</th><th>Student</th><th>Score</th></tr>${data.leaderboard.map(rec => `<tr style="${rec.rank === data.rank ? 'background:#e0f2fe; font-weight:bold;' : ''}"><td>#${rec.rank}</td><td>${rec.name}</td><td>${rec.score}</td></tr>`).join('')}</table></div></div><hr><h3>Sheet</h3>`;
         html += data.questions.map((q, i) => `<div class="review-row"><p><strong>Q${i+1}:</strong> ${q.text}</p>${q.image ? `<img src="${q.image}" style="height:100px">` : ''}<div style="display:grid; grid-template-columns: 1fr 1fr; gap:5px;">${q.options.map((opt, idx) => `<div style="padding:5px; border:1px solid #ddd; ${idx === q.correct ? 'background:#dcfce7; border-color:green;' : ''} ${idx === q.studentAnswer && idx !== q.correct ? 'background:#fee2e2; border-color:red;' : ''}"> ${opt} </div>`).join('')}</div><p style="margin-top:5px; font-size:0.9rem;">Status: <span class="badge ${q.status==='Correct'?'bg-green':'bg-red'}">${q.status}</span></p>${q.solution || q.solutionImage ? `<div style="background:#f0f9ff; padding:10px; margin-top:5px;"><strong>💡 Solution:</strong><br>${q.solution}${q.solutionImage ? `<br><img src="${q.solutionImage}" style="max-height:150px; margin-top:10px;">` : ''}</div>` : ''}</div>`).join('');
@@ -2107,84 +2594,133 @@
 
         let html = '';
         
-        // 1. Create the Cover Page
+        // --- 1. Create the Cover Sheet ---
+        // Cover Front: Book Title, Cover Back (becomes page 1): Story 1 Photo
+        const firstStory = data[0];
+        const firstFallbackImg = `https://ui-avatars.com/api/?name=${encodeURIComponent(firstStory.name)}&background=0f172a&color=fbbf24&bold=true&size=180`;
+        
+        // Dynamic Z-index so pages stack correctly (cover has highest base + data.length)
         html += `
-        <div class="book-page" style="z-index: ${data.length + 1}">
-            <div class="page-content" style="background: var(--primary); color: white; justify-content: center; border-radius: 0 12px 12px 0;">
-                <h2 style="font-size: 2rem; margin:0; color: var(--gold);">Hall of Fame</h2>
-                <p>ARC Classes</p>
-                <div style="font-size: 3rem; margin-top: 20px;">🏆</div>
+        <div class="book-sheet" style="z-index: ${data.length + 1}">
+            <div class="page-face page-front" style="background: var(--primary); color: white; justify-content: center; align-items: center; text-align: center;">
+                <div class="content-wrapper">
+                    <h2 style="font-size: 2.5rem; margin:0 0 10px 0; color: var(--gold);">HALL OF FAME</h2>
+                    <p style="font-size: 1.1rem; opacity: 0.8; text-transform:uppercase;">ARC CLASSES SUCCESS STORIES</p>
+                    <div style="font-size: 5rem; margin-top: 30px; filter: drop-shadow(0 5px 10px rgba(0,0,0,0.3));">🏆</div>
+                </div>
             </div>
-            <div class="page-content page-back" style="background: var(--primary);"></div>
+            <div class="page-face page-back">
+                <div class="content-wrapper">
+                    <span class="photo-label">SUCCESS STORY #1</span>
+                    <img src="${firstStory.image || firstFallbackImg}" class="book-photo-large" onerror="this.onerror=null; this.src='${firstFallbackImg}';">
+                </div>
+            </div>
         </div>`;
 
-        // 2. Create the Story Pages
-        data.forEach((s, index) => {
-            const fallbackImg = `https://ui-avatars.com/api/?name=${encodeURIComponent(s.name)}&background=0f172a&color=fbbf24&bold=true`;
-            const zIndex = data.length - index; 
+        // --- 2. Create Content Sheets ---
+        // Each intermediate sheet handles the RIGHT page of current story (Text) 
+        // AND the LEFT page of next story (Photo)
+        for (let i = 0; i < data.length - 1; i++) {
+            const currentStoryText = data[i];
+            const nextStoryPhoto = data[i+1];
+            const fallbackImgNext = `https://ui-avatars.com/api/?name=${encodeURIComponent(nextStoryPhoto.name)}&background=0f172a&color=fbbf24&bold=true&size=180`;
             
+            // Descending z-index so sheets layer correctly on the right stack
+            const zIndexRight = data.length - i; 
+
             html += `
-            <div class="book-page" style="z-index: ${zIndex}">
-                <div class="page-content">
-                    <img src="${s.image || fallbackImg}" class="book-photo" onerror="this.onerror=null; this.src='${fallbackImg}';">
-                    <h3 style="margin: 5px 0 0 0; color: var(--primary);">${s.name}</h3>
-                    <small style="color: #64748b; font-weight: bold;">${s.status}</small>
-                    <div class="book-quote">${s.experience}</div>
-                    
-                    ${(user && user.role === 'admin') ? `<button class="btn-small btn-red" onclick="deleteItem('story', '${s._id}')" style="margin-top: auto; padding: 5px 10px; z-index: 10;">Delete</button>` : ''}
+            <div class="book-sheet" style="z-index: ${zIndexRight}">
+                <div class="page-face page-front">
+                    <span class="book-quote-icon">“</span>
+                    <div class="content-wrapper">
+                        <p class="book-experience">${currentStoryText.experience}</p>
+                        <div class="student-details">
+                            <p class="book-name">${currentStoryText.name}</p>
+                            <p class="book-status">${currentStoryText.status}</p>
+                            ${(user && user.role === 'admin') ? `<button class="btn-small btn-red" onclick="deleteItem('story', '${currentStoryText._id}')" style="margin-top: 10px; z-index: 10;">Delete</button>` : ''}
+                        </div>
+                    </div>
                 </div>
-                <div class="page-content page-back">
-                    <div style="opacity: 0.1; font-size: 5rem; margin-top: 50px; display: flex; justify-content: center; width: 100%;">🌟</div>
+                <div class="page-face page-back">
+                    <div class="content-wrapper">
+                        <span class="photo-label">SUCCESS STORY #${i+2}</span>
+                        <img src="${nextStoryPhoto.image || fallbackImgNext}" class="book-photo-large" onerror="this.onerror=null; this.src='${fallbackImgNext}';">
+                    </div>
                 </div>
             </div>`;
-        });
+        }
+
+        // --- 3. Create Last Sheet ---
+        // Last Story Text (Right page), Back Cover
+        const lastStoryText = data[data.length - 1];
+        
+        html += `
+        <div class="book-sheet" style="z-index: 1">
+            <div class="page-face page-front">
+                <span class="book-quote-icon">“</span>
+                <div class="content-wrapper">
+                    <p class="book-experience">${lastStoryText.experience}</p>
+                    <div class="student-details">
+                        <p class="book-name">${lastStoryText.name}</p>
+                        <p class="book-status">${lastStoryText.status}</p>
+                        ${(user && user.role === 'admin') ? `<button class="btn-small btn-red" onclick="deleteItem('story', '${lastStoryText._id}')" style="margin-top: 10px; z-index: 10;">Delete</button>` : ''}
+                    </div>
+                </div>
+            </div>
+            <div class="page-face page-back" style="background: var(--primary); justify-content: center; align-items: center; text-align: center;">
+                <div class="content-wrapper" style="opacity: 0.1; font-size: 8rem; justify-content: center; align-items: center;">⭐</div>
+            </div>
+        </div>`;
 
         bookContainer.innerHTML = html;
 
-        // 3. Animation Logic
-        const pages = document.querySelectorAll('.book-page');
-        let currentPage = 0;
+        // --- 4. Animation and Pause-on-Hover Logic ---
+        const sheets = document.querySelectorAll('.book-sheet');
+        let currentSheetIdx = 0;
+        let isPaused = false;
+        const totalSheets = sheets.length;
 
-        // Clear any existing intervals if function runs twice
         if(window.bookInterval) clearInterval(window.bookInterval);
 
-        // Define the flipping action
-        const flipNextPage = () => {
-            if(currentPage < pages.length) {
-                // Flip the page
-                pages[currentPage].classList.add('flipped');
-                // Adjust z-index mid-flip so it layers correctly on the left side
-                const currentIdx = currentPage; 
-                setTimeout(() => { pages[currentIdx].style.zIndex = currentIdx; }, 600);
-                currentPage++;
+        const flipNext = () => {
+            if (isPaused) return;
+
+            if (currentSheetIdx < totalSheets) {
+                // Flip the current sheet to the left
+                sheets[currentSheetIdx].classList.add('flipped');
+                
+                // Dynamically adjust Z-index during the flip so pages stack correctly on the left side.
+                // Sheets flipped later go 'on top' of the left stack.
+                const flipDuration = 1800; // Matching CSS transition
+                const indexOnLeftStack = currentSheetIdx; 
+                setTimeout((idx) => { 
+                    if(sheets[idx]) sheets[idx].style.zIndex = idx + 1; 
+                }, flipDuration * 0.45, currentSheetIdx); // Time the z-index shift for halfway through flip
+                
+                currentSheetIdx++;
             } else {
-                // Reset the book (close it)
-                pages.forEach((p, i) => {
-                    p.classList.remove('flipped');
-                    setTimeout(() => { p.style.zIndex = pages.length - i + 1; }, 600);
+                // Return to Cover: Close the book
+                currentSheetIdx = 0;
+                // Reset z-indices to original right-stack stacking order (ascending top/right)
+                sheets.forEach((s, i) => {
+                    s.classList.remove('flipped');
+                    // Stagger the stacking reset slightly for smoothness
+                    setTimeout((sheet, idx) => {
+                        sheet.style.zIndex = totalSheets - idx + 1;
+                    }, i * 30, s, i);
                 });
-                currentPage = 0;
             }
         };
 
-        // Start the automatic flipping
-        window.bookInterval = setInterval(flipNextPage, 4000);
+        // Auto-turn timer (increased to 7 seconds to allow reading)
+        window.bookInterval = setInterval(flipNext, 7000);
 
-        // 4. Pause on Hover Logic
-        const sceneContainer = document.querySelector('.book-scene');
-        
-        // Stop flipping when mouse enters the book area
-        sceneContainer.addEventListener('mouseenter', () => {
-            clearInterval(window.bookInterval);
-        });
-        
-        // Resume flipping when mouse leaves
-        sceneContainer.addEventListener('mouseleave', () => {
-            clearInterval(window.bookInterval); // Safety clear
-            window.bookInterval = setInterval(flipNextPage, 4000);
-        });
+        // Pause on Hover Logic attached to the shadow container area
+        const interactionArea = document.querySelector('#book-shadow-container');
+        interactionArea.addEventListener('mouseenter', () => { isPaused = true; });
+        interactionArea.addEventListener('mouseleave', () => { isPaused = false; });
 
-    } catch(e) { console.error(e); }
+    } catch(e) { console.error("Error loading Hall of Fame:", e); }
 }
 
     async function submitStory() {
@@ -2378,6 +2914,171 @@ function triggerPassError() {
     content.animate([
         { transform: 'translateX(-5px)' }, { transform: 'translateX(5px)' }, { transform: 'translateX(0)' }
     ], { duration: 100, iterations: 3 });
+}
+
+// --- 🧬 3D MOLECULE VIEWER LOGIC ---
+let viewer3D = null;
+
+function open3DViewer() {
+    openModal('mol-modal');
+    
+    // Initialize the viewer only once to save memory
+    if (!viewer3D) {
+        let element = document.getElementById('viewer-3d');
+        let config = { backgroundColor: '#020617' }; // Sleek dark background
+        
+        // Create the 3Dmol viewer instance
+        viewer3D = $3Dmol.createViewer(element, config);
+        
+        // Load default molecule (Benzene)
+        loadMolecule('241', 'Benzene'); 
+    }
+}
+
+function loadMolecule(cid, name) {
+    if (!viewer3D) return;
+    
+    document.getElementById('mol-loading').style.display = 'block';
+    document.getElementById('current-mol-name').innerText = name || `CID: ${cid}`;
+    
+    viewer3D.clear(); // Clear the previous molecule
+    
+    // Download directly from PubChem API
+    $3Dmol.download(`cid:${cid}`, viewer3D, {}, function() {
+        document.getElementById('mol-loading').style.display = 'none';
+        
+        // Set styling: 'Stick' for bonds, 'Sphere' for atoms (Ball-and-Stick model)
+        viewer3D.setStyle({}, {
+            stick: { radius: 0.15, colorscheme: 'Jmol' }, 
+            sphere: { scale: 0.3, colorscheme: 'Jmol' }
+        });
+        
+        viewer3D.zoomTo();
+        viewer3D.render();
+        
+        // Add a gentle auto-spin so it looks dynamic immediately
+        viewer3D.spin('y', 0.5); 
+    });
+}
+
+function searchCustomMolecule() {
+    const cid = document.getElementById('custom-mol-input').value.trim();
+    if (!cid || isNaN(cid)) {
+        alert("Please enter a valid numeric PubChem CID (e.g., 2244 for Aspirin).");
+        return;
+    }
+    loadMolecule(cid, `Custom CID: ${cid}`);
+}
+
+// --- ⏱️ FOCUS MODE / POMODORO LOGIC ---
+let focusInterval = null;
+let focusTotalSeconds = 25 * 60; // Default 25 mins
+let focusSecondsLeft = focusTotalSeconds;
+let isFocusRunning = false;
+const focusCircumference = 326.7; // 2 * pi * 52 (radius)
+
+function toggleFocusWidget() {
+    const widget = document.getElementById('focus-widget');
+    if (widget.classList.contains('show')) {
+        widget.classList.remove('show');
+        setTimeout(() => { widget.style.display = 'none'; }, 300); // Wait for transition
+    } else {
+        widget.style.display = 'flex';
+        // Tiny timeout to allow display:flex to apply before adding opacity class
+        setTimeout(() => { widget.classList.add('show'); }, 10);
+        updateFocusUI();
+    }
+}
+
+function setFocusTime(minutes) {
+    if (isFocusRunning) return; // Prevent changing time while running
+    focusTotalSeconds = minutes * 60;
+    focusSecondsLeft = focusTotalSeconds;
+    updateFocusUI();
+}
+
+function updateFocusUI() {
+    // 1. Update Text
+    const m = Math.floor(focusSecondsLeft / 60);
+    const s = focusSecondsLeft % 60;
+    document.getElementById('focus-time').innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
+
+    // 2. Update SVG Ring
+    const ring = document.getElementById('focus-ring');
+    const percent = focusSecondsLeft / focusTotalSeconds;
+    const offset = focusCircumference - (percent * focusCircumference);
+    ring.style.strokeDashoffset = offset;
+    
+    // Change color when time is running low (< 1 minute)
+    if (focusSecondsLeft < 60 && focusSecondsLeft > 0) {
+        ring.setAttribute('stroke', '#ef4444'); // Red
+    } else {
+        ring.setAttribute('stroke', 'var(--gold)'); // Gold
+    }
+}
+
+function toggleFocusTimer() {
+    const btn = document.getElementById('focus-start-btn');
+    
+    if (isFocusRunning) {
+        // Pause
+        clearInterval(focusInterval);
+        isFocusRunning = false;
+        btn.innerText = "Resume";
+        btn.style.background = "#fbbf24"; // Gold
+    } else {
+        // Start
+        if (focusSecondsLeft <= 0) resetFocusTimer(); // Prevent starting at 0
+        
+        isFocusRunning = true;
+        btn.innerText = "Pause";
+        btn.style.background = "#f59e0b"; // Darker gold
+        
+        focusInterval = setInterval(() => {
+            focusSecondsLeft--;
+            updateFocusUI();
+            
+            if (focusSecondsLeft <= 0) {
+                clearInterval(focusInterval);
+                isFocusRunning = false;
+                btn.innerText = "Start";
+                
+                // Play a completion sound using browser synthesis
+                if ('speechSynthesis' in window) {
+                    const msg = new SpeechSynthesisUtterance("Focus session complete. Great job!");
+                    window.speechSynthesis.speak(msg);
+                }
+                
+                // Trigger the chemical explosion to celebrate!
+                if(typeof triggerChemicalExplosion === "function") {
+                    triggerChemicalExplosion();
+                }
+                
+                // Turn off Zen Mode if it was on
+                document.getElementById('zen-mode-check').checked = false;
+                toggleZenMode();
+            }
+        }, 1000);
+    }
+}
+
+function resetFocusTimer() {
+    clearInterval(focusInterval);
+    isFocusRunning = false;
+    focusSecondsLeft = focusTotalSeconds;
+    const btn = document.getElementById('focus-start-btn');
+    btn.innerText = "Start";
+    btn.style.background = "var(--gold)";
+    updateFocusUI();
+}
+
+function toggleZenMode() {
+    const isZen = document.getElementById('zen-mode-check').checked;
+    if (isZen) {
+        document.body.classList.add('zen-mode');
+    } else {
+        document.body.classList.remove('zen-mode');
+    }
 }
 
 </script>
