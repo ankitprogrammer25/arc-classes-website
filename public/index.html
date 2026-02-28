@@ -2509,7 +2509,30 @@ if (savedTheme === 'dark') {
     }
 
 
-    async function pubTest() { const body = { title: document.getElementById('t-title').value, duration: parseInt(document.getElementById('t-dur').value), parseInt(document.getElementById('t-max-coins').value) accessCode: document.getElementById('t-code').value, category: document.getElementById('t-cat').value, isLive: document.getElementById('t-live').checked, startTime: document.getElementById('t-start').value ? new Date(document.getElementById('t-start').value) : null, endTime: document.getElementById('t-end').value ? new Date(document.getElementById('t-end').value) : null, questions: draftQ }; const method = editingTestId ? 'PUT' : 'POST'; const url = editingTestId ? `/api/admin/test/${editingTestId}` : '/api/admin/test'; try { await fetch(url, { method, headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) }); alert(editingTestId ? "Updated!" : "Published!"); editingTestId = null; draftQ = []; initCreateTest(); } catch(e) { alert("Error: " + e.message); } }
+    async function pubTest() { 
+        const body = { 
+            title: document.getElementById('t-title').value, 
+            duration: parseInt(document.getElementById('t-dur').value), 
+            parseInt(document.getElementById('t-max-coins').value), 
+            accessCode: document.getElementById('t-code').value, 
+            category: document.getElementById('t-cat').value, 
+            isLive: document.getElementById('t-live').checked, 
+            startTime: document.getElementById('t-start').value ? new Date(document.getElementById('t-start').value) : null, 
+            endTime: document.getElementById('t-end').value ? new Date(document.getElementById('t-end').value) : null, 
+            questions: draftQ 
+        }; 
+        const method = editingTestId ? 'PUT' : 'POST'; 
+        const url = editingTestId ? `/api/admin/test/${editingTestId}` : '/api/admin/test'; 
+        try { 
+            await fetch(url, { method, headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) }); 
+            alert(editingTestId ? "Updated!" : "Published!"); 
+            editingTestId = null; 
+            draftQ = []; 
+            initCreateTest(); 
+        } catch(e) { 
+            alert("Error: " + e.message); 
+        } 
+    }
     async function postBlog() { const method = editingBlogId ? 'PUT' : 'POST'; const url = editingBlogId ? `/api/admin/blog/${editingBlogId}` : '/api/admin/blog'; await fetch(url, { method, headers:{'Content-Type':'application/json'}, body: JSON.stringify({ title: document.getElementById('b-title').value, content: document.getElementById('b-content').innerHTML, image: tempImg }) }); alert("Saved!"); tempImg = ""; editingBlogId = null; }
     async function postAnnounce() { await fetch('/api/admin/announcement/add', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({text: document.getElementById('ann-text').value}) }); showAdm('announce'); loadAnnouncements(); }
     async function delAnnounce(text) { await fetch('/api/admin/announcement/delete', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({text}) }); showAdm('announce'); }
@@ -2623,9 +2646,11 @@ if (savedTheme === 'dark') {
     async function viewSheet(id) { 
         const res = await fetch('/api/result-details', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ resultId: id }) }); const data = await res.json(); if(!data.success) return alert(data.message); const r = data.result; let correct = 0, wrong = 0, skipped = 0;
         data.questions.forEach(q => { if(q.status === 'Correct') correct++; else if(q.status === 'Wrong') wrong++; else skipped++; });
-        if (r.percentage === 80) {
-            triggerChemicalExplosion();    // 🔥 Trigger the Chemical Explosion if they got 100%
+        if (r.percentage >= 80) {
+            triggerChemicalExplosion();    // 🔥 Trigger the Chemical Explosion if they got 80%
         }
+        // Add this to actually give the student the coins!
+        awardTestCoins(r.percentage, 50); // Gives up to 50 coins based on their percentage
         
         
         document.getElementById('review-stats').innerHTML = `<span>Score: ${r.score}/${r.totalMarks}</span> | <span>Rank: #${data.rank}</span> | <span>${r.percentage.toFixed(1)}%</span>`; 
