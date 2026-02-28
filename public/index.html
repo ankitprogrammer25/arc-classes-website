@@ -2584,7 +2584,8 @@ if (savedTheme === 'dark') {
         }, 1000); 
     }
 
-    async function startTest(id, hasCode, startTimeStr) {
+    // 1. UPDATED START TEST FUNCTION
+async function startTest(id, hasCode, startTimeStr) {
     if (startTimeStr) {
         const now = new Date();
         const start = new Date(startTimeStr);
@@ -2595,11 +2596,20 @@ if (savedTheme === 'dark') {
         }
     }
 
+    // 🛑 SMART PREMIUM BLOCKER
+    const storeItem = dynamicStoreData.find(si => si.type === 'test' && si.link === id);
+    const isUnlocked = user && user.unlockedItems && user.unlockedItems.includes(id);
+
+    if (storeItem && !isUnlocked && (!user || user.role !== 'admin')) {
+        alert(`💎 This is a Premium Test! You need to unlock it from the ARC Store for ${storeItem.cost} 🪙.`);
+        show('store'); // Redirect to store
+        return;
+    }
+
     const processStart = async (code) => {
         const res = await fetch('/api/test/start', { 
             method: 'POST', 
             headers: {'Content-Type':'application/json'}, 
-            // Ensures email is sent properly
             body: JSON.stringify({ id, code, studentEmail: user ? user.email : null }) 
         });
         const data = await res.json();
@@ -2614,17 +2624,50 @@ if (savedTheme === 'dark') {
             renderQ();
         } else {
             if (hasCode) triggerPassError();
-            else { alert(data.message); }
+            else { alert(data.message || "Access Denied"); }
         }
     };
-
-    // Check if the student already bought this premium test!
-    const isUnlocked = user && user.unlockedItems && user.unlockedItems.includes(id);
 
     if (hasCode && !isUnlocked) {
         openCoolModal("Unlock Test", "This test is password protected.", processStart);
     } else {
-        processStart(""); // Bypasses the password modal completely!
+        processStart(""); 
+    }
+}
+
+// 2. UPDATED OPEN MATERIAL FUNCTION
+async function openMat(id) {
+    const mat = allMats.find(m => m._id === id);
+    
+    // 🛑 SMART PREMIUM BLOCKER
+    const storeItem = dynamicStoreData.find(si => si.type === 'pdf' && si.link === id);
+    const isUnlocked = user && user.unlockedItems && user.unlockedItems.includes(id);
+
+    if (storeItem && !isUnlocked && (!user || user.role !== 'admin')) {
+        alert(`💎 This is a Premium File! You need to unlock it from the ARC Store for ${storeItem.cost} 🪙.`);
+        show('store'); // Redirect to store
+        return;
+    }
+
+    const processUnlock = async (code) => {
+        const res = await fetch('/api/material/unlock', { 
+            method: 'POST', 
+            headers: {'Content-Type':'application/json'}, 
+            body: JSON.stringify({id, code, studentEmail: user ? user.email : null})
+        });
+        const data = await res.json();
+        if (data.success) {
+            closeCoolModal();
+            openPdfViewer(mat ? mat.title : 'Library Material', data.link);
+        } else {
+            triggerPassError();
+        }
+    };
+
+    if (mat && mat.accessCode) {
+        openCoolModal("Unlock Library", `Enter password for ${mat.title}`, processUnlock);
+    } else {
+        processUnlock("");
     }
 }
 

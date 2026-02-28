@@ -408,12 +408,21 @@ app.post('/api/student/buy-item', async (req, res) => {
 });
 
 // 🔄 UPDATE: Material Unlock to check for Premium Purchases
+// 🔒 SECURE MATERIAL UNLOCK
 app.post('/api/material/unlock', async (req, res) => {
     const { id, code, studentEmail } = req.body;
     const f = await Material.findById(id);
     const s = await Student.findOne({ email: studentEmail });
     
-    // Check if student bought this premium item
+    if (studentEmail !== 'admin@arc.com') {
+        // Double check the Store to prevent bypassing
+        const storeItem = await StoreItem.findOne({ type: 'pdf', link: id });
+        const isUnlocked = s && s.unlockedItems && s.unlockedItems.includes(id);
+        if (storeItem && !isUnlocked) {
+            return res.json({ success: false, message: "Premium File: Please unlock this in the ARC Store." });
+        }
+    }
+
     const isUnlocked = s && s.unlockedItems && s.unlockedItems.includes(id);
 
     if(f && (!f.accessCode || f.accessCode === code || isUnlocked)) {
@@ -452,6 +461,13 @@ app.post('/api/test/start', async (req, res) => {
     if (studentEmail !== 'admin@arc.com') {
         const s = await Student.findOne({ email: studentEmail });
         if(!s) return res.json({ success: false, message: "Login first" });
+        
+        // Double check the Store to prevent bypassing
+        const storeItem = await StoreItem.findOne({ type: 'test', link: id });
+        const isUnlocked = s.unlockedItems && s.unlockedItems.includes(id);
+        if (storeItem && !isUnlocked) {
+            return res.json({ success: false, message: "Premium Test: Please unlock this in the ARC Store." });
+        }
     }
     const t = await Test.findById(id);
     
