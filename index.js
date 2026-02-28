@@ -10,7 +10,7 @@ process.on('uncaughtException', (err) => console.error('Uncaught Exception:', er
 process.on('unhandledRejection', (err) => console.error('Unhandled Rejection:', err));
 
 const app = express();
-app.use(express.json({ limit: '100mb' }));
+app.use(express.json({ limit: '100mb' })); // Allows large SVG/Image uploads
 app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -25,9 +25,18 @@ mongoose.connect(dbLink, {
     .catch(err => console.log('❌ DB Connection Error:', err.message));
 
 // --- 2. SCHEMAS ---
+
 const StudentSchema = new mongoose.Schema({
-    name: String, email: { type: String, unique: true }, password: String, 
-    phone: String, status: { type: String, default: 'Pending' }, joinedAt: { type: Date, default: Date.now },
+    name: String, 
+    email: { type: String, unique: true }, 
+    password: String, 
+    phone: String, 
+    status: { type: String, default: 'Pending' }, 
+    joinedAt: { type: Date, default: Date.now },
+    // 🪙 NEW GAMIFICATION FIELDS
+    coins: { type: Number, default: 0 },
+    lastLoginDate: { type: String, default: "" },
+    lastPotdDate: { type: String, default: "" }
 });
 const Student = mongoose.model('Student', StudentSchema);
 
@@ -46,6 +55,7 @@ const QuestionSchema = new mongoose.Schema({
 const TestSchema = new mongoose.Schema({
     title: String, instructions: String, duration: Number, accessCode: String, category: String,
     isLive: Boolean, startTime: Date, endTime: Date,
+    maxCoins: { type: Number, default: 0 }, // 🪙 NEW: Max ARC Coins student can earn from this test
     questions: [QuestionSchema], date: { type: Date, default: Date.now }
 });
 const Test = mongoose.model('Test', TestSchema);
@@ -102,7 +112,25 @@ const RefToolSchema = new mongoose.Schema({
 });
 const RefTool = mongoose.model('RefTool', RefToolSchema);
 
+// ⚙️ NEW: ORGANIC MECHANISM SCHEMA
+const MechanismSchema = new mongoose.Schema({
+    id: { type: String, unique: true }, // e.g., 'sn1', 'eas'
+    title: String,
+    desc: String,
+    steps: [{ title: String, text: String, visual: String }], // 'visual' stores the Base64 SVG/Image
+    date: { type: Date, default: Date.now }
+});
+const Mechanism = mongoose.model('Mechanism', MechanismSchema);
+
+// 🎟️ NEW: DISCOUNT LOG SCHEMA (To track when students buy offline discounts)
+const DiscountLogSchema = new mongoose.Schema({
+    student: String, item: String, code: String, date: { type: Date, default: Date.now }
+});
+const DiscountLog = mongoose.model('DiscountLog', DiscountLogSchema);
+
+
 // --- 3. ROUTES ---
+
 app.post('/api/register', async (req, res) => {
     try {
         const { name, emailPart, password, phone } = req.body; 
@@ -125,11 +153,21 @@ app.post('/api/login', async (req, res) => {
         if (student.status === 'Pending') {
             return res.json({ success: false, message: "Your registration is under review." });
         }
-        res.json({ success: true, name: student.name, email: student.email, role: 'student' });
+        
+        // Return coins and tracked dates alongside login info
+        res.json({ 
+            success: true, 
+            name: student.name, 
+            email: student.email, 
+            role: 'student',
+            coins: student.coins || 0,
+            lastLoginDate: student.lastLoginDate || "",
+            lastPotdDate: student.lastPotdDate || ""
+        });
     } catch (e) { res.json({ success: false, message: "Server Error" }); }
 });
 
-// ADMIN API
+// --- ADMIN API ---
 app.get('/api/admin/students', async (req, res) => res.json(await Student.find().sort({ joinedAt: -1 })));
 app.get('/api/admin/student/:id', async (req, res) => res.json(await Student.findById(req.params.id)));
 app.put('/api/admin/student/:id', async (req, res) => { await Student.findByIdAndUpdate(req.params.id, req.body); res.json({ success: true }); });
@@ -185,7 +223,7 @@ app.put('/api/admin/offline-result/:id', async (req, res) => {
 });
 app.delete('/api/admin/offline-result/:id', async (req, res) => { await OfflineResult.findByIdAndDelete(req.params.id); res.json({ success: true }); });
 
-// NEW LOGO SETTINGS ROUTES
+// LOGO SETTINGS ROUTES
 app.get('/api/logo', async (req, res) => { 
     try {
         const c = await Config.findOne({ type: 'site_logo' });
@@ -242,13 +280,69 @@ app.get('/api/reftools', async (req, res) => {
 app.post('/api/admin/reftool', async (req, res) => { await new RefTool(req.body).save(); res.json({ success: true }); });
 app.delete('/api/admin/reftool/:id', async (req, res) => { await RefTool.findByIdAndDelete(req.params.id); res.json({ success: true }); });
 
-// STUDENT API
+
+// ⚙️ --- NEW MECHANISM ROUTES ---
+app.get('/api/mechanisms', async (req, res) => {
+    try { res.json(await Mechanism.find().sort({ date: -1 })); } catch(e) { res.json([]); }
+});
+app.post('/api/admin/mechanism', async (req, res) => {
+    try {
+        const { id, title, desc, steps } = req.body;
+        // Upsert creates it if it doesn't exist, updates it if it does
+        await Mechanism.findOneAndUpdate(
+            { id: id },
+            { title, desc, steps, date: Date.now() },
+            { upsert: true, new: true }
+        );
+        res.json({ success: true });
+    } catch(e) { res.json({ success: false }); }
+});
+app.delete('/api/admin/mechanism/:id', async (req, res) => {
+    try {
+        await Mechanism.findByIdAndDelete(req.params.id);
+        res.json({ success: true });
+    } catch(e) { res.json({ success: false }); }
+});
+
+
+// 🪙 --- NEW GAMIFICATION ROUTES ---
+app.post('/api/student/update-coins', async (req, res) => {
+    try {
+        const { email, coins } = req.body;
+        if (!email) return res.status(400).json({ success: false, message: 'Email required' });
+
+        const updatedStudent = await Student.findOneAndUpdate(
+            { email: email },
+            { $set: { coins: coins } },
+            { new: true }
+        );
+
+        if (!updatedStudent) return res.status(404).json({ success: false, message: 'Student not found.' });
+        res.json({ success: true, coins: updatedStudent.coins });
+    } catch (error) {
+        console.error("Error updating coins:", error);
+        res.status(500).json({ success: false, message: 'Internal Server Error' });
+    }
+});
+
+app.post('/api/admin/log-discount', async (req, res) => {
+    try {
+        await new DiscountLog(req.body).save();
+        res.json({ success: true });
+    } catch(e) {
+        res.json({ success: false });
+    }
+});
+
+
+// --- STUDENT API ---
 app.get('/api/materials', async (req, res) => {
     try { res.json(await Material.find()); } catch(e) { res.json([]); }
 });
 app.get('/api/tests', async (req, res) => {
     try {
-        const tests = await Test.find({}, 'title duration category date accessCode isLive startTime endTime');
+        // Now returns maxCoins so frontend knows how much a test is worth
+        const tests = await Test.find({}, 'title duration category date accessCode isLive startTime endTime maxCoins');
         res.json(tests);
     } catch(e) { res.json([]); }
 });

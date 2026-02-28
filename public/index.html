@@ -581,6 +581,9 @@ body.dark-mode .logo {
         <a onclick="show('schedule')">📅 Upcoming Test Schedule</a>
         <a onclick="show('results')" id="nav-results">Test Results</a>
         <a onclick="show('doubts')" id="nav-doubts" style="display:none">🤔 Doubts</a>
+        <a onclick="show('store')" id="nav-store" style="display:none; color: var(--gold); border: 1px solid var(--gold); padding: 5px 10px; border-radius: 20px; background: rgba(251, 191, 36, 0.1);">
+            🛒 ARC Store (<span id="wallet-coins">0</span> 🪙)
+        </a>
         <a onclick="toggleNightLab()" id="night-toggle" style="cursor: pointer; font-weight: bold; transition: 0.3s;">🌙 Night Lab</a>
         <a onclick="show('login')" id="nav-login">Login</a>
         <a onclick="show('admin')" id="nav-admin" style="display:none; background: var(--red); padding: 5px 10px; border-radius: 4px;">TEACHER</a>
@@ -743,6 +746,48 @@ body.dark-mode .logo {
             <input id="r-pass" type="password" placeholder="Password">
             <button class="btn btn-gold" style="width:100%" onclick="doReg()">Register</button>
             <p style="text-align:center; cursor:pointer; margin-top:15px; color:blue;" onclick="hideRegBoxFromLamp()">Back to Login</p>
+        </div>
+    </div>
+</div>
+
+<div id="store" class="section">
+    <div style="text-align:center; padding: 20px; background: linear-gradient(135deg, #1e293b, #0f172a); border-radius: 12px; border: 2px solid var(--gold); margin-bottom: 30px; color: white;">
+        <h2 style="margin-top: 0; color: var(--gold);">🪙 ARC Rewards Store</h2>
+        <h1 style="font-size: 3rem; margin: 10px 0;"><span id="store-big-coins">0</span> 🪙</h1>
+        <p style="font-size: 1.2rem; color: #cbd5e1;">Current Rank: <span id="student-badge-title" style="font-weight:bold; color:var(--gold);">🌱 Beginner</span></p>
+        <p style="font-size: 0.9rem; color: #94a3b8;">Earn coins by logging in daily (+5), solving the POTD (+10), and scoring high on Practice Tests!</p>
+    </div>
+
+    <h3>🎟️ Fee Discounts & Perks</h3>
+    <div class="grid">
+        <div class="card" style="border: 2px solid var(--green); text-align: center;">
+            <div style="font-size: 3rem;">💸</div>
+            <h4>₹200 Offline Fee Discount</h4>
+            <button class="btn btn-gold" onclick="buyItem(1000, '₹200 Fee Discount', 'discount')">Claim for 1000 🪙</button>
+        </div>
+        <div class="card" style="border: 2px solid var(--green); text-align: center;">
+            <div style="font-size: 3rem;">🏆</div>
+            <h4>₹500 Crash Course Discount</h4>
+            <button class="btn btn-gold" onclick="buyItem(2500, '₹500 Course Discount', 'discount')">Claim for 2500 🪙</button>
+        </div>
+    </div>
+
+    <h3 style="margin-top: 30px;">📚 Premium Unlocks</h3>
+    <div class="grid">
+        <div class="card" style="text-align: center;">
+            <div style="font-size: 3rem;">📑</div>
+            <h4>Ultimate Organic Cheat Sheet</h4>
+            <button class="btn btn-gold" onclick="buyItem(300, 'Organic Cheat Sheet PDF', 'pdf')">Unlock for 300 🪙</button>
+        </div>
+        <div class="card" style="text-align: center;">
+            <div style="font-size: 3rem;">🔒</div>
+            <h4>Advanced Mock Test #1</h4>
+            <button class="btn btn-gold" onclick="buyItem(500, 'Advanced Mock Test', 'test')">Unlock for 500 🪙</button>
+        </div>
+        <div class="card" style="text-align: center;">
+            <div style="font-size: 3rem;">📹</div>
+            <h4>Secret Masterclass Video</h4>
+            <button class="btn btn-gold" onclick="buyItem(400, 'Thermodynamics Masterclass', 'video')">Unlock for 400 🪙</button>
         </div>
     </div>
 </div>
@@ -1154,6 +1199,8 @@ if (savedTheme === 'dark') {
             document.getElementById('nav-login').style.display = 'none';
             document.getElementById('nav-logout').style.display = 'block';
             document.getElementById('nav-doubts').style.display = 'block'; 
+            document.getElementById('nav-store').style.display = 'block';
+            checkDailyLogin(); // This handles rendering the coins and giving the daily bonus!
             if(user.role === 'admin') document.getElementById('nav-admin').style.display = 'block';
         }
 
@@ -1995,6 +2042,7 @@ if (savedTheme === 'dark') {
                             <div style="display:flex; gap:10px;">
                                 <input id="t-dur" type="number" placeholder="Mins" oninput="calcEndTime()">
                                 <input id="t-code" placeholder="Password (Optional)">
+                                <input id="t-max-coins" type="number" placeholder="Max Coins to Earn">
                             </div>
                             <select id="t-cat"><option>11th Class</option><option>12th Class</option><option>Organic</option><option>Physical</option><option>Inorganic</option><option>Full Syllabus</option></select>
                             <div style="margin-top:10px; background:#f8fafc; padding:10px; border:1px solid #eee;">
@@ -2461,7 +2509,7 @@ if (savedTheme === 'dark') {
     }
 
 
-    async function pubTest() { const body = { title: document.getElementById('t-title').value, duration: parseInt(document.getElementById('t-dur').value), accessCode: document.getElementById('t-code').value, category: document.getElementById('t-cat').value, isLive: document.getElementById('t-live').checked, startTime: document.getElementById('t-start').value ? new Date(document.getElementById('t-start').value) : null, endTime: document.getElementById('t-end').value ? new Date(document.getElementById('t-end').value) : null, questions: draftQ }; const method = editingTestId ? 'PUT' : 'POST'; const url = editingTestId ? `/api/admin/test/${editingTestId}` : '/api/admin/test'; try { await fetch(url, { method, headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) }); alert(editingTestId ? "Updated!" : "Published!"); editingTestId = null; draftQ = []; initCreateTest(); } catch(e) { alert("Error: " + e.message); } }
+    async function pubTest() { const body = { title: document.getElementById('t-title').value, duration: parseInt(document.getElementById('t-dur').value), parseInt(document.getElementById('t-max-coins').value) accessCode: document.getElementById('t-code').value, category: document.getElementById('t-cat').value, isLive: document.getElementById('t-live').checked, startTime: document.getElementById('t-start').value ? new Date(document.getElementById('t-start').value) : null, endTime: document.getElementById('t-end').value ? new Date(document.getElementById('t-end').value) : null, questions: draftQ }; const method = editingTestId ? 'PUT' : 'POST'; const url = editingTestId ? `/api/admin/test/${editingTestId}` : '/api/admin/test'; try { await fetch(url, { method, headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) }); alert(editingTestId ? "Updated!" : "Published!"); editingTestId = null; draftQ = []; initCreateTest(); } catch(e) { alert("Error: " + e.message); } }
     async function postBlog() { const method = editingBlogId ? 'PUT' : 'POST'; const url = editingBlogId ? `/api/admin/blog/${editingBlogId}` : '/api/admin/blog'; await fetch(url, { method, headers:{'Content-Type':'application/json'}, body: JSON.stringify({ title: document.getElementById('b-title').value, content: document.getElementById('b-content').innerHTML, image: tempImg }) }); alert("Saved!"); tempImg = ""; editingBlogId = null; }
     async function postAnnounce() { await fetch('/api/admin/announcement/add', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({text: document.getElementById('ann-text').value}) }); showAdm('announce'); loadAnnouncements(); }
     async function delAnnounce(text) { await fetch('/api/admin/announcement/delete', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({text}) }); showAdm('announce'); }
@@ -3498,6 +3546,161 @@ function updateMechUI() {
 function changeMechStep(dir) {
     currentMechStep += dir;
     updateMechUI();
+}
+
+// ==========================================
+// 🪙 ARC COINS & GAMIFICATION ENGINE
+// ==========================================
+
+// 1. Core Coin Updater
+async function updateCoins(amount, reason) {
+    if(!user) return;
+    
+    // Initialize if null
+    user.coins = user.coins || 0;
+    user.coins += amount;
+    
+    // Save locally
+    localStorage.setItem('arc_user', JSON.stringify(user));
+    
+    // Update UI
+    const navWallet = document.getElementById('wallet-coins');
+    const storeWallet = document.getElementById('store-big-coins');
+    if(navWallet) navWallet.innerText = user.coins;
+    if(storeWallet) storeWallet.innerText = user.coins;
+    
+    // Check and assign titles based on new balance
+    updateStudentTitle();
+
+    if(amount > 0) {
+        // Show a fun alert
+        alert(`🎉 +${amount} ARC Coins!\nReason: ${reason}`);
+        triggerChemicalExplosion(); // Reuse your confetti!
+    }
+
+    // SILENT BACKEND SYNC (You need to create this route to save to DB)
+    try {
+        await fetch('/api/student/update-coins', { 
+            method: 'POST', headers: {'Content-Type':'application/json'}, 
+            body: JSON.stringify({ email: user.email, coins: user.coins }) 
+        });
+    } catch(e) { console.log("Coin sync failed."); }
+}
+
+// 2. Titles and Badges
+function updateStudentTitle() {
+    if(!user) return;
+    let c = user.coins || 0;
+    let title = "Beginner"; let badge = "🌱";
+
+    if(c >= 100) { title = "Scholar"; badge = "📘"; }
+    if(c >= 500) { title = "Alchemist"; badge = "⚗️"; }
+    if(c >= 1000) { title = "Organic Master"; badge = "🔥"; }
+    if(c >= 3000) { title = "JEE/NEET Conqueror"; badge = "👑"; }
+    if(c >= 10000) { title = "ARC Legend"; badge = "💎"; }
+
+    user.title = title;
+    user.badge = badge;
+    localStorage.setItem('arc_user', JSON.stringify(user));
+
+    const badgeEl = document.getElementById('student-badge-title');
+    if(badgeEl) badgeEl.innerText = `${badge} ${title}`;
+}
+
+// 3. Daily Login Bonus (Call this inside your window.onload if user exists)
+function checkDailyLogin() {
+    if(!user) return;
+    const todayDate = new Date().toDateString();
+    
+    if(user.lastLoginDate !== todayDate) {
+        user.lastLoginDate = todayDate;
+        localStorage.setItem('arc_user', JSON.stringify(user));
+        
+        // Slight delay so they see the UI load first
+        setTimeout(() => {
+            updateCoins(5, "Daily Login Bonus!");
+        }, 1500);
+    } else {
+        // Just update UI to current balance
+        updateCoins(0, ""); 
+    }
+}
+
+// 4. POTD Logic Override (Award 10 coins, only once)
+// Find your existing checkPOTD function and replace it with this:
+function checkPOTD(sel) {
+    if(!user) return alert("Please login to answer the POTD!");
+    
+    const todayDate = new Date().toDateString();
+    if(user.lastPotdDate === todayDate) {
+        return alert("You have already answered today's POTD! Come back tomorrow.");
+    }
+
+    const resDiv = document.getElementById('potd-result'); 
+    resDiv.style.display = 'block';
+    
+    if(sel === currentPOTD.correct) { 
+        resDiv.innerHTML = `✅ Correct!<br><br><b>Solution:</b><br>${currentPOTD.solution}`; 
+        resDiv.style.background = 'rgba(34, 197, 94, 0.2)'; 
+        
+        // Lock it for today and award coins!
+        user.lastPotdDate = todayDate;
+        localStorage.setItem('arc_user', JSON.stringify(user));
+        updateCoins(10, "Solved the Problem of the Day!");
+    } else { 
+        resDiv.innerHTML = `❌ Incorrect. Try again or check the solution!`; 
+        resDiv.style.background = 'rgba(239, 68, 68, 0.2)'; 
+        // We do NOT lock it, so they can keep trying until they learn it!
+    }
+}
+
+// 5. Test Submission Logic (Award based on percentage)
+// Call this function inside your existing viewSheet(id) function, right after percentage is calculated.
+function awardTestCoins(percentage, maxCoinsAvailable) {
+    // Prevent re-awarding if they refresh the result page
+    // In a real backend, you'd flag this test attempt in the DB as "coins_claimed"
+    
+    if(!maxCoinsAvailable || maxCoinsAvailable <= 0) return; // Not a coin-earning test
+
+    // Calculate coins based on percentage scored
+    let earned = Math.round((percentage / 100) * maxCoinsAvailable);
+    
+    if(earned > 0) {
+        setTimeout(() => {
+            updateCoins(earned, `Scored ${percentage.toFixed(1)}% on Practice Test`);
+        }, 2000); // Delay so it triggers after the test review modal opens
+    }
+}
+
+// 6. Buying Logic for ARC Store
+function buyItem(cost, itemName, type) {
+    if(!user) return alert("Please login!");
+    
+    if(user.coins < cost) {
+        return alert(`Not enough coins! You need ${cost - user.coins} more 🪙.`);
+    }
+
+    if(confirm(`Are you sure you want to spend ${cost} 🪙 to get: ${itemName}?`)) {
+        updateCoins(-cost, `Purchased: ${itemName}`);
+        
+        if(type === 'discount') {
+            // Generate a random offline discount code
+            const code = `ARC-FEE-${Math.floor(1000 + Math.random() * 9000)}`;
+            alert(`✅ SUCCESS! Show this code to the teacher offline:\n\n🎟️ Code: ${code}\n\nTake a screenshot now!`);
+            
+            // Log it to backend so the teacher knows it's valid
+            fetch('/api/admin/log-discount', { method: 'POST', body: JSON.stringify({ student: user.name, item: itemName, code: code }) });
+        } 
+        else if (type === 'pdf') {
+            alert("✅ SUCCESS! Opening your Premium PDF...");
+            // Link to your actual premium PDF
+            window.open('https://your-drive-link.com/premium-pdf', '_blank'); 
+        }
+        else {
+            alert(`✅ SUCCESS! ${itemName} has been unlocked for your account.`);
+            // Backend logic to unlock tests/videos for this specific user
+        }
+    }
 }
 
 </script>
