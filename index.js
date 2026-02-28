@@ -36,7 +36,8 @@ const StudentSchema = new mongoose.Schema({
     // 🪙 NEW GAMIFICATION FIELDS
     coins: { type: Number, default: 0 },
     lastLoginDate: { type: String, default: "" },
-    lastPotdDate: { type: String, default: "" }
+    lastPotdDate: { type: String, default: "" },
+    unlockedItems: { type: [String], default: [] }
 });
 const Student = mongoose.model('Student', StudentSchema);
 
@@ -128,6 +129,15 @@ const DiscountLogSchema = new mongoose.Schema({
 });
 const DiscountLog = mongoose.model('DiscountLog', DiscountLogSchema);
 
+// 🛒 NEW: ARC STORE ITEMS SCHEMA
+const StoreItemSchema = new mongoose.Schema({
+    title: String,
+    type: String, // 'pdf', 'test', 'video', 'discount'
+    cost: Number,
+    link: String, // Secret PDF link, video link, or access code
+    date: { type: Date, default: Date.now }
+});
+const StoreItem = mongoose.model('StoreItem', StoreItemSchema);
 
 // --- 3. ROUTES ---
 
@@ -162,7 +172,8 @@ app.post('/api/login', async (req, res) => {
             role: 'student',
             coins: student.coins || 0,
             lastLoginDate: student.lastLoginDate || "",
-            lastPotdDate: student.lastPotdDate || ""
+            lastPotdDate: student.lastPotdDate || "",
+            unlockedItems: student.unlockedItems || []
         });
     } catch (e) { res.json({ success: false, message: "Server Error" }); }
 });
@@ -306,14 +317,20 @@ app.delete('/api/admin/mechanism/:id', async (req, res) => {
 
 
 // 🪙 --- NEW GAMIFICATION ROUTES ---
+// 🪙 --- NEW GAMIFICATION ROUTES ---
 app.post('/api/student/update-coins', async (req, res) => {
     try {
-        const { email, coins } = req.body;
+        const { email, coins, lastLoginDate, lastPotdDate } = req.body;
         if (!email) return res.status(400).json({ success: false, message: 'Email required' });
+
+        // Build the update object dynamically so we also save the dates!
+        let updateFields = { coins: coins };
+        if (lastLoginDate) updateFields.lastLoginDate = lastLoginDate;
+        if (lastPotdDate) updateFields.lastPotdDate = lastPotdDate;
 
         const updatedStudent = await Student.findOneAndUpdate(
             { email: email },
-            { $set: { coins: coins } },
+            { $set: updateFields },
             { new: true }
         );
 
@@ -334,6 +351,18 @@ app.post('/api/admin/log-discount', async (req, res) => {
     }
 });
 
+// 🛒 --- STORE API ROUTES ---
+app.get('/api/store', async (req, res) => {
+    try { res.json(await StoreItem.find().sort({ cost: 1 })); } catch(e) { res.json([]); }
+});
+
+app.post('/api/admin/store', async (req, res) => {
+    try { await new StoreItem(req.body).save(); res.json({ success: true }); } catch(e) { res.json({ success: false }); }
+});
+
+app.delete('/api/admin/store/:id', async (req, res) => {
+    try { await StoreItem.findByIdAndDelete(req.params.id); res.json({ success: true }); } catch(e) { res.json({ success: false }); }
+});
 
 // --- STUDENT API ---
 app.get('/api/materials', async (req, res) => {
@@ -354,9 +383,44 @@ app.get('/api/results/offline', async (req, res) => {
     try { res.json(await OfflineResult.find()); } catch(e) { res.json([]); }
 });
 
+// 🪙 NEW ROUTE: Process Premium Store Purchases
+app.post('/api/student/buy-item', async (req, res) => {
+    try {
+        const { email, itemId, cost } = req.body;
+        const student = await Student.findOne({ email });
+        
+        if (!student) return res.json({ success: false, message: "Student not found" });
+        if (student.coins < cost) return res.json({ success: false, message: "Not enough coins!" });
+
+        student.coins -= cost;
+        
+        // Add the item ID to their unlocked list
+        if (!student.unlockedItems) student.unlockedItems = [];
+        if (!student.unlockedItems.includes(itemId)) {
+            student.unlockedItems.push(itemId);
+        }
+        
+        await student.save();
+        res.json({ success: true, coins: student.coins, unlockedItems: student.unlockedItems });
+    } catch (e) {
+        res.json({ success: false, message: "Server error" });
+    }
+});
+
+// 🔄 UPDATE: Material Unlock to check for Premium Purchases
 app.post('/api/material/unlock', async (req, res) => {
-    const f = await Material.findById(req.body.id);
-    if(f && (!f.accessCode || f.accessCode === req.body.code)) res.json({ success: true, link: f.link }); else res.json({ success: false });
+    const { id, code, studentEmail } = req.body;
+    const f = await Material.findById(id);
+    const s = await Student.findOne({ email: studentEmail });
+    
+    // Check if student bought this premium item
+    const isUnlocked = s && s.unlockedItems && s.unlockedItems.includes(id);
+
+    if(f && (!f.accessCode || f.accessCode === code || isUnlocked)) {
+        res.json({ success: true, link: f.link });
+    } else { 
+        res.json({ success: false }); 
+    }
 });
 
 app.post('/api/result-details', async (req, res) => {

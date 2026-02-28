@@ -780,6 +780,7 @@ body.dark-mode .logo {
         <button class="btn btn-gold btn-small" onclick="showAdm('offline')">📊 Offline</button>
         <button class="btn btn-gold btn-small" onclick="showAdm('students')">👥 Students</button>
         <button class="btn btn-gold btn-small" onclick="showAdm('mech')">⚙️ Mechs</button>
+        <button class="btn btn-gold btn-small" onclick="showAdm('store')">🛒 Store</button>
         <button class="btn btn-red btn-small" onclick="showAdm('manage')">🛠️ Manage</button>
     </div>
     <div id="adm-content" style="background:white; padding:15px; border-radius:10px; border:1px solid #ddd; min-height:300px; overflow-x:auto;">Select option.</div>
@@ -1148,7 +1149,7 @@ function triggerChemicalExplosion() {
 }
 
     window.onload = function() {
-
+    fetchGlobalStoreData(); // Add this line
         // --- ADD THIS INSIDE window.onload ---
 const savedTheme = localStorage.getItem('arc_theme');
 if (savedTheme === 'dark') {
@@ -2293,6 +2294,7 @@ if (savedTheme === 'dark') {
             <h4>Current Store Items</h4>
             <div id="admin-store-list" class="table-container">Loading...</div>`;
             
+            updateStoreInputUI(); // Initialize dropdown
             loadAdminStoreList();
         }
 
@@ -2615,8 +2617,14 @@ if (savedTheme === 'dark') {
         }
     };
 
-    if (hasCode) {
+    // Check if the student already bought this premium test!
+    const isUnlocked = user && user.unlockedItems && user.unlockedItems.includes(id);
+
+    if (hasCode && !isUnlocked) {
         openCoolModal("Unlock Test", "This test is password protected.", processStart);
+    } else {
+        processStart(""); // Bypasses the password modal completely!
+    }
     } else {
         processStart("");
     }
@@ -2683,7 +2691,7 @@ if (savedTheme === 'dark') {
         const res = await fetch('/api/material/unlock', { 
             method: 'POST', 
             headers: {'Content-Type':'application/json'}, 
-            body: JSON.stringify({id, code}) 
+            body: JSON.stringify({id, code, studentEmail: user ? user.email : null})
         });
         const data = await res.json();
         if (data.success) {
@@ -3573,6 +3581,7 @@ function changeMechStep(dir) {
 // ==========================================
 
 // 1. Core Coin Updater
+// 1. Core Coin Updater
 async function updateCoins(amount, reason) {
     if(!user) return;
     
@@ -3595,14 +3604,19 @@ async function updateCoins(amount, reason) {
     if(amount > 0) {
         // Show a fun alert
         alert(`🎉 +${amount} ARC Coins!\nReason: ${reason}`);
-        triggerChemicalExplosion(); // Reuse your confetti!
+        if(typeof triggerChemicalExplosion === "function") triggerChemicalExplosion(); 
     }
 
-    // SILENT BACKEND SYNC (You need to create this route to save to DB)
+    // 🔒 SECURE BACKEND SYNC: Now sends the dates to the database to prevent multi-device cheating!
     try {
         await fetch('/api/student/update-coins', { 
             method: 'POST', headers: {'Content-Type':'application/json'}, 
-            body: JSON.stringify({ email: user.email, coins: user.coins }) 
+            body: JSON.stringify({ 
+                email: user.email, 
+                coins: user.coins,
+                lastLoginDate: user.lastLoginDate, // Synced to DB
+                lastPotdDate: user.lastPotdDate    // Synced to DB
+            }) 
         });
     } catch(e) { console.log("Coin sync failed."); }
 }
@@ -3694,8 +3708,38 @@ function awardTestCoins(percentage, maxCoinsAvailable) {
 
 // 6. Buying Logic for ARC Store
 // --- DYNAMIC STORE LOGIC ---
+// ==========================================
+// 🛒 DYNAMIC PREMIUM STORE LOGIC
+// ==========================================
 
-// 1. Admin Function: Save to DB
+window.adminTestsList = [];
+window.adminMatsList = [];
+
+// This function dynamically switches between a Text Input and a Dropdown
+async function updateStoreInputUI() {
+    const type = document.getElementById('store-type').value;
+    const container = document.getElementById('store-link-container');
+
+    if (type === 'test') {
+        if(window.adminTestsList.length === 0) { const res = await fetch('/api/tests'); window.adminTestsList = await res.json(); }
+        container.innerHTML = `<select id="store-link" style="width:100%; padding:10px; border-radius:6px; border:1px solid #ccc;">
+            <option value="">-- Select an Existing Practice Test --</option>
+            ${window.adminTestsList.map(t => `<option value="${t._id}">${t.title}</option>`).join('')}
+        </select>`;
+    } else if (type === 'pdf') {
+        if(window.adminMatsList.length === 0) { const res = await fetch('/api/materials'); window.adminMatsList = await res.json(); }
+        container.innerHTML = `<select id="store-link" style="width:100%; padding:10px; border-radius:6px; border:1px solid #ccc;">
+            <option value="">-- Select an Existing Library File --</option>
+            ${window.adminMatsList.map(m => `<option value="${m._id}">${m.title}</option>`).join('')}
+        </select>`;
+    } else {
+        container.innerHTML = `<input id="store-link" placeholder="Secret Video Link or Access Passcode" style="width:100%; padding:10px; border-radius:6px; border:1px solid #ccc; box-sizing:border-box;">`;
+    }
+}
+
+// 1. Admin UI injected into the Teacher Panel
+// Add this inside your showAdm(tab) function alongside the other tabs
+
 async function uploadStoreItem() {
     const body = {
         title: document.getElementById('store-title').value,
@@ -3703,101 +3747,150 @@ async function uploadStoreItem() {
         cost: parseInt(document.getElementById('store-cost').value),
         link: document.getElementById('store-link').value
     };
+    if(!body.title || !body.cost || !body.link) return alert("Please fill Title, Cost, and select a file/test!");
     
-    if(!body.title || !body.cost) return alert("Please fill Title and Cost!");
-    
-    await fetch('/api/admin/store', { 
-        method: 'POST', 
-        headers:{'Content-Type':'application/json'}, 
-        body: JSON.stringify(body) 
-    });
-    
-    alert("Item Added to Store!"); 
-    showAdm('store'); // Refresh panel
-    loadDynamicStore(); // Refresh student view behind the scenes
+    await fetch('/api/admin/store', { method: 'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
+    alert("Item Added to Store! The Premium badge will now show on it."); 
+    showAdm('store'); fetchGlobalStoreData(); loadDynamicStore();
 }
 
-// 2. Admin Function: View List
 async function loadAdminStoreList() {
     try {
-        const res = await fetch('/api/store'); 
-        const data = await res.json();
+        const res = await fetch('/api/store'); const data = await res.json();
         document.getElementById('admin-store-list').innerHTML = `<table><tr><th>Title</th><th>Type</th><th>Cost</th><th>Action</th></tr>` + 
-        data.map(i => `<tr>
-            <td>${i.title}</td>
-            <td>${i.type}</td>
-            <td>${i.cost} 🪙</td>
-            <td><button class="btn-red btn-small" onclick="deleteItem('store','${i._id}')">Del</button></td>
-        </tr>`).join('') + `</table>`;
-    } catch(e) { document.getElementById('admin-store-list').innerHTML = "Error loading store items."; }
+        data.map(i => `<tr><td>${i.title}</td><td>${i.type}</td><td>${i.cost} 🪙</td><td><button class="btn-red btn-small" onclick="deleteItem('store','${i._id}')">Del</button></td></tr>`).join('') + `</table>`;
+    } catch(e) {}
 }
 
-// 3. Student Function: Render the Store
-let dynamicStoreData = []; // Store in memory so we can check prices instantly
 async function loadDynamicStore() {
-    try {
-        const res = await fetch('/api/store'); 
-        const items = await res.json();
-        dynamicStoreData = items;
-        
-        if (items.length === 0) {
-            document.getElementById('store-dynamic-content').innerHTML = "<p style='text-align:center; width:100%; color:#cbd5e1;'>Store is currently empty. Teacher is adding new items soon!</p>";
-            return;
-        }
-        
-        let html = "";
-        items.forEach(item => {
-            // Assign icons dynamically based on what you picked in the admin panel
-            let icon = "🎁";
-            let borderColor = "#eee";
-            if(item.type === 'discount') { icon = "💸"; borderColor = "var(--green)"; }
-            if(item.type === 'pdf') { icon = "📑"; }
-            if(item.type === 'test') { icon = "🔒"; }
-            if(item.type === 'video') { icon = "📹"; }
+    if (dynamicStoreData.length === 0) {
+        document.getElementById('store-dynamic-content').innerHTML = "<p style='text-align:center; width:100%; color:#cbd5e1;'>Store is currently empty. Teacher is adding items soon!</p>"; return;
+    }
+    
+    let html = "";
+    dynamicStoreData.forEach(item => {
+        let icon = "🎁"; let borderColor = "#eee";
+        if(item.type === 'discount') { icon = "💸"; borderColor = "var(--green)"; }
+        if(item.type === 'pdf') { icon = "📑"; }
+        if(item.type === 'test') { icon = "🔒"; }
+        if(item.type === 'video') { icon = "📹"; }
 
-            html += `<div class="card" style="text-align: center; border: 2px solid ${borderColor};">
-                <div style="font-size: 3rem;">${icon}</div>
-                <h4 style="margin: 15px 0;">${item.title}</h4>
-                <button class="btn btn-gold" onclick="buyDynamicItem('${item._id}')">Unlock for ${item.cost} 🪙</button>
-            </div>`;
-        });
-        document.getElementById('store-dynamic-content').innerHTML = html;
-    } catch(e) { console.error("Store load error", e); }
+        // Change button if they already own it!
+        const alreadyOwned = user && user.unlockedItems && user.unlockedItems.includes(item.link);
+        const btnHtml = alreadyOwned 
+            ? `<button class="btn" style="background:var(--green); color:white;" disabled>✅ Unlocked</button>`
+            : `<button class="btn btn-gold" onclick="buyDynamicItem('${item._id}')">Unlock for ${item.cost} 🪙</button>`;
+
+        html += `<div class="card" style="text-align: center; border: 2px solid ${borderColor};">
+            <div style="font-size: 3rem;">${icon}</div>
+            <h4 style="margin: 15px 0;">${item.title}</h4>
+            ${btnHtml}
+        </div>`;
+    });
+    document.getElementById('store-dynamic-content').innerHTML = html;
 }
 
-// 4. Student Function: Buy Logic
-function buyDynamicItem(id) {
+async function buyDynamicItem(id) {
     if(!user) return alert("Please login to access the store!");
-    
-    const item = dynamicStoreData.find(i => i._id === id);
-    if(!item) return;
+    const item = dynamicStoreData.find(i => i._id === id); if(!item) return;
 
-    if(user.coins < item.cost) {
-        return alert(`Not enough coins! You need ${item.cost - user.coins} more 🪙.`);
-    }
+    if(user.coins < item.cost) return alert(`Not enough coins! You need ${item.cost - user.coins} more 🪙.`);
 
     if(confirm(`Are you sure you want to spend ${item.cost} 🪙 to unlock: ${item.title}?`)) {
         
-        // Subtract coins instantly
-        updateCoins(-item.cost, `Purchased: ${item.title}`);
-        
-        // Handle the reward based on what the teacher set!
-        if(item.type === 'discount') {
-            const code = `ARC-${item.title.substring(0,3).toUpperCase()}-${Math.floor(1000 + Math.random() * 9000)}`;
-            alert(`✅ SUCCESS! Show this code to the teacher offline:\n\n🎟️ Code: ${code}\n\nTake a screenshot now!`);
-            fetch('/api/admin/log-discount', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ student: user.name, item: item.title, code: code }) });
+        if (item.type === 'test' || item.type === 'pdf') {
+            // Talk to the backend to permanently unlock it
+            const res = await fetch('/api/student/buy-item', {
+                method: 'POST', headers: {'Content-Type':'application/json'},
+                body: JSON.stringify({ email: user.email, itemId: item.link, cost: item.cost })
+            });
+            const data = await res.json();
+            
+            if(data.success) {
+                // Update local user data
+                user.coins = data.coins;
+                user.unlockedItems = data.unlockedItems;
+                localStorage.setItem('arc_user', JSON.stringify(user));
+                updateStudentTitle();
+                document.getElementById('wallet-coins').innerText = user.coins;
+                document.getElementById('store-big-coins').innerText = user.coins;
+                
+                alert("✅ SUCCESS! Item permanently unlocked. You can now open it from the Library or Tests section without a password!");
+                if(typeof triggerChemicalExplosion === "function") triggerChemicalExplosion();
+                loadDynamicStore(); // Refresh buttons
+                if(item.type === 'test') show('tests');
+                if(item.type === 'pdf') show('library');
+            }
         } 
-        else if (item.type === 'pdf') {
-            alert("✅ SUCCESS! Opening your Premium PDF...");
-            window.open(item.link, '_blank'); 
+        else {
+            // Discounts and Videos behave normally
+            updateCoins(-item.cost, `Purchased: ${item.title}`);
+            if(item.type === 'discount') {
+                const code = `ARC-${item.title.substring(0,3).toUpperCase()}-${Math.floor(1000 + Math.random() * 9000)}`;
+                alert(`✅ SUCCESS! Show this code to the teacher offline:\n\n🎟️ Code: ${code}\n\nTake a screenshot now!`);
+                fetch('/api/admin/log-discount', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ student: user.name, item: item.title, code: code }) });
+            } 
+            else if (item.type === 'video') {
+                alert("✅ SUCCESS! Opening Secret Video...");
+                window.open(item.link, '_blank'); 
+            }
         }
-        else if (item.type === 'video') {
-            alert("✅ SUCCESS! Opening Secret Video...");
-            window.open(item.link, '_blank'); 
+    }
+}
+
+// --- PREMIUM BADGE LOGIC ---
+let dynamicStoreData = [];
+async function fetchGlobalStoreData() {
+    try {
+        const res = await fetch('/api/store');
+        dynamicStoreData = await res.json();
+    } catch(e){}
+}
+
+// 🔄 UPDATE: Check for Premium status in Test List
+async function loadTests(isLive) { 
+    try {
+        const res = await fetch('/api/tests'); const tests = await res.json(); const now = new Date(); 
+        const filteredTests = tests.filter(t => { const tEnd = t.endTime ? new Date(t.endTime) : null; if (isLive) { return t.isLive && tEnd && tEnd > now; } else { return !t.isLive || (t.isLive && tEnd && tEnd <= now); } }); 
+        const container = document.getElementById(isLive?'live-list':'test-list');
+        if (filteredTests.length === 0) { container.innerHTML = getEmptyStateGame(`No ${isLive ? 'Live' : 'Practice'} Tests Available`); } 
+        else { 
+            container.innerHTML = filteredTests.map(t => {
+                // Check if this test is in the store!
+                const storeItem = dynamicStoreData.find(si => si.type === 'test' && si.link === t._id);
+                const premiumBadge = storeItem ? `<span class="badge bg-gold" style="margin-left:10px;">💎 Premium (${storeItem.cost} 🪙)</span>` : '';
+                const lockIcon = t.accessCode && !storeItem ? '🔒' : ''; // Don't double-show lock if premium
+
+                return `<div class="card" style="border-left: 5px solid ${isLive ? 'red' : 'gold'}; position:relative;">
+                    <h3>${t.title} ${lockIcon}</h3>
+                    ${premiumBadge ? `<div style="position:absolute; top:10px; right:10px;">${premiumBadge}</div>` : ''}
+                    <p>${t.duration} Mins</p>
+                    ${isLive ? `<p style="color:red">Start: ${new Date(t.startTime).toLocaleString()}</p>` : ''}
+                    <button class="btn btn-gold" onclick="startTest('${t._id}', ${(t.accessCode || storeItem) ? true : false}, '${t.startTime}')">Start</button>
+                </div>`;
+            }).join(''); 
         }
-        else if (item.type === 'test') {
-            alert(`✅ SUCCESS! Here is your private access code for the test:\n\n🔑 Code: ${item.link}\n\nWrite this down!`);
-        }
+    } catch(e) { console.error("Could not load tests"); }
+}
+
+// 🔄 UPDATE: Check for Premium status in Library List
+function renderLib(cat) { 
+    const items = allMats.filter(m => m.category === cat || (cat === '11th Class' && m.category.includes('11'))); 
+    if (items.length === 0) { document.getElementById('lib-content').innerHTML = getEmptyStateGame(`No items available in ${cat}`); } 
+    else { 
+        document.getElementById('lib-content').innerHTML = items.map(m => {
+            // Check if this material is in the store!
+            const storeItem = dynamicStoreData.find(si => si.type === 'pdf' && si.link === m._id);
+            const premiumBadge = storeItem ? `<div style="position:absolute; top:10px; right:10px; background:var(--gold); color:var(--primary); padding:5px; border-radius:4px; font-weight:bold; font-size:0.8rem; box-shadow:0 2px 5px rgba(0,0,0,0.3);">💎 Premium (${storeItem.cost} 🪙)</div>` : '';
+            const lockIcon = m.accessCode && !storeItem ? '🔒' : '';
+
+            return `<div class="card" style="position:relative;">
+                ${premiumBadge}
+                <img src="${m.image||''}" style="height:180px; width: 100%; background:#f8fafc; object-fit:contain; border-radius: 8px; border: 1px solid #eee;">
+                <h4 style="margin: 15px 0 10px 0;">${m.title} ${lockIcon}</h4>
+                <button class="btn btn-gold" onclick="openMat('${m._id}')">Open</button>
+            </div>`;
+        }).join(''); 
     }
 }
 
