@@ -599,6 +599,7 @@ body.dark-mode .logo {
 <button class="floating-btn" onclick="openModal('ref-modal')">🧪 Ref Tools</button>
 <button class="floating-btn" style="bottom: 30px; left: 30px; right: auto; background: #ef4444; color: white;" onclick="toggleFocusWidget()">⏱️ Focus Timer</button>
 <button class="floating-btn" style="bottom: 150px; background: #8b5cf6; color: white;" onclick="openMechViewer()">⚙️ Mechanisms</button>
+<button class="btn btn-gold btn-small" onclick="showAdm('store')">🛒 Store</button>
 
 <div id="focus-widget" class="focus-widget">
     <div class="focus-header">
@@ -758,37 +759,8 @@ body.dark-mode .logo {
         <p style="font-size: 0.9rem; color: #94a3b8;">Earn coins by logging in daily (+5), solving the POTD (+10), and scoring high on Practice Tests!</p>
     </div>
 
-    <h3>🎟️ Fee Discounts & Perks</h3>
-    <div class="grid">
-        <div class="card" style="border: 2px solid var(--green); text-align: center;">
-            <div style="font-size: 3rem;">💸</div>
-            <h4>₹200 Offline Fee Discount</h4>
-            <button class="btn btn-gold" onclick="buyItem(1000, '₹200 Fee Discount', 'discount')">Claim for 1000 🪙</button>
-        </div>
-        <div class="card" style="border: 2px solid var(--green); text-align: center;">
-            <div style="font-size: 3rem;">🏆</div>
-            <h4>₹500 Crash Course Discount</h4>
-            <button class="btn btn-gold" onclick="buyItem(2500, '₹500 Course Discount', 'discount')">Claim for 2500 🪙</button>
-        </div>
-    </div>
-
-    <h3 style="margin-top: 30px;">📚 Premium Unlocks</h3>
-    <div class="grid">
-        <div class="card" style="text-align: center;">
-            <div style="font-size: 3rem;">📑</div>
-            <h4>Ultimate Organic Cheat Sheet</h4>
-            <button class="btn btn-gold" onclick="buyItem(300, 'Organic Cheat Sheet PDF', 'pdf')">Unlock for 300 🪙</button>
-        </div>
-        <div class="card" style="text-align: center;">
-            <div style="font-size: 3rem;">🔒</div>
-            <h4>Advanced Mock Test #1</h4>
-            <button class="btn btn-gold" onclick="buyItem(500, 'Advanced Mock Test', 'test')">Unlock for 500 🪙</button>
-        </div>
-        <div class="card" style="text-align: center;">
-            <div style="font-size: 3rem;">📹</div>
-            <h4>Secret Masterclass Video</h4>
-            <button class="btn btn-gold" onclick="buyItem(400, 'Thermodynamics Masterclass', 'video')">Unlock for 400 🪙</button>
-        </div>
+    <div id="store-dynamic-content" class="grid">
+        <p style="text-align:center; width:100%; color:#666;">Loading Store Items...</p>
     </div>
 </div>
 
@@ -1191,7 +1163,7 @@ if (savedTheme === 'dark') {
 
         loadSiteLogo(); // FEATURE: FETCH DYNAMIC LOGO ON STARTUP
         loadMaterials(); loadAnnouncements(); loadBlogs(); loadStories(); 
-        loadPOTD(); loadVideosList(); loadRefToolsStudent(); 
+        loadPOTD(); loadVideosList(); loadRefToolsStudent(); loadDynamicStore();
         
         const lastSection = localStorage.getItem('arc_last_section') || 'home';
         
@@ -2301,6 +2273,28 @@ if (savedTheme === 'dark') {
             window.mechDraftSteps = []; 
             loadAdminMechList();
         }
+        else if (tab === 'store') {
+            c.innerHTML = `<h3>Manage Store Items</h3>
+            <div style="background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #ddd; margin-bottom: 20px;">
+                <input id="store-title" placeholder="Item Title (e.g., Ultimate Organic Cheat Sheet)">
+                <div style="display:flex; gap:10px;">
+                    <select id="store-type" style="flex:1; padding:10px; border-radius:6px; border:1px solid #ccc;">
+                        <option value="pdf">📄 Premium PDF Link</option>
+                        <option value="test">🔒 Mock Test Access Code</option>
+                        <option value="video">📹 Secret Video Link</option>
+                        <option value="discount">💸 Offline Fee Discount</option>
+                    </select>
+                    <input id="store-cost" type="number" placeholder="Coin Cost (e.g., 500)" style="flex:1;">
+                </div>
+                <input id="store-link" placeholder="Secret PDF Link, Video Embed Link, or Passcode">
+                <button class="btn btn-gold" style="width:100%; margin-top:15px; font-size:1.1rem;" onclick="uploadStoreItem()">➕ Add to Store</button>
+            </div>
+            <hr>
+            <h4>Current Store Items</h4>
+            <div id="admin-store-list" class="table-container">Loading...</div>`;
+            
+            loadAdminStoreList();
+        }
 
         else if (tab === 'announce') {
              c.innerHTML = `<h3>News</h3><input id="ann-text" placeholder="Text"><button class="btn btn-gold" onclick="postAnnounce()">Post</button><div id="ann-list" style="margin-top:20px;"></div>`;
@@ -2346,6 +2340,7 @@ if (savedTheme === 'dark') {
         else if(type === 'reftool') { showAdm('reftool'); loadRefToolsStudent(); } 
         else if(type === 'potd') { showAdm('potd'); loadPOTD(); } 
         else if(type === 'mechanism') { loadAdminMechList(); }
+        else if(type === 'store') { loadAdminStoreList(); loadDynamicStore(); }
         else if(type === 'doubt') { showAdm('doubts'); }
     }
 
@@ -2650,7 +2645,7 @@ if (savedTheme === 'dark') {
             triggerChemicalExplosion();    // 🔥 Trigger the Chemical Explosion if they got 80%
         }
         // Add this to actually give the student the coins!
-        awardTestCoins(r.percentage, 50); // Gives up to 50 coins based on their percentage
+        awardTestCoins(r.percentage, currentTest.maxCoins || 0); // Gives up to 50 coins based on their percentage
         
         
         document.getElementById('review-stats').innerHTML = `<span>Score: ${r.score}/${r.totalMarks}</span> | <span>Rank: #${data.rank}</span> | <span>${r.percentage.toFixed(1)}%</span>`; 
@@ -3698,32 +3693,110 @@ function awardTestCoins(percentage, maxCoinsAvailable) {
 }
 
 // 6. Buying Logic for ARC Store
-function buyItem(cost, itemName, type) {
-    if(!user) return alert("Please login!");
+// --- DYNAMIC STORE LOGIC ---
+
+// 1. Admin Function: Save to DB
+async function uploadStoreItem() {
+    const body = {
+        title: document.getElementById('store-title').value,
+        type: document.getElementById('store-type').value,
+        cost: parseInt(document.getElementById('store-cost').value),
+        link: document.getElementById('store-link').value
+    };
     
-    if(user.coins < cost) {
-        return alert(`Not enough coins! You need ${cost - user.coins} more 🪙.`);
+    if(!body.title || !body.cost) return alert("Please fill Title and Cost!");
+    
+    await fetch('/api/admin/store', { 
+        method: 'POST', 
+        headers:{'Content-Type':'application/json'}, 
+        body: JSON.stringify(body) 
+    });
+    
+    alert("Item Added to Store!"); 
+    showAdm('store'); // Refresh panel
+    loadDynamicStore(); // Refresh student view behind the scenes
+}
+
+// 2. Admin Function: View List
+async function loadAdminStoreList() {
+    try {
+        const res = await fetch('/api/store'); 
+        const data = await res.json();
+        document.getElementById('admin-store-list').innerHTML = `<table><tr><th>Title</th><th>Type</th><th>Cost</th><th>Action</th></tr>` + 
+        data.map(i => `<tr>
+            <td>${i.title}</td>
+            <td>${i.type}</td>
+            <td>${i.cost} 🪙</td>
+            <td><button class="btn-red btn-small" onclick="deleteItem('store','${i._id}')">Del</button></td>
+        </tr>`).join('') + `</table>`;
+    } catch(e) { document.getElementById('admin-store-list').innerHTML = "Error loading store items."; }
+}
+
+// 3. Student Function: Render the Store
+let dynamicStoreData = []; // Store in memory so we can check prices instantly
+async function loadDynamicStore() {
+    try {
+        const res = await fetch('/api/store'); 
+        const items = await res.json();
+        dynamicStoreData = items;
+        
+        if (items.length === 0) {
+            document.getElementById('store-dynamic-content').innerHTML = "<p style='text-align:center; width:100%; color:#cbd5e1;'>Store is currently empty. Teacher is adding new items soon!</p>";
+            return;
+        }
+        
+        let html = "";
+        items.forEach(item => {
+            // Assign icons dynamically based on what you picked in the admin panel
+            let icon = "🎁";
+            let borderColor = "#eee";
+            if(item.type === 'discount') { icon = "💸"; borderColor = "var(--green)"; }
+            if(item.type === 'pdf') { icon = "📑"; }
+            if(item.type === 'test') { icon = "🔒"; }
+            if(item.type === 'video') { icon = "📹"; }
+
+            html += `<div class="card" style="text-align: center; border: 2px solid ${borderColor};">
+                <div style="font-size: 3rem;">${icon}</div>
+                <h4 style="margin: 15px 0;">${item.title}</h4>
+                <button class="btn btn-gold" onclick="buyDynamicItem('${item._id}')">Unlock for ${item.cost} 🪙</button>
+            </div>`;
+        });
+        document.getElementById('store-dynamic-content').innerHTML = html;
+    } catch(e) { console.error("Store load error", e); }
+}
+
+// 4. Student Function: Buy Logic
+function buyDynamicItem(id) {
+    if(!user) return alert("Please login to access the store!");
+    
+    const item = dynamicStoreData.find(i => i._id === id);
+    if(!item) return;
+
+    if(user.coins < item.cost) {
+        return alert(`Not enough coins! You need ${item.cost - user.coins} more 🪙.`);
     }
 
-    if(confirm(`Are you sure you want to spend ${cost} 🪙 to get: ${itemName}?`)) {
-        updateCoins(-cost, `Purchased: ${itemName}`);
+    if(confirm(`Are you sure you want to spend ${item.cost} 🪙 to unlock: ${item.title}?`)) {
         
-        if(type === 'discount') {
-            // Generate a random offline discount code
-            const code = `ARC-FEE-${Math.floor(1000 + Math.random() * 9000)}`;
+        // Subtract coins instantly
+        updateCoins(-item.cost, `Purchased: ${item.title}`);
+        
+        // Handle the reward based on what the teacher set!
+        if(item.type === 'discount') {
+            const code = `ARC-${item.title.substring(0,3).toUpperCase()}-${Math.floor(1000 + Math.random() * 9000)}`;
             alert(`✅ SUCCESS! Show this code to the teacher offline:\n\n🎟️ Code: ${code}\n\nTake a screenshot now!`);
-            
-            // Log it to backend so the teacher knows it's valid
-            fetch('/api/admin/log-discount', { method: 'POST', body: JSON.stringify({ student: user.name, item: itemName, code: code }) });
+            fetch('/api/admin/log-discount', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ student: user.name, item: item.title, code: code }) });
         } 
-        else if (type === 'pdf') {
+        else if (item.type === 'pdf') {
             alert("✅ SUCCESS! Opening your Premium PDF...");
-            // Link to your actual premium PDF
-            window.open('https://your-drive-link.com/premium-pdf', '_blank'); 
+            window.open(item.link, '_blank'); 
         }
-        else {
-            alert(`✅ SUCCESS! ${itemName} has been unlocked for your account.`);
-            // Backend logic to unlock tests/videos for this specific user
+        else if (item.type === 'video') {
+            alert("✅ SUCCESS! Opening Secret Video...");
+            window.open(item.link, '_blank'); 
+        }
+        else if (item.type === 'test') {
+            alert(`✅ SUCCESS! Here is your private access code for the test:\n\n🔑 Code: ${item.link}\n\nWrite this down!`);
         }
     }
 }
