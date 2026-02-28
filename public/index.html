@@ -2279,22 +2279,22 @@ if (savedTheme === 'dark') {
             <div style="background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #ddd; margin-bottom: 20px;">
                 <input id="store-title" placeholder="Item Title (e.g., Ultimate Organic Cheat Sheet)">
                 <div style="display:flex; gap:10px;">
-                    <select id="store-type" style="flex:1; padding:10px; border-radius:6px; border:1px solid #ccc;">
-                        <option value="pdf">📄 Premium PDF Link</option>
-                        <option value="test">🔒 Mock Test Access Code</option>
+                    <select id="store-type" style="flex:1; padding:10px; border-radius:6px; border:1px solid #ccc;" onchange="updateStoreInputUI()">
+                        <option value="pdf">📄 Premium PDF (Link from Library)</option>
+                        <option value="test">🔒 Mock Test (Link from Practice Tests)</option>
                         <option value="video">📹 Secret Video Link</option>
                         <option value="discount">💸 Offline Fee Discount</option>
                     </select>
-                    <input id="store-cost" type="number" placeholder="Coin Cost (e.g., 500)" style="flex:1;">
+                    <input id="store-cost" type="number" placeholder="Coin Cost" style="flex:1; padding:10px; border-radius:6px; border:1px solid #ccc;">
                 </div>
-                <input id="store-link" placeholder="Secret PDF Link, Video Embed Link, or Passcode">
+                <div id="store-link-container" style="margin-top:10px;"></div>
                 <button class="btn btn-gold" style="width:100%; margin-top:15px; font-size:1.1rem;" onclick="uploadStoreItem()">➕ Add to Store</button>
             </div>
             <hr>
             <h4>Current Store Items</h4>
             <div id="admin-store-list" class="table-container">Loading...</div>`;
             
-            updateStoreInputUI(); // Initialize dropdown
+            updateStoreInputUI(); // Initialize dynamic dropdown
             loadAdminStoreList();
         }
 
@@ -2599,7 +2599,8 @@ if (savedTheme === 'dark') {
         const res = await fetch('/api/test/start', { 
             method: 'POST', 
             headers: {'Content-Type':'application/json'}, 
-            body: JSON.stringify({ id, code, studentEmail: user.email }) 
+            // Ensures email is sent properly
+            body: JSON.stringify({ id, code, studentEmail: user ? user.email : null }) 
         });
         const data = await res.json();
         if (data.success) {
@@ -2624,9 +2625,6 @@ if (savedTheme === 'dark') {
         openCoolModal("Unlock Test", "This test is password protected.", processStart);
     } else {
         processStart(""); // Bypasses the password modal completely!
-    }
-    } else {
-        processStart("");
     }
 }
 
