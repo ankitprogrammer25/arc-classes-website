@@ -595,6 +595,7 @@ body.dark-mode .logo {
 <button class="floating-btn" style="bottom: 90px; background: #3b82f6; color: white;" onclick="open3DViewer()">🧬 3D Molecules</button>
 <button class="floating-btn" onclick="openModal('ref-modal')">🧪 Ref Tools</button>
 <button class="floating-btn" style="bottom: 30px; left: 30px; right: auto; background: #ef4444; color: white;" onclick="toggleFocusWidget()">⏱️ Focus Timer</button>
+<button class="floating-btn" style="bottom: 150px; background: #8b5cf6; color: white;" onclick="openMechViewer()">⚙️ Mechanisms</button>
 
 <div id="focus-widget" class="focus-widget">
     <div class="focus-header">
@@ -761,6 +762,7 @@ body.dark-mode .logo {
         <button class="btn btn-gold btn-small" onclick="showAdm('results')">📈 Online</button>
         <button class="btn btn-gold btn-small" onclick="showAdm('offline')">📊 Offline</button>
         <button class="btn btn-gold btn-small" onclick="showAdm('students')">👥 Students</button>
+        <button class="btn btn-gold btn-small" onclick="showAdm('mech')">⚙️ Mechs</button>
         <button class="btn btn-red btn-small" onclick="showAdm('manage')">🛠️ Manage</button>
     </div>
     <div id="adm-content" style="background:white; padding:15px; border-radius:10px; border:1px solid #ddd; min-height:300px; overflow-x:auto;">Select option.</div>
@@ -1011,6 +1013,47 @@ body.dark-mode .logo {
             <button id="bm-prev" class="btn btn-gold" onclick="changeBlogPage(-1)">⬅ Previous</button>
             <span id="bm-page-info" style="font-weight:bold; color:#666;">Page 1 of 1</span>
             <button id="bm-next" class="btn btn-gold" onclick="changeBlogPage(1)">Next ➡</button>
+        </div>
+    </div>
+</div>
+
+
+<div id="mech-modal" class="modal">
+    <div class="modal-content" style="max-width: 850px; background: #0f172a; border: 2px solid #8b5cf6; box-shadow: 0 10px 40px rgba(0,0,0,0.5);">
+        <div class="close-corner" onclick="closeModal('mech-modal')" style="background: var(--red); color: white;">&times;</div>
+        
+        <h2 style="margin-top:0; color: #c4b5fd; text-align: center;">⚙️ Interactive Reaction Mechanisms</h2>
+        <p style="text-align: center; color: #cbd5e1; font-size: 0.9rem; margin-top: -10px;">Step-by-step visualizations for core organic reactions.</p>
+
+        <div style="display: flex; gap: 20px; flex-wrap: wrap; margin-top: 20px;">
+            <div style="flex: 1; min-width: 250px; background: #1e293b; padding: 15px; border-radius: 8px; border: 1px solid #334155;">
+                <h4 style="color: white; margin-top:0; border-bottom: 1px solid #475569; padding-bottom: 10px;">Select Reaction</h4>
+                
+                <select id="mech-select" onchange="loadMechanism(this.value)" style="background: #0f172a; color: white; border: 1px solid #8b5cf6; width: 100%; padding: 10px; border-radius: 4px; cursor: pointer;">
+                    <option value="sn1">SN1 Mechanism</option>
+                    <option value="sn2">SN2 Mechanism</option>
+                    <option value="eas">Electrophilic Aromatic Substitution</option>
+                    <option value="e1">E1 Elimination</option>
+                </select>
+                
+                <div id="mech-desc" style="color: #cbd5e1; font-size: 0.9rem; margin-top: 20px; padding: 15px; background: rgba(0,0,0,0.3); border-radius: 6px; border-left: 4px solid var(--gold); line-height: 1.5;">
+                    </div>
+            </div>
+
+            <div style="flex: 2; min-width: 300px; background: white; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; position: relative; border: 2px solid #334155;">
+                <h3 id="mech-step-title" style="color: var(--primary); margin-top: 0; text-align: center;">Step 1</h3>
+                
+                <div id="mech-visual" style="flex-grow: 1; min-height: 180px; display: flex; align-items: center; justify-content: center; background: #f8fafc; border: 2px dashed #cbd5e1; border-radius: 8px; margin: 15px 0; padding: 20px; transition: all 0.3s; text-align: center;">
+                    </div>
+                
+                <p id="mech-step-text" style="color: #334155; min-height: 70px; font-weight: 500; font-size: 1.05rem; line-height: 1.5; background: #e0f2fe; padding: 15px; border-radius: 8px; border-left: 4px solid #3b82f6; margin: 0;"></p>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px; border-top: 1px solid #e2e8f0; padding-top: 15px;">
+                    <button class="btn btn-red" onclick="changeMechStep(-1)" id="mech-prev" style="width: 100px;">⬅ Prev</button>
+                    <span id="mech-progress" style="font-weight: bold; color: #64748b; font-size: 1.1rem;">1 / 3</span>
+                    <button class="btn btn-gold" onclick="changeMechStep(1)" id="mech-next" style="width: 100px;">Next ➡</button>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -2177,6 +2220,40 @@ if (savedTheme === 'dark') {
             <input type="datetime-local" id="s-time">
             <button class="btn btn-gold" style="width:100%; margin-top:15px;" onclick="saveSchedule()">${editingScheduleId ? 'UPDATE SCHEDULE' : 'ADD SCHEDULE'}</button>`;
         }
+        else if (tab === 'mech') {
+            c.innerHTML = `<h3>Manage Reactions & Mechanisms</h3>
+            <div style="background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #ddd; margin-bottom: 20px;">
+                <input id="mech-id" placeholder="Short ID (e.g., sn1, aldol)" style="font-family: monospace; text-transform: lowercase;">
+                <input id="mech-title" placeholder="Full Title (e.g., SN1 Reaction)">
+                <textarea id="mech-desc" rows="3" placeholder="Overview Description..."></textarea>
+                
+                <div style="background: white; padding: 15px; border: 2px dashed #cbd5e1; border-radius: 6px; margin-top: 15px;">
+                    <h4 style="margin-top: 0; color: var(--primary);">Add a Step</h4>
+                    <input id="mech-step-title" placeholder="Step Title (e.g., Leaving Group Departs)">
+                    <textarea id="mech-step-text" rows="2" placeholder="Explanation of this step..."></textarea>
+                    
+                    <div style="margin-top: 10px; padding: 10px; background: #f1f5f9; border-radius: 6px;">
+                        <b>Step Image/SVG:</b><br>
+                        <input type="file" accept="image/*,.svg" onchange="encodeImg(this, 'mech-step-img')" style="margin-top: 5px;">
+                        <img id="mech-step-img" style="max-height: 100px; display: none; margin-top: 10px; border: 1px solid #ccc; background: white; padding: 5px;">
+                    </div>
+                    
+                    <button class="btn btn-gold" style="width: 100%; margin-top: 10px;" onclick="addMechStepToDraft()">➕ Add Step to Draft</button>
+                </div>
+
+                <div id="mech-draft-steps" style="margin-top: 15px;"></div>
+                
+                <button class="btn btn-red" style="width: 100%; margin-top: 15px; font-size: 1.1rem;" onclick="uploadMechanism()">💾 Save Complete Mechanism</button>
+            </div>
+            <hr>
+            <h4>Current Mechanisms</h4>
+            <div id="admin-mech-list" class="table-container">Loading...</div>`;
+            
+            // Initialize draft array and load existing ones
+            window.mechDraftSteps = []; 
+            loadAdminMechList();
+        }
+
         else if (tab === 'announce') {
              c.innerHTML = `<h3>News</h3><input id="ann-text" placeholder="Text"><button class="btn btn-gold" onclick="postAnnounce()">Post</button><div id="ann-list" style="margin-top:20px;"></div>`;
              fetch('/api/announcement').then(r=>r.json()).then(d => { document.getElementById('ann-list').innerHTML = d.list.map(t => `<div style="padding:10px; border-bottom:1px solid #eee; display:flex; justify-content:space-between;">${t} <button onclick="delAnnounce('${t}')">X</button></div>`).join(''); });
@@ -2220,6 +2297,7 @@ if (savedTheme === 'dark') {
         else if(type === 'video') showAdm('video'); 
         else if(type === 'reftool') { showAdm('reftool'); loadRefToolsStudent(); } 
         else if(type === 'potd') { showAdm('potd'); loadPOTD(); } 
+        else if(type === 'mechanism') { loadAdminMechList(); }
         else if(type === 'doubt') { showAdm('doubts'); }
     }
 
@@ -2798,6 +2876,91 @@ if (savedTheme === 'dark') {
         await fetch('/api/admin/potd', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) }); alert("POTD Set/Updated!"); tempImg = ""; tempSolImg = ""; showAdm('potd');
     }
 
+    // --- MECHANISM ADMIN FUNCTIONS ---
+
+function addMechStepToDraft() {
+    const title = document.getElementById('mech-step-title').value;
+    const text = document.getElementById('mech-step-text').value;
+    const visual = tempImg; // Grab the Base64 image encoded by your existing function
+
+    if(!title || !text || !visual) return alert("Please fill step title, text, and upload an image/SVG.");
+
+    // Push to draft array
+    window.mechDraftSteps.push({ title, text, visual });
+    
+    // Clear inputs for the next step
+    document.getElementById('mech-step-title').value = "";
+    document.getElementById('mech-step-text').value = "";
+    document.getElementById('mech-step-img').style.display = "none";
+    document.getElementById('mech-step-img').src = "";
+    tempImg = ""; // Reset global temp image
+
+    // Update draft preview UI
+    renderMechDraft();
+}
+
+function renderMechDraft() {
+    document.getElementById('mech-draft-steps').innerHTML = window.mechDraftSteps.map((s, i) => 
+        `<div style="padding: 10px; background: white; border: 1px solid #eee; margin-bottom: 5px; border-radius: 4px; display:flex; justify-content:space-between; align-items: center;">
+            <div>
+                <strong>Step ${i+1}:</strong> ${s.title}<br>
+                <small style="color: #666;">${s.text.substring(0, 50)}...</small>
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <img src="${s.visual}" style="height: 40px; background: #f8fafc; border: 1px solid #ccc; border-radius: 4px;">
+                <button class="btn-small btn-red" onclick="window.mechDraftSteps.splice(${i}, 1); renderMechDraft();">X</button>
+            </div>
+        </div>`
+    ).join('');
+}
+
+async function uploadMechanism() {
+    const mechId = document.getElementById('mech-id').value.toLowerCase().replace(/\s+/g, '');
+    const title = document.getElementById('mech-title').value;
+    const desc = document.getElementById('mech-desc').value;
+
+    if(!mechId || !title || window.mechDraftSteps.length === 0) {
+        return alert("Please fill ID, Title, and add at least one step!");
+    }
+
+    const body = { id: mechId, title: title, desc: desc, steps: window.mechDraftSteps };
+
+    // Send to backend
+    try {
+        await fetch('/api/admin/mechanism', { 
+            method: 'POST', 
+            headers: {'Content-Type':'application/json'}, 
+            body: JSON.stringify(body) 
+        });
+        alert("Mechanism Saved!");
+        showAdm('mech'); // Refresh panel
+    } catch(e) {
+        alert("Error saving mechanism.");
+    }
+}
+
+async function loadAdminMechList() {
+    try {
+        const res = await fetch('/api/mechanisms');
+        const data = await res.json();
+        
+        if (data.length === 0) {
+            document.getElementById('admin-mech-list').innerHTML = "<p>No mechanisms uploaded yet.</p>";
+            return;
+        }
+
+        document.getElementById('admin-mech-list').innerHTML = `<table><tr><th>ID</th><th>Title</th><th>Steps</th><th>Action</th></tr>` + 
+        data.map(m => `<tr>
+            <td>${m.id}</td>
+            <td>${m.title}</td>
+            <td>${m.steps.length}</td>
+            <td><button class="btn-red btn-small" onclick="deleteItem('mechanism', '${m._id}')">Del</button></td>
+        </tr>`).join('') + `</table>`;
+    } catch(e) {
+        document.getElementById('admin-mech-list').innerHTML = "Could not load mechanisms.";
+    }
+}
+
     function editPOTD(index) {
         if(!window.allPOTDs || !window.allPOTDs[index]) return; const p = window.allPOTDs[index]; document.getElementById('potd-date').value = p.dateStr; document.getElementById('potd-text').innerHTML = p.text;
         if(p.image) { document.getElementById('potd-img').src = p.image; document.getElementById('potd-img').style.display = 'inline-block'; tempImg = p.image; } else { document.getElementById('potd-img').style.display = 'none'; tempImg = ""; }
@@ -3128,6 +3291,213 @@ function toggleZenMode() {
     } else {
         document.body.classList.remove('zen-mode');
     }
+}
+
+// ==========================================
+// ⚙️ REACTION MECHANISM LOGIC (ADMIN + VIEWER)
+// ==========================================
+
+// --- 1. TEACHER ADMIN LOGIC ---
+
+function addMechStepToDraft() {
+    const title = document.getElementById('mech-step-title').value;
+    const text = document.getElementById('mech-step-text').value;
+    const visual = tempImg; // Grabs the Base64 image/SVG encoded by your existing function
+
+    if(!title || !text || !visual) return alert("Please fill step title, text, and upload an image/SVG.");
+
+    window.mechDraftSteps.push({ title, text, visual });
+    
+    document.getElementById('mech-step-title').value = "";
+    document.getElementById('mech-step-text').value = "";
+    document.getElementById('mech-step-img').style.display = "none";
+    document.getElementById('mech-step-img').src = "";
+    tempImg = "";
+
+    renderMechDraft();
+}
+
+function renderMechDraft() {
+    document.getElementById('mech-draft-steps').innerHTML = window.mechDraftSteps.map((s, i) => 
+        `<div style="padding: 10px; background: white; border: 1px solid #eee; margin-bottom: 5px; border-radius: 4px; display:flex; justify-content:space-between; align-items: center;">
+            <div>
+                <strong>Step ${i+1}:</strong> ${s.title}<br>
+                <small style="color: #666;">${s.text.substring(0, 50)}...</small>
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <img src="${s.visual}" style="height: 40px; background: #f8fafc; border: 1px solid #ccc; border-radius: 4px;">
+                <button class="btn-small btn-red" onclick="window.mechDraftSteps.splice(${i}, 1); renderMechDraft();">X</button>
+            </div>
+        </div>`
+    ).join('');
+}
+
+async function uploadMechanism() {
+    const mechId = document.getElementById('mech-id').value.toLowerCase().replace(/\s+/g, '');
+    const title = document.getElementById('mech-title').value;
+    const desc = document.getElementById('mech-desc').value;
+
+    if(!mechId || !title || window.mechDraftSteps.length === 0) {
+        return alert("Please fill ID, Title, and add at least one step!");
+    }
+
+    const body = { id: mechId, title: title, desc: desc, steps: window.mechDraftSteps };
+
+    try {
+        await fetch('/api/admin/mechanism', { 
+            method: 'POST', 
+            headers: {'Content-Type':'application/json'}, 
+            body: JSON.stringify(body) 
+        });
+        alert("Mechanism Saved!");
+        showAdm('mech'); 
+    } catch(e) {
+        alert("Error saving mechanism.");
+    }
+}
+
+async function loadAdminMechList() {
+    try {
+        const res = await fetch('/api/mechanisms');
+        const data = await res.json();
+        
+        if (data.length === 0) {
+            document.getElementById('admin-mech-list').innerHTML = "<p>No mechanisms uploaded yet.</p>";
+            return;
+        }
+
+        document.getElementById('admin-mech-list').innerHTML = `<table><tr><th>ID</th><th>Title</th><th>Steps</th><th>Action</th></tr>` + 
+        data.map(m => `<tr>
+            <td>${m.id}</td>
+            <td>${m.title}</td>
+            <td>${m.steps.length}</td>
+            <td><button class="btn-red btn-small" onclick="deleteItem('mechanism', '${m._id}')">Del</button></td>
+        </tr>`).join('') + `</table>`;
+    } catch(e) {
+        document.getElementById('admin-mech-list').innerHTML = "Could not load mechanisms.";
+    }
+}
+
+
+// --- 2. STUDENT VIEWER LOGIC ---
+
+// Default mechanisms so the viewer is never empty!
+const defaultMechanisms = [
+    {
+        id: 'sn1',
+        title: "SN1 Reaction (Unimolecular Nucleophilic Substitution)",
+        desc: "A two-step mechanism favored by tertiary alkyl halides in polar protic solvents. The rate depends entirely on the formation of the carbocation.",
+        steps: [
+            { title: "Step 1: Leaving Group Departs", visual: "(CH₃)₃C-Br &nbsp;&rarr;&nbsp; (CH₃)₃C⁺ + Br⁻", text: "The carbon-halogen bond breaks heterolytically. The leaving group (Bromide) departs, forming a planar, sp² hybridized tertiary carbocation. This is the slow, rate-determining step." },
+            { title: "Step 2: Nucleophilic Attack", visual: "Nu⁻ + (CH₃)₃C⁺ &nbsp;&rarr;&nbsp; (CH₃)₃C-Nu", text: "The nucleophile attacks the planar carbocation rapidly. Because it can attack from either the top or bottom face, chiral centers will result in a racemic mixture (both enantiomers)." }
+        ]
+    },
+    {
+        id: 'sn2',
+        title: "SN2 Reaction (Bimolecular Nucleophilic Substitution)",
+        desc: "A single-step, concerted mechanism favored by primary alkyl halides in polar aprotic solvents. Rate depends on both the substrate and the nucleophile.",
+        steps: [
+            { title: "Concerted Backside Attack", visual: "Nu⁻ &nbsp;&rarr;&nbsp; CH₃-Br<br><br><span style='font-size: 1.2rem; color: #64748b;'>[ Nu&middot;&middot;&middot;CH₃&middot;&middot;&middot;Br ]⁻ &nbsp;(Transition State)</span><br><br>Nu-CH₃ + Br⁻", text: "The nucleophile attacks the electrophilic carbon exactly opposite the leaving group (backside attack). Bond formation and breaking happen simultaneously, causing an inversion of stereochemistry (Walden inversion)." }
+        ]
+    },
+    {
+        id: 'eas',
+        title: "Electrophilic Aromatic Substitution (EAS)",
+        desc: "Aromatic rings react with highly reactive electrophiles, temporarily losing aromaticity before regaining it to form a substituted product.",
+        steps: [
+            { title: "Step 1: Generation of Electrophile", visual: "E-Nu + Lewis Acid &nbsp;&rarr;&nbsp; E⁺ + [Nu-Acid]⁻", text: "A strong Lewis Acid catalyst (like AlCl₃ or FeBr₃) interacts with the reagent to generate a powerful, active electrophile (E⁺)." },
+            { title: "Step 2: Formation of Sigma Complex", visual: "C₆H₆ + E⁺ &nbsp;&rarr;&nbsp; [C₆H₆E]⁺", text: "The pi electrons of the benzene ring attack the electrophile. This breaks aromaticity and forms a non-aromatic, resonance-stabilized carbocation known as the Arenium ion (or Sigma complex)." },
+            { title: "Step 3: Deprotonation", visual: "[C₆H₆E]⁺ + Base &nbsp;&rarr;&nbsp; C₆H₅E + H-Base⁺", text: "A base removes a proton from the sp³ hybridized carbon bearing the electrophile. The electrons fall back into the ring, restoring the highly stable aromatic pi system." }
+        ]
+    },
+    {
+        id: 'e1',
+        title: "E1 Elimination (Unimolecular)",
+        desc: "A two-step elimination process competing with SN1. A leaving group leaves to form a carbocation, followed by deprotonation to form an alkene.",
+        steps: [
+            { title: "Step 1: Formation of Carbocation", visual: "R₂CH-CR₂-X &nbsp;&rarr;&nbsp; R₂CH-C⁺R₂ + X⁻", text: "Similar to SN1, the leaving group departs first, forming a stable intermediate carbocation. This is the slow step." },
+            { title: "Step 2: Deprotonation", visual: "Base: + H-C-C⁺ &nbsp;&rarr;&nbsp; C=C + Base-H⁺", text: "A weak base extracts a proton from a carbon adjacent (beta) to the positive charge. The electrons form a pi bond, creating an alkene (favoring the more substituted Zaitsev product)." }
+        ]
+    }
+];
+
+let dynamicMechData = {};
+let currentMech = '';
+let currentMechStep = 0;
+
+async function openMechViewer() {
+    openModal('mech-modal');
+    
+    document.getElementById('mech-desc').innerHTML = "Loading mechanisms...";
+    document.getElementById('mech-visual').innerHTML = "";
+    document.getElementById('mech-select').innerHTML = "<option>Loading...</option>";
+    
+    let dataToLoad = [];
+
+    try {
+        const res = await fetch('/api/mechanisms');
+        const data = await res.json();
+        
+        // If the database has mechanisms, use them. Otherwise, use defaults.
+        if(data && data.length > 0) {
+            dataToLoad = data;
+        } else {
+            dataToLoad = defaultMechanisms;
+        }
+    } catch(e) {
+        // If backend API isn't set up yet, fallback to defaults smoothly
+        console.log("Loading default mechanisms.");
+        dataToLoad = defaultMechanisms;
+    }
+
+    dynamicMechData = {};
+    let selectHtml = "";
+    
+    dataToLoad.forEach(m => {
+        dynamicMechData[m.id] = m;
+        selectHtml += `<option value="${m.id}">${m.title}</option>`;
+    });
+    
+    document.getElementById('mech-select').innerHTML = selectHtml;
+    loadMechanism(dataToLoad[0].id); // Load the first mechanism automatically
+}
+
+function loadMechanism(mechKey) {
+    currentMech = mechKey;
+    currentMechStep = 0;
+    const data = dynamicMechData[mechKey];
+    if(!data) return;
+    
+    document.getElementById('mech-desc').innerHTML = `<strong>Overview:</strong><br>${data.desc}`;
+    updateMechUI();
+}
+
+function updateMechUI() {
+    const data = dynamicMechData[currentMech];
+    if(!data || !data.steps || data.steps.length === 0) return;
+    
+    const stepData = data.steps[currentMechStep];
+    
+    document.getElementById('mech-step-title').innerHTML = stepData.title;
+    
+    // SMART RENDERER: Checks if the visual is an uploaded image/SVG or just text!
+    if(stepData.visual.startsWith('data:image') || stepData.visual.startsWith('http')) {
+        document.getElementById('mech-visual').innerHTML = `<img src="${stepData.visual}" style="max-width: 100%; max-height: 250px; object-fit: contain;">`;
+    } else {
+        document.getElementById('mech-visual').innerHTML = `<span style="font-family: monospace; font-size: 1.8rem; color: #b45309; font-weight: 800; letter-spacing: 1px;">${stepData.visual}</span>`;
+    }
+    
+    document.getElementById('mech-step-text').innerHTML = `<strong>What's happening?</strong><br>${stepData.text}`;
+    
+    document.getElementById('mech-progress').innerText = `${currentMechStep + 1} / ${data.steps.length}`;
+    
+    document.getElementById('mech-prev').style.visibility = currentMechStep === 0 ? 'hidden' : 'visible';
+    document.getElementById('mech-next').style.visibility = currentMechStep === data.steps.length - 1 ? 'hidden' : 'visible';
+}
+
+function changeMechStep(dir) {
+    currentMechStep += dir;
+    updateMechUI();
 }
 
 </script>
