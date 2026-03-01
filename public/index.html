@@ -316,6 +316,120 @@
             letter-spacing: 2px;
         }
 
+        /* ⏺️ NEUMORPHIC UI THEME (Soft 3D) */
+        .neu-card {
+            background: var(--light);
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            border: none;
+        }
+        
+        /* Unlocked / Normal State (Pops OUT of the screen) */
+        .neu-unlocked {
+            box-shadow: 8px 8px 16px #e2e8f0, -8px -8px 16px #ffffff;
+        }
+        .neu-unlocked:hover {
+            box-shadow: 12px 12px 20px #cbd5e1, -12px -12px 20px #ffffff;
+            transform: translateY(-3px);
+        }
+        
+        /* Locked / Premium State (Pressed INTO the screen) */
+        .neu-locked {
+            box-shadow: inset 6px 6px 12px #e2e8f0, inset -6px -6px 12px #ffffff;
+            opacity: 0.85;
+        }
+        
+        /* Neumorphic Dark Mode Support */
+        body.dark-mode .neu-card { background: #0f172a; }
+        body.dark-mode .neu-unlocked {
+            box-shadow: 8px 8px 16px #090e19, -8px -8px 16px #15203b;
+        }
+        body.dark-mode .neu-unlocked:hover {
+            box-shadow: 12px 12px 20px #060910, -12px -12px 20px #1a2744;
+        }
+        body.dark-mode .neu-locked {
+            box-shadow: inset 6px 6px 12px #090e19, inset -6px -6px 12px #15203b;
+        }
+        
+        /* Soft 3D Buttons */
+        .neu-btn {
+            border: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-weight: 800;
+            transition: all 0.2s ease;
+            background: var(--light);
+            color: var(--primary);
+            box-shadow: 4px 4px 8px #e2e8f0, -4px -4px 8px #ffffff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .neu-btn:active {
+            box-shadow: inset 4px 4px 8px #e2e8f0, inset -4px -4px 8px #ffffff;
+            transform: scale(0.98);
+        }
+        body.dark-mode .neu-btn {
+            background: #0f172a;
+            color: #e2e8f0;
+            box-shadow: 4px 4px 8px #090e19, -4px -4px 8px #15203b;
+        }
+        body.dark-mode .neu-btn:active {
+            box-shadow: inset 4px 4px 8px #090e19, inset -4px -4px 8px #15203b;
+        }
+        
+        /* Button Accent Colors */
+        .neu-btn.gold { color: #b45309; }
+        .neu-btn.green { color: var(--green); }
+        body.dark-mode .neu-btn.gold { color: var(--gold); }
+        
+        /* Embossed Premium Badge */
+        .neu-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--light);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 900;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            box-shadow: 3px 3px 6px #e2e8f0, -3px -3px 6px #ffffff;
+            color: #b45309;
+            z-index: 10;
+        }
+        body.dark-mode .neu-badge {
+            background: #0f172a;
+            box-shadow: 3px 3px 6px #090e19, -3px -3px 6px #15203b;
+            color: var(--gold);
+        }
+        .neu-badge.unlocked { color: var(--green); }
+        
+        /* Pressed-in Image Container for Library */
+        .neu-img-container {
+            height: 180px; 
+            width: 100%; 
+            background: transparent; 
+            border-radius: 10px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            box-shadow: inset 4px 4px 8px #e2e8f0, inset -4px -4px 8px #ffffff; 
+            overflow: hidden;
+            margin-top: 25px;
+        }
+        body.dark-mode .neu-img-container {
+            box-shadow: inset 4px 4px 8px #090e19, inset -4px -4px 8px #15203b; 
+        }
+
         /* 🔓 KEY & LOCK ANIMATION CSS */
         .lock-scene { position: relative; display: flex; justify-content: center; align-items: center; width: 100px; height: 80px; margin: 0 auto; }
         .anim-lock { font-size: 3.5rem; position: absolute; z-index: 1; transition: transform 0.3s; }
@@ -2958,45 +3072,60 @@ if (savedTheme === 'dark') {
     function changeBlogPage(dir) { currentBPage += dir; renderBlogPage(); document.getElementById('blog-modal').scrollTo(0, 0); }
     
     // 🔄 UPDATE: Cool Premium Badges & Ongoing Test Highlighter
+
+    // 🔄 UPDATE: Neumorphic Theme for Practice Tests
 async function loadTests(isLive) { 
     try {
         const res = await fetch('/api/tests'); const tests = await res.json(); const now = new Date(); 
         const filteredTests = tests.filter(t => { const tEnd = t.endTime ? new Date(t.endTime) : null; if (isLive) { return t.isLive && tEnd && tEnd > now; } else { return !t.isLive || (t.isLive && tEnd && tEnd <= now); } }); 
         const container = document.getElementById(isLive?'live-list':'test-list');
         
-        // Check if there is an active session running right now
         const session = JSON.parse(localStorage.getItem('arc_test_session'));
         const ongoingTestId = (session && session.endTime > Date.now()) ? session.test._id : null;
+        const isAdmin = user && user.role === 'admin';
 
         if (filteredTests.length === 0) { container.innerHTML = getEmptyStateGame(`No ${isLive ? 'Live' : 'Practice'} Tests Available`); } 
         else { 
             container.innerHTML = filteredTests.map(t => {
-                // Store/Premium check
                 const storeItem = dynamicStoreData.find(si => si.type === 'test' && si.link === t._id);
+                const isOwned = user && user.unlockedItems && user.unlockedItems.includes(t._id);
                 
-                // Holographic Premium Badge
-                const premiumBadge = storeItem ? `<div class="premium-badge-cool">💎 PREMIUM <span style="background:white; color:#0f172a; padding:2px 8px; border-radius:12px; margin-left:3px; font-size:0.75rem;">${storeItem.cost} <div class="arc-coin" style="width:1.1em; height:1.1em; vertical-align:-0.2em; margin:0;"></div></span></div>` : '';
-                
-                // Floating Lock Icon (Removed the !storeItem blocker)
-                const lockIcon = t.accessCode ? '<span class="premium-lock-cool" title="Password Protected">🔒</span>' : '';
-
-                // Ongoing Check
+                // Logic: Is it Premium AND the student doesn't own it?
+                const isLockedPremium = storeItem && !isOwned && !isAdmin;
                 const isOngoing = (t._id === ongoingTestId);
-                const cardClass = isOngoing ? "card ongoing-test-card" : "card";
-                const ongoingBanner = isOngoing ? `<div class="ongoing-label">ONGOING</div>` : '';
                 
-                // Change Button if Ongoing
-                let btnHtml = "";
-                if (isOngoing) {
-                    btnHtml = `<button class="btn" style="background:var(--green); color:white; width:100%; font-size:1.1rem; box-shadow:0 4px 15px rgba(34, 197, 94, 0.4);" onclick="startTest('${t._id}', ${(t.accessCode || storeItem) ? true : false}, '${t.startTime}')">Resume Test ➡</button>`;
-                } else {
-                    btnHtml = `<button class="btn btn-gold" style="width:100%;" onclick="startTest('${t._id}', ${(t.accessCode || storeItem) ? true : false}, '${t.startTime}')">Start</button>`;
+                // Neumorphic classes
+                const neuClass = isLockedPremium ? 'neu-locked' : 'neu-unlocked';
+                const glowClass = isOngoing ? 'ongoing-test-card' : '';
+
+                // Embossed Badge
+                let badgeHtml = '';
+                if (storeItem) {
+                    if (isOwned || isAdmin) {
+                        badgeHtml = `<div class="neu-badge unlocked">✅ Owned</div>`;
+                    } else {
+                        badgeHtml = `<div class="neu-badge">💎 ${storeItem.cost} <div class="arc-coin" style="width:1.1em; height:1.1em; vertical-align:-0.15em; margin:0;"></div></div>`;
+                    }
                 }
 
-                return `<div class="${cardClass}" style="border-left: 5px solid ${isLive ? 'red' : 'gold'}; position:relative; overflow:hidden; display:flex; flex-direction:column;">
-                    ${ongoingBanner}
-                    ${premiumBadge}
-                    <h3 style="display:flex; align-items:center; margin-top:${isOngoing ? '25px' : '0'}; line-height:1.3;">${t.title} ${lockIcon}</h3>
+                // Lock Icon updates if owned
+                const lockIcon = (t.accessCode && isLockedPremium) ? '<span title="Password Protected" style="margin-left:8px; opacity:0.6;">🔒</span>' : 
+                                 (t.accessCode && !isLockedPremium) ? '<span title="Password Unlocked" style="margin-left:8px; color:var(--green);">🔓</span>' : ''; 
+
+                // 3D Button Logic
+                let btnHtml = "";
+                if (isOngoing) {
+                    btnHtml = `<button class="neu-btn green" style="width:100%; box-shadow: inset 2px 2px 5px rgba(0,0,0,0.1);" onclick="startTest('${t._id}', ${(t.accessCode) ? true : false}, '${t.startTime}')">Resume Test ➡</button>`;
+                } else if (isLockedPremium) {
+                    btnHtml = `<button class="neu-btn gold" style="width:100%;" onclick="startTest('${t._id}', ${(t.accessCode) ? true : false}, '${t.startTime}')">Unlock Required</button>`;
+                } else {
+                    btnHtml = `<button class="neu-btn" style="width:100%;" onclick="startTest('${t._id}', ${(t.accessCode) ? true : false}, '${t.startTime}')">Start Test</button>`;
+                }
+
+                return `<div class="neu-card ${neuClass} ${glowClass}">
+                    ${isOngoing ? `<div class="ongoing-label">ONGOING</div>` : ''}
+                    ${badgeHtml}
+                    <h3 style="display:flex; align-items:center; margin-top:${isOngoing || badgeHtml ? '25px' : '0'}; line-height:1.3; color:${isLockedPremium ? '#94a3b8' : 'inherit'};">${t.title} ${lockIcon}</h3>
                     <p style="color:#64748b; font-weight:600; margin-top:-5px;">⏱️ ${t.duration} Mins</p>
                     ${isLive ? `<p style="color:var(--red); font-weight:bold;">Start: ${new Date(t.startTime).toLocaleString()}</p>` : ''}
                     <div style="margin-top: auto; padding-top: 15px;">
@@ -3007,7 +3136,8 @@ async function loadTests(isLive) {
         }
     } catch(e) { console.error("Could not load tests"); }
 }
-    
+
+
     function startTimer(durationOrTimestamp) { 
         clearInterval(timer); const now = Date.now();
         if (durationOrTimestamp < 1000000) { testEndTime = now + (durationOrTimestamp * 60 * 1000); } else { testEndTime = durationOrTimestamp; }
@@ -3273,27 +3403,48 @@ function executeStoreConfirm() {
     async function loadMaterials() { try { const res = await fetch('/api/materials'); allMats = await res.json(); } catch(e) {} }
     function loadLib(cat) { document.getElementById('lib-cats').style.display = 'none'; document.getElementById('lib-back').style.display = 'block'; renderLib(cat); }
     
-    // 🔄 UPDATE: Cool Premium Badges for Library Files
-function renderLib(cat) { 
+
+// 🔄 UPDATE: Neumorphic Theme for Library
+    function renderLib(cat) { 
     const items = allMats.filter(m => m.category === cat || (cat === '11th Class' && m.category.includes('11'))); 
+    const isAdmin = user && user.role === 'admin';
+
     if (items.length === 0) { document.getElementById('lib-content').innerHTML = getEmptyStateGame(`No items available in ${cat}`); } 
     else { 
         document.getElementById('lib-content').innerHTML = items.map(m => {
-            // Check if this material is in the store!
             const storeItem = dynamicStoreData.find(si => si.type === 'pdf' && si.link === m._id);
-            
-            // Holographic Premium Badge
-            const premiumBadge = storeItem ? `<div class="premium-badge-cool">💎 PREMIUM <span style="background:white; color:#0f172a; padding:2px 8px; border-radius:12px; margin-left:3px; font-size:0.75rem;">${storeItem.cost} <div class="arc-coin" style="width:1.1em; height:1.1em; vertical-align:-0.2em; margin:0;"></div></span></div>` : '';
-            
-            // Floating Lock Icon (Removed the !storeItem blocker)
-            const lockIcon = m.accessCode ? '<span class="premium-lock-cool" title="Password Protected">🔒</span>' : '';
+            const isOwned = user && user.unlockedItems && user.unlockedItems.includes(m._id);
+            const isLockedPremium = storeItem && !isOwned && !isAdmin;
 
-            return `<div class="card" style="position:relative; overflow:hidden; display:flex; flex-direction:column;">
-                ${premiumBadge}
-                <img src="${m.image||''}" style="height:180px; width: 100%; background:#f8fafc; object-fit:contain; border-radius: 8px; border: 1px solid #eee;">
-                <h4 style="margin: 15px 0 15px 0; display:flex; align-items:center; line-height:1.3;">${m.title} ${lockIcon}</h4>
+            const neuClass = isLockedPremium ? 'neu-locked' : 'neu-unlocked';
+
+            let badgeHtml = '';
+            if (storeItem) {
+                if (isOwned || isAdmin) {
+                    badgeHtml = `<div class="neu-badge unlocked">✅ Owned</div>`;
+                } else {
+                    badgeHtml = `<div class="neu-badge">💎 ${storeItem.cost} <div class="arc-coin" style="width:1.1em; height:1.1em; vertical-align:-0.15em; margin:0;"></div></div>`;
+                }
+            }
+
+            const lockIcon = (m.accessCode && isLockedPremium) ? '<span title="Password Protected" style="margin-left:8px; opacity:0.6;">🔒</span>' : 
+                             (m.accessCode && !isLockedPremium) ? '<span title="Password Unlocked" style="margin-left:8px; color:var(--green);">🔓</span>' : '';
+
+            let btnHtml = "";
+            if (isLockedPremium) {
+                btnHtml = `<button class="neu-btn gold" style="width:100%;" onclick="openMat('${m._id}')">Unlock Required</button>`;
+            } else {
+                btnHtml = `<button class="neu-btn" style="width:100%;" onclick="openMat('${m._id}')">Open File</button>`;
+            }
+
+            return `<div class="neu-card ${neuClass}">
+                ${badgeHtml}
+                <div class="neu-img-container">
+                    <img src="${m.image||''}" style="max-height:85%; max-width:85%; object-fit:contain; opacity:${isLockedPremium ? '0.4' : '1'}; filter:${isLockedPremium ? 'grayscale(100%) blur(2px)' : 'none'}; transition: all 0.3s ease;">
+                </div>
+                <h4 style="margin: 15px 0; display:flex; align-items:center; line-height:1.3; color:${isLockedPremium ? '#94a3b8' : 'inherit'};">${m.title} ${lockIcon}</h4>
                 <div style="margin-top:auto;">
-                    <button class="btn btn-gold" style="width:100%;" onclick="openMat('${m._id}')">Open File</button>
+                    ${btnHtml}
                 </div>
             </div>`;
         }).join(''); 
