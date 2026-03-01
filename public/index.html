@@ -2592,7 +2592,15 @@ if (savedTheme === 'dark') {
                  <input type="file" onchange="encodeImg(this, 'm-prev')" style="margin-top:5px;">
                  <img id="m-prev" style="height:100px; margin-top:10px; display:none; object-fit:contain; border:1px solid #ddd;">
             </div>
-            <select id="m-cat"><option>11th Class</option><option>12th Class</option><option>Notes</option><option>Test Series</option></select>
+            <select id="m-cat">
+                <option>11th Class</option>
+                <option>12th Class</option>
+                <option>Organic</option>
+                <option>Physical</option>
+                <option>Inorganic</option>
+                <option>Notes</option>
+                <option>Test Series</option>
+            </select>
             <input id="m-code" placeholder="Pass (Opt)">
             <button class="btn btn-gold" style="width:100%; margin-top:10px;" onclick="uploadMat()">${editingMaterialId ? 'UPDATE' : 'UPLOAD'}</button>`;
         }
@@ -3857,14 +3865,23 @@ async function loadAdminMechList() {
         // 2. Check if the link is safe to open in the modal
         if (isBase64 || isGoogleDrive || isOneDrive || isDirectPdf || isDirectImage) {
             document.getElementById('pdf-title').innerText = title || "Document Viewer";
+            
             // Format Google Drive links for embedding
             if (isGoogleDrive && lowerLink.includes('/view')) {
                 finalLink = link.replace(/\/view.*$/, '/preview');
             } 
+            // 👇 ADDED THIS: Format OneDrive links for embedding to bypass security blocks
+            else if (isOneDrive) {
+                finalLink = link.replace('view.aspx', 'embed').replace('redir', 'embed');
+                if (!finalLink.includes('embed')) {
+                    finalLink = finalLink.replace('onedrive.live.com/?', 'onedrive.live.com/embed?');
+                }
+            }
             // Format direct external PDFs using Google Docs Viewer for better mobile support
             else if (isDirectPdf && !isBase64) {
                 finalLink = `https://docs.google.com/gview?url=${encodeURIComponent(link)}&embedded=true`;
             }
+            
             // Open in the modal
             document.getElementById('pdf-frame').src = finalLink;
             toggleWatermark(true);
@@ -3872,7 +3889,7 @@ async function loadAdminMechList() {
             // 💾 SAVE PDF STATE FOR REFRESH
             localStorage.setItem('arc_open_pdf', JSON.stringify({ title: title, link: link }));
         } else {
-            // 3. If it's an external website (like NCERT), open it in a new tab
+            // 3. If it's an external website, open it in a new tab
             window.open(link, '_blank');
         }
     }
