@@ -75,9 +75,19 @@ const OfflineResult = mongoose.model('OfflineResult', OfflineResultSchema);
 const ResultSchema = new mongoose.Schema({
     studentName: String, studentEmail: String, testTitle: String, testId: String, testType: String,
     score: Number, totalMarks: Number, percentage: Number, rank: Number, feedback: String,
-    answers: [Number], timeTaken: [Number], date: { type: Date, default: Date.now }
+    answers: [Number], timeTaken: [Number], date: { type: Date, default: Date.now },
+    coinsAwarded: { type: Boolean, default: false } // 🔒 Prevents double-claiming
 });
 const Result = mongoose.model('Result', ResultSchema);
+
+// 📜 NEW: COIN HISTORY LEDGER
+const CoinHistorySchema = new mongoose.Schema({
+    email: String,
+    amount: Number,
+    reason: String,
+    date: { type: Date, default: Date.now }
+});
+const CoinHistory = mongoose.model('CoinHistory', CoinHistorySchema);
 
 const BlogSchema = new mongoose.Schema({
     title: String, content: String, image: String, date: { type: Date, default: Date.now }
@@ -319,26 +329,22 @@ app.delete('/api/admin/mechanism/:id', async (req, res) => {
 // 🪙 --- NEW GAMIFICATION ROUTES ---
 app.post('/api/student/update-coins', async (req, res) => {
     try {
-        const { email, coins, lastLoginDate, lastPotdDate } = req.body;
+        // Now accepts amount and reason to log in the ledger
+        const { email, coins, lastLoginDate, lastPotdDate, amount, reason } = req.body;
         if (!email) return res.status(400).json({ success: false, message: 'Email required' });
 
-        // Build the update object dynamically so we also save the dates!
         let updateFields = { coins: coins };
         if (lastLoginDate) updateFields.lastLoginDate = lastLoginDate;
         if (lastPotdDate) updateFields.lastPotdDate = lastPotdDate;
 
-        const updatedStudent = await Student.findOneAndUpdate(
-            { email: email },
-            { $set: updateFields },
-            { new: true }
-        );
-
+        const updatedStudent = await Student.findOneAndUpdate({ email: email }, { $set: updateFields }, { new: true });
         if (!updatedStudent) return res.status(404).json({ success: false, message: 'Student not found.' });
+
+        // Log to history if an amount was changed
+        if (amount && reason) await new CoinHistory({ email, amount, reason }).save();
+
         res.json({ success: true, coins: updatedStudent.coins });
-    } catch (error) {
-        console.error("Error updating coins:", error);
-        res.status(500).json({ success: false, message: 'Internal Server Error' });
-    }
+    } catch (error) { res.status(500).json({ success: false }); }
 });
 
 app.post('/api/admin/log-discount', async (req, res) => {
@@ -385,25 +391,53 @@ app.get('/api/results/offline', async (req, res) => {
 // 🪙 NEW ROUTE: Process Premium Store Purchases
 app.post('/api/student/buy-item', async (req, res) => {
     try {
-        const { email, itemId, cost } = req.body;
+        const { email, itemId, cost, title } = req.body;
         const student = await Student.findOne({ email });
         
         if (!student) return res.json({ success: false, message: "Student not found" });
         if (student.coins < cost) return res.json({ success: false, message: "Not enough coins!" });
 
         student.coins -= cost;
-        
-        // Add the item ID to their unlocked list
         if (!student.unlockedItems) student.unlockedItems = [];
-        if (!student.unlockedItems.includes(itemId)) {
-            student.unlockedItems.push(itemId);
-        }
+        if (!student.unlockedItems.includes(itemId)) student.unlockedItems.push(itemId);
         
         await student.save();
+        
+        // Log the purchase in the ledger!
+        await new CoinHistory({ email, amount: -cost, reason: `Purchased: ${title || 'Store Item'}` }).save();
+        
         res.json({ success: true, coins: student.coins, unlockedItems: student.unlockedItems });
-    } catch (e) {
-        res.json({ success: false, message: "Server error" });
-    }
+    } catch (e) { res.json({ success: false, message: "Server error" }); }
+});
+// 🔒 SECURE TEST COIN CLAIM ROUTE
+app.post('/api/claim-test-coins', async (req, res) => {
+    try {
+        const { resultId } = req.body;
+        const result = await Result.findById(resultId);
+        
+        // Block if already awarded or invalid
+        if (!result || result.coinsAwarded) return res.json({ success: false });
+
+        const test = await Test.findById(result.testId);
+        if (!test || !test.maxCoins || test.maxCoins <= 0) return res.json({ success: false });
+
+        // Calculate coins server-side
+        let earned = Math.round((result.percentage / 100) * test.maxCoins);
+        
+        // Lock this result permanently
+        result.coinsAwarded = true;
+        await result.save();
+
+        res.json({ success: true, amount: earned });
+    } catch (e) { res.json({ success: false }); }
+});
+
+// 📜 FETCH COIN HISTORY ROUTE
+app.post('/api/student/coin-history', async (req, res) => {
+    try {
+        const history = await CoinHistory.find({ email: req.body.email }).sort({ date: -1 });
+        res.json(history);
+    } catch(e) { res.json([]); }
 });
 
 // 🔄 UPDATE: Material Unlock to check for Premium Purchases

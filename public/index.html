@@ -844,7 +844,8 @@ body.dark-mode .logo {
         <h2 style="margin-top: 0; color: var(--gold);"><span class="arc-coin"></span> ARC Coin Store</h2>
         <h1 style="font-size: 4rem; margin: 10px 0; display: flex; align-items: center; justify-content: center;"><span id="store-big-coins">0</span> <div class="arc-coin arc-coin-big"></div></h1>
         <p style="font-size: 1.2rem; color: #cbd5e1;">Current Rank: <span id="student-badge-title" style="font-weight:bold; color:var(--gold);">🌱 Beginner</span></p>
-        <p style="font-size: 1.0rem; color: #ca400e;">Earn coins by logging in daily (+5), solving the POTD (+10), and scoring high on Practice Tests!</p>
+        <p style="font-size: 1.0rem; color: #f9f9f9a0;">Earn coins by logging in daily (+5), solving the POTD (+10), and scoring high on Practice Tests!</p>
+        <button class="btn btn-gold btn-small" style="margin-top: 15px; font-size: 1rem;" onclick="openCoinHistory()">📜 View Coin Ledger</button>
     </div>
 
     <div id="store-dynamic-content" class="grid">
@@ -1125,6 +1126,28 @@ body.dark-mode .logo {
     </div>
 </div>
 
+<div id="coin-history-modal" class="modal">
+    <div class="modal-content" style="max-width: 600px; background: #0f172a; color: white; border: 2px solid var(--gold);">
+        <div class="close-corner" onclick="closeModal('coin-history-modal')" style="background: var(--red); color: white;">&times;</div>
+        <h2 style="color: var(--gold); margin-top: 0; text-align: center;">📜 My Coin Ledger</h2>
+        <p style="text-align: center; color: #cbd5e1; font-size: 0.9rem; margin-top: -10px;">Track your ARC Coin earnings and purchases.</p>
+        
+        <div class="table-container" style="max-height: 400px; overflow-y: auto; border: 1px solid #334155; border-radius: 8px;">
+            <table style="width: 100%; color: white; text-align: left; margin: 0;">
+                <thead>
+                    <tr>
+                        <th style="background: #1e293b; border-bottom: 1px solid #334155; padding: 12px;">Date</th>
+                        <th style="background: #1e293b; border-bottom: 1px solid #334155; padding: 12px;">Description</th>
+                        <th style="background: #1e293b; border-bottom: 1px solid #334155; padding: 12px;">Amount</th>
+                    </tr>
+                </thead>
+                <tbody id="coin-history-body">
+                    </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
 <div id="blog-modal" class="modal">
     <div class="modal-content" style="max-width: 800px; min-height: 50vh; display: flex; flex-direction: column;">
         <div class="close-corner" onclick="closeModal('blog-modal')">&times;</div>
@@ -1386,7 +1409,7 @@ if (savedTheme === 'dark') {
         document.getElementById(id).classList.add('active');
         window.scrollTo(0,0);
         document.getElementById('nav-menu').classList.remove('active');
-        if(id==='tests') loadTests(false); if(id==='live') loadTests(true); if(id==='results') loadResults('practice');
+        if(id==='tests') loadTests(false); if(id==='live') loadTests(true); if(id==='results') loadResults('practice'); if(id==='store') fetchGlobalStoreData();
     }
 
     
@@ -2820,8 +2843,23 @@ async function openMat(id) {
         if (r.percentage >= 80) {
             triggerChemicalExplosion();    // 🔥 Trigger the Chemical Explosion if they got 80%
         }
-        // Add this to actually give the student the coins!
-        awardTestCoins(r.percentage, currentTest.maxCoins || 0); // Gives up to 50 coins based on their percentage
+        
+        // 🔒 Secure Server-Side Coin Claim
+        if (!r.coinsAwarded) {
+            try {
+                const claimRes = await fetch('/api/claim-test-coins', { 
+                    method: 'POST', headers: {'Content-Type':'application/json'}, 
+                    body: JSON.stringify({ resultId: id }) 
+                });
+                const claimData = await claimRes.json();
+                
+                if (claimData.success && claimData.amount > 0) {
+                    setTimeout(() => {
+                        updateCoins(claimData.amount, `Scored ${r.percentage.toFixed(1)}% on Practice Test`);
+                    }, 2000);
+                }
+            } catch(e) { console.log("Coin claim error"); }
+        }
         
         
         document.getElementById('review-stats').innerHTML = `<span>Score: ${r.score}/${r.totalMarks}</span> | <span>Rank: #${data.rank}</span> | <span>${r.percentage.toFixed(1)}%</span>`; 
@@ -3826,7 +3864,9 @@ async function updateCoins(amount, reason) {
                 email: user.email, 
                 coins: user.coins,
                 lastLoginDate: user.lastLoginDate, // Synced to DB
-                lastPotdDate: user.lastPotdDate    // Synced to DB
+                lastPotdDate: user.lastPotdDate,    // Synced to DB
+                amount: amount, // For Ledger
+                reason: reason  // For Ledger
             }) 
         });
     } catch(e) { console.log("Coin sync failed."); }
@@ -3899,26 +3939,6 @@ function checkPOTD(sel) {
     }
 }
 
-// 5. Test Submission Logic (Award based on percentage)
-// Call this function inside your existing viewSheet(id) function, right after percentage is calculated.
-function awardTestCoins(percentage, maxCoinsAvailable) {
-    // Prevent re-awarding if they refresh the result page
-    // In a real backend, you'd flag this test attempt in the DB as "coins_claimed"
-    
-    if(!maxCoinsAvailable || maxCoinsAvailable <= 0) return; // Not a coin-earning test
-
-    // Calculate coins based on percentage scored
-    let earned = Math.round((percentage / 100) * maxCoinsAvailable);
-    
-    if(earned > 0) {
-        setTimeout(() => {
-            updateCoins(earned, `Scored ${percentage.toFixed(1)}% on Practice Test`);
-        }, 2000); // Delay so it triggers after the test review modal opens
-    }
-}
-
-// 6. Buying Logic for ARC Store
-// --- DYNAMIC STORE LOGIC ---
 // ==========================================
 // 🛒 DYNAMIC PREMIUM STORE LOGIC
 // ==========================================
@@ -4013,7 +4033,7 @@ async function buyDynamicItem(id) {
             // Talk to the backend to permanently unlock it
             const res = await fetch('/api/student/buy-item', {
                 method: 'POST', headers: {'Content-Type':'application/json'},
-                body: JSON.stringify({ email: user.email, itemId: item.link, cost: item.cost })
+                body: JSON.stringify({ email: user.email, itemId: item.link, cost: item.cost, title: item.title })
             });
             const data = await res.json();
             
@@ -4055,6 +4075,9 @@ async function fetchGlobalStoreData() {
     try {
         const res = await fetch('/api/store');
         dynamicStoreData = await res.json();
+        
+        // 👇 ADDED THIS LINE: Now it will only draw the store AFTER the data arrives!
+        loadDynamicStore(); 
     } catch(e){}
 }
 
@@ -4197,6 +4220,37 @@ function triggerPassError() {
         setTimeout(() => modalContent.style.transform = 'translate(0, 0)', 150);
     } else {
         alert("Incorrect Password!");
+    }
+}
+
+// --- COIN LEDGER LOGIC ---
+async function openCoinHistory() {
+    if(!user) return;
+    openModal('coin-history-modal');
+    document.getElementById('coin-history-body').innerHTML = '<tr><td colspan="3" style="text-align:center; padding: 20px;">Fetching records...</td></tr>';
+    
+    try {
+        const res = await fetch('/api/student/coin-history', {
+            method: 'POST', headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({ email: user.email })
+        });
+        const history = await res.json();
+        
+        if(history.length === 0) {
+            document.getElementById('coin-history-body').innerHTML = '<tr><td colspan="3" style="text-align:center; padding: 20px; color: #94a3b8;">No coin transactions found. Start taking tests to earn!</td></tr>';
+        } else {
+            document.getElementById('coin-history-body').innerHTML = history.map(h => {
+                const isPositive = h.amount > 0;
+                const amountStr = isPositive ? `<span style="color:var(--green);">+${h.amount}</span>` : `<span style="color:var(--red);">${h.amount}</span>`;
+                return `<tr>
+                    <td style="border-bottom: 1px solid #334155; padding: 12px; font-size: 0.85rem; color: #94a3b8;">${new Date(h.date).toLocaleDateString()}</td>
+                    <td style="border-bottom: 1px solid #334155; padding: 12px;">${h.reason}</td>
+                    <td style="border-bottom: 1px solid #334155; padding: 12px; font-weight: bold; font-size: 1.1rem;">${amountStr}</td>
+                </tr>`;
+            }).join('');
+        }
+    } catch(e) {
+        document.getElementById('coin-history-body').innerHTML = '<tr><td colspan="3" style="text-align:center; color: var(--red);">Error loading history.</td></tr>';
     }
 }
 
