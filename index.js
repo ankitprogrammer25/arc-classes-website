@@ -317,7 +317,6 @@ app.delete('/api/admin/mechanism/:id', async (req, res) => {
 
 
 // 🪙 --- NEW GAMIFICATION ROUTES ---
-// 🪙 --- NEW GAMIFICATION ROUTES ---
 app.post('/api/student/update-coins', async (req, res) => {
     try {
         const { email, coins, lastLoginDate, lastPotdDate } = req.body;
@@ -456,6 +455,7 @@ app.post('/api/result-details', async (req, res) => {
     } catch(e) { res.json({ success: false, message: e.message }); }
 });
 
+// 🔒 SECURE TEST START
 app.post('/api/test/start', async (req, res) => {
     const { id, code, studentEmail } = req.body; 
     if (studentEmail !== 'admin@arc.com') {
@@ -464,7 +464,7 @@ app.post('/api/test/start', async (req, res) => {
         
         // Double check the Store to prevent bypassing
         const storeItem = await StoreItem.findOne({ type: 'test', link: id });
-        const isUnlocked = s.unlockedItems && s.unlockedItems.includes(id);
+        const isUnlocked = s && s.unlockedItems && s.unlockedItems.includes(id);
         if (storeItem && !isUnlocked) {
             return res.json({ success: false, message: "Premium Test: Please unlock this in the ARC Store." });
         }
