@@ -486,8 +486,8 @@ app.post('/api/student/coin-history', async (req, res) => {
     } catch(e) { res.json([]); }
 });
 
-// 🔄 UPDATE: Material Unlock to check for Premium Purchases
-// 🔒 SECURE MATERIAL UNLOCK
+
+// 🔄 UPDATE: Secure Material Unlock (Enforces Password on Premium items)
 app.post('/api/material/unlock', async (req, res) => {
     const { id, code, studentEmail } = req.body;
     const f = await Material.findById(id);
@@ -502,12 +502,11 @@ app.post('/api/material/unlock', async (req, res) => {
         }
     }
 
-    const isUnlocked = s && s.unlockedItems && s.unlockedItems.includes(id);
-
-    if(f && (!f.accessCode || f.accessCode === code || isUnlocked)) {
+    // 🔒 BUG FIX: If it has a password, verify it even if they own the premium item!
+    if(f && (!f.accessCode || f.accessCode === code)) {
         res.json({ success: true, link: f.link });
     } else { 
-        res.json({ success: false }); 
+        res.json({ success: false, message: "Wrong Password" }); 
     }
 });
 

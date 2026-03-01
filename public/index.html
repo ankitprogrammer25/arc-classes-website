@@ -2977,8 +2977,8 @@ async function loadTests(isLive) {
                 // Holographic Premium Badge
                 const premiumBadge = storeItem ? `<div class="premium-badge-cool">💎 PREMIUM <span style="background:white; color:#0f172a; padding:2px 8px; border-radius:12px; margin-left:3px; font-size:0.75rem;">${storeItem.cost} <div class="arc-coin" style="width:1.1em; height:1.1em; vertical-align:-0.2em; margin:0;"></div></span></div>` : '';
                 
-                // Floating Lock Icon
-                const lockIcon = t.accessCode && !storeItem ? '<span class="premium-lock-cool" title="Password Protected">🔒</span>' : ''; 
+                // Floating Lock Icon (Removed the !storeItem blocker)
+                const lockIcon = t.accessCode ? '<span class="premium-lock-cool" title="Password Protected">🔒</span>' : '';
 
                 // Ongoing Check
                 const isOngoing = (t._id === ongoingTestId);
@@ -3021,15 +3021,14 @@ async function loadTests(isLive) {
         }, 1000); 
     }
 
-    // 1. UPDATED START TEST FUNCTION
-// 1. UPDATED START TEST FUNCTION (Blocks overrides & Instant Loads Premium)
+    // 1. UPDATED START TEST FUNCTION (Fixes Password Bypass & Cool Alerts)
 async function startTest(id, hasCode, startTimeStr) {
     // 🛑 ONGOING TEST BLOCKER
     const session = JSON.parse(localStorage.getItem('arc_test_session'));
     if (session && session.endTime > Date.now()) {
         if (session.test._id !== id) {
-            alert("⚠️ You have an ongoing test! Please submit it before starting a new one.");
-            show('exam'); // Force them back into their running test
+            openStoreAlert('error', 'Test in Progress', "You have an ongoing test! Please submit it before starting a new one.");
+            show('exam');
             return;
         }
     }
@@ -3038,8 +3037,7 @@ async function startTest(id, hasCode, startTimeStr) {
         const now = new Date();
         const start = new Date(startTimeStr);
         if (now < start) {
-            document.getElementById('alert-msg').innerText = "Test Locked";
-            openModal('alert-modal');
+            openStoreAlert('error', 'Test Locked', "This test hasn't started yet!");
             return;
         }
     }
@@ -3075,28 +3073,29 @@ async function startTest(id, hasCode, startTimeStr) {
                 if(typeof toggleWatermark === 'function') toggleWatermark(true);
             };
 
-            // ⚡ INSTANT LOAD: Only play animation if they ACTUALLY typed a password
-            const usedPassword = hasCode && !isUnlocked && !isAdmin;
-            if (usedPassword) {
+            // ⚡ Play animation only if they actually typed a password
+            if (hasCode && !isAdmin && code !== "") {
                 triggerUnlockSuccessAnimation(finalizeStart);
             } else {
                 finalizeStart(); 
             }
         } else {
-            if (hasCode) triggerPassError();
-            else { alert(data.message || "Access Denied"); }
+            // SHOW THE COOL RED ERROR MODAL INSTEAD OF A BORING ALERT
+            if (hasCode && code !== "") triggerPassError();
+            else openStoreAlert('error', 'Access Denied', data.message || "Wrong Password");
         }
     };
 
-    const needsPassword = hasCode && !isUnlocked && !isAdmin;
+    // 🔒 BUG FIX: Always ask for password if test has one, even if unlocked!
+    const needsPassword = hasCode && !isAdmin;
     if (needsPassword) {
-        openCoolModal("Unlock Test", "This test is password protected.", processStart);
+        openCoolModal("Unlock Test", "This premium test is password protected.", processStart);
     } else {
         processStart(""); 
     }
 }
 
-// 2. UPDATED OPEN MATERIAL FUNCTION
+// 2. UPDATED OPEN MATERIAL FUNCTION (Fixes Password Bypass)
 async function openMat(id) {
     const mat = allMats.find(m => m._id === id);
     if(!mat) return;
@@ -3125,19 +3124,19 @@ async function openMat(id) {
                 openPdfViewer(mat.title, data.link);
             };
 
-            // ⚡ INSTANT LOAD check
-            const usedPassword = mat.accessCode && !isUnlocked && !isAdmin;
-            if (usedPassword) {
+            if (mat.accessCode && !isAdmin && code !== "") {
                 triggerUnlockSuccessAnimation(finalizeUnlock);
             } else {
                 finalizeUnlock();
             }
         } else {
-            triggerPassError();
+            if (mat.accessCode && code !== "") triggerPassError();
+            else openStoreAlert('error', 'Access Denied', data.message || "Wrong Password");
         }
     };
 
-    const needsPassword = mat.accessCode && !isUnlocked && !isAdmin;
+    // 🔒 BUG FIX: Always ask for password if file has one, even if unlocked!
+    const needsPassword = mat.accessCode && !isAdmin;
     if (needsPassword) {
         openCoolModal("Unlock Library", `Enter password for ${mat.title}`, processUnlock);
     } else {
@@ -3286,8 +3285,8 @@ function renderLib(cat) {
             // Holographic Premium Badge
             const premiumBadge = storeItem ? `<div class="premium-badge-cool">💎 PREMIUM <span style="background:white; color:#0f172a; padding:2px 8px; border-radius:12px; margin-left:3px; font-size:0.75rem;">${storeItem.cost} <div class="arc-coin" style="width:1.1em; height:1.1em; vertical-align:-0.2em; margin:0;"></div></span></div>` : '';
             
-            // Floating Lock Icon
-            const lockIcon = m.accessCode && !storeItem ? '<span class="premium-lock-cool" title="Password Protected">🔒</span>' : '';
+            // Floating Lock Icon (Removed the !storeItem blocker)
+            const lockIcon = m.accessCode ? '<span class="premium-lock-cool" title="Password Protected">🔒</span>' : '';
 
             return `<div class="card" style="position:relative; overflow:hidden; display:flex; flex-direction:column;">
                 ${premiumBadge}
@@ -4528,53 +4527,6 @@ async function fetchGlobalStoreData() {
         // 👇 ADDED THIS LINE: Now it will only draw the store AFTER the data arrives!
         loadDynamicStore(); 
     } catch(e){}
-}
-
-// 🔄 UPDATE: Check for Premium status in Test List
-async function loadTests(isLive) { 
-    try {
-        const res = await fetch('/api/tests'); const tests = await res.json(); const now = new Date(); 
-        const filteredTests = tests.filter(t => { const tEnd = t.endTime ? new Date(t.endTime) : null; if (isLive) { return t.isLive && tEnd && tEnd > now; } else { return !t.isLive || (t.isLive && tEnd && tEnd <= now); } }); 
-        const container = document.getElementById(isLive?'live-list':'test-list');
-        if (filteredTests.length === 0) { container.innerHTML = getEmptyStateGame(`No ${isLive ? 'Live' : 'Practice'} Tests Available`); } 
-        else { 
-            container.innerHTML = filteredTests.map(t => {
-                // Check if this test is in the store!
-                const storeItem = dynamicStoreData.find(si => si.type === 'test' && si.link === t._id);
-                const premiumBadge = storeItem ? `<span class="badge bg-gold" style="margin-left:10px;">💎 Premium (${storeItem.cost} 🪙)</span>` : '';
-                const lockIcon = t.accessCode && !storeItem ? '🔒' : ''; // Don't double-show lock if premium
-
-                return `<div class="card" style="border-left: 5px solid ${isLive ? 'red' : 'gold'}; position:relative;">
-                    <h3>${t.title} ${lockIcon}</h3>
-                    ${premiumBadge ? `<div style="position:absolute; top:10px; right:10px;">${premiumBadge}</div>` : ''}
-                    <p>${t.duration} Mins</p>
-                    ${isLive ? `<p style="color:red">Start: ${new Date(t.startTime).toLocaleString()}</p>` : ''}
-                    <button class="btn btn-gold" onclick="startTest('${t._id}', ${(t.accessCode || storeItem) ? true : false}, '${t.startTime}')">Start</button>
-                </div>`;
-            }).join(''); 
-        }
-    } catch(e) { console.error("Could not load tests"); }
-}
-
-// 🔄 UPDATE: Check for Premium status in Library List
-function renderLib(cat) { 
-    const items = allMats.filter(m => m.category === cat || (cat === '11th Class' && m.category.includes('11'))); 
-    if (items.length === 0) { document.getElementById('lib-content').innerHTML = getEmptyStateGame(`No items available in ${cat}`); } 
-    else { 
-        document.getElementById('lib-content').innerHTML = items.map(m => {
-            // Check if this material is in the store!
-            const storeItem = dynamicStoreData.find(si => si.type === 'pdf' && si.link === m._id);
-            const premiumBadge = storeItem ? `<div style="position:absolute; top:10px; right:10px; background:var(--gold); color:var(--primary); padding:5px; border-radius:4px; font-weight:bold; font-size:0.8rem; box-shadow:0 2px 5px rgba(0,0,0,0.3);">💎 Premium (${storeItem.cost} 🪙)</div>` : '';
-            const lockIcon = m.accessCode && !storeItem ? '🔒' : '';
-
-            return `<div class="card" style="position:relative;">
-                ${premiumBadge}
-                <img src="${m.image||''}" style="height:180px; width: 100%; background:#f8fafc; object-fit:contain; border-radius: 8px; border: 1px solid #eee;">
-                <h4 style="margin: 15px 0 10px 0;">${m.title} ${lockIcon}</h4>
-                <button class="btn btn-gold" onclick="openMat('${m._id}')">Open</button>
-            </div>`;
-        }).join(''); 
-    }
 }
 
 // ==========================================
