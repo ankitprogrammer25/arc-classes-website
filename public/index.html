@@ -236,6 +236,86 @@
         body.dark-mode .lib-folder { background: #1e293b !important; box-shadow: 0 6px 20px rgba(0,0,0,0.4); }
         body.dark-mode .lib-title { color: white; }
 
+
+         /* 💎 COOL PREMIUM BADGE & LOCK */
+        .premium-badge-cool {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: linear-gradient(135deg, #fbbf24, #f59e0b, #b45309);
+            color: #0f172a;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: 900;
+            font-size: 0.85rem;
+            box-shadow: 0 6px 15px rgba(245, 158, 11, 0.4);
+            border: 2px solid #fff;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            z-index: 10;
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+        
+        .card:hover .premium-badge-cool { transform: scale(1.05) translateY(-3px); }
+
+        /* Holographic Shine Animation */
+        .premium-badge-cool::after {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 50%; height: 100%;
+            background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.8) 50%, rgba(255,255,255,0) 100%);
+            transform: skewX(-25deg);
+            animation: holoShine 3s infinite;
+        }
+        @keyframes holoShine { 0% { left: -100%; } 20% { left: 200%; } 100% { left: 200%; } }
+
+        /* Floating Lock Icon */
+        .premium-lock-cool {
+            display: inline-block;
+            background: rgba(241, 245, 249, 0.9);
+            border: 1px solid #cbd5e1;
+            border-radius: 50%;
+            width: 30px; height: 30px;
+            text-align: center;
+            line-height: 28px;
+            font-size: 0.9rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+        body.dark-mode .premium-lock-cool { background: rgba(30, 41, 59, 0.9); border-color: #475569; }
+        body.dark-mode .premium-badge-cool { border-color: #0f172a; }
+
+        /* 🔴 ONGOING TEST GLOW & SASH */
+        .ongoing-test-card {
+            border: 2px solid var(--green) !important;
+            box-shadow: 0 0 20px rgba(34, 197, 94, 0.3) !important;
+            animation: pulseOngoing 2s infinite alternate;
+            transform: scale(1.02);
+            z-index: 5;
+        }
+        @keyframes pulseOngoing {
+            0% { box-shadow: 0 0 15px rgba(34, 197, 94, 0.2); border-color: #22c55e; }
+            100% { box-shadow: 0 0 35px rgba(34, 197, 94, 0.6); border-color: #4ade80; }
+        }
+        .ongoing-label {
+            position: absolute;
+            top: 18px;
+            left: -35px;
+            background: var(--green);
+            color: white;
+            padding: 5px 40px;
+            font-weight: 900;
+            font-size: 0.75rem;
+            transform: rotate(-45deg);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            z-index: 10;
+            letter-spacing: 2px;
+        }
+
         /* 🔓 KEY & LOCK ANIMATION CSS */
         .lock-scene { position: relative; display: flex; justify-content: center; align-items: center; width: 100px; height: 80px; margin: 0 auto; }
         .anim-lock { font-size: 3.5rem; position: absolute; z-index: 1; transition: transform 0.3s; }
@@ -2877,15 +2957,56 @@ if (savedTheme === 'dark') {
     }
     function changeBlogPage(dir) { currentBPage += dir; renderBlogPage(); document.getElementById('blog-modal').scrollTo(0, 0); }
     
-    async function loadTests(isLive) { 
-        try {
-            const res = await fetch('/api/tests'); const tests = await res.json(); const now = new Date(); 
-            const filteredTests = tests.filter(t => { const tEnd = t.endTime ? new Date(t.endTime) : null; if (isLive) { return t.isLive && tEnd && tEnd > now; } else { return !t.isLive || (t.isLive && tEnd && tEnd <= now); } }); 
-            const container = document.getElementById(isLive?'live-list':'test-list');
-            if (filteredTests.length === 0) { container.innerHTML = getEmptyStateGame(`No ${isLive ? 'Live' : 'Practice'} Tests Available`); } 
-            else { container.innerHTML = filteredTests.map(t => `<div class="card" style="border-left: 5px solid ${isLive ? 'red' : 'gold'}"><h3>${t.title} ${t.accessCode ? '🔒' : ''}</h3><p>${t.duration} Mins</p>${isLive ? `<p style="color:red">Start: ${new Date(t.startTime).toLocaleString()}</p>` : ''}<button class="btn btn-gold" onclick="startTest('${t._id}', ${t.accessCode ? true : false}, '${t.startTime}')">Start</button></div>`).join(''); }
-        } catch(e) { console.error("Could not load tests"); }
-    }
+    // 🔄 UPDATE: Cool Premium Badges & Ongoing Test Highlighter
+async function loadTests(isLive) { 
+    try {
+        const res = await fetch('/api/tests'); const tests = await res.json(); const now = new Date(); 
+        const filteredTests = tests.filter(t => { const tEnd = t.endTime ? new Date(t.endTime) : null; if (isLive) { return t.isLive && tEnd && tEnd > now; } else { return !t.isLive || (t.isLive && tEnd && tEnd <= now); } }); 
+        const container = document.getElementById(isLive?'live-list':'test-list');
+        
+        // Check if there is an active session running right now
+        const session = JSON.parse(localStorage.getItem('arc_test_session'));
+        const ongoingTestId = (session && session.endTime > Date.now()) ? session.test._id : null;
+
+        if (filteredTests.length === 0) { container.innerHTML = getEmptyStateGame(`No ${isLive ? 'Live' : 'Practice'} Tests Available`); } 
+        else { 
+            container.innerHTML = filteredTests.map(t => {
+                // Store/Premium check
+                const storeItem = dynamicStoreData.find(si => si.type === 'test' && si.link === t._id);
+                
+                // Holographic Premium Badge
+                const premiumBadge = storeItem ? `<div class="premium-badge-cool">💎 PREMIUM <span style="background:white; color:#0f172a; padding:2px 8px; border-radius:12px; margin-left:3px; font-size:0.75rem;">${storeItem.cost} <div class="arc-coin" style="width:1.1em; height:1.1em; vertical-align:-0.2em; margin:0;"></div></span></div>` : '';
+                
+                // Floating Lock Icon
+                const lockIcon = t.accessCode && !storeItem ? '<span class="premium-lock-cool" title="Password Protected">🔒</span>' : ''; 
+
+                // Ongoing Check
+                const isOngoing = (t._id === ongoingTestId);
+                const cardClass = isOngoing ? "card ongoing-test-card" : "card";
+                const ongoingBanner = isOngoing ? `<div class="ongoing-label">ONGOING</div>` : '';
+                
+                // Change Button if Ongoing
+                let btnHtml = "";
+                if (isOngoing) {
+                    btnHtml = `<button class="btn" style="background:var(--green); color:white; width:100%; font-size:1.1rem; box-shadow:0 4px 15px rgba(34, 197, 94, 0.4);" onclick="startTest('${t._id}', ${(t.accessCode || storeItem) ? true : false}, '${t.startTime}')">Resume Test ➡</button>`;
+                } else {
+                    btnHtml = `<button class="btn btn-gold" style="width:100%;" onclick="startTest('${t._id}', ${(t.accessCode || storeItem) ? true : false}, '${t.startTime}')">Start</button>`;
+                }
+
+                return `<div class="${cardClass}" style="border-left: 5px solid ${isLive ? 'red' : 'gold'}; position:relative; overflow:hidden; display:flex; flex-direction:column;">
+                    ${ongoingBanner}
+                    ${premiumBadge}
+                    <h3 style="display:flex; align-items:center; margin-top:${isOngoing ? '25px' : '0'}; line-height:1.3;">${t.title} ${lockIcon}</h3>
+                    <p style="color:#64748b; font-weight:600; margin-top:-5px;">⏱️ ${t.duration} Mins</p>
+                    ${isLive ? `<p style="color:var(--red); font-weight:bold;">Start: ${new Date(t.startTime).toLocaleString()}</p>` : ''}
+                    <div style="margin-top: auto; padding-top: 15px;">
+                        ${btnHtml}
+                    </div>
+                </div>`;
+            }).join(''); 
+        }
+    } catch(e) { console.error("Could not load tests"); }
+}
     
     function startTimer(durationOrTimestamp) { 
         clearInterval(timer); const now = Date.now();
@@ -3153,11 +3274,32 @@ function executeStoreConfirm() {
     async function loadMaterials() { try { const res = await fetch('/api/materials'); allMats = await res.json(); } catch(e) {} }
     function loadLib(cat) { document.getElementById('lib-cats').style.display = 'none'; document.getElementById('lib-back').style.display = 'block'; renderLib(cat); }
     
-    function renderLib(cat) { 
-        const items = allMats.filter(m => m.category === cat || (cat === '11th Class' && m.category.includes('11'))); 
-        if (items.length === 0) { document.getElementById('lib-content').innerHTML = getEmptyStateGame(`No items available in ${cat}`); } 
-        else { document.getElementById('lib-content').innerHTML = items.map(m => `<div class="card"><img src="${m.image||''}" style="height:180px; width: 100%; background:#f8fafc; object-fit:contain; border-radius: 8px; border: 1px solid #eee;"><h4 style="margin: 15px 0 10px 0;">${m.title} ${m.accessCode?'🔒':''}</h4><button class="btn btn-gold" onclick="openMat('${m._id}')">Open</button></div>`).join(''); }
+    // 🔄 UPDATE: Cool Premium Badges for Library Files
+function renderLib(cat) { 
+    const items = allMats.filter(m => m.category === cat || (cat === '11th Class' && m.category.includes('11'))); 
+    if (items.length === 0) { document.getElementById('lib-content').innerHTML = getEmptyStateGame(`No items available in ${cat}`); } 
+    else { 
+        document.getElementById('lib-content').innerHTML = items.map(m => {
+            // Check if this material is in the store!
+            const storeItem = dynamicStoreData.find(si => si.type === 'pdf' && si.link === m._id);
+            
+            // Holographic Premium Badge
+            const premiumBadge = storeItem ? `<div class="premium-badge-cool">💎 PREMIUM <span style="background:white; color:#0f172a; padding:2px 8px; border-radius:12px; margin-left:3px; font-size:0.75rem;">${storeItem.cost} <div class="arc-coin" style="width:1.1em; height:1.1em; vertical-align:-0.2em; margin:0;"></div></span></div>` : '';
+            
+            // Floating Lock Icon
+            const lockIcon = m.accessCode && !storeItem ? '<span class="premium-lock-cool" title="Password Protected">🔒</span>' : '';
+
+            return `<div class="card" style="position:relative; overflow:hidden; display:flex; flex-direction:column;">
+                ${premiumBadge}
+                <img src="${m.image||''}" style="height:180px; width: 100%; background:#f8fafc; object-fit:contain; border-radius: 8px; border: 1px solid #eee;">
+                <h4 style="margin: 15px 0 15px 0; display:flex; align-items:center; line-height:1.3;">${m.title} ${lockIcon}</h4>
+                <div style="margin-top:auto;">
+                    <button class="btn btn-gold" style="width:100%;" onclick="openMat('${m._id}')">Open File</button>
+                </div>
+            </div>`;
+        }).join(''); 
     }
+}
     
     function resetLib() { document.getElementById('lib-cats').style.display = 'grid'; document.getElementById('lib-back').style.display = 'none'; document.getElementById('lib-content').innerHTML = ''; }
     
@@ -4286,8 +4428,15 @@ async function loadDynamicStore() {
         if (alreadyOwned) {
             btnHtml = `<button class="btn" style="background:var(--green); color:white; cursor:pointer; box-shadow: 0 0 10px rgba(34, 197, 94, 0.4);" onclick="accessUnlockedStoreItem('${item.type}', '${item.link}')">✅ Open Now</button>`;
         } else {
-            btnHtml = `<button class="btn btn-gold" onclick="buyDynamicItem('${item._id}')">Unlock for ${item.cost} 🪙</button>`;
+            btnHtml = `<button class="btn btn-gold" onclick="buyDynamicItem('${item._id}')">Unlock for ${item.cost} <div class="arc-coin"></div></button>`;
         }
+
+        // 👇 THIS IS THE PART THAT WAS MISSING! 👇
+        html += `<div class="card" style="text-align: center; border: 2px solid ${borderColor};">
+                    <div style="font-size: 3rem;">${icon}</div>
+                    <h4 style="margin: 15px 0;">${item.title}</h4>
+                    ${btnHtml}
+                 </div>`;
     });
     document.getElementById('store-dynamic-content').innerHTML = html;
 }
@@ -4585,28 +4734,20 @@ async function loadMyDiscounts() {
     } catch(e) { console.error("Error loading active discounts"); }
 }
 
-function reopenCertificate(name, email, item, code, dateStr) {
+function reopenCertificate(name, email, item, code, dateStr, isVerified = false) {
     document.getElementById('cert-name').innerText = name;
     document.getElementById('cert-email').innerText = email;
     document.getElementById('cert-item').innerText = item;
     document.getElementById('cert-code').innerText = code;
     document.getElementById('cert-date').innerText = new Date(dateStr).toLocaleDateString();
+    
     // Toggle the watermark dynamically
     const watermark = document.getElementById('cert-watermark');
     if(watermark) {
         watermark.style.display = isVerified ? 'block' : 'none';
     }
+    
     openModal('certificate-modal');
-}
-
-function downloadCertificate() {
-    const node = document.getElementById('certificate-node');
-    html2canvas(node, { scale: 2, useCORS: true }).then(canvas => {
-        const link = document.createElement('a');
-        link.download = `ARC_Discount_${document.getElementById('cert-name').innerText.replace(/\s+/g, '_')}.png`;
-        link.href = canvas.toDataURL('image/png');
-        link.click();
-    });
 }
 
 // --- 📥 DOWNLOAD CERTIFICATE LOGIC ---
