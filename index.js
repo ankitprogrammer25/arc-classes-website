@@ -133,9 +133,15 @@ const MechanismSchema = new mongoose.Schema({
 });
 const Mechanism = mongoose.model('Mechanism', MechanismSchema);
 
-// 🎟️ NEW: DISCOUNT LOG SCHEMA (To track when students buy offline discounts)
+// 🎟️ UPDATED: DISCOUNT LOG SCHEMA
 const DiscountLogSchema = new mongoose.Schema({
-    student: String, item: String, code: String, date: { type: Date, default: Date.now }
+    studentName: String,
+    studentEmail: String,
+    studentPhone: String,
+    item: String,
+    code: String,
+    isVerified: { type: Boolean, default: false }, // Tracks if teacher claimed it
+    date: { type: Date, default: Date.now }
 });
 const DiscountLog = mongoose.model('DiscountLog', DiscountLogSchema);
 
@@ -347,13 +353,40 @@ app.post('/api/student/update-coins', async (req, res) => {
     } catch (error) { res.status(500).json({ success: false }); }
 });
 
+// 🎟️ --- DISCOUNT & VERIFICATION ROUTES ---
 app.post('/api/admin/log-discount', async (req, res) => {
     try {
-        await new DiscountLog(req.body).save();
+        const { email, item, code } = req.body;
+        // Fetch student to get their phone number securely
+        const student = await Student.findOne({ email });
+        await new DiscountLog({
+            studentName: student ? student.name : 'Unknown',
+            studentEmail: email,
+            studentPhone: student ? student.phone : 'N/A',
+            item: item,
+            code: code
+        }).save();
         res.json({ success: true });
     } catch(e) {
         res.json({ success: false });
     }
+});
+
+app.get('/api/admin/discount-logs', async (req, res) => {
+    try { res.json(await DiscountLog.find().sort({ isVerified: 1, date: -1 })); } catch(e) { res.json([]); }
+});
+
+app.put('/api/admin/discount-logs/:id', async (req, res) => {
+    try {
+        const log = await DiscountLog.findById(req.params.id);
+        log.isVerified = !log.isVerified; // Toggle verification status
+        await log.save();
+        res.json({ success: true });
+    } catch(e) { res.json({ success: false }); }
+});
+
+app.delete('/api/admin/discount-logs/:id', async (req, res) => {
+    try { await DiscountLog.findByIdAndDelete(req.params.id); res.json({ success: true }); } catch(e) { res.json({ success: false }); }
 });
 
 // 🛒 --- STORE API ROUTES ---

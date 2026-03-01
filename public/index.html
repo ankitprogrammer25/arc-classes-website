@@ -7,6 +7,7 @@
     <link id="dynamic-favicon" rel="icon" type="image/png" href="">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://3Dmol.org/build/3Dmol-min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <style>
         :root { --primary: #0f172a; --gold: #fbbf24; --light: #f8fafc; --red: #ef4444; --green: #22c55e; }
@@ -694,6 +695,8 @@ body.dark-mode .logo {
 <button class="floating-btn" style="bottom: 30px; left: 30px; right: auto; background: #ef4444; color: white;" onclick="toggleFocusWidget()">⏱️ Focus Timer</button>
 <button class="floating-btn" style="bottom: 150px; background: #8b5cf6; color: white;" onclick="openMechViewer()">⚙️ Mechanisms</button>
 <button class="btn btn-gold btn-small" onclick="showAdm('store')">🛒 Store</button>
+<button class="btn btn-gold btn-small" onclick="showAdm('discounts')">🎫 Discounts</button> <button class="btn btn-red btn-small" onclick="showAdm('manage')">🛠️ Manage</button>
+
 
 <div id="focus-widget" class="focus-widget">
     <div class="focus-header">
@@ -1131,6 +1134,56 @@ body.dark-mode .logo {
         
         <div id="store-action-btns" style="display: flex; gap: 12px; justify-content: center;">
             </div>
+    </div>
+</div>
+
+<div id="certificate-modal" class="modal" style="z-index: 4000; background: rgba(0,0,0,0.9);">
+    <div class="modal-content" style="max-width: 800px; background: #1e293b; border: 2px solid var(--gold);">
+        <div class="close-corner" onclick="closeModal('certificate-modal')" style="background:var(--red); color:white;">&times;</div>
+        
+        <h2 style="text-align: center; color: var(--gold); margin-top: 0;">🎉 Congratulations!</h2>
+        <p style="text-align: center; color: #cbd5e1; margin-bottom: 20px;">Download this letter and show it to the teacher during your fee payment.</p>
+
+        <div style="display:flex; justify-content:center; margin-bottom:30px;">
+            <button class="btn btn-gold" style="font-size: 1.2rem; padding: 10px 30px; box-shadow: 0 0 15px rgba(251, 191, 36, 0.4);" onclick="downloadCertificate()">📥 Download Letter (Image)</button>
+        </div>
+
+        <div id="certificate-node" style="background: white; padding: 40px; border: 15px solid #0f172a; outline: 4px solid var(--gold); outline-offset: -10px; border-radius: 8px; color: #333; position: relative; max-width: 700px; margin: 0 auto; font-family: 'Georgia', serif;">
+            
+            <div style="text-align: center; border-bottom: 2px solid var(--gold); padding-bottom: 20px; margin-bottom: 20px;">
+                <h1 style="margin: 0; color: #0f172a; font-size: 3rem; text-transform: uppercase; letter-spacing: 2px; font-family: 'Arial', sans-serif;">ARC CLASSES</h1>
+                <p style="margin: 5px 0 0 0; color: #d97706; font-weight: bold; font-size: 1.2rem; letter-spacing: 4px; font-family: 'Arial', sans-serif;">EDUCATIONAL EXCELLENCE</p>
+            </div>
+
+            <h2 style="text-align: center; color: #1e293b; font-style: italic; font-size: 2.2rem; margin-bottom: 30px;">Discount Authorization Letter</h2>
+
+            <p style="font-size: 1.2rem; line-height: 1.8;">This letter officially certifies that the student named below has successfully redeemed ARC Rewards to unlock a premium offline fee discount.</p>
+
+            <table style="width: 100%; margin: 30px 0; font-size: 1.2rem; border-collapse: collapse;">
+                <tr><td style="padding: 10px 0; border-bottom: 1px dashed #ccc; width: 30%;"><b>Student Name:</b></td><td style="padding: 10px 0; border-bottom: 1px dashed #ccc;" id="cert-name"></td></tr>
+                <tr><td style="padding: 10px 0; border-bottom: 1px dashed #ccc;"><b>Email Address:</b></td><td style="padding: 10px 0; border-bottom: 1px dashed #ccc;" id="cert-email"></td></tr>
+                <tr><td style="padding: 10px 0; border-bottom: 1px dashed #ccc;"><b>Discount Type:</b></td><td style="padding: 10px 0; border-bottom: 1px dashed #ccc; font-weight: bold; color: var(--green);" id="cert-item"></td></tr>
+            </table>
+
+            <div style="text-align: center; margin: 40px 0;">
+                <p style="margin: 0 0 10px 0; font-size: 1.1rem; color: #666;">Official Verification Code</p>
+                <div id="cert-code" style="display: inline-block; background: #f8fafc; border: 2px dashed #0f172a; padding: 15px 30px; font-size: 2.2rem; font-weight: bold; letter-spacing: 3px; font-family: monospace; color: #0f172a;"></div>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 50px;">
+                <div style="text-align: center;">
+                    <p style="margin: 0; font-size: 1rem; font-weight: bold; font-family: 'Arial', sans-serif;" id="cert-date"></p>
+                    <hr style="border-color: #333; margin: 5px 0;">
+                    <p style="margin: 0; font-size: 0.9rem;">Date of Issue</p>
+                </div>
+                
+                <div style="text-align: center;">
+                    <div style="width: 80px; height: 80px; border-radius: 50%; border: 3px solid var(--gold); display: flex; align-items: center; justify-content: center; font-weight: bold; color: var(--gold); transform: rotate(-15deg); margin: 0 auto 10px auto; font-family: 'Arial', sans-serif; background: rgba(251, 191, 36, 0.1);">APPROVED</div>
+                    <hr style="border-color: #333; margin: 5px 0; width: 150px;">
+                    <p style="margin: 0; font-size: 0.9rem;">Authorized Signature</p>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -2451,6 +2504,17 @@ if (savedTheme === 'dark') {
             updateStoreInputUI(); // Initialize dynamic dropdown
             loadAdminStoreList();
         }
+        else if (tab === 'discounts') {
+            c.innerHTML = `<h3>Offline Discount Verifications</h3>
+            <p style="color:#666;">Cross-check the verification codes presented by students here.</p>
+            <div class="table-container">
+                <table style="width:100%;">
+                    <thead><tr><th>Date</th><th>Student Details</th><th>Code</th><th>Item</th><th>Status</th><th>Action</th></tr></thead>
+                    <tbody id="admin-discount-list"><tr><td colspan="6" style="text-align:center;">Loading...</td></tr></tbody>
+                </table>
+            </div>`;
+            loadAdminDiscounts();
+        }
 
         else if (tab === 'announce') {
              c.innerHTML = `<h3>News</h3><input id="ann-text" placeholder="Text"><button class="btn btn-gold" onclick="postAnnounce()">Post</button><div id="ann-list" style="margin-top:20px;"></div>`;
@@ -2497,6 +2561,7 @@ if (savedTheme === 'dark') {
         else if(type === 'potd') { showAdm('potd'); loadPOTD(); } 
         else if(type === 'mechanism') { loadAdminMechList(); }
         else if(type === 'store') { loadAdminStoreList(); loadDynamicStore(); }
+        else if(type === 'discount-log') { loadAdminDiscounts(); }
         else if(type === 'doubt') { showAdm('doubts'); }
     }
 
@@ -4144,15 +4209,30 @@ async function buyDynamicItem(id) {
         else {
             // Discounts and Videos behave normally
             updateCoins(-item.cost, `Purchased: ${item.title}`);
+            
             if(item.type === 'discount') {
-                const code = `ARC-${item.title.substring(0,3).toUpperCase()}-${Math.floor(1000 + Math.random() * 9000)}`;
-                // 🎉 SUCCESS WITH CODE!
-                openStoreAlert('success', 'Discount Claimed!', `Show this code to the teacher offline:<br><br><span style="font-size:1.5rem; color:var(--gold); font-family:monospace; background:#000; padding:10px 15px; border-radius:6px; letter-spacing:2px; display:inline-block; border:1px solid #334155;">${code}</span><br><br><small>Take a screenshot now!</small>`);
-                fetch('/api/admin/log-discount', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ student: user.name, item: item.title, code: code }) });
+                // Generate a highly secure, unique code
+                const code = `ARC-${Math.floor(100000 + Math.random() * 900000)}`;
+                
+                // Send email to backend so it can fetch the phone number securely
+                fetch('/api/admin/log-discount', { 
+                    method: 'POST', 
+                    headers: {'Content-Type':'application/json'}, 
+                    body: JSON.stringify({ email: user.email, item: item.title, code: code }) 
+                });
+
+                // Populate the Certificate Data
+                document.getElementById('cert-name').innerText = user.name;
+                document.getElementById('cert-email').innerText = user.email;
+                document.getElementById('cert-item').innerText = item.title;
+                document.getElementById('cert-code').innerText = code;
+                document.getElementById('cert-date').innerText = new Date().toLocaleDateString();
+
+                // Open the Certificate Modal
+                setTimeout(() => { openModal('certificate-modal'); }, 300);
                 loadDynamicStore();
             } 
             else if (item.type === 'video') {
-                // 🎉 SUCCESS VIDEO!
                 openStoreAlert('success', 'Access Granted!', 'Opening Secret Video in a new tab...');
                 setTimeout(() => window.open(item.link, '_blank'), 1500); 
                 loadDynamicStore();
@@ -4344,6 +4424,54 @@ async function openCoinHistory() {
     } catch(e) {
         document.getElementById('coin-history-body').innerHTML = '<tr><td colspan="3" style="text-align:center; color: var(--red);">Error loading history.</td></tr>';
     }
+}
+
+
+// --- 📥 DOWNLOAD CERTIFICATE LOGIC ---
+function downloadCertificate() {
+    const node = document.getElementById('certificate-node');
+    // html2canvas takes a perfect screenshot of the div
+    html2canvas(node, { scale: 2, useCORS: true }).then(canvas => {
+        const link = document.createElement('a');
+        link.download = `ARC_Discount_${document.getElementById('cert-name').innerText.replace(/\s+/g, '_')}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+    });
+}
+
+async function loadAdminDiscounts() {
+    const res = await fetch('/api/admin/discount-logs');
+    const data = await res.json();
+    
+    if(data.length === 0) {
+        document.getElementById('admin-discount-list').innerHTML = `<tr><td colspan="6" style="text-align:center; color:#999;">No discounts purchased yet.</td></tr>`;
+        return;
+    }
+
+    document.getElementById('admin-discount-list').innerHTML = data.map(d => `
+        <tr style="${d.isVerified ? 'opacity: 0.5; background: #f8fafc;' : ''}">
+            <td>${new Date(d.date).toLocaleDateString()}</td>
+            <td><b>${d.studentName}</b><br><small style="color:#666;">${d.studentEmail}<br>📞 ${d.studentPhone}</small></td>
+            <td style="font-family: monospace; font-size: 1.1rem; color: var(--primary);"><b>${d.code}</b></td>
+            <td>${d.item}</td>
+            <td>
+                ${d.isVerified 
+                    ? `<span class="badge bg-green">Used</span>` 
+                    : `<span class="badge bg-gold">Pending</span>`}
+            </td>
+            <td>
+                <button class="btn btn-small ${d.isVerified ? 'btn-red' : 'btn-gold'}" style="margin-bottom:5px; width:100%;" onclick="toggleDiscountStatus('${d._id}')">
+                    ${d.isVerified ? 'Undo' : 'Verify & Claim'}
+                </button>
+                <button class="btn-small btn-red" style="width:100%;" onclick="deleteItem('discount-log', '${d._id}')">Delete</button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+async function toggleDiscountStatus(id) {
+    await fetch(`/api/admin/discount-logs/${id}`, { method: 'PUT' });
+    loadAdminDiscounts();
 }
 
 </script>
