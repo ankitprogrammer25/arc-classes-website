@@ -182,6 +182,60 @@
             white-space: nowrap;
         }
 
+
+        /* 📁 COOL LIBRARY FOLDERS */
+        .lib-folder {
+            border-radius: 16px;
+            padding: 30px 20px;
+            text-align: center;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Bouncy transition */
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Hover Effect: Lifts up and scales slightly */
+        .lib-folder:hover {
+            transform: translateY(-8px) scale(1.03);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+
+        /* Icon Styling with Drop Shadow */
+        .lib-icon {
+            font-size: 4rem;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            filter: drop-shadow(0 8px 10px rgba(0,0,0,0.15));
+            z-index: 2;
+        }
+
+        /* Emoji pops up and tilts on hover! */
+        .lib-folder:hover .lib-icon {
+            transform: scale(1.2) rotate(-8deg) translateY(-5px);
+        }
+
+        .lib-title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--primary);
+            z-index: 2;
+            letter-spacing: 0.5px;
+        }
+
+        /* Color Themes for the Folders */
+        .folder-blue { border-bottom: 6px solid #3b82f6; background: linear-gradient(to bottom, #ffffff, #eff6ff); }
+        .folder-gold { border-bottom: 6px solid var(--gold); background: linear-gradient(to bottom, #ffffff, #fffbeb); }
+        .folder-green { border-bottom: 6px solid var(--green); background: linear-gradient(to bottom, #ffffff, #f0fdf4); }
+        .folder-purple { border-bottom: 6px solid #8b5cf6; background: linear-gradient(to bottom, #ffffff, #f5f3ff); }
+
+        /* Dark Mode Fixes */
+        body.dark-mode .lib-folder { background: #1e293b !important; box-shadow: 0 6px 20px rgba(0,0,0,0.4); }
+        body.dark-mode .lib-title { color: white; }
+
         /* 🔓 KEY & LOCK ANIMATION CSS */
         .lock-scene { position: relative; display: flex; justify-content: center; align-items: center; width: 100px; height: 80px; margin: 0 auto; }
         .anim-lock { font-size: 3.5rem; position: absolute; z-index: 1; transition: transform 0.3s; }
@@ -887,13 +941,40 @@ body.dark-mode .logo {
 <div id="library" class="section">
     <h2>📚 Library</h2>
     <div id="lib-cats" class="grid">
-        <div class="card" onclick="loadLib('11th Class')" style="text-align:center; background:#e0f2fe; border-bottom:4px solid var(--primary);"><b>11th Class Books</b></div>
-        <div class="card" onclick="loadLib('12th Class')" style="text-align:center; background:#e0f2fe; border-bottom:4px solid var(--primary);"><b>12th Class Books</b></div>
-        <div class="card" onclick="loadLib('Organic')" style="text-align:center; background:#ffedd5; border-bottom:4px solid var(--gold);"><b>Organic Chemistry Topics</b></div>
-        <div class="card" onclick="loadLib('Physical')" style="text-align:center; background:#ffedd5; border-bottom:4px solid var(--gold);"><b>Physical Chemistry Topics</b></div>
-        <div class="card" onclick="loadLib('Inorganic')" style="text-align:center; background:#ffedd5; border-bottom:4px solid var(--gold);"><b>Inorganic Chemistry Topics</b></div>
-        <div class="card" onclick="loadLib('Test Series')" style="text-align:center; background:#dcfce7; border-bottom:4px solid var(--green);"><b>Test Series Files</b></div>
-        <div class="card" onclick="loadLib('Notes')" style="text-align:center; background:#f3f4f6; border-bottom:4px solid #999;"><b>Coaching Notes</b></div>
+        <div class="lib-folder folder-blue" onclick="loadLib('11th Class')">
+            <div class="lib-icon">📘</div>
+            <div class="lib-title">11th Class Books</div>
+        </div>
+        
+        <div class="lib-folder folder-blue" onclick="loadLib('12th Class')">
+            <div class="lib-icon">📕</div>
+            <div class="lib-title">12th Class Books</div>
+        </div>
+        
+        <div class="lib-folder folder-gold" onclick="loadLib('Organic')">
+            <div class="lib-icon">🧪</div>
+            <div class="lib-title">Organic Topics</div>
+        </div>
+        
+        <div class="lib-folder folder-gold" onclick="loadLib('Physical')">
+            <div class="lib-icon">⚛️</div>
+            <div class="lib-title">Physical Topics</div>
+        </div>
+        
+        <div class="lib-folder folder-gold" onclick="loadLib('Inorganic')">
+            <div class="lib-icon">💎</div>
+            <div class="lib-title">Inorganic Topics</div>
+        </div>
+        
+        <div class="lib-folder folder-green" onclick="loadLib('Test Series')">
+            <div class="lib-icon">📝</div>
+            <div class="lib-title">Test Series Files</div>
+        </div>
+        
+        <div class="lib-folder folder-purple" onclick="loadLib('Notes')">
+            <div class="lib-icon">📓</div>
+            <div class="lib-title">Coaching Notes</div>
+        </div>
     </div>
     <button id="lib-back" class="btn btn-red" style="display:none; margin-bottom:15px;" onclick="resetLib()">Back</button>
     <div id="lib-content" class="grid"></div>
@@ -1147,43 +1228,47 @@ body.dark-mode .logo {
         <div style="display:flex; justify-content:center; margin-bottom:30px;">
             <button class="btn btn-gold" style="font-size: 1.2rem; padding: 10px 30px; box-shadow: 0 0 15px rgba(251, 191, 36, 0.4);" onclick="downloadCertificate()">📥 Download Letter (Image)</button>
         </div>
-
-        <div id="certificate-node" style="background: white; padding: 40px; border: 15px solid #0f172a; outline: 4px solid var(--gold); outline-offset: -10px; border-radius: 8px; color: #333; position: relative; max-width: 700px; margin: 0 auto; font-family: 'Georgia', serif;">
+   
+        <div id="certificate-node" style="background: white; padding: 40px; border: 15px solid #0f172a; outline: 4px solid var(--gold); outline-offset: -10px; border-radius: 8px; color: #333; position: relative; max-width: 700px; margin: 0 auto; font-family: 'Georgia', serif; overflow: hidden;">
             
-            <div style="text-align: center; border-bottom: 2px solid var(--gold); padding-bottom: 20px; margin-bottom: 20px;">
-                <h1 style="margin: 0; color: #0f172a; font-size: 3rem; text-transform: uppercase; letter-spacing: 2px; font-family: 'Arial', sans-serif;">ARC CLASSES</h1>
-                <p style="margin: 5px 0 0 0; color: #d97706; font-weight: bold; font-size: 1.2rem; letter-spacing: 4px; font-family: 'Arial', sans-serif;">EDUCATIONAL EXCELLENCE</p>
-            </div>
-
-            <h2 style="text-align: center; color: #1e293b; font-style: italic; font-size: 2.2rem; margin-bottom: 30px;">Discount Authorization Letter</h2>
-
-            <p style="font-size: 1.2rem; line-height: 1.8;">This letter officially certifies that the student named below has successfully redeemed ARC Rewards to unlock a premium offline fee discount.</p>
-
-            <table style="width: 100%; margin: 30px 0; font-size: 1.2rem; border-collapse: collapse;">
-                <tr><td style="padding: 10px 0; border-bottom: 1px dashed #ccc; width: 30%;"><b>Student Name:</b></td><td style="padding: 10px 0; border-bottom: 1px dashed #ccc;" id="cert-name"></td></tr>
-                <tr><td style="padding: 10px 0; border-bottom: 1px dashed #ccc;"><b>Email Address:</b></td><td style="padding: 10px 0; border-bottom: 1px dashed #ccc;" id="cert-email"></td></tr>
-                <tr><td style="padding: 10px 0; border-bottom: 1px dashed #ccc;"><b>Discount Type:</b></td><td style="padding: 10px 0; border-bottom: 1px dashed #ccc; font-weight: bold; color: var(--green);" id="cert-item"></td></tr>
-            </table>
-
-            <div style="text-align: center; margin: 40px 0;">
-                <p style="margin: 0 0 10px 0; font-size: 1.1rem; color: #666;">Official Verification Code</p>
-                <div id="cert-code" style="display: inline-block; background: #f8fafc; border: 2px dashed #0f172a; padding: 15px 30px; font-size: 2.2rem; font-weight: bold; letter-spacing: 3px; font-family: monospace; color: #0f172a;"></div>
-            </div>
-
-            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 50px;">
-                <div style="text-align: center;">
-                    <p style="margin: 0; font-size: 1rem; font-weight: bold; font-family: 'Arial', sans-serif;" id="cert-date"></p>
-                    <hr style="border-color: #333; margin: 5px 0;">
-                    <p style="margin: 0; font-size: 0.9rem;">Date of Issue</p>
+            <div id="cert-watermark" style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-30deg); font-size: 6rem; color: rgba(239, 68, 68, 0.15); font-weight: 900; font-family: 'Arial', sans-serif; letter-spacing: 10px; border: 10px solid rgba(239, 68, 68, 0.15); padding: 20px; z-index: 1; pointer-events: none; text-transform: uppercase;">COUPON CLAIMED</div>
+            
+            <div style="position: relative; z-index: 2;">
+                <div style="text-align: center; border-bottom: 2px solid var(--gold); padding-bottom: 20px; margin-bottom: 20px;">
+                    <h1 style="margin: 0; color: #0f172a; font-size: 3rem; text-transform: uppercase; letter-spacing: 2px; font-family: 'Arial', sans-serif;">ARC CLASSES</h1>
+                    <p style="margin: 5px 0 0 0; color: #d97706; font-weight: bold; font-size: 1.2rem; letter-spacing: 4px; font-family: 'Arial', sans-serif;">EDUCATIONAL EXCELLENCE</p>
                 </div>
-                
-                <div style="text-align: center;">
-                    <div style="width: 80px; height: 80px; border-radius: 50%; border: 3px solid var(--gold); display: flex; align-items: center; justify-content: center; font-weight: bold; color: var(--gold); transform: rotate(-15deg); margin: 0 auto 10px auto; font-family: 'Arial', sans-serif; background: rgba(251, 191, 36, 0.1);">APPROVED</div>
-                    <hr style="border-color: #333; margin: 5px 0; width: 150px;">
-                    <p style="margin: 0; font-size: 0.9rem;">Authorized Signature</p>
+
+                <h2 style="text-align: center; color: #1e293b; font-style: italic; font-size: 2.2rem; margin-bottom: 30px;">Discount Authorization Letter</h2>
+
+                <p style="font-size: 1.2rem; line-height: 1.8;">This letter officially certifies that the student named below has successfully redeemed ARC Rewards to unlock a premium offline fee discount.</p>
+
+                <table style="width: 100%; margin: 30px 0; font-size: 1.2rem; border-collapse: collapse;">
+                    <tr><td style="padding: 10px 0; border-bottom: 1px dashed #ccc; width: 30%;"><b>Student Name:</b></td><td style="padding: 10px 0; border-bottom: 1px dashed #ccc;" id="cert-name"></td></tr>
+                    <tr><td style="padding: 10px 0; border-bottom: 1px dashed #ccc;"><b>Email Address:</b></td><td style="padding: 10px 0; border-bottom: 1px dashed #ccc;" id="cert-email"></td></tr>
+                    <tr><td style="padding: 10px 0; border-bottom: 1px dashed #ccc;"><b>Discount Type:</b></td><td style="padding: 10px 0; border-bottom: 1px dashed #ccc; font-weight: bold; color: var(--green);" id="cert-item"></td></tr>
+                </table>
+
+                <div style="text-align: center; margin: 40px 0;">
+                    <p style="margin: 0 0 10px 0; font-size: 1.1rem; color: #666;">Official Verification Code</p>
+                    <div id="cert-code" style="display: inline-block; background: #f8fafc; border: 2px dashed #0f172a; padding: 15px 30px; font-size: 2.2rem; font-weight: bold; letter-spacing: 3px; font-family: monospace; color: #0f172a;"></div>
                 </div>
-            </div>
-        </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 50px;">
+                    <div style="text-align: center;">
+                        <p style="margin: 0; font-size: 1rem; font-weight: bold; font-family: 'Arial', sans-serif;" id="cert-date"></p>
+                        <hr style="border-color: #333; margin: 5px 0;" />
+                        <p style="margin: 0; font-size: 0.9rem;">Date of Issue</p>
+                    </div>
+                    
+                    <div style="text-align: center;">
+                        <div style="width: 80px; height: 80px; border-radius: 50%; border: 3px solid var(--gold); display: flex; align-items: center; justify-content: center; font-weight: bold; color: var(--gold); transform: rotate(-15deg); margin: 0 auto 10px auto; font-family: 'Arial', sans-serif; background: rgba(251, 191, 36, 0.1);">APPROVED</div>
+                        <hr style="border-color: #333; margin: 5px 0; width: 150px;" />
+                        <p style="margin: 0; font-size: 0.9rem;">Authorized Signature</p>
+                    </div>
+                </div>
+            </div> </div>
+       
     </div>
 </div>
 
@@ -1303,7 +1388,11 @@ body.dark-mode .logo {
     function closeModal(id) { 
         document.getElementById(id).style.display = 'none'; 
         document.body.classList.remove('modal-open'); 
-        if(id === 'pdf-modal') toggleWatermark(false); // Turn off watermark when PDF closes
+        if(id === 'pdf-modal') {
+            toggleWatermark(false); 
+            document.getElementById('pdf-frame').src = '';
+            localStorage.removeItem('arc_open_pdf'); // 🧹 CLEAR PDF STATE
+        }
     }
 
 
@@ -1404,6 +1493,11 @@ if (savedTheme === 'dark') {
                 submitTest(true); 
                 return;
             }
+        }
+        // 💾 RESTORE PDF IF REFRESHED
+        const savedPdf = JSON.parse(localStorage.getItem('arc_open_pdf'));
+        if (savedPdf && user) {
+            setTimeout(() => openPdfViewer(savedPdf.title, savedPdf.link), 500); 
         }
         if(user) show(lastSection); else show('home');
     };
@@ -2807,7 +2901,18 @@ if (savedTheme === 'dark') {
     }
 
     // 1. UPDATED START TEST FUNCTION
+// 1. UPDATED START TEST FUNCTION (Blocks overrides & Instant Loads Premium)
 async function startTest(id, hasCode, startTimeStr) {
+    // 🛑 ONGOING TEST BLOCKER
+    const session = JSON.parse(localStorage.getItem('arc_test_session'));
+    if (session && session.endTime > Date.now()) {
+        if (session.test._id !== id) {
+            alert("⚠️ You have an ongoing test! Please submit it before starting a new one.");
+            show('exam'); // Force them back into their running test
+            return;
+        }
+    }
+
     if (startTimeStr) {
         const now = new Date();
         const start = new Date(startTimeStr);
@@ -2821,8 +2926,9 @@ async function startTest(id, hasCode, startTimeStr) {
     // 🛑 SMART PREMIUM BLOCKER
     const storeItem = dynamicStoreData.find(si => si.type === 'test' && si.link === id);
     const isUnlocked = user && user.unlockedItems && user.unlockedItems.includes(id);
+    const isAdmin = user && user.role === 'admin';
 
-    if (storeItem && !isUnlocked && (!user || user.role !== 'admin')) {
+    if (storeItem && !isUnlocked && !isAdmin) {
         openPremiumAlert(storeItem.cost, 'test');
         return;
     }
@@ -2836,8 +2942,7 @@ async function startTest(id, hasCode, startTimeStr) {
         const data = await res.json();
         
         if (data.success) {
-            // TRIGGER ANIMATION HERE!
-            triggerUnlockSuccessAnimation(() => {
+            const finalizeStart = () => {
                 closeCoolModal();
                 currentTest = data.test;
                 answers = new Array(currentTest.questions.length).fill(null);
@@ -2847,14 +2952,23 @@ async function startTest(id, hasCode, startTimeStr) {
                 show('exam');
                 renderQ();
                 if(typeof toggleWatermark === 'function') toggleWatermark(true);
-            });
+            };
+
+            // ⚡ INSTANT LOAD: Only play animation if they ACTUALLY typed a password
+            const usedPassword = hasCode && !isUnlocked && !isAdmin;
+            if (usedPassword) {
+                triggerUnlockSuccessAnimation(finalizeStart);
+            } else {
+                finalizeStart(); 
+            }
         } else {
             if (hasCode) triggerPassError();
             else { alert(data.message || "Access Denied"); }
         }
     };
 
-    if (hasCode && !isUnlocked) {
+    const needsPassword = hasCode && !isUnlocked && !isAdmin;
+    if (needsPassword) {
         openCoolModal("Unlock Test", "This test is password protected.", processStart);
     } else {
         processStart(""); 
@@ -2864,12 +2978,14 @@ async function startTest(id, hasCode, startTimeStr) {
 // 2. UPDATED OPEN MATERIAL FUNCTION
 async function openMat(id) {
     const mat = allMats.find(m => m._id === id);
+    if(!mat) return;
     
     // 🛑 SMART PREMIUM BLOCKER
     const storeItem = dynamicStoreData.find(si => si.type === 'pdf' && si.link === id);
     const isUnlocked = user && user.unlockedItems && user.unlockedItems.includes(id);
+    const isAdmin = user && user.role === 'admin';
 
-    if (storeItem && !isUnlocked && (!user || user.role !== 'admin')) {
+    if (storeItem && !isUnlocked && !isAdmin) {
         openPremiumAlert(storeItem.cost, 'file');
         return;
     }
@@ -2883,17 +2999,25 @@ async function openMat(id) {
         const data = await res.json();
         
         if (data.success) {
-            // TRIGGER ANIMATION HERE!
-            triggerUnlockSuccessAnimation(() => {
+            const finalizeUnlock = () => {
                 closeCoolModal();
-                openPdfViewer(mat ? mat.title : 'Library Material', data.link);
-            });
+                openPdfViewer(mat.title, data.link);
+            };
+
+            // ⚡ INSTANT LOAD check
+            const usedPassword = mat.accessCode && !isUnlocked && !isAdmin;
+            if (usedPassword) {
+                triggerUnlockSuccessAnimation(finalizeUnlock);
+            } else {
+                finalizeUnlock();
+            }
         } else {
             triggerPassError();
         }
     };
 
-    if (mat && mat.accessCode) {
+    const needsPassword = mat.accessCode && !isUnlocked && !isAdmin;
+    if (needsPassword) {
         openCoolModal("Unlock Library", `Enter password for ${mat.title}`, processUnlock);
     } else {
         processUnlock("");
@@ -3453,6 +3577,8 @@ async function loadAdminMechList() {
             document.getElementById('pdf-frame').src = finalLink;
             toggleWatermark(true);
             openModal('pdf-modal');
+            // 💾 SAVE PDF STATE FOR REFRESH
+            localStorage.setItem('arc_open_pdf', JSON.stringify({ title: title, link: link }));
         } else {
             // 3. If it's an external website (like NCERT), open it in a new tab
             window.open(link, '_blank');
@@ -4155,17 +4281,22 @@ async function loadDynamicStore() {
 
         // Change button if they already own it!
         const alreadyOwned = user && user.unlockedItems && user.unlockedItems.includes(item.link);
-        const btnHtml = alreadyOwned 
-            ? `<button class="btn" style="background:var(--green); color:white;" disabled>✅ Unlocked</button>`
-            : `<button class="btn btn-gold" onclick="buyDynamicItem('${item._id}')">Unlock for ${item.cost} 🪙</button>`;
-
-        html += `<div class="card" style="text-align: center; border: 2px solid ${borderColor};">
-            <div style="font-size: 3rem;">${icon}</div>
-            <h4 style="margin: 15px 0;">${item.title}</h4>
-            ${btnHtml}
-        </div>`;
+        
+        let btnHtml = "";
+        if (alreadyOwned) {
+            btnHtml = `<button class="btn" style="background:var(--green); color:white; cursor:pointer; box-shadow: 0 0 10px rgba(34, 197, 94, 0.4);" onclick="accessUnlockedStoreItem('${item.type}', '${item.link}')">✅ Open Now</button>`;
+        } else {
+            btnHtml = `<button class="btn btn-gold" onclick="buyDynamicItem('${item._id}')">Unlock for ${item.cost} 🪙</button>`;
+        }
     });
     document.getElementById('store-dynamic-content').innerHTML = html;
+}
+function accessUnlockedStoreItem(type, link) {
+    if (type === 'test') {
+        startTest(link, false, null); // Automatically opens the test
+    } else if (type === 'pdf') {
+        openMat(link); // Automatically opens the PDF
+    }
 }
 
 async function buyDynamicItem(id) {
@@ -4443,7 +4574,7 @@ async function loadMyDiscounts() {
                 html += `<div class="card" style="border: 2px dashed ${d.isVerified ? '#ccc' : 'var(--green)'}; text-align:center; background:${d.isVerified ? '#f8fafc' : '#f0fdf4'};">
                     <h4 style="margin:0 0 10px 0; color:${d.isVerified ? '#666' : 'var(--green)'};">${d.isVerified ? '✅ Claimed' : '🎫 Available'}: ${d.item}</h4>
                     <p style="font-size:0.9rem; color:#666; margin-top:0;">Valid until: ${expDate.toLocaleDateString()}</p>
-                    <button class="btn btn-gold" onclick="reopenCertificate('${d.studentName}', '${d.studentEmail}', '${d.item}', '${d.code}', '${d.date}')">📥 View Certificate</button>
+                    <button class="btn btn-gold" onclick="reopenCertificate('${d.studentName}', '${d.studentEmail}', '${d.item}', '${d.code}', '${d.date}', ${d.isVerified})">📥 View Certificate</button>
                 </div>`;
             });
             html += `</div>`;
@@ -4460,6 +4591,11 @@ function reopenCertificate(name, email, item, code, dateStr) {
     document.getElementById('cert-item').innerText = item;
     document.getElementById('cert-code').innerText = code;
     document.getElementById('cert-date').innerText = new Date(dateStr).toLocaleDateString();
+    // Toggle the watermark dynamically
+    const watermark = document.getElementById('cert-watermark');
+    if(watermark) {
+        watermark.style.display = isVerified ? 'block' : 'none';
+    }
     openModal('certificate-modal');
 }
 
