@@ -357,7 +357,6 @@ app.post('/api/student/update-coins', async (req, res) => {
 app.post('/api/admin/log-discount', async (req, res) => {
     try {
         const { email, item, code } = req.body;
-        // Fetch student to get their phone number securely
         const student = await Student.findOne({ email });
         await new DiscountLog({
             studentName: student ? student.name : 'Unknown',
@@ -367,9 +366,7 @@ app.post('/api/admin/log-discount', async (req, res) => {
             code: code
         }).save();
         res.json({ success: true });
-    } catch(e) {
-        res.json({ success: false });
-    }
+    } catch(e) { res.json({ success: false }); }
 });
 
 app.get('/api/admin/discount-logs', async (req, res) => {
@@ -379,7 +376,7 @@ app.get('/api/admin/discount-logs', async (req, res) => {
 app.put('/api/admin/discount-logs/:id', async (req, res) => {
     try {
         const log = await DiscountLog.findById(req.params.id);
-        log.isVerified = !log.isVerified; // Toggle verification status
+        log.isVerified = !log.isVerified; 
         await log.save();
         res.json({ success: true });
     } catch(e) { res.json({ success: false }); }
@@ -387,6 +384,21 @@ app.put('/api/admin/discount-logs/:id', async (req, res) => {
 
 app.delete('/api/admin/discount-logs/:id', async (req, res) => {
     try { await DiscountLog.findByIdAndDelete(req.params.id); res.json({ success: true }); } catch(e) { res.json({ success: false }); }
+});
+
+// 🎓 NEW: Student fetching their active discounts (Valid for 30 Days)
+app.post('/api/student/my-discounts', async (req, res) => {
+    try {
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+        
+        const activeDiscounts = await DiscountLog.find({
+            studentEmail: req.body.email,
+            date: { $gte: thirtyDaysAgo } // Only fetch if bought within 30 days
+        }).sort({ date: -1 });
+        
+        res.json(activeDiscounts);
+    } catch (e) { res.json([]); }
 });
 
 // 🛒 --- STORE API ROUTES ---
@@ -442,6 +454,7 @@ app.post('/api/student/buy-item', async (req, res) => {
         res.json({ success: true, coins: student.coins, unlockedItems: student.unlockedItems });
     } catch (e) { res.json({ success: false, message: "Server error" }); }
 });
+
 // 🔒 SECURE TEST COIN CLAIM ROUTE
 app.post('/api/claim-test-coins', async (req, res) => {
     try {

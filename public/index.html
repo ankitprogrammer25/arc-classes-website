@@ -694,9 +694,6 @@ body.dark-mode .logo {
 <button class="floating-btn" onclick="openModal('ref-modal')">🧪 Ref Tools</button>
 <button class="floating-btn" style="bottom: 30px; left: 30px; right: auto; background: #ef4444; color: white;" onclick="toggleFocusWidget()">⏱️ Focus Timer</button>
 <button class="floating-btn" style="bottom: 150px; background: #8b5cf6; color: white;" onclick="openMechViewer()">⚙️ Mechanisms</button>
-<button class="btn btn-gold btn-small" onclick="showAdm('store')">🛒 Store</button>
-<button class="btn btn-gold btn-small" onclick="showAdm('discounts')">🎫 Discounts</button> <button class="btn btn-red btn-small" onclick="showAdm('manage')">🛠️ Manage</button>
-
 
 <div id="focus-widget" class="focus-widget">
     <div class="focus-header">
@@ -857,6 +854,8 @@ body.dark-mode .logo {
         <button class="btn btn-gold btn-small" style="margin-top: 15px; font-size: 1rem;" onclick="openCoinHistory()">📜 View Coin Ledger</button>
     </div>
 
+    <div id="my-active-discounts" style="margin-bottom: 30px;"></div>
+
     <div id="store-dynamic-content" class="grid">
         <p style="text-align:center; width:100%; color:#666;">Loading Store Items...</p>
     </div>
@@ -879,6 +878,7 @@ body.dark-mode .logo {
         <button class="btn btn-gold btn-small" onclick="showAdm('students')">👥 Students</button>
         <button class="btn btn-gold btn-small" onclick="showAdm('mech')">⚙️ Mechs</button>
         <button class="btn btn-gold btn-small" onclick="showAdm('store')">🛒 Store</button>
+        <button class="btn btn-gold btn-small" onclick="showAdm('discounts')">🎫 Discounts</button>
         <button class="btn btn-red btn-small" onclick="showAdm('manage')">🛠️ Manage</button>
     </div>
     <div id="adm-content" style="background:white; padding:15px; border-radius:10px; border:1px solid #ddd; min-height:300px; overflow-x:auto;">Select option.</div>
@@ -1482,7 +1482,10 @@ if (savedTheme === 'dark') {
         document.getElementById(id).classList.add('active');
         window.scrollTo(0,0);
         document.getElementById('nav-menu').classList.remove('active');
-        if(id==='tests') loadTests(false); if(id==='live') loadTests(true); if(id==='results') loadResults('practice'); if(id==='store') fetchGlobalStoreData();
+        if(id==='tests') loadTests(false); 
+        if(id==='live') loadTests(true); 
+        if(id==='results') loadResults('practice'); 
+        if(id==='store') { fetchGlobalStoreData(); loadMyDiscounts(); }
     }
 
     
@@ -2481,29 +2484,29 @@ if (savedTheme === 'dark') {
             window.mechDraftSteps = []; 
             loadAdminMechList();
         }
-        else if (tab === 'store') {
-            c.innerHTML = `<h3>Manage Store Items</h3>
-            <div style="background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #ddd; margin-bottom: 20px;">
-                <input id="store-title" placeholder="Item Title (e.g., Ultimate Organic Cheat Sheet)">
-                <div style="display:flex; gap:10px;">
-                    <select id="store-type" style="flex:1; padding:10px; border-radius:6px; border:1px solid #ccc;" onchange="updateStoreInputUI()">
-                        <option value="pdf">📄 Premium PDF (Link from Library)</option>
-                        <option value="test">🔒 Mock Test (Link from Practice Tests)</option>
-                        <option value="video">📹 Secret Video Link</option>
-                        <option value="discount">💸 Offline Fee Discount</option>
-                    </select>
-                    <input id="store-cost" type="number" placeholder="Coin Cost" style="flex:1; padding:10px; border-radius:6px; border:1px solid #ccc;">
+            else if (tab === 'store') {
+                c.innerHTML = `<h3>Manage Store Items</h3>
+                <div style="background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #ddd; margin-bottom: 20px;">
+                    <input id="store-title" placeholder="Item Title (e.g., Ultimate Organic Cheat Sheet)">
+                    <div style="display:flex; gap:10px;">
+                        <select id="store-type" style="flex:1; padding:10px; border-radius:6px; border:1px solid #ccc;" onchange="updateStoreInputUI()">
+                            <option value="pdf">📄 Premium PDF (Link from Library)</option>
+                            <option value="test">🔒 Mock Test (Link from Practice Tests)</option>
+                            <option value="video">📹 Secret Video Link</option>
+                            <option value="discount">💸 Offline Fee Discount</option>
+                        </select>
+                        <input id="store-cost" type="number" placeholder="Coin Cost" style="flex:1; padding:10px; border-radius:6px; border:1px solid #ccc;">
+                    </div>
+                    <div id="store-link-container" style="margin-top:10px;"></div>
+                    <button class="btn btn-gold" style="width:100%; margin-top:15px; font-size:1.1rem;" onclick="uploadStoreItem()">➕ Add to Store</button>
                 </div>
-                <div id="store-link-container" style="margin-top:10px;"></div>
-                <button class="btn btn-gold" style="width:100%; margin-top:15px; font-size:1.1rem;" onclick="uploadStoreItem()">➕ Add to Store</button>
-            </div>
-            <hr>
-            <h4>Current Store Items</h4>
-            <div id="admin-store-list" class="table-container">Loading...</div>`;
-            
-            updateStoreInputUI(); // Initialize dynamic dropdown
-            loadAdminStoreList();
-        }
+                <hr>
+                <h4>Current Store Items</h4>
+                <div id="admin-store-list" class="table-container">Loading...</div>`;
+                
+                updateStoreInputUI(); // Initialize dynamic dropdown
+                loadAdminStoreList();
+            }
         else if (tab === 'discounts') {
             c.innerHTML = `<h3>Offline Discount Verifications</h3>
             <p style="color:#666;">Cross-check the verification codes presented by students here.</p>
@@ -4211,26 +4214,20 @@ async function buyDynamicItem(id) {
             updateCoins(-item.cost, `Purchased: ${item.title}`);
             
             if(item.type === 'discount') {
-                // Generate a highly secure, unique code
                 const code = `ARC-${Math.floor(100000 + Math.random() * 900000)}`;
                 
-                // Send email to backend so it can fetch the phone number securely
+                // Send email to backend so it tracks everything securely
                 fetch('/api/admin/log-discount', { 
                     method: 'POST', 
                     headers: {'Content-Type':'application/json'}, 
                     body: JSON.stringify({ email: user.email, item: item.title, code: code }) 
                 });
 
-                // Populate the Certificate Data
-                document.getElementById('cert-name').innerText = user.name;
-                document.getElementById('cert-email').innerText = user.email;
-                document.getElementById('cert-item').innerText = item.title;
-                document.getElementById('cert-code').innerText = code;
-                document.getElementById('cert-date').innerText = new Date().toLocaleDateString();
-
-                // Open the Certificate Modal
-                setTimeout(() => { openModal('certificate-modal'); }, 300);
+                // Generate and open the Certificate Modal immediately
+                reopenCertificate(user.name, user.email, item.title, code, new Date().toISOString());
+                
                 loadDynamicStore();
+                setTimeout(loadMyDiscounts, 1000); // Refresh active discounts list
             } 
             else if (item.type === 'video') {
                 openStoreAlert('success', 'Access Granted!', 'Opening Secret Video in a new tab...');
@@ -4426,6 +4423,55 @@ async function openCoinHistory() {
     }
 }
 
+// --- 🎓 ACTIVE DISCOUNTS & CERTIFICATE LOGIC ---
+async function loadMyDiscounts() {
+    if(!user) return;
+    try {
+        const res = await fetch('/api/student/my-discounts', {
+            method: 'POST', headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({ email: user.email })
+        });
+        const data = await res.json();
+        const container = document.getElementById('my-active-discounts');
+        
+        if(data.length > 0) {
+            let html = `<h3 style="color:var(--gold); border-bottom:2px solid var(--primary); padding-bottom:5px;">🎫 My Active Discounts</h3><div class="grid">`;
+            data.forEach(d => {
+                // Calculate expiration date
+                const expDate = new Date(new Date(d.date).getTime() + 30*24*60*60*1000);
+                
+                html += `<div class="card" style="border: 2px dashed ${d.isVerified ? '#ccc' : 'var(--green)'}; text-align:center; background:${d.isVerified ? '#f8fafc' : '#f0fdf4'};">
+                    <h4 style="margin:0 0 10px 0; color:${d.isVerified ? '#666' : 'var(--green)'};">${d.isVerified ? '✅ Claimed' : '🎫 Available'}: ${d.item}</h4>
+                    <p style="font-size:0.9rem; color:#666; margin-top:0;">Valid until: ${expDate.toLocaleDateString()}</p>
+                    <button class="btn btn-gold" onclick="reopenCertificate('${d.studentName}', '${d.studentEmail}', '${d.item}', '${d.code}', '${d.date}')">📥 View Certificate</button>
+                </div>`;
+            });
+            html += `</div>`;
+            container.innerHTML = html;
+        } else {
+            container.innerHTML = "";
+        }
+    } catch(e) { console.error("Error loading active discounts"); }
+}
+
+function reopenCertificate(name, email, item, code, dateStr) {
+    document.getElementById('cert-name').innerText = name;
+    document.getElementById('cert-email').innerText = email;
+    document.getElementById('cert-item').innerText = item;
+    document.getElementById('cert-code').innerText = code;
+    document.getElementById('cert-date').innerText = new Date(dateStr).toLocaleDateString();
+    openModal('certificate-modal');
+}
+
+function downloadCertificate() {
+    const node = document.getElementById('certificate-node');
+    html2canvas(node, { scale: 2, useCORS: true }).then(canvas => {
+        const link = document.createElement('a');
+        link.download = `ARC_Discount_${document.getElementById('cert-name').innerText.replace(/\s+/g, '_')}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+    });
+}
 
 // --- 📥 DOWNLOAD CERTIFICATE LOGIC ---
 function downloadCertificate() {
