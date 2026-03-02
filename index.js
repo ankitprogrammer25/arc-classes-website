@@ -15,7 +15,7 @@ app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // --- 1. DATABASE CONNECTION ---
-const dbLink = "mongodb+srv://ankitprogrammer25:a32x05sYvukG178G@cluster0.0dhqpzv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+const dbLink = "mongodb+srv://ankitprogrammer25:PASSWORD@cluster0.0dhqpzv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 
 mongoose.connect(dbLink, { 
     serverSelectionTimeoutMS: 5000, 
@@ -37,7 +37,9 @@ const StudentSchema = new mongoose.Schema({
     coins: { type: Number, default: 0 },
     lastLoginDate: { type: String, default: "" },
     lastPotdDate: { type: String, default: "" },
-    unlockedItems: { type: [String], default: [] }
+    unlockedItems: { type: [String], default: [] },
+    // 👤 NEW: Profile Image Field
+    profileImage: { type: String, default: "" } 
 });
 const Student = mongoose.model('Student', StudentSchema);
 
@@ -192,6 +194,46 @@ app.post('/api/login', async (req, res) => {
             unlockedItems: student.unlockedItems || []
         });
     } catch (e) { res.json({ success: false, message: "Server Error" }); }
+});
+
+// 👤 NEW: Update Student Profile Route
+app.post('/api/user/update-profile', async (req, res) => {
+    try {
+        const { email, profileImage, phone, password } = req.body;
+
+        if (!email) {
+            return res.json({ success: false, message: "Email is required to update profile." });
+        }
+
+        // Find the student by their email
+        const student = await Student.findOne({ email });
+
+        if (!student) {
+            return res.json({ success: false, message: "Student not found." });
+        }
+
+        // Update fields if they are provided from the frontend
+        if (profileImage !== undefined) {
+            student.profileImage = profileImage;
+        }
+        
+        if (phone) {
+            student.phone = phone;
+        }
+
+        if (password) {
+            student.password = password; 
+        }
+
+        // Save changes to MongoDB
+        await student.save();
+
+        res.json({ success: true, message: "Profile updated successfully!" });
+
+    } catch (error) {
+        console.error("Profile Update Error:", error);
+        res.json({ success: false, message: "Internal server error while updating profile." });
+    }
 });
 
 // --- ADMIN API ---
