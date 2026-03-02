@@ -1055,7 +1055,8 @@ body.dark-mode .logo {
             </div>
         </div>
 
-        </div> </div>  <div id="login" class="section">
+      </div> 
+    </div> </div> <div id="login" class="section">
     <div class="desk-scene" id="deskScene">
         <div class="lamp-container">
             <div class="lamp-shade"></div>
@@ -1605,12 +1606,19 @@ body.dark-mode .logo {
 
     function openModal(id) { document.getElementById(id).style.display = 'flex'; document.body.classList.add('modal-open'); }
     function closeModal(id) { 
-        document.getElementById(id).style.display = 'none'; 
-        document.body.classList.remove('modal-open'); 
+        const modal = document.getElementById(id);
+        if(modal) modal.style.display = 'none'; 
+        
+        // Fix: Only remove the scroll lock if NO other modals are currently open
+        const openModals = Array.from(document.querySelectorAll('.modal')).filter(m => m.style.display === 'flex');
+        if (openModals.length === 0) {
+            document.body.classList.remove('modal-open'); 
+        }
+
         if(id === 'pdf-modal') {
             toggleWatermark(false); 
             document.getElementById('pdf-frame').src = '';
-            localStorage.removeItem('arc_open_pdf'); // 🧹 CLEAR PDF STATE
+            localStorage.removeItem('arc_open_pdf'); 
         }
     }
 
@@ -2815,28 +2823,31 @@ if (savedTheme === 'dark') {
             loadAdminMechList();
         }
             else if (tab === 'store') {
-                c.innerHTML = `<h3>Manage Store Items</h3>
-                <div style="background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #ddd; margin-bottom: 20px;">
-                    <input id="store-title" placeholder="Item Title (e.g., Ultimate Organic Cheat Sheet)">
-                    <div style="display:flex; gap:10px;">
-                        <select id="store-type" style="flex:1; padding:10px; border-radius:6px; border:1px solid #ccc;" onchange="updateStoreInputUI()">
-                            <option value="pdf">📄 Premium PDF (Link from Library)</option>
-                            <option value="test">🔒 Mock Test (Link from Practice Tests)</option>
-                            <option value="video">📹 Secret Video Link</option>
-                            <option value="discount">💸 Offline Fee Discount</option>
-                        </select>
-                        <input id="store-cost" type="number" placeholder="Coin Cost" style="flex:1; padding:10px; border-radius:6px; border:1px solid #ccc;">
-                    </div>
-                    <div id="store-link-container" style="margin-top:10px;"></div>
-                    <button class="btn btn-gold" style="width:100%; margin-top:15px; font-size:1.1rem;" onclick="uploadStoreItem()">➕ Add to Store</button>
+            c.innerHTML = `<h3>Manage Store Items</h3>
+            <div style="background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #ddd; margin-bottom: 20px;">
+                <input id="store-title" placeholder="Item Title (e.g., Ultimate Organic Cheat Sheet)">
+                <div style="display:flex; gap:10px;">
+                    <select id="store-type" style="flex:1; padding:10px; border-radius:6px; border:1px solid #ccc;" onchange="updateStoreInputUI()">
+                        <option value="pdf">📄 Premium PDF (Link from Library)</option>
+                        <option value="test">🔒 Mock Test (Link from Practice Tests)</option>
+                        <option value="video">📹 Secret Video Link</option>
+                        <option value="discount">💸 Offline Fee Discount</option>
+                    </select>
+                    <input id="store-cost" type="number" placeholder="Coin Cost" style="flex:1; padding:10px; border-radius:6px; border:1px solid #ccc;">
                 </div>
-                <hr>
-                <h4>Current Store Items</h4>
-                <div id="admin-store-list" class="table-container">Loading...</div>`;
-                
-                updateStoreInputUI(); // Initialize dynamic dropdown
+                <div id="store-link-container" style="margin-top:10px;"></div>
+                <button class="btn btn-gold" style="width:100%; margin-top:15px; font-size:1.1rem;" onclick="uploadStoreItem()">➕ Add to Store</button>
+            </div>
+            <hr>
+            <h4>Current Store Items</h4>
+            <div id="admin-store-list" class="table-container">Loading...</div>`;
+            
+            // Fix: Wait for the HTML to render before trying to find the select element
+            setTimeout(() => {
+                updateStoreInputUI(); 
                 loadAdminStoreList();
-            }
+            }, 0);
+        }
         else if (tab === 'discounts') {
             c.innerHTML = `<h3>Offline Discount Verifications</h3>
             <p style="color:#666;">Cross-check the verification codes presented by students here.</p>
@@ -2864,11 +2875,20 @@ if (savedTheme === 'dark') {
     async function editStudent(id) { 
         const res = await fetch(`/api/admin/student/${id}`); 
         const s = await res.json(); 
-        const newName = prompt("Name:", s.name); 
-        const newPass = prompt("Pass:", s.password); 
-        if(newName && newPass) { 
-            await fetch(`/api/admin/student/${id}`, { method: 'PUT', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ name: newName, password: newPass }) }); 
-            alert("Updated!"); showAdm('students'); 
+        const newName = prompt("Enter new name for student:", s.name); 
+        const newPass = prompt("Enter NEW password (leave blank to keep current):", ""); 
+        
+        if(newName !== null) { 
+            const updateBody = { name: newName };
+            if(newPass) updateBody.password = newPass; // Only send password to backend if changed
+
+            await fetch(`/api/admin/student/${id}`, { 
+                method: 'PUT', 
+                headers: {'Content-Type':'application/json'}, 
+                body: JSON.stringify(updateBody) 
+            }); 
+            alert("Student Profile Updated!"); 
+            showAdm('students'); 
         } 
     }
 
@@ -3737,12 +3757,6 @@ function executeStoreConfirm() {
         } catch(e) { console.error(e); }
     }
 
-    function checkPOTD(sel) {
-        const resDiv = document.getElementById('potd-result'); resDiv.style.display = 'block';
-        if(sel === currentPOTD.correct) { resDiv.innerHTML = `✅ Correct!<br><br><b>Solution:</b><br>${currentPOTD.solution} ${currentPOTD.solutionImage ? `<br><img src="${currentPOTD.solutionImage}" style="max-height:100px; margin-top:5px;">` : ''}`; resDiv.style.background = 'rgba(34, 197, 94, 0.2)'; } 
-        else { resDiv.innerHTML = `❌ Incorrect. Try again or check later!`; resDiv.style.background = 'rgba(239, 68, 68, 0.2)'; }
-    }
-
     async function uploadPOTD() {
         const body = { dateStr: document.getElementById('potd-date').value, text: document.getElementById('potd-text').innerHTML, image: tempImg, options: [0,1,2,3].map(i => document.getElementById('po'+i).value), correct: parseInt(document.getElementById('potd-corr').value), solution: document.getElementById('potd-sol').innerHTML, solutionImage: tempSolImg };
         await fetch('/api/admin/potd', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) }); alert("POTD Set/Updated!"); tempImg = ""; tempSolImg = ""; showAdm('potd');
@@ -4566,20 +4580,20 @@ function checkPOTD(sel) {
     }
 
     const resDiv = document.getElementById('potd-result'); 
+    if(!resDiv) return;
     resDiv.style.display = 'block';
     
     if(sel === currentPOTD.correct) { 
         resDiv.innerHTML = `✅ Correct!<br><br><b>Solution:</b><br>${currentPOTD.solution}`; 
         resDiv.style.background = 'rgba(34, 197, 94, 0.2)'; 
         
-        // Lock it for today and award coins!
+        // Lock locally and sync with DB
         user.lastPotdDate = todayDate;
         localStorage.setItem('arc_user', JSON.stringify(user));
         updateCoins(10, "Solved the Problem of the Day!");
     } else { 
         resDiv.innerHTML = `❌ Incorrect. Try again or check the solution!`; 
         resDiv.style.background = 'rgba(239, 68, 68, 0.2)'; 
-        // We do NOT lock it, so they can keep trying until they learn it!
     }
 }
 
