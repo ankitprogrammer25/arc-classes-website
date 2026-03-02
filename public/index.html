@@ -1839,7 +1839,7 @@ if (savedTheme === 'dark') {
                 }, 4000); // 4 seconds matches CSS transition
             }
         },
-        
+
         // --- 2. ORGANIC REACTION MATCH-UP ---
         reaction: {
             data: [
@@ -2610,31 +2610,21 @@ if (savedTheme === 'dark') {
     
     async function loadAnnouncements() { try { const res = await fetch('/api/announcement'); const data = await res.json(); document.getElementById('anno-marquee').innerHTML = (data.list && data.list.length > 0) ? data.list.join(' &nbsp;|&nbsp; ') : "Welcome"; } catch(e) {} }
     
-    async function loadBlogs() {
+    async function loadBlogs() { 
     try {
-        const res = await fetch('/api/blogs');
-        const blogsRaw = await res.json();
-        
-        // Ensure it's treated as an array even if the API sends something weird
+        const res = await fetch('/api/blogs'); 
+        const blogsRaw = await res.json(); 
         allBlogs = Array.isArray(blogsRaw) ? blogsRaw : []; 
-
-        if (allBlogs.length === 0) {
-            document.getElementById('blog-grid').innerHTML = getEmptyStateGame("No Blogs Published Yet");
-        } else {
-            document.getElementById('blog-grid').innerHTML = allBlogs.map(b => 
-                `<div class="card blog-card" onclick="viewBlog('${b._id}')">
-                    <img src="${b.image || 'https://via.placeholder.com/300'}" alt="cover">
-                    <div class="blog-content-preview">
-                        <h3 class="blog-title">${b.title}</h3>
-                        <small>${new Date(b.date).toLocaleDateString()}</small>
-                    </div>
-                </div>`
-            ).join('');
+        
+        if (allBlogs.length === 0) { 
+            document.getElementById('blog-grid').innerHTML = getEmptyStateGame("No Blogs Published Yet"); 
+        } else { 
+            document.getElementById('blog-grid').innerHTML = allBlogs.map(b => `<div class="card blog-card" onclick="viewBlog('${b._id}')"><img src="${b.image || 'https://via.placeholder.com/300'}" alt="cover"><div class="blog-content-preview"><h3 class="blog-title">${b.title}</h3><small>${new Date(b.date).toLocaleDateString()}</small></div></div>`).join(''); 
         }
-    } catch(e) {
-        console.error("Could not load blogs", e);
-        // FIX: Inject the empty state game if the network request fails!
-        document.getElementById('blog-grid').innerHTML = getEmptyStateGame("No Blogs Published Yet");
+    } catch(e) { 
+        console.error("Could not load blogs", e); 
+        // FIX: Inject the empty state dial if the network request fails!
+        document.getElementById('blog-grid').innerHTML = getEmptyStateGame("No Blogs Published Yet"); 
     }
 }
     
@@ -3040,11 +3030,11 @@ function renderLib(cat) {
 
     async function loadStories() {
     try {
-        const res = await fetch('/api/stories');
-        const dataRaw = await res.json();
+        const res = await fetch('/api/stories'); 
+        const dataRaw = await res.json(); 
         const data = Array.isArray(dataRaw) ? dataRaw : [];
         const bookContainer = document.getElementById('story-book');
-
+        
         if(!bookContainer) return;
 
         // FIX: Inject a beautiful default page if there are no stories yet
@@ -3124,6 +3114,7 @@ function renderLib(cat) {
 
         // --- 3. Create Last Sheet ---
         const lastStoryText = data[data.length - 1];
+        
         html += `
         <div class="book-sheet" style="z-index: 1">
             <div class="page-face page-front">
@@ -3144,7 +3135,7 @@ function renderLib(cat) {
 
         bookContainer.innerHTML = html;
 
-        // --- 4. Animation Logic ---
+        // --- 4. Animation and Pause-on-Hover Logic ---
         const sheets = document.querySelectorAll('.book-sheet');
         let currentSheetIdx = 0;
         let isPaused = false;
@@ -3157,27 +3148,25 @@ function renderLib(cat) {
             if (currentSheetIdx < totalSheets) {
                 sheets[currentSheetIdx].classList.add('flipped');
                 const flipDuration = 1800; 
-                const indexOnLeftStack = currentSheetIdx; 
                 setTimeout((idx) => { 
                     if(sheets[idx]) sheets[idx].style.zIndex = idx + 1; 
-                }, flipDuration * 0.45, currentSheetIdx);
+                }, flipDuration * 0.45, currentSheetIdx); 
                 currentSheetIdx++;
             } else {
                 currentSheetIdx = 0;
                 sheets.forEach((s, i) => {
                     s.classList.remove('flipped');
-                    setTimeout((sheet, idx) => {
-                        sheet.style.zIndex = totalSheets - idx + 1;
-                    }, i * 30, s, i);
+                    setTimeout((sheet, idx) => { sheet.style.zIndex = totalSheets - idx + 1; }, i * 30, s, i);
                 });
             }
         };
 
         window.bookInterval = setInterval(flipNext, 7000);
         const interactionArea = document.querySelector('#book-shadow-container');
-        interactionArea.addEventListener('mouseenter', () => { isPaused = true; });
-        interactionArea.addEventListener('mouseleave', () => { isPaused = false; });
-
+        if(interactionArea) {
+            interactionArea.addEventListener('mouseenter', () => { isPaused = true; });
+            interactionArea.addEventListener('mouseleave', () => { isPaused = false; });
+        }
     } catch(e) { console.error("Error loading Hall of Fame:", e); }
 }
 

@@ -15,7 +15,11 @@ app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // --- 1. DATABASE CONNECTION ---
-const dbLink = "mongodb+srv://ankitprogrammer25:a32x05sYvukG178G@cluster0.0dhqpzv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+const dbLink = process.env.MONGO_URI;
+
+if (!dbLink) {
+    console.error("❌ CRITICAL ERROR: MONGO_URI is missing from your .env file!");
+}
 
 mongoose.connect(dbLink, { 
     serverSelectionTimeoutMS: 5000, 
@@ -181,10 +185,14 @@ app.post('/api/register', async (req, res) => {
 app.post('/api/login', async (req, res) => {
     try {
         const { email, password } = req.body; 
-        if (email === 'admin@arc.com' && password === 'admin123') {
-            return res.json({ success: true, name: "ARC Admin", email: "admin@arc.com", role: 'admin' });
+        
+        // 🔒 SECURE ADMIN CHECK using .env variables
+        if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
+            return res.json({ success: true, name: "ARC Admin", email: process.env.ADMIN_EMAIL, role: 'admin' });
         }
+        
         const student = await Student.findOne({ email });
+        // ... rest of the login code stays the same
         if (!student || student.password !== password) return res.json({ success: false, message: "Invalid Email or Password" });
         
         if (student.status === 'Pending') {
@@ -558,7 +566,7 @@ app.post('/api/material/unlock', async (req, res) => {
     const f = await Material.findById(id);
     const s = await Student.findOne({ email: studentEmail });
     
-    if (studentEmail !== 'admin@arc.com') {
+    if (studentEmail !== process.env.ADMIN_EMAIL) {
         // Double check the Store to prevent bypassing
         const storeItem = await StoreItem.findOne({ type: 'pdf', link: id });
         const isUnlocked = s && s.unlockedItems && s.unlockedItems.includes(id);
@@ -603,7 +611,7 @@ app.post('/api/result-details', async (req, res) => {
 // 🔒 SECURE TEST START
 app.post('/api/test/start', async (req, res) => {
     const { id, code, studentEmail } = req.body; 
-    if (studentEmail !== 'admin@arc.com') {
+    if (studentEmail !== process.env.ADMIN_EMAIL) {
         const s = await Student.findOne({ email: studentEmail });
         if(!s) return res.json({ success: false, message: "Login first" });
         
@@ -682,7 +690,7 @@ app.post('/api/student/analytics', async (req, res) => {
     } catch(e) { res.json({ success: false }); }
 });
 
-const RENDER_EXTERNAL_URL = "https://arc-classes-ankit.onrender.com"; 
+const RENDER_EXTERNAL_URL = process.env.RENDER_EXTERNAL_URL || "http://localhost:5000"; 
 function keepAlive() {
     fetch(RENDER_EXTERNAL_URL + '/api/schedule')
         .then(res => res.text())
