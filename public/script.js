@@ -938,9 +938,51 @@ if (savedTheme === 'dark') {
     }
 
     async function loadManageTests() { const res = await fetch('/api/tests'); const data = await res.json(); document.getElementById('manage-area').innerHTML = `<table><tr><th>Title</th><th>Action</th></tr>${data.map(t => `<tr><td>${t.title}</td><td><button onclick="editTest('${t._id}')">Edit</button> <button style="color:red" onclick="deleteItem('test','${t._id}')">Del</button></td></tr>`).join('')}</table>`; }
-    async function loadManageBlogs() { const res = await fetch('/api/blogs'); const data = await res.json(); document.getElementById('manage-area').innerHTML = `<table><tr><th>Title</th><th>Action</th></tr>${data.map(b => `<tr><td>${b.title}</td><td><button onclick="editBlog('${b._id}')">Edit</button> <button style="color:red" onclick="deleteItem('blog','${b._id}')">Del</button></td></tr>`).join('')}</table>`; }
-    async function loadManageLibrary() { const res = await fetch('/api/materials'); const data = await res.json(); document.getElementById('manage-area').innerHTML = `<table><tr><th>Title</th><th>Action</th></tr>${data.map(m => `<tr><td>${m.title}</td><td><button onclick="editMaterial('${m._id}')">Edit</button> <button style="color:red" onclick="deleteItem('material','${m._id}')">Del</button></td></tr>`).join('')}</table>`; }
+   
+    async function loadManageBlogs() { 
+    try {
+        document.getElementById('manage-area').innerHTML = "<p style='padding:15px; text-align:center;'>Loading...</p>";
+        const res = await fetch('/api/blogs'); 
+        const data = await res.json(); 
+        
+        // Ensure it's an array before mapping to prevent crashes
+        const blogs = Array.isArray(data) ? data : [];
+        if(blogs.length === 0) {
+            document.getElementById('manage-area').innerHTML = "<p style='padding:15px; text-align:center; color:#666;'>No blogs published yet.</p>";
+            return;
+        }
+        
+        document.getElementById('manage-area').innerHTML = `<table><tr><th>Title</th><th>Action</th></tr>${blogs.map(b => `<tr><td>${b.title}</td><td><button class="btn btn-gold btn-small" onclick="editBlog('${b._id}')">Edit</button> <button class="btn btn-red btn-small" onclick="deleteItem('blog','${b._id}')">Del</button></td></tr>`).join('')}</table>`; 
+    } catch(e) {
+        document.getElementById('manage-area').innerHTML = "<p style='color:var(--red); padding:15px;'>Error loading blogs.</p>";
+        console.error("Blog Load Error:", e);
+    }
+}
+
+    async function loadManageLibrary() { 
+    try {
+        document.getElementById('manage-area').innerHTML = "<p style='padding:15px; text-align:center;'>Loading...</p>";
+        const res = await fetch('/api/materials'); 
+        const data = await res.json(); 
+        
+        // Ensure it's an array before mapping to prevent crashes
+        const mats = Array.isArray(data) ? data : [];
+        if(mats.length === 0) {
+            document.getElementById('manage-area').innerHTML = "<p style='padding:15px; text-align:center; color:#666;'>No library materials found.</p>";
+            return;
+        }
+        
+        document.getElementById('manage-area').innerHTML = `<table><tr><th>Title</th><th>Action</th></tr>${mats.map(m => `<tr><td>${m.title}</td><td><button class="btn btn-gold btn-small" onclick="editMaterial('${m._id}')">Edit</button> <button class="btn btn-red btn-small" onclick="deleteItem('material','${m._id}')">Del</button></td></tr>`).join('')}</table>`; 
+    } catch(e) {
+        document.getElementById('manage-area').innerHTML = "<p style='color:var(--red); padding:15px;'>Error loading library.</p>";
+        console.error("Library Load Error:", e);
+    }
+}
+
+
+
     async function loadManageOffline() { const res = await fetch('/api/results/offline'); const data = await res.json(); document.getElementById('manage-area').innerHTML = `<table><tr><th>Title</th><th>Action</th></tr>${data.map(r => `<tr><td>${r.title}</td><td><button onclick="editOffline('${r._id}')">Edit</button> <button style="color:red" onclick="deleteItem('offline-result','${r._id}')">Del</button></td></tr>`).join('')}</table>`; }
+    
     async function loadManageStudents() { showAdm('students'); }
 
     async function editStudent(id) { 
@@ -987,21 +1029,66 @@ if (savedTheme === 'dark') {
     function calcEndTime() { const startVal = document.getElementById('t-start').value; const durVal = document.getElementById('t-dur').value; if (startVal && durVal) { const start = new Date(startVal); const end = new Date(start.getTime() + parseInt(durVal) * 60000); document.getElementById('t-end').value = toLocalISOString(end); } }
     
     async function editTest(id) { const res = await fetch(`/api/admin/test/${id}`); const test = await res.json(); initCreateTest(); document.getElementById('t-title').value = test.title; document.getElementById('t-dur').value = test.duration; document.getElementById('t-code').value = test.accessCode || ""; document.getElementById('t-cat').value = test.category; document.getElementById('t-live').checked = test.isLive; if(test.startTime) document.getElementById('t-start').value = toLocalISOString(new Date(test.startTime)); if(test.endTime) document.getElementById('t-end').value = toLocalISOString(new Date(test.endTime)); draftQ = test.questions || []; renderCreatePalette(); editingTestId = id; document.querySelector("button[onclick='pubTest()']").innerText = "UPDATE TEST"; }
-    async function editBlog(id) { const blog = allBlogs.find(b => b._id === id); if(!blog) return; showAdm('blog'); document.getElementById('b-title').value = blog.title; document.getElementById('b-content').innerHTML = blog.content; if(blog.image) { document.getElementById('b-cover-prev').src = blog.image; document.getElementById('b-cover-prev').style.display = 'block'; tempImg = blog.image; } editingBlogId = id; }
     
-    async function editMaterial(id) { 
-        if(!allMats.length) await loadMaterials(); 
-        const mat = allMats.find(m => m._id === id); 
-        if(!mat) return; 
-        editingMaterialId = id; 
-        showAdm('upload'); 
-        document.getElementById('m-title').value = mat.title; 
-        document.getElementById('m-link').value = mat.link; 
-        document.getElementById('m-cat').value = mat.category; 
-        document.getElementById('m-code').value = mat.accessCode || ""; 
-        if(mat.image) { document.getElementById('m-prev').src = mat.image; document.getElementById('m-prev').style.display = 'block'; tempImg = mat.image; } else { tempImg = ""; }
+    
+    async function editBlog(id) { 
+    // Fetch if the global array is empty
+    if (!allBlogs || allBlogs.length === 0) await loadBlogs();
+    
+    const blog = allBlogs.find(b => b._id === id); 
+    if (!blog) return alert("Blog not found!"); 
+    
+    showAdm('blog'); // Renders the tab (which resets editingBlogId)
+    editingBlogId = id; // Re-assign the correct ID immediately after
+    
+    // Update the UI headers dynamically so it doesn't say "Post Blog"
+    document.querySelector('#adm-content h3').innerText = "Edit Blog";
+    document.querySelector('#adm-content button[onclick="postBlog()"]').innerText = "UPDATE BLOG";
+    
+    document.getElementById('b-title').value = blog.title; 
+    document.getElementById('b-content').innerHTML = blog.content; 
+    
+    if (blog.image) { 
+        document.getElementById('b-cover-prev').src = blog.image; 
+        document.getElementById('b-cover-prev').style.display = 'block'; 
+        tempImg = blog.image; 
+    } else {
+        document.getElementById('b-cover-prev').style.display = 'none'; 
+        tempImg = "";
     }
+}
+
+
+    async function editMaterial(id) { 
+    // Fetch if the global array is empty
+    if (!allMats || allMats.length === 0) await loadMaterials(); 
     
+    const mat = allMats.find(m => m._id === id); 
+    if (!mat) return alert("Material not found!"); 
+    
+    editingMaterialId = id; 
+    showAdm('upload'); 
+    
+    document.getElementById('m-title').value = mat.title; 
+    document.getElementById('m-link').value = mat.link; 
+    
+    // Safety check for dropdown mapping
+    const catDropdown = document.getElementById('m-cat');
+    if(catDropdown) catDropdown.value = mat.category; 
+    
+    document.getElementById('m-code').value = mat.accessCode || ""; 
+    
+    if (mat.image) { 
+        document.getElementById('m-prev').src = mat.image; 
+        document.getElementById('m-prev').style.display = 'block'; 
+        tempImg = mat.image; 
+    } else { 
+        document.getElementById('m-prev').style.display = 'none';
+        tempImg = ""; 
+    }
+}
+
+
     async function editOffline(id) { const res = await fetch(`/api/admin/offline-result/${id}`); const data = await res.json(); editingOfflineId = id; offlineDraft = data.records; showAdm('offline'); document.getElementById('off-title').value = data.title; renderOfflineDraft(); }
 
     async function uploadMat() { 
@@ -1013,9 +1100,26 @@ if (savedTheme === 'dark') {
     loadMaterials(); // ADD THIS LINE TO AUTO-REFRESH THE LIBRARY
 }
 
-    function addOfflineStudent() { const name = document.getElementById('off-name').value; const total = document.getElementById('off-total').value; const obt = document.getElementById('off-obt').value; const link = document.getElementById('off-link').value; if(!name || !total || !obt) return alert("Fill details"); offlineDraft.push({ studentName: name, totalMarks: total, obtainedMarks: obt, copyLink: link }); renderOfflineDraft(); document.getElementById('off-name').value = ""; document.getElementById('off-obt').value = ""; document.getElementById('off-link').value = ""; }
+    function addOfflineStudent() { const name = document.getElementById('off-name').value; 
+        const total = document.getElementById('off-total').value; 
+        const obt = document.getElementById('off-obt').value; 
+        const link = document.getElementById('off-link').value; 
+        if(!name || !total || !obt) return alert("Fill details"); 
+        offlineDraft.push({ studentName: name, totalMarks: total, obtainedMarks: obt, copyLink: link }); 
+        renderOfflineDraft(); document.getElementById('off-name').value = ""; 
+        document.getElementById('off-obt').value = ""; 
+        document.getElementById('off-link').value = ""; }
+
+    
     function renderOfflineDraft() { document.getElementById('off-preview-body').innerHTML = offlineDraft.map((s, i) => `<tr><td>${s.studentName}</td><td>${s.totalMarks}</td><td>${s.obtainedMarks}</td><td>${s.copyLink?'Yes':'No'}</td><td><button style="color:red" onclick="offlineDraft.splice(${i},1); renderOfflineDraft()">X</button></td></tr>`).join(''); }
-    async function postOffline() { if(offlineDraft.length === 0) return alert("No Data"); const method = editingOfflineId?'PUT':'POST'; const url = editingOfflineId?`/api/admin/offline-result/${editingOfflineId}`:'/api/admin/offline-result'; await fetch(url, { method, headers: {'Content-Type':'application/json'}, body: JSON.stringify({ title: document.getElementById('off-title').value, records: offlineDraft }) }); alert("Saved!"); offlineDraft = []; editingOfflineId = null; showAdm('offline'); }
+    
+    async function postOffline() { if(offlineDraft.length === 0) return alert("No Data"); 
+        const method = editingOfflineId?'PUT':'POST'; 
+        const url = editingOfflineId?`/api/admin/offline-result/${editingOfflineId}`:'/api/admin/offline-result'; 
+        await fetch(url, { method, headers: {'Content-Type':'application/json'}, 
+            body: JSON.stringify({ title: document.getElementById('off-title').value, records: offlineDraft }) }); 
+            alert("Saved!"); offlineDraft = []; editingOfflineId = null; showAdm('offline'); }
+
     
     function exec(cmd, val=null) { document.execCommand(cmd, false, val); }
 
@@ -1625,7 +1729,10 @@ function renderLib(cat) {
         await fetch(url, { method, headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) }); alert("Saved!"); showAdm('manage'); loadManageSchedule();
     }
 
-    async function loadStories() {
+
+
+    // --- FIXED: HALL OF FAME BOOKLET LOGIC ---
+async function loadStories() {
     try {
         const res = await fetch('/api/stories'); 
         const dataRaw = await res.json(); 
@@ -1634,10 +1741,10 @@ function renderLib(cat) {
         
         if(!bookContainer) return;
 
-        // FIX: Inject a beautiful default page if there are no stories yet
+        // FIX 1: Empty state now renders as a beautiful, fully OPEN book
         if (data.length === 0) {
             bookContainer.innerHTML = `
-            <div class="book-sheet" style="z-index: 1">
+            <div class="book-sheet flipped" style="z-index: 2;">
                 <div class="page-face page-front" style="background: var(--primary); color: white; justify-content: center; align-items: center; text-align: center;">
                     <div class="content-wrapper">
                         <h2 style="font-size: 2.5rem; margin:0 0 10px 0; color: var(--gold);">HALL OF FAME</h2>
@@ -1650,10 +1757,19 @@ function renderLib(cat) {
                         <div style="font-size: 4rem; margin-bottom: 20px;">🌟</div>
                         <h3 style="color:var(--primary); margin:0;">No Stories Yet!</h3>
                         <p style="color:#666; font-size: 1.1rem;">Be the first student to make it to the Hall of Fame.</p>
-                        <button class="btn btn-gold" style="margin-top: 20px;" onclick="openModal('story-modal')">Add Your Story</button>
                     </div>
                 </div>
+            </div>
+            <div class="book-sheet" style="z-index: 1;">
+                <div class="page-face page-front" style="justify-content: center; align-items: center; text-align: center; background: white;">
+                    <div class="content-wrapper" style="display:flex; flex-direction:column; justify-content:center; align-items:center; height:100%;">
+                        <p style="color:#444; font-size: 1.1rem; max-width: 80%; line-height: 1.5;">Your success story will inspire the next batch of students.</p>
+                        <button class="btn btn-gold" style="margin-top: 20px; font-size: 1.1rem; box-shadow: 0 4px 10px rgba(251,191,36,0.3);" onclick="openModal('story-modal')">✍️ Add Your Story</button>
+                    </div>
+                </div>
+                <div class="page-face page-back" style="background: var(--primary);"></div>
             </div>`;
+            if(window.bookInterval) clearInterval(window.bookInterval);
             return;
         }
 
@@ -1694,8 +1810,8 @@ function renderLib(cat) {
                         <p class="book-experience">${currentStoryText.experience}</p>
                         <div class="student-details">
                             <p class="book-name">${currentStoryText.name}</p>
-                            <p class="book-status">${currentStoryText.status}</p>
-                            ${(user && user.role === 'admin') ? `<button class="btn-small btn-red" onclick="deleteItem('story', '${currentStoryText._id}')" style="margin-top: 10px; z-index: 10;">Delete</button>` : ''}
+                            <p class="book-status">${currentStoryText.status || ''}</p>
+                            ${(typeof user !== 'undefined' && user && user.role === 'admin') ? `<button class="btn btn-red btn-small" onclick="deleteItem('story', '${currentStoryText._id}')" style="margin-top: 10px; align-self: flex-end;">Delete</button>` : ''}
                         </div>
                     </div>
                 </div>
@@ -1719,8 +1835,8 @@ function renderLib(cat) {
                     <p class="book-experience">${lastStoryText.experience}</p>
                     <div class="student-details">
                         <p class="book-name">${lastStoryText.name}</p>
-                        <p class="book-status">${lastStoryText.status}</p>
-                        ${(user && user.role === 'admin') ? `<button class="btn-small btn-red" onclick="deleteItem('story', '${lastStoryText._id}')" style="margin-top: 10px; z-index: 10;">Delete</button>` : ''}
+                        <p class="book-status">${lastStoryText.status || ''}</p>
+                        ${(typeof user !== 'undefined' && user && user.role === 'admin') ? `<button class="btn btn-red btn-small" onclick="deleteItem('story', '${lastStoryText._id}')" style="margin-top: 10px; align-self: flex-end;">Delete</button>` : ''}
                     </div>
                 </div>
             </div>
@@ -1757,14 +1873,24 @@ function renderLib(cat) {
             }
         };
 
-        window.bookInterval = setInterval(flipNext, 7000);
-        const interactionArea = document.querySelector('#book-shadow-container');
+        // FIX 2: Open the book almost immediately so users know it's a dynamic template
+        setTimeout(() => {
+            if(currentSheetIdx === 0 && !isPaused) flipNext();
+        }, 1000);
+
+        // Continue flipping every 4 seconds
+        window.bookInterval = setInterval(flipNext, 4000); 
+
+        // FIX 3: Cleanly bind mouse events to prevent stacked listeners
+        const interactionArea = document.getElementById('book-shadow-container');
         if(interactionArea) {
-            interactionArea.addEventListener('mouseenter', () => { isPaused = true; });
-            interactionArea.addEventListener('mouseleave', () => { isPaused = false; });
+            interactionArea.onmouseenter = () => { isPaused = true; };
+            interactionArea.onmouseleave = () => { isPaused = false; };
         }
     } catch(e) { console.error("Error loading Hall of Fame:", e); }
 }
+
+
 
     async function submitStory() {
         const body = { name: document.getElementById('st-name').value, status: document.getElementById('st-status').value, experience: document.getElementById('st-exp').value, image: tempImg };
