@@ -2154,7 +2154,15 @@ if (savedTheme === 'dark') {
                  <input type="file" onchange="encodeImg(this, 'm-prev')" style="margin-top:5px;">
                  <img id="m-prev" style="height:100px; margin-top:10px; display:none; object-fit:contain; border:1px solid #ddd;">
             </div>
-            <select id="m-cat"><option>11th Class</option><option>12th Class</option><option>Notes</option><option>Test Series</option></select>
+           <select id="m-cat">
+    <option>11th Class Books</option>
+    <option>12th Class Books</option>
+    <option>Organic Topics</option>
+    <option>Physical Topics</option>
+    <option>Inorganic Topics</option>
+    <option>Coaching Notes</option>
+    <option>Test Series Files</option>
+</select>
             <input id="m-code" placeholder="Pass (Opt)">
             <button class="btn btn-gold" style="width:100%; margin-top:10px;" onclick="uploadMat()">${editingMaterialId ? 'UPDATE' : 'UPLOAD'}</button>`;
         }
@@ -2443,12 +2451,13 @@ if (savedTheme === 'dark') {
     async function editOffline(id) { const res = await fetch(`/api/admin/offline-result/${id}`); const data = await res.json(); editingOfflineId = id; offlineDraft = data.records; showAdm('offline'); document.getElementById('off-title').value = data.title; renderOfflineDraft(); }
 
     async function uploadMat() { 
-        const body = { title: document.getElementById('m-title').value, link: document.getElementById('m-link').value, image: tempImg, category: document.getElementById('m-cat').value, accessCode: document.getElementById('m-code').value }; 
-        const method = editingMaterialId ? 'PUT' : 'POST'; const url = editingMaterialId ? `/api/admin/material/${editingMaterialId}` : '/api/admin/material'; 
-        await fetch(url, { method, headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) }); 
-        alert(editingMaterialId ? "Updated!" : "Uploaded!"); 
-        editingMaterialId = null; tempImg = ""; showAdm('upload'); 
-    }
+    const body = { title: document.getElementById('m-title').value, link: document.getElementById('m-link').value, image: tempImg, category: document.getElementById('m-cat').value, accessCode: document.getElementById('m-code').value }; 
+    const method = editingMaterialId ? 'PUT' : 'POST'; const url = editingMaterialId ? `/api/admin/material/${editingMaterialId}` : '/api/admin/material'; 
+    await fetch(url, { method, headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) }); 
+    alert(editingMaterialId ? "Updated!" : "Uploaded!"); 
+    editingMaterialId = null; tempImg = ""; showAdm('upload'); 
+    loadMaterials(); // ADD THIS LINE TO AUTO-REFRESH THE LIBRARY
+}
 
     function addOfflineStudent() { const name = document.getElementById('off-name').value; const total = document.getElementById('off-total').value; const obt = document.getElementById('off-obt').value; const link = document.getElementById('off-link').value; if(!name || !total || !obt) return alert("Fill details"); offlineDraft.push({ studentName: name, totalMarks: total, obtainedMarks: obt, copyLink: link }); renderOfflineDraft(); document.getElementById('off-name').value = ""; document.getElementById('off-obt').value = ""; document.getElementById('off-link').value = ""; }
     function renderOfflineDraft() { document.getElementById('off-preview-body').innerHTML = offlineDraft.map((s, i) => `<tr><td>${s.studentName}</td><td>${s.totalMarks}</td><td>${s.obtainedMarks}</td><td>${s.copyLink?'Yes':'No'}</td><td><button style="color:red" onclick="offlineDraft.splice(${i},1); renderOfflineDraft()">X</button></td></tr>`).join(''); }
@@ -2603,7 +2612,14 @@ if (savedTheme === 'dark') {
             alert("Error: " + e.message); 
         } 
     }
-    async function postBlog() { const method = editingBlogId ? 'PUT' : 'POST'; const url = editingBlogId ? `/api/admin/blog/${editingBlogId}` : '/api/admin/blog'; await fetch(url, { method, headers:{'Content-Type':'application/json'}, body: JSON.stringify({ title: document.getElementById('b-title').value, content: document.getElementById('b-content').innerHTML, image: tempImg }) }); alert("Saved!"); tempImg = ""; editingBlogId = null; }
+    async function postBlog() { 
+    const method = editingBlogId ? 'PUT' : 'POST'; 
+    const url = editingBlogId ? `/api/admin/blog/${editingBlogId}` : '/api/admin/blog'; 
+    await fetch(url, { method, headers:{'Content-Type':'application/json'}, body: JSON.stringify({ title: document.getElementById('b-title').value, content: document.getElementById('b-content').innerHTML, image: tempImg }) }); 
+    alert("Saved!"); 
+    tempImg = ""; editingBlogId = null; 
+    loadBlogs(); // ADD THIS LINE TO AUTO-REFRESH THE BLOGS
+}
     async function postAnnounce() { await fetch('/api/admin/announcement/add', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({text: document.getElementById('ann-text').value}) }); showAdm('announce'); loadAnnouncements(); }
     async function delAnnounce(text) { await fetch('/api/admin/announcement/delete', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({text}) }); showAdm('announce'); }
     function filterTable(inp) { const filter = inp.value.toUpperCase(); const tr = document.getElementById('adm-res-list').getElementsByTagName('tr'); for (let i=0; i<tr.length; i++) { const txt = tr[i].innerText; tr[i].style.display = txt.toUpperCase().indexOf(filter) > -1 ? "" : "none"; } }
@@ -2964,7 +2980,7 @@ function executeStoreConfirm() {
     
     // 🔄 UPDATE: Cool Premium Badges for Library Files
 function renderLib(cat) { 
-    const items = allMats.filter(m => m.category === cat || (cat === '11th Class' && m.category.includes('11'))); 
+    const items = allMats.filter(m => m.category === cat || (cat === '11th Class' && m.category && m.category.includes('11')));
     if (items.length === 0) { document.getElementById('lib-content').innerHTML = getEmptyStateGame(`No items available in ${cat}`); } 
     else { 
         document.getElementById('lib-content').innerHTML = items.map(m => {
@@ -3064,8 +3080,7 @@ function renderLib(cat) {
         
         // --- 1. Create the Cover Sheet ---
         const firstStory = data[0];
-        const firstFallbackImg = `https://ui-avatars.com/api/?name=${encodeURIComponent(firstStory.name)}&background=0f172a&color=fbbf24&bold=true&size=180`;
-        
+        const firstFallbackImg = `https://ui-avatars.com/api/?name=${encodeURIComponent(firstStory?.name || 'Student')}&background=0f172a&color=fbbf24&bold=true&size=180`;
         html += `
         <div class="book-sheet" style="z-index: ${data.length + 1}">
             <div class="page-face page-front" style="background: var(--primary); color: white; justify-content: center; align-items: center; text-align: center;">
@@ -3087,7 +3102,7 @@ function renderLib(cat) {
         for (let i = 0; i < data.length - 1; i++) {
             const currentStoryText = data[i];
             const nextStoryPhoto = data[i+1];
-            const fallbackImgNext = `https://ui-avatars.com/api/?name=${encodeURIComponent(nextStoryPhoto.name)}&background=0f172a&color=fbbf24&bold=true&size=180`;
+            const fallbackImgNext = `https://ui-avatars.com/api/?name=${encodeURIComponent(nextStoryPhoto?.name || 'Student')}&background=0f172a&color=fbbf24&bold=true&size=180`;
             const zIndexRight = data.length - i; 
 
             html += `
