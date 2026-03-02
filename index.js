@@ -80,6 +80,17 @@ const ResultSchema = new mongoose.Schema({
 });
 const Result = mongoose.model('Result', ResultSchema);
 
+
+// 🎡 NEW: FORTUNE WHEEL SCHEMA
+const WheelPrizeSchema = new mongoose.Schema({
+    label: String,     // e.g., "50 Coins", "10% Discount", "Try Again"
+    type: String,      // 'coins', 'discount', 'none'
+    value: Number,     // e.g., 50, 10, 0
+    color: String      // Hex color for the slice
+});
+const WheelPrize = mongoose.model('WheelPrize', WheelPrizeSchema);
+
+
 // 📜 NEW: COIN HISTORY LEDGER
 const CoinHistorySchema = new mongoose.Schema({
     email: String,
@@ -219,6 +230,7 @@ app.delete('/api/admin/blog/:id', async (req, res) => { await Blog.findByIdAndDe
 app.get('/api/schedule', async (req, res) => {
     try { res.json(await Schedule.find().sort({ time: 1 })); } catch(e) { res.json([]); }
 });
+
 app.post('/api/admin/schedule', async (req, res) => { await new Schedule(req.body).save(); res.json({ success: true }); });
 app.put('/api/admin/schedule/:id', async (req, res) => { await Schedule.findByIdAndUpdate(req.params.id, req.body); res.json({ success: true }); });
 app.delete('/api/admin/schedule/:id', async (req, res) => { await Schedule.findByIdAndDelete(req.params.id); res.json({ success: true }); });
@@ -226,6 +238,7 @@ app.delete('/api/admin/schedule/:id', async (req, res) => { await Schedule.findB
 app.get('/api/stories', async (req, res) => {
     try { res.json(await SuccessStory.find().sort({ date: -1 })); } catch(e) { res.json([]); }
 });
+
 app.post('/api/story', async (req, res) => { try { await new SuccessStory(req.body).save(); res.json({ success: true }); } catch(e) { res.json({ success: false }); } });
 app.delete('/api/admin/story/:id', async (req, res) => { await SuccessStory.findByIdAndDelete(req.params.id); res.json({ success: true }); });
 
@@ -239,6 +252,57 @@ app.post('/api/admin/offline-result', async (req, res) => {
         res.json({ success: true });
     } catch(e) { res.json({ success: false }); }
 });
+
+// 🎡 --- WHEEL API ROUTES ---
+app.get('/api/wheel', async (req, res) => {
+    try { 
+        let prizes = await WheelPrize.find(); 
+        // If wheel is empty, provide default fallback slices so it doesn't break
+        if (prizes.length === 0) {
+            prizes = [
+                { label: "Try Again", type: "none", value: 0, color: "#cbd5e1" },
+                { label: "10 Coins", type: "coins", value: 10, color: "#38bdf8" },
+                { label: "Jackpot 100", type: "coins", value: 100, color: "#fbbf24" },
+                { label: "Oops!", type: "none", value: 0, color: "#ef4444" }
+            ];
+        }
+        res.json(prizes); 
+    } catch(e) { res.json([]); }
+});
+
+app.post('/api/admin/wheel', async (req, res) => {
+    try { await new WheelPrize(req.body).save(); res.json({ success: true }); } catch(e) { res.json({ success: false }); }
+});
+
+app.delete('/api/admin/wheel/:id', async (req, res) => {
+    try { await WheelPrize.findByIdAndDelete(req.params.id); res.json({ success: true }); } catch(e) { res.json({ success: false }); }
+});
+
+app.post('/api/student/spin', async (req, res) => {
+    try {
+        const { email, cost, prizeType, prizeValue, prizeLabel } = req.body;
+        const student = await Student.findOne({ email });
+        
+        if (!student) return res.json({ success: false, message: "Student not found" });
+        if (student.coins < cost) return res.json({ success: false, message: "Not enough coins to spin!" });
+
+        // Deduct spin cost
+        student.coins -= cost; 
+        
+        // Award Prize
+        if (prizeType === 'coins' && prizeValue > 0) {
+            student.coins += prizeValue;
+        }
+        await student.save();
+        
+        // Log in Ledger
+        const netCoins = prizeType === 'coins' ? prizeValue - cost : -cost;
+        await new CoinHistory({ email, amount: netCoins, reason: `Wheel Spin Result: ${prizeLabel}` }).save();
+
+        res.json({ success: true, coins: student.coins });
+    } catch (e) { res.json({ success: false, message: "Server error" }); }
+});
+
 app.put('/api/admin/offline-result/:id', async (req, res) => { 
     try {
         const { title, records } = req.body;
@@ -248,6 +312,7 @@ app.put('/api/admin/offline-result/:id', async (req, res) => {
         res.json({ success: true });
     } catch(e) { res.json({ success: false }); }
 });
+
 app.delete('/api/admin/offline-result/:id', async (req, res) => { await OfflineResult.findByIdAndDelete(req.params.id); res.json({ success: true }); });
 
 // LOGO SETTINGS ROUTES
@@ -486,8 +551,8 @@ app.post('/api/student/coin-history', async (req, res) => {
     } catch(e) { res.json([]); }
 });
 
-
-// 🔄 UPDATE: Secure Material Unlock (Enforces Password on Premium items)
+// 🔄 UPDATE: Material Unlock to check for Premium Purchases
+// 🔒 SECURE MATERIAL UNLOCK
 app.post('/api/material/unlock', async (req, res) => {
     const { id, code, studentEmail } = req.body;
     const f = await Material.findById(id);
@@ -502,11 +567,12 @@ app.post('/api/material/unlock', async (req, res) => {
         }
     }
 
-    // 🔒 BUG FIX: If it has a password, verify it even if they own the premium item!
-    if(f && (!f.accessCode || f.accessCode === code)) {
+    const isUnlocked = s && s.unlockedItems && s.unlockedItems.includes(id);
+
+    if(f && (!f.accessCode || f.accessCode === code || isUnlocked)) {
         res.json({ success: true, link: f.link });
     } else { 
-        res.json({ success: false, message: "Wrong Password" }); 
+        res.json({ success: false }); 
     }
 });
 

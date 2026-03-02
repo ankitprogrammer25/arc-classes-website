@@ -28,22 +28,7 @@
             .menu.active { display: flex; }
             .menu-toggle { display: block; }
         }
-   
-        /* 👤 PROFILE DROPDOWN CSS */
-        .nav-profile-container { position: relative; display: none; align-items: center; cursor: pointer; margin-left: 15px; }
-        .nav-avatar { width: 38px; height: 38px; border-radius: 50%; border: 2px solid var(--gold); object-fit: cover; background: white; transition: transform 0.2s; }
-        .nav-avatar:hover { transform: scale(1.1); }
-        .nav-dropdown { position: absolute; top: 55px; right: 0; background: white; box-shadow: 0 5px 15px rgba(0,0,0,0.2); border-radius: 8px; width: 160px; display: none; flex-direction: column; overflow: hidden; z-index: 1001; }
-        .nav-dropdown.active { display: flex; animation: fadeIn 0.2s; }
-        .nav-dropdown a { padding: 12px 15px; color: var(--primary); text-decoration: none; border-bottom: 1px solid #eee; transition: 0.2s; font-size: 0.95rem; font-weight: bold; cursor: pointer; }
-        .nav-dropdown a:hover { background: #f1f5f9; color: var(--gold); }
-        .nav-dropdown a:last-child { border-bottom: none; }
-        
-        /* Dark Mode Support for Dropdown */
-        body.dark-mode .nav-dropdown { background: #1e293b; border: 1px solid #334155; }
-        body.dark-mode .nav-dropdown a { color: #cbd5e1; border-bottom-color: #334155; }
-        body.dark-mode .nav-dropdown a:hover { background: #0f172a; color: var(--gold); }
-
+ 
         .arc-coin {
             display: inline-block;
             width: 1.3em; 
@@ -329,120 +314,6 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
             z-index: 10;
             letter-spacing: 2px;
-        }
-
-        /* ⏺️ NEUMORPHIC UI THEME (Soft 3D) */
-        .neu-card {
-            background: var(--light);
-            border-radius: 16px;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            position: relative;
-            border: none;
-        }
-        
-        /* Unlocked / Normal State (Pops OUT of the screen) */
-        .neu-unlocked {
-            box-shadow: 8px 8px 16px #e2e8f0, -8px -8px 16px #ffffff;
-        }
-        .neu-unlocked:hover {
-            box-shadow: 12px 12px 20px #cbd5e1, -12px -12px 20px #ffffff;
-            transform: translateY(-3px);
-        }
-        
-        /* Locked / Premium State (Pressed INTO the screen) */
-        .neu-locked {
-            box-shadow: inset 6px 6px 12px #e2e8f0, inset -6px -6px 12px #ffffff;
-            opacity: 0.85;
-        }
-        
-        /* Neumorphic Dark Mode Support */
-        body.dark-mode .neu-card { background: #0f172a; }
-        body.dark-mode .neu-unlocked {
-            box-shadow: 8px 8px 16px #090e19, -8px -8px 16px #15203b;
-        }
-        body.dark-mode .neu-unlocked:hover {
-            box-shadow: 12px 12px 20px #060910, -12px -12px 20px #1a2744;
-        }
-        body.dark-mode .neu-locked {
-            box-shadow: inset 6px 6px 12px #090e19, inset -6px -6px 12px #15203b;
-        }
-        
-        /* Soft 3D Buttons */
-        .neu-btn {
-            border: none;
-            padding: 12px 20px;
-            border-radius: 10px;
-            font-weight: 800;
-            transition: all 0.2s ease;
-            background: var(--light);
-            color: var(--primary);
-            box-shadow: 4px 4px 8px #e2e8f0, -4px -4px 8px #ffffff;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-        .neu-btn:active {
-            box-shadow: inset 4px 4px 8px #e2e8f0, inset -4px -4px 8px #ffffff;
-            transform: scale(0.98);
-        }
-        body.dark-mode .neu-btn {
-            background: #0f172a;
-            color: #e2e8f0;
-            box-shadow: 4px 4px 8px #090e19, -4px -4px 8px #15203b;
-        }
-        body.dark-mode .neu-btn:active {
-            box-shadow: inset 4px 4px 8px #090e19, inset -4px -4px 8px #15203b;
-        }
-        
-        /* Button Accent Colors */
-        .neu-btn.gold { color: #b45309; }
-        .neu-btn.green { color: var(--green); }
-        body.dark-mode .neu-btn.gold { color: var(--gold); }
-        
-        /* Embossed Premium Badge */
-        .neu-badge {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: var(--light);
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 900;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            box-shadow: 3px 3px 6px #e2e8f0, -3px -3px 6px #ffffff;
-            color: #b45309;
-            z-index: 10;
-        }
-        body.dark-mode .neu-badge {
-            background: #0f172a;
-            box-shadow: 3px 3px 6px #090e19, -3px -3px 6px #15203b;
-            color: var(--gold);
-        }
-        .neu-badge.unlocked { color: var(--green); }
-        
-        /* Pressed-in Image Container for Library */
-        .neu-img-container {
-            height: 180px; 
-            width: 100%; 
-            background: transparent; 
-            border-radius: 10px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            box-shadow: inset 4px 4px 8px #e2e8f0, inset -4px -4px 8px #ffffff; 
-            overflow: hidden;
-            margin-top: 25px;
-        }
-        body.dark-mode .neu-img-container {
-            box-shadow: inset 4px 4px 8px #090e19, inset -4px -4px 8px #15203b; 
         }
 
         /* 🔓 KEY & LOCK ANIMATION CSS */
@@ -945,14 +816,7 @@ body.dark-mode .logo {
         <a onclick="toggleNightLab()" id="night-toggle" style="cursor: pointer; font-weight: bold; transition: 0.3s;">🌙 Night Lab</a>
         <a onclick="show('login')" id="nav-login">Login</a>
         <a onclick="show('admin')" id="nav-admin" style="display:none; background: var(--red); padding: 5px 10px; border-radius: 4px;">TEACHER</a>
-        
-        <div class="nav-profile-container" id="nav-profile-container" onclick="toggleProfileDropdown(event)">
-            <img src="" id="nav-avatar-img" class="nav-avatar" title="My Profile">
-            <div class="nav-dropdown" id="nav-profile-dropdown">
-                <a onclick="openProfileModal()">👤 My Profile</a>
-                <a onclick="logout()" style="color: var(--red);">🚪 Logout</a>
-            </div>
-        </div>
+        <a onclick="logout()" id="nav-logout" style="display:none">Logout</a>
     </div>
 </nav>
 
@@ -1055,8 +919,7 @@ body.dark-mode .logo {
             </div>
         </div>
 
-      </div> 
-    </div> </div> <div id="login" class="section">
+        </div> </div>  <div id="login" class="section">
     <div class="desk-scene" id="deskScene">
         <div class="lamp-container">
             <div class="lamp-shade"></div>
@@ -1151,6 +1014,7 @@ body.dark-mode .logo {
         <button class="btn btn-gold btn-small" onclick="showAdm('store')">🛒 Store</button>
         <button class="btn btn-gold btn-small" onclick="showAdm('discounts')">🎫 Discounts</button>
         <button class="btn btn-red btn-small" onclick="showAdm('manage')">🛠️ Manage</button>
+        <button class="btn btn-gold btn-small" onclick="showAdm('wheel')">🎡 Wheel Offers</button>
     </div>
     <div id="adm-content" style="background:white; padding:15px; border-radius:10px; border:1px solid #ddd; min-height:300px; overflow-x:auto;">Select option.</div>
 </div>
@@ -1493,10 +1357,7 @@ body.dark-mode .logo {
     <div class="modal-content" style="max-width: 900px; height: 85vh; display: flex; flex-direction: column; padding: 0; overflow: hidden; border: 2px solid var(--gold);">
         <div style="padding: 15px; background: var(--primary); color: white; display: flex; justify-content: space-between; align-items: center;">
             <h3 id="pdf-title" style="margin: 0; color: var(--gold);">Document Viewer</h3>
-            <div style="display: flex; gap: 10px; align-items: center;">
-                <a id="pdf-ext-link" href="" target="_blank" class="btn btn-gold btn-small" style="text-decoration:none; padding: 4px 10px; font-weight:bold; color:var(--primary);">↗ Open in New Tab</a>
-                <button class="btn btn-red btn-small" onclick="closeModal('pdf-modal'); document.getElementById('pdf-frame').src='';" style="font-size: 1.2rem; padding: 2px 10px;">&times;</button>
-            </div>
+            <button class="btn btn-red btn-small" onclick="closeModal('pdf-modal'); document.getElementById('pdf-frame').src='';" style="font-size: 1.2rem; padding: 2px 10px;">&times;</button>
         </div>
         <div style="flex-grow: 1; background: #e2e8f0; position: relative;">
             <iframe id="pdf-frame" style="width: 100%; height: 100%; border: none; position: absolute; top: 0; left: 0;" src=""></iframe>
@@ -1606,19 +1467,12 @@ body.dark-mode .logo {
 
     function openModal(id) { document.getElementById(id).style.display = 'flex'; document.body.classList.add('modal-open'); }
     function closeModal(id) { 
-        const modal = document.getElementById(id);
-        if(modal) modal.style.display = 'none'; 
-        
-        // Fix: Only remove the scroll lock if NO other modals are currently open
-        const openModals = Array.from(document.querySelectorAll('.modal')).filter(m => m.style.display === 'flex');
-        if (openModals.length === 0) {
-            document.body.classList.remove('modal-open'); 
-        }
-
+        document.getElementById(id).style.display = 'none'; 
+        document.body.classList.remove('modal-open'); 
         if(id === 'pdf-modal') {
             toggleWatermark(false); 
             document.getElementById('pdf-frame').src = '';
-            localStorage.removeItem('arc_open_pdf'); 
+            localStorage.removeItem('arc_open_pdf'); // 🧹 CLEAR PDF STATE
         }
     }
 
@@ -1691,7 +1545,7 @@ if (savedTheme === 'dark') {
         
         if(user) {
             document.getElementById('nav-login').style.display = 'none';
-            updateNavProfileUI();
+            document.getElementById('nav-logout').style.display = 'block';
             document.getElementById('nav-doubts').style.display = 'block'; 
             document.getElementById('nav-store').style.display = 'block';
             checkDailyLogin(); // This handles rendering the coins and giving the daily bonus!
@@ -1726,12 +1580,7 @@ if (savedTheme === 'dark') {
         if (savedPdf && user) {
             setTimeout(() => openPdfViewer(savedPdf.title, savedPdf.link), 500); 
         }
-        // If user is logged in but the last saved section was 'login', force them to 'home'
-        if(user) {
-            show(lastSection === 'login' ? 'home' : lastSection);
-        } else {
-            show('home');
-        }
+        if(user) show(lastSection); else show('home');
     };
 
     let user = JSON.parse(localStorage.getItem('arc_user'));
@@ -1799,10 +1648,6 @@ if (savedTheme === 'dark') {
     }
 
     function show(id) {
-        // PREVENT LOGGED-IN USERS FROM ACCESSING THE LOGIN PAGE
-        if (id === 'login' && user) {
-            return show('home'); 
-        }
         if((id==='tests' || id==='live' || id==='results' || id==='doubts') && !user) return show('login');
         if(id === 'schedule') loadSchedule();
         if(id === 'doubts') loadStudentDoubts(); 
@@ -1822,35 +1667,30 @@ if (savedTheme === 'dark') {
     // ==========================================
     // 🎮 ARC MULTI-GAME COMPONENT (ROTARY DIAL)
     // ==========================================
+   // ==========================================
+    // 🎮 ARC MULTI-GAME COMPONENT (NEW EDUTAINMENT)
+    // ==========================================
     window.arcGames = { instances: {} };
 
     function getEmptyStateGame(message) {
         const id = Math.random().toString(36).substr(2, 9);
         
-        // Define all 10 games
+        // The 4 New Premium Chemistry Edutainment Features
         const gamesList = [
-            { id: 'memory', name: 'Memory', icon: '🧠' },
-            { id: 'acid', name: 'Acid/Base', icon: '🧪' },
-            { id: 'hangman', name: 'Save Flask', icon: '⚗️' },
-            { id: 'coeff', name: 'Balance', icon: '⚖️' },
-            { id: 'snakes', name: 'ChemClimb', icon: '🐍' },
-            { id: 'titration', name: 'Titration', icon: '💧' },
-            { id: 'quiz', name: 'ChemQuiz', icon: '📝' },
-            { id: 'shell', name: 'AtomBuild', icon: '⚛️' },
-            { id: 'whack', name: 'Whack-a-Mol', icon: '🔨' },
-            { id: 'typer', name: 'Rxn Typer', icon: '⌨️' }
+            { id: 'wheel', name: 'Spin to Win', icon: '🎡' }, // Replaced 3D Sandbox!
+            { id: 'reaction', name: 'Rxn Match', icon: '🧩' },
+            { id: 'periodic', name: 'Exceptions', icon: '📊' },
+            { id: 'guess', name: 'ChemWordle', icon: '❓' }
         ];
 
-        // Generate the Rotary Dial
-        let dialHTML = `<div class="dial-container" id="dial-${id}"><div class="dial-center">🕹️</div>`;
+        let dialHTML = `<div class="dial-container" id="dial-${id}"><div class="dial-center">⚛️</div>`;
         const totalGames = gamesList.length;
         
         gamesList.forEach((g, i) => {
-            // Perfect circular placement math
+            // Perfect math to place 4 items at top, right, bottom, and left
             const angle = (i * (360 / totalGames)) - 90;
-            const radius = 145; // Distance from center 
+            const radius = 145; 
             
-            // We apply the transform in a wrapper via JS logic to allow clean CSS hover scaling
             dialHTML += `
                 <div class="dial-btn" id="btn-${id}-${g.id}" onclick="ArcGameEngine.load('${id}', '${g.id}', this)" 
                      style="left: calc(50% + ${radius * Math.cos(angle * Math.PI / 180)}px); top: calc(50% + ${radius * Math.sin(angle * Math.PI / 180)}px);">
@@ -1862,10 +1702,10 @@ if (savedTheme === 'dark') {
         return `
         <div class="empty-game-wrapper" id="game-wrap-${id}">
             <h3 style="color: var(--primary); margin-top:0; font-size:1.5rem;">${message}</h3>
-            <p style="color: #666; margin-bottom: 5px; font-weight: bold;">Teacher hasn't added data here yet. Pick a game from the dial!</p>
+            <p style="color: #666; margin-bottom: 5px; font-weight: bold;">Teacher hasn't added data here yet. Explore the tools below!</p>
             ${dialHTML}
             <div class="empty-game-board" id="game-bg-${id}">
-                <p style="color:#cbd5e1; font-size:1.2rem; padding: 20px;">Use the dial above to select a game! ⚛️</p>
+                <p style="color:#cbd5e1; font-size:1.2rem; padding: 20px;">Use the dial above to select a learning tool! 🔬</p>
             </div>
         </div>`;
     }
@@ -1890,600 +1730,259 @@ if (savedTheme === 'dark') {
             this.clearState(id);
             if(this[type] && this[type].init) this[type].init(id);
         },
-        
-        // --- 1. MEMORY MATCH (Categorized Edition) ---
-        memory: {
-            // Comprehensive database of elements sorted by categories
-            categories: {
-                'Alkali Metals': [ {s:'Li',n:'Lithium'}, {s:'Na',n:'Sodium'}, {s:'K',n:'Potassium'}, {s:'Rb',n:'Rubidium'}, {s:'Cs',n:'Cesium'}, {s:'Fr',n:'Francium'} ],
-                'Alkaline Earth': [ {s:'Be',n:'Beryllium'}, {s:'Mg',n:'Magnesium'}, {s:'Ca',n:'Calcium'}, {s:'Sr',n:'Strontium'}, {s:'Ba',n:'Barium'}, {s:'Ra',n:'Radium'} ],
-                'Boron Family': [ {s:'B',n:'Boron'}, {s:'Al',n:'Aluminum'}, {s:'Ga',n:'Gallium'}, {s:'In',n:'Indium'}, {s:'Tl',n:'Thallium'} ],
-                'Carbon Family': [ {s:'C',n:'Carbon'}, {s:'Si',n:'Silicon'}, {s:'Ge',n:'Germanium'}, {s:'Sn',n:'Tin'}, {s:'Pb',n:'Lead'} ],
-                'Pnictogens': [ {s:'N',n:'Nitrogen'}, {s:'P',n:'Phosphorus'}, {s:'As',n:'Arsenic'}, {s:'Sb',n:'Antimony'}, {s:'Bi',n:'Bismuth'} ],
-                'Chalcogens': [ {s:'O',n:'Oxygen'}, {s:'S',n:'Sulfur'}, {s:'Se',n:'Selenium'}, {s:'Te',n:'Tellurium'}, {s:'Po',n:'Polonium'} ],
-                'Halogens': [ {s:'F',n:'Fluorine'}, {s:'Cl',n:'Chlorine'}, {s:'Br',n:'Bromine'}, {s:'I',n:'Iodine'}, {s:'At',n:'Astatine'} ],
-                'Noble Gases': [ {s:'He',n:'Helium'}, {s:'Ne',n:'Neon'}, {s:'Ar',n:'Argon'}, {s:'Kr',n:'Krypton'}, {s:'Xe',n:'Xenon'}, {s:'Rn',n:'Radon'} ],
-                '3d Series': [ {s:'Sc',n:'Scandium'}, {s:'Ti',n:'Titanium'}, {s:'V',n:'Vanadium'}, {s:'Cr',n:'Chromium'}, {s:'Mn',n:'Manganese'}, {s:'Fe',n:'Iron'}, {s:'Co',n:'Cobalt'}, {s:'Ni',n:'Nickel'}, {s:'Cu',n:'Copper'}, {s:'Zn',n:'Zinc'} ],
-                '4d Series': [ {s:'Y',n:'Yttrium'}, {s:'Zr',n:'Zirconium'}, {s:'Nb',n:'Niobium'}, {s:'Mo',n:'Molybdenum'}, {s:'Tc',n:'Technetium'}, {s:'Ru',n:'Ruthenium'}, {s:'Rh',n:'Rhodium'}, {s:'Pd',n:'Palladium'}, {s:'Ag',n:'Silver'}, {s:'Cd',n:'Cadmium'} ],
-                '5d Series': [ {s:'La',n:'Lanthanum'}, {s:'Hf',n:'Hafnium'}, {s:'Ta',n:'Tantalum'}, {s:'W',n:'Tungsten'}, {s:'Re',n:'Rhenium'}, {s:'Os',n:'Osmium'}, {s:'Ir',n:'Iridium'}, {s:'Pt',n:'Platinum'}, {s:'Au',n:'Gold'}, {s:'Hg',n:'Mercury'} ],
-                'Lanthanides': [ {s:'Ce',n:'Cerium'}, {s:'Pr',n:'Praseodymium'}, {s:'Nd',n:'Neodymium'}, {s:'Pm',n:'Promethium'}, {s:'Sm',n:'Samarium'}, {s:'Eu',n:'Europium'}, {s:'Gd',n:'Gadolinium'}, {s:'Tb',n:'Terbium'}, {s:'Dy',n:'Dysprosium'}, {s:'Ho',n:'Holmium'}, {s:'Er',n:'Erbium'}, {s:'Tm',n:'Thulium'}, {s:'Yb',n:'Ytterbium'}, {s:'Lu',n:'Lutetium'} ],
-                'Actinides': [ {s:'Th',n:'Thorium'}, {s:'Pa',n:'Protactinium'}, {s:'U',n:'Uranium'}, {s:'Np',n:'Neptunium'}, {s:'Pu',n:'Plutonium'}, {s:'Am',n:'Americium'}, {s:'Cm',n:'Curium'}, {s:'Bk',n:'Berkelium'}, {s:'Cf',n:'Californium'}, {s:'Es',n:'Einsteinium'}, {s:'Fm',n:'Fermium'} ],
-                'Radioactive': [ {s:'U',n:'Uranium'}, {s:'Pu',n:'Plutonium'}, {s:'Ra',n:'Radium'}, {s:'Rn',n:'Radon'}, {s:'Po',n:'Polonium'}, {s:'Fr',n:'Francium'}, {s:'Th',n:'Thorium'}, {s:'Np',n:'Neptunium'}, {s:'Am',n:'Americium'} ],
-                's-block': [ {s:'H',n:'Hydrogen'}, {s:'Li',n:'Lithium'}, {s:'Na',n:'Sodium'}, {s:'K',n:'Potassium'}, {s:'Rb',n:'Rubidium'}, {s:'Cs',n:'Cesium'}, {s:'Be',n:'Beryllium'}, {s:'Mg',n:'Magnesium'}, {s:'Ca',n:'Calcium'}, {s:'Sr',n:'Strontium'}, {s:'Ba',n:'Barium'} ],
-                'p-block': [ {s:'B',n:'Boron'}, {s:'C',n:'Carbon'}, {s:'N',n:'Nitrogen'}, {s:'O',n:'Oxygen'}, {s:'F',n:'Fluorine'}, {s:'Ne',n:'Neon'}, {s:'Al',n:'Aluminum'}, {s:'Si',n:'Silicon'}, {s:'P',n:'Phosphorus'}, {s:'S',n:'Sulfur'}, {s:'Cl',n:'Chlorine'}, {s:'Ar',n:'Argon'}, {s:'Br',n:'Bromine'}, {s:'I',n:'Iodine'} ],
-                'd-block': [ {s:'Sc',n:'Scandium'}, {s:'Ti',n:'Titanium'}, {s:'V',n:'Vanadium'}, {s:'Cr',n:'Chromium'}, {s:'Mn',n:'Manganese'}, {s:'Fe',n:'Iron'}, {s:'Co',n:'Cobalt'}, {s:'Ni',n:'Nickel'}, {s:'Cu',n:'Copper'}, {s:'Zn',n:'Zinc'}, {s:'Ag',n:'Silver'}, {s:'Au',n:'Gold'}, {s:'Pt',n:'Platinum'}, {s:'Hg',n:'Mercury'} ]
-            },
-            
-            init: function(id) {
-                let catHTML = `<h3 style="color:var(--gold); margin-top:0; margin-bottom:15px;">Select Category</h3>`;
-                catHTML += `<div style="display:flex; flex-wrap:wrap; gap:8px; justify-content:center; padding:10px; overflow-y:auto; max-height:280px; width:100%; box-sizing:border-box;">`;
+
+        // --- 1. FORTUNE WHEEL (Spin to Win) ---
+        wheel: {
+            prizes: [],
+            isSpinning: false,
+            init: async function(id) {
+                // Fetch dynamic prizes set by Teacher
+                const res = await fetch('/api/wheel');
+                this.prizes = await res.json();
                 
-                Object.keys(this.categories).forEach(cat => {
-                    catHTML += `<button class="btn" style="background:#334155; color:white; border:1px solid var(--gold); padding:8px 12px; font-size:0.85rem; border-radius:6px; cursor:pointer;" onclick="ArcGameEngine.memory.start('${id}', '${cat}')" onmouseover="this.style.background='var(--gold)'; this.style.color='var(--primary)';" onmouseout="this.style.background='#334155'; this.style.color='white';">${cat}</button>`;
+                let conicColors = [];
+                let sliceAngle = 360 / this.prizes.length;
+                
+                this.prizes.forEach((p, i) => {
+                    let start = i * sliceAngle;
+                    let end = start + sliceAngle;
+                    conicColors.push(`${p.color} ${start}deg ${end}deg`);
                 });
-                
-                catHTML += `</div>`;
-                document.getElementById(`game-bg-${id}`).innerHTML = catHTML;
-            },
-            
-            start: function(id, catKey) {
-                let sourceData = [...this.categories[catKey]];
-                
-                // Shuffle source data and limit to max 12 pairs (24 cards) to prevent board overflow
-                sourceData.sort(() => Math.random() - 0.5);
-                let selectedData = sourceData.slice(0, 12); 
-                
-                let deck = [];
-                selectedData.forEach((item, idx) => {
-                    deck.push({ text: item.s, matchId: idx });
-                    deck.push({ text: item.n, matchId: idx });
-                });
-                
-                // Final shuffle of the deck
-                deck.sort(() => Math.random() - 0.5);
-                
-                window.arcGames.instances[id] = { deck: deck, flipped: [], matched: 0, lock: false, catKey: catKey };
-                
-                // Dynamically adjust grid columns depending on how many elements are in the category
-                let cols = deck.length <= 12 ? 4 : (deck.length <= 20 ? 5 : 6);
-                
-                let html = `<div style="width:100%; text-align:center; color:var(--gold); font-weight:bold; margin-bottom:10px; font-size:1.1rem;">${catKey} Match</div>`;
-                html += `<div class="memory-grid" style="grid-template-columns: repeat(${cols}, 1fr); padding:0;">`;
-                
-                deck.forEach((card, i) => {
-                    html += `<div class="memory-card" id="mem-${id}-${i}" onclick="ArcGameEngine.memory.flip('${id}', ${i})">?</div>`;
-                });
-                html += `</div>`;
-                
-                document.getElementById(`game-bg-${id}`).innerHTML = html;
-            },
-            
-            flip: function(id, index) {
-                const state = window.arcGames.instances[id];
-                if(state.lock || state.flipped.includes(index) || document.getElementById(`mem-${id}-${index}`).classList.contains('matched')) return;
-                
-                const cardEl = document.getElementById(`mem-${id}-${index}`);
-                cardEl.innerText = state.deck[index].text;
-                cardEl.classList.add('flipped');
-                state.flipped.push(index);
-
-                if(state.flipped.length === 2) {
-                    state.lock = true;
-                    const match1 = state.deck[state.flipped[0]].matchId;
-                    const match2 = state.deck[state.flipped[1]].matchId;
-                    
-                    setTimeout(() => {
-                        if(match1 === match2) {
-                            document.getElementById(`mem-${id}-${state.flipped[0]}`).classList.add('matched');
-                            document.getElementById(`mem-${id}-${state.flipped[1]}`).classList.add('matched');
-                            state.matched += 2;
-                            
-                            // Check for win condition
-                            if(state.matched === state.deck.length) {
-                                document.getElementById(`game-bg-${id}`).innerHTML = `<h2 style="color:var(--green);">🧠 Master Chemist!</h2><p>Completed: <b>${state.catKey}</b></p><button class="btn btn-gold" onclick="ArcGameEngine.memory.init('${id}')">Choose Another Category</button>`;
-                            }
-                        } else {
-                            const c1 = document.getElementById(`mem-${id}-${state.flipped[0]}`);
-                            const c2 = document.getElementById(`mem-${id}-${state.flipped[1]}`);
-                            c1.innerText = '?'; c1.classList.remove('flipped');
-                            c2.innerText = '?'; c2.classList.remove('flipped');
-                        }
-                        state.flipped = [];
-                        state.lock = false;
-                    }, 800);
-                }
-            }
-        },
-
-        // 2. ACID OR BASE
-        acid: {
-            data: [
-                // Original 4
-                {f: 'HCl', t: 'acid'}, {f: 'NaOH', t: 'base'}, {f: 'H₂SO₄', t: 'acid'}, {f: 'KOH', t: 'base'},
-                
-                // 30+ New Acids and Bases
-                {f: 'HNO₃', t: 'acid'}, {f: 'HBr', t: 'acid'}, {f: 'HI', t: 'acid'}, {f: 'HClO₄', t: 'acid'},
-                {f: 'CH₃COOH', t: 'acid'}, {f: 'H₂CO₃', t: 'acid'}, {f: 'H₃PO₄', t: 'acid'}, {f: 'HF', t: 'acid'},
-                {f: 'H₂SO₃', t: 'acid'}, {f: 'HNO₂', t: 'acid'}, {f: 'HCN', t: 'acid'}, {f: 'HCOOH', t: 'acid'},
-                {f: 'H₂C₂O₄', t: 'acid'}, {f: 'HBrO₄', t: 'acid'}, {f: 'HClO', t: 'acid'}, {f: 'H₃BO₃', t: 'acid'},
-                {f: 'H₂S', t: 'acid'}, {f: 'H₂CrO₄', t: 'acid'}, {f: 'HClO₃', t: 'acid'}, {f: 'C₆H₅COOH', t: 'acid'},
-                
-                {f: 'LiOH', t: 'base'}, {f: 'Ba(OH)₂', t: 'base'}, {f: 'Ca(OH)₂', t: 'base'}, {f: 'NH₃', t: 'base'},
-                {f: 'CH₃NH₂', t: 'base'}, {f: 'C₅H₅N', t: 'base'}, {f: 'Mg(OH)₂', t: 'base'}, {f: 'Al(OH)₃', t: 'base'},
-                {f: 'RbOH', t: 'base'}, {f: 'CsOH', t: 'base'}, {f: 'Sr(OH)₂', t: 'base'}, {f: 'NaHCO₃', t: 'base'},
-                {f: 'Na₂CO₃', t: 'base'}, {f: 'C₂H₅NH₂', t: 'base'}, {f: '(CH₃)₂NH', t: 'base'}, {f: 'N₂H₄', t: 'base'}
-            ],
-            init: function(id) {
-                window.arcGames.instances[id] = { score: 0, speed: 1000, current: null, yPos: 0 };
-                document.getElementById(`game-bg-${id}`).innerHTML = `<div style="position:absolute; top:10px; left:15px; font-weight:bold; color:var(--gold);">Score: <span id="ab-score-${id}">0</span></div><div id="ab-drop-${id}" style="position:absolute; top:0; left:50%; transform:translateX(-50%); background:white; color:var(--primary); font-weight:bold; font-size:1.5rem; padding:10px 20px; border-radius:8px; display:none;"></div><div class="ab-controls" style="position:absolute; bottom:15px; width:100%; display:flex; justify-content:space-around;"><button class="btn btn-red" style="width:40%;" onclick="ArcGameEngine.acid.guess('${id}', 'acid')">ACID</button><button class="btn" style="width:40%; background:#3b82f6; color:white;" onclick="ArcGameEngine.acid.guess('${id}', 'base')">BASE</button></div>`;
-                this.spawn(id);
-            },
-            spawn: function(id) {
-                const state = window.arcGames.instances[id]; if(!state) return;
-                state.current = this.data[Math.floor(Math.random() * this.data.length)]; state.yPos = 0;
-                const el = document.getElementById(`ab-drop-${id}`); if(!el) return;
-                el.innerText = state.current.f; el.style.top = '0px'; el.style.display = 'block'; el.style.background = 'white';
-                state.interval = setInterval(() => {
-                    if(!window.arcGames.instances[id]) return clearInterval(state.interval);
-                    state.yPos += 5; el.style.top = state.yPos + 'px';
-                    if(state.yPos > 250) { clearInterval(state.interval); this.gameOver(id); }
-                }, state.speed / 100);
-            },
-            guess: function(id, type) {
-                const state = window.arcGames.instances[id]; if(!state || !state.current) return;
-                clearInterval(state.interval); const el = document.getElementById(`ab-drop-${id}`);
-                if(state.current.t === type) {
-                    state.score++; document.getElementById(`ab-score-${id}`).innerText = state.score;
-                    el.style.background = 'var(--green)'; state.speed = Math.max(500, state.speed - 100); setTimeout(() => this.spawn(id), 300);
-                } else { el.style.background = 'var(--red)'; setTimeout(() => this.gameOver(id), 300); }
-            },
-            gameOver: function(id) { document.getElementById(`game-bg-${id}`).innerHTML = `<h2 style="color:var(--red);">Game Over</h2><p>Score: ${window.arcGames.instances[id].score}</p><button class="btn btn-gold" onclick="ArcGameEngine.acid.init('${id}')">Restart</button>`; }
-        },
-
-        // 3. HANGMAN (SAVE FLASK)
-        hangman: {
-            init: function(id) {
-                const word = "PROTON"; const hint = "Positively charged particle";
-                window.arcGames.instances[id] = { word: word, guessed: [], errors: 0, maxErrors: 5 };
-                const keyboard = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split('').map(l => `<button class="hm-key" id="hm-key-${id}-${l}" onclick="ArcGameEngine.hangman.guess('${id}', '${l}')">${l}</button>`).join('');
-                document.getElementById(`game-bg-${id}`).innerHTML = `<div class="hm-flask-container"><div class="hm-flask-neck"></div><div class="hm-liquid" id="hm-liquid-${id}"></div></div><div class="hm-hint">Hint: ${hint}</div><div class="hm-word" id="hm-word-${id}"></div><div class="hm-keyboard">${keyboard}</div>`;
-                this.renderWord(id);
-            },
-            renderWord: function(id) {
-                const state = window.arcGames.instances[id]; if(!state) return;
-                let display = state.word.split('').map(l => state.guessed.includes(l) ? l : '_').join(' ');
-                document.getElementById(`hm-word-${id}`).innerText = display;
-                if(!display.includes('_')) { document.getElementById(`game-bg-${id}`).innerHTML = `<h2 style="color:var(--green);">🧪 Complete!</h2><button class="btn btn-gold" onclick="ArcGameEngine.hangman.init('${id}')">Play Again</button>`; }
-            },
-            guess: function(id, letter) {
-                const state = window.arcGames.instances[id]; if(!state) return;
-                document.getElementById(`hm-key-${id}-${letter}`).disabled = true; state.guessed.push(letter);
-                if(!state.word.includes(letter)) {
-                    state.errors++; const liquid = document.getElementById(`hm-liquid-${id}`);
-                    liquid.style.height = ((state.errors / state.maxErrors) * 100) + '%';
-                    if(state.errors >= 3) liquid.style.background = 'orange';
-                    if(state.errors >= state.maxErrors) {
-                        liquid.style.background = 'var(--red)'; setTimeout(() => { document.getElementById(`game-bg-${id}`).innerHTML = `<h2 style="color:var(--red);">💥 Exploded!</h2><p>Word: <b>${state.word}</b></p><button class="btn btn-gold" onclick="ArcGameEngine.hangman.init('${id}')">Try Again</button>`; }, 500); return;
-                    }
-                }
-                this.renderWord(id);
-            }
-        },
-
-        // 4. COEFFICIENT BALANCE
-        coeff: {
-            init: function(id) {
-                window.arcGames.instances[id] = { ans: 2 };
-                document.getElementById(`game-bg-${id}`).innerHTML = `<div class="coeff-eq">[ ? ] H₂ + O₂ ➝ 2H₂O</div><div style="font-size:0.9rem; color:#cbd5e1; margin-bottom:20px;">Catch the correct number!</div><div id="coeff-area-${id}" style="position:absolute; width:100%; height:100%; top:0; left:0; pointer-events:none;"></div>`;
-                const area = document.getElementById(`coeff-area-${id}`);
-                [1,2,3,4,5].forEach(num => {
-                    let el = document.createElement('div'); el.className = 'coeff-num'; el.innerText = num; el.style.pointerEvents = 'auto';
-                    el.onclick = () => ArcGameEngine.coeff.guess(id, num); area.appendChild(el); this.move(el);
-                    window.arcGames.instances[id]['int'+num] = setInterval(() => this.move(el), 1500 + Math.random()*1000);
-                });
-            },
-            move: function(el) { el.style.top = Math.random() * 80 + '%'; el.style.left = Math.random() * 85 + '%'; },
-            guess: function(id, num) {
-                const state = window.arcGames.instances[id]; if(!state) return;
-                [1,2,3,4,5].forEach(n => clearInterval(state['int'+n]));
-                if(num === state.ans) { document.getElementById(`game-bg-${id}`).innerHTML = `<h2 style="color:var(--green);">✅ Balanced!</h2><button class="btn btn-gold" onclick="ArcGameEngine.coeff.init('${id}')">Play Again</button>`; } 
-                else { document.getElementById(`game-bg-${id}`).innerHTML = `<h2 style="color:var(--red);">❌ Unbalanced!</h2><button class="btn btn-gold" onclick="ArcGameEngine.coeff.init('${id}')">Try Again</button>`; }
-            }
-        },
-
-        // 5. CHEMCLIMB (SOLO SNAKES & LADDERS)
-        snakes: {
-            init: function(id) { window.arcGames.instances[id] = { pos: 1, rolls: 0 }; this.render(id); },
-            render: function(id) {
-                const state = window.arcGames.instances[id];
-                // Generate Zig-Zag 10x10 Board
-                let html = `<div style="display:flex; justify-content:space-between; width:100%; max-width:400px; margin-bottom:10px;">
-                    <span style="color:var(--gold); font-weight:bold;">Rolls: ${state.rolls}</span>
-                    <button class="btn btn-gold btn-small" onclick="ArcGameEngine.snakes.roll('${id}')">🎲 Roll Dice</button>
-                </div><div class="snakes-board">`;
-                
-                for(let row=0; row<10; row++) {
-                    for(let col=0; col<10; col++) {
-                        let num = 100 - (row * 10);
-                        if(row % 2 === 0) { num -= col; } else { num -= (9 - col); }
-                        
-                        let cellClass = (row + col) % 2 === 0 ? 'norm' : 'alt';
-                        let content = num;
-                        
-                        // Define Snakes 🐍 & Ladders 🪜
-                        const snakes = { 99: '🐍⬇12', 85: '🐍⬇25', 62: '🐍⬇18', 48: '🐍⬇9' };
-                        const ladders = { 4: '🪜⬆36', 15: '🪜⬆46', 33: '🪜⬆81', 50: '🪜⬆74' };
-                        
-                        if(snakes[num]) { content = snakes[num]; cellClass = 'norm'; } // highlight
-                        if(ladders[num]) { content = ladders[num]; cellClass = 'alt'; }
-                        
-                        html += `<div class="snakes-cell ${cellClass}" style="${snakes[num] ? 'color:#fca5a5' : ladders[num] ? 'color:#86efac' : '#cbd5e1'}">
-                            ${content}
-                            ${state.pos === num ? '<div class="s-token"></div>' : ''}
-                        </div>`;
-                    }
-                }
-                html += `</div>`;
-                document.getElementById(`game-bg-${id}`).innerHTML = html;
-            },
-            roll: function(id) {
-                const state = window.arcGames.instances[id];
-                const pRoll = Math.floor(Math.random()*6)+1;
-                state.rolls++;
-                state.pos += pRoll; 
-                if(state.pos > 100) state.pos = 100; // Cap at 100
-                
-                // Snake & Ladder Logic
-                const paths = { 99:12, 85:25, 62:18, 48:9, 4:36, 15:46, 33:81, 50:74 };
-                if(paths[state.pos]) { state.pos = paths[state.pos]; }
-
-                this.render(id);
-                if(state.pos === 100) { 
-                    setTimeout(() => {
-                        document.getElementById(`game-bg-${id}`).innerHTML = `<h2 style="color:var(--green);">🏆 You Reached 100!</h2><p>It took you ${state.rolls} rolls.</p><button class="btn btn-gold" onclick="ArcGameEngine.snakes.init('${id}')">Play Again</button>`; 
-                    }, 500);
-                }
-            }
-        },
-
-        // 6. REALISTIC TITRATION HERO (Expanded Edition)
-        titration: {
-            data: [
-                { acid: "HCl", base: "NaOH", start: 1.0, eq: 7.0, type: "Strong Acid + Strong Base", ind: "Bromothymol Blue", color: [0, 255, 0] }, 
-                { acid: "CH₃COOH", base: "NaOH", start: 3.0, eq: 8.7, type: "Weak Acid + Strong Base", ind: "Phenolphthalein", color: [236, 72, 153] }, 
-                { acid: "HCl", base: "NH₃", start: 1.0, eq: 5.3, type: "Strong Acid + Weak Base", ind: "Methyl Red", color: [255, 165, 0] }, 
-                { acid: "HNO₃", base: "KOH", start: 1.0, eq: 7.0, type: "Strong Acid + Strong Base", ind: "Phenol Red", color: [255, 0, 0] }, 
-                { acid: "HF", base: "NaOH", start: 3.1, eq: 8.1, type: "Weak Acid + Strong Base", ind: "Phenolphthalein", color: [236, 72, 153] },
-                { acid: "H₂SO₄", base: "NH₃", start: 1.0, eq: 5.0, type: "Strong Acid + Weak Base", ind: "Methyl Red", color: [255, 165, 0] },
-                { acid: "HCOOH", base: "KOH", start: 2.4, eq: 8.4, type: "Weak Acid + Strong Base", ind: "Phenolphthalein", color: [236, 72, 153] },
-                { acid: "HClO₄", base: "LiOH", start: 1.0, eq: 7.0, type: "Strong Acid + Strong Base", ind: "Bromothymol Blue", color: [0, 255, 0] },
-                { acid: "HCN", base: "NaOH", start: 5.0, eq: 9.3, type: "Weak Acid + Strong Base", ind: "Phenolphthalein", color: [236, 72, 153] },
-                { acid: "HBr", base: "CH₃NH₂", start: 1.0, eq: 5.8, type: "Strong Acid + Weak Base", ind: "Methyl Red", color: [255, 165, 0] },
-                { acid: "HNO₂", base: "KOH", start: 2.0, eq: 8.0, type: "Weak Acid + Strong Base", ind: "Phenolphthalein", color: [236, 72, 153] }
-            ],
-            init: function(id) {
-                // Pick a random titration scenario
-                const scenario = this.data[Math.floor(Math.random() * this.data.length)];
-                window.arcGames.instances[id] = { pH: scenario.start, interval: null, dropping: false, scenario: scenario };
-                this.render(id);
-            },
-            render: function(id) {
-                const state = window.arcGames.instances[id];
-                const sc = state.scenario;
-                
-                // Color calculation based on indicator and distance to equivalence point
-                let bColor = "rgba(255,255,255,0.2)"; // default clear/light
-                const diff = state.pH - sc.eq;
-                
-                if(Math.abs(diff) <= 0.2) {
-                    // Perfect target zone (Equivalence Point)
-                    bColor = `rgba(${sc.color[0]}, ${sc.color[1]}, ${sc.color[2]}, 0.6)`;
-                } else if(diff > 0.2) {
-                    // Over-titrated
-                    bColor = `rgba(${sc.color[0]}, ${sc.color[1]}, ${sc.color[2]}, 0.9)`;
-                    if(sc.ind === "Methyl Red") bColor = "rgba(255, 255, 0, 0.8)"; // goes yellow
-                    if(sc.ind === "Bromothymol Blue") bColor = "rgba(0, 0, 255, 0.8)"; // goes blue
-                } else if(diff < -0.2) {
-                    // Under-titrated
-                    if(sc.ind === "Phenolphthalein") bColor = "rgba(255,255,255,0.2)"; // clear
-                    if(sc.ind === "Bromothymol Blue") bColor = "rgba(255, 255, 0, 0.4)"; // yellow
-                    if(sc.ind === "Methyl Red") bColor = "rgba(255, 0, 0, 0.4)"; // red
-                    if(sc.ind === "Phenol Red") bColor = "rgba(255, 255, 0, 0.4)"; // yellow
-                }
 
                 document.getElementById(`game-bg-${id}`).innerHTML = `
-                    <h3 style="margin-top:0; color:var(--gold); font-size: 1.2rem;">${sc.type}</h3>
-                    <p style="font-size:0.85rem; color:#cbd5e1; margin-bottom:5px;">Titrate <b>${sc.acid}</b> with <b>${sc.base}</b></p>
-                    <p style="font-size:0.75rem; color:#94a3b8; margin-top:0; margin-bottom:15px; font-weight:bold;">🎯 Target pH: ${sc.eq.toFixed(1)} | Indicator: ${sc.ind}</p>
+                    <style>
+                        .wheel-box { position: relative; width: 220px; height: 220px; margin: 0 auto 20px auto; }
+                        .wheel { width: 100%; height: 100%; border-radius: 50%; border: 6px solid var(--gold); box-shadow: 0 0 20px rgba(0,0,0,0.5); transition: transform 4s cubic-bezier(0.175, 0.885, 0.32, 1.275); background: conic-gradient(${conicColors.join(', ')}); }
+                        .wheel-pointer { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 30px solid white; filter: drop-shadow(0 4px 4px rgba(0,0,0,0.5)); z-index: 10; }
+                        .wheel-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 40px; height: 40px; background: white; border-radius: 50%; border: 4px solid var(--primary); z-index: 5; }
+                    </style>
+                    <h3 style="color:var(--gold); margin-top:0;">ARC Fortune Wheel 🎡</h3>
+                    <p style="color:#cbd5e1; font-size:0.85rem; margin-top:-10px; margin-bottom:15px;">Cost: <b>10 Coins</b> per spin!</p>
                     
-                    <div class="lab-setup">
-                        <div class="burette">
-                            <div class="burette-liquid" style="height: ${100 - (state.pH/14)*100}%"></div>
-                        </div>
-                        <div class="burette-tap"></div>
-                        <div class="burette-tip"></div>
-                        ${state.dropping ? '<div class="titr-drop" style="animation: fallingDrop 0.2s linear infinite;"></div>' : ''}
-                        
-                        <div class="flask">
-                            <div class="flask-liquid" style="background: ${bColor}; height: ${30 + (state.pH/14)*40}%"></div>
-                        </div>
+                    <div class="wheel-box">
+                        <div class="wheel-pointer"></div>
+                        <div class="wheel" id="spin-wheel-el-${id}"></div>
+                        <div class="wheel-center"></div>
                     </div>
                     
-                    <div style="font-size:1.5rem; font-weight:bold; font-family:monospace; margin-bottom:15px;">pH: ${state.pH.toFixed(1)}</div>
-                    
-                    <div style="display:flex; gap:10px;">
-                        <button class="btn btn-gold" id="btn-drop-${id}">💧 HOLD TO DROP</button>
-                        <button class="btn btn-red" onclick="ArcGameEngine.titration.check('${id}')">✅ FINISH</button>
-                    </div>
+                    <button class="btn btn-gold" id="spin-btn-${id}" style="width: 200px; font-size: 1.1rem; box-shadow: 0 0 15px rgba(251, 191, 36, 0.4);" onclick="ArcGameEngine.wheel.spin('${id}')">SPIN NOW</button>
+                    <div id="wheel-msg-${id}" style="margin-top: 15px; font-weight: bold; min-height: 25px;"></div>
                 `;
-
-                // Handle Hold Interactions
-                const btn = document.getElementById(`btn-drop-${id}`);
-                if(btn) {
-                    btn.onmousedown = () => this.startDrop(id);
-                    btn.onmouseup = () => this.stopDrop(id);
-                    btn.onmouseleave = () => this.stopDrop(id);
-                    btn.ontouchstart = (e) => { e.preventDefault(); this.startDrop(id); };
-                    btn.ontouchend = () => this.stopDrop(id);
-                }
             },
-            startDrop: function(id) {
-                const state = window.arcGames.instances[id];
-                if(state.pH >= 14) return;
-                state.dropping = true;
-                this.render(id);
-                state.interval = setInterval(() => {
-                    if(state.pH < 14) state.pH += 0.1;
-                    const sc = state.scenario;
-                    
-                    document.querySelector(`#game-bg-${id} .flask-liquid`).style.height = `${30 + (state.pH/14)*40}%`;
-                    document.querySelector(`#game-bg-${id} .burette-liquid`).style.height = `${100 - (state.pH/14)*100}%`;
-                    
-                    // Update color live based on exact indicator math
-                    let bColor = "rgba(255,255,255,0.2)";
-                    const diff = state.pH - sc.eq;
-                    
-                    if(Math.abs(diff) <= 0.2) {
-                        bColor = `rgba(${sc.color[0]}, ${sc.color[1]}, ${sc.color[2]}, 0.6)`;
-                    } else if(diff > 0.2) {
-                        bColor = `rgba(${sc.color[0]}, ${sc.color[1]}, ${sc.color[2]}, 0.9)`;
-                        if(sc.ind === "Methyl Red") bColor = "rgba(255, 255, 0, 0.8)"; 
-                        if(sc.ind === "Bromothymol Blue") bColor = "rgba(0, 0, 255, 0.8)"; 
-                    } else if(diff < -0.2) {
-                        if(sc.ind === "Phenolphthalein") bColor = "rgba(255,255,255,0.2)"; 
-                        if(sc.ind === "Bromothymol Blue") bColor = "rgba(255, 255, 0, 0.4)"; 
-                        if(sc.ind === "Methyl Red") bColor = "rgba(255, 0, 0, 0.4)"; 
-                        if(sc.ind === "Phenol Red") bColor = "rgba(255, 255, 0, 0.4)"; 
-                    }
-
-                    document.querySelector(`#game-bg-${id} .flask-liquid`).style.background = bColor;
-                    document.querySelector(`#game-bg-${id} div[style*="monospace"]`).innerText = `pH: ${state.pH.toFixed(1)}`;
-                }, 50);
-            },
-            stopDrop: function(id) {
-                const state = window.arcGames.instances[id];
-                state.dropping = false;
-                clearInterval(state.interval);
-                this.render(id);
-            },
-            check: function(id) {
-                const state = window.arcGames.instances[id];
-                const sc = state.scenario;
+            spin: async function(id) {
+                if(!user) return alert("Please log in to spin the wheel!");
+                if(user.coins < 10) return document.getElementById(`wheel-msg-${id}`).innerHTML = `<span style="color:var(--red);">Not enough coins! You need 10 🪙</span>`;
+                if(this.isSpinning) return;
                 
-                // Allow a +/- 0.2 pH margin of error for passing
-                if(Math.abs(state.pH - sc.eq) <= 0.2) {
-                    document.getElementById(`game-bg-${id}`).innerHTML += `<div style="position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:50;"><h2 style="color:var(--green); font-size:2rem;">Perfect Equivalence! ✅</h2><p>pH was ${state.pH.toFixed(1)} (Target: ${sc.eq.toFixed(1)})</p><button class="btn btn-gold" onclick="ArcGameEngine.titration.init('${id}')">Next Titration</button></div>`;
-                } else {
-                    document.getElementById(`game-bg-${id}`).innerHTML += `<div style="position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:50;"><h2 style="color:var(--red); font-size:2rem;">Failed! ❌</h2><p>Target was ${sc.eq.toFixed(1)}. You stopped at ${state.pH.toFixed(1)}.</p><button class="btn btn-gold" onclick="ArcGameEngine.titration.init('${id}')">Try Again</button></div>`;
-                }
+                this.isSpinning = true;
+                const msgEl = document.getElementById(`wheel-msg-${id}`);
+                const wheelEl = document.getElementById(`spin-wheel-el-${id}`);
+                const btn = document.getElementById(`spin-btn-${id}`);
+                
+                msgEl.innerHTML = `<span style="color:white;">Spinning... Good luck!</span>`;
+                btn.style.opacity = "0.5";
+
+                // Generate random spin angle
+                const randomDegree = Math.floor(Math.random() * 360);
+                const totalSpins = 3600; // 10 full rotations
+                const finalAngle = totalSpins + randomDegree;
+                
+                // Apply rotation
+                wheelEl.style.transform = `rotate(${finalAngle}deg)`;
+                
+                // Calculate which slice won based on top pointer (270 degrees offset)
+                const actualDegree = (360 - (randomDegree % 360)) % 360;
+                const sliceAngle = 360 / this.prizes.length;
+                const winningIndex = Math.floor(actualDegree / sliceAngle);
+                const prize = this.prizes[winningIndex];
+
+                // Wait for animation to finish
+                setTimeout(async () => {
+                    // Send to Server to deduct coins and award prize securely
+                    const res = await fetch('/api/student/spin', {
+                        method: 'POST', headers: {'Content-Type':'application/json'},
+                        body: JSON.stringify({ email: user.email, cost: 10, prizeType: prize.type, prizeValue: prize.value, prizeLabel: prize.label })
+                    });
+                    const data = await res.json();
+                    
+                    if(data.success) {
+                        // Update UI Wallet visually
+                        user.coins = data.coins;
+                        localStorage.setItem('arc_user', JSON.stringify(user));
+                        document.getElementById('wallet-coins').innerText = user.coins;
+                        if(document.getElementById('store-big-coins')) document.getElementById('store-big-coins').innerText = user.coins;
+                        
+                        // Handle Visual Win State
+                        if (prize.type === 'coins' && prize.value > 0) {
+                            msgEl.innerHTML = `<span style="color:var(--green); font-size:1.2rem;">🎉 YOU WON ${prize.label}!</span>`;
+                            if(typeof triggerChemicalExplosion === "function") triggerChemicalExplosion();
+                        } else if (prize.type === 'discount') {
+                            msgEl.innerHTML = `<span style="color:var(--gold); font-size:1.2rem;">🎫 YOU WON A ${prize.label}!</span><br><span style="font-size:0.8rem; color:#cbd5e1;">(Take a screenshot and show Teacher)</span>`;
+                            if(typeof triggerChemicalExplosion === "function") triggerChemicalExplosion();
+                        } else {
+                            msgEl.innerHTML = `<span style="color:var(--red); font-size:1.1rem;">${prize.label}</span>`;
+                        }
+                    } else {
+                        msgEl.innerHTML = `<span style="color:var(--red);">${data.message}</span>`;
+                    }
+                    
+                    this.isSpinning = false;
+                    btn.style.opacity = "1";
+                    
+                    // Reset wheel to static position without animation for next spin
+                    setTimeout(() => {
+                        wheelEl.style.transition = "none";
+                        wheelEl.style.transform = `rotate(${randomDegree}deg)`;
+                        setTimeout(() => { wheelEl.style.transition = "transform 4s cubic-bezier(0.175, 0.885, 0.32, 1.275)"; }, 50);
+                    }, 500);
+                    
+                }, 4000); // 4 seconds matches CSS transition
             }
         },
-
-        // 7. CHEMQUIZ
-        quiz: {
+        
+        // --- 2. ORGANIC REACTION MATCH-UP ---
+        reaction: {
             data: [
-                { q: "Which of the following elements has the highest electron gain enthalpy?", o: ["Fluorine (F)", "Chlorine (Cl)", "Bromine (Br)", "Iodine (I)"], a: 1 },
-                { q: "What is the hybridization of the carbon atoms in a benzene ring?", o: ["sp", "sp²", "sp³", "sp³d"], a: 1 },
-                { q: "What is the maximum oxidation state shown by Osmium (Os) in its compounds (e.g., OsO₄)?", o: ["+4", "+6", "+7", "+8"], a: 3 },
-                { q: "Which of the following is an intensive thermodynamic property?", o: ["Volume", "Mass", "Temperature", "Heat capacity"], a: 2 },
-                { q: "According to VSEPR theory, what is the shape of the XeF₄ molecule?", o: ["Tetrahedral", "Square planar", "See-saw", "Octahedral"], a: 1 },
-                { q: "Which class of compounds is primarily responsible for the depletion of the ozone layer?", o: ["Carbon dioxide (CO₂)", "Chlorofluorocarbons (CFCs)", "Methane (CH₄)", "Nitrogen (N₂)"], a: 1 },
-                { q: "What is the unit of the rate constant for a first-order reaction?", o: ["mol L⁻¹ s⁻¹", "s⁻¹", "L mol⁻¹ s⁻¹", "mol⁻¹ L⁻¹ s⁻¹"], a: 1 },
-                { q: "Which of the following polymers is formed by a condensation polymerization reaction?", o: ["Teflon", "Polyvinyl chloride (PVC)", "Polystyrene", "Nylon-6,6"], a: 3 },
-                { q: "Which of the following carbocations is the most stable?", o: ["Methyl carbocation", "Primary (1°) carbocation", "Secondary (2°) carbocation", "Tertiary (3°) carbocation"], a: 3 },
-                { q: "In which of the following phase changes does the entropy of the system decrease?", o: ["Boiling of water", "Melting of ice", "Freezing of water", "Sublimation of camphor"], a: 2 },
-                { q: "What is the approximate pH of a 10⁻⁸ M aqueous solution of HCl at 25°C?", o: ["8.0", "Slightly less than 7.0", "Exactly 7.0", "Slightly more than 7.0"], a: 1 },
-                { q: "Which metal is typically extracted from its ore using the MacArthur-Forrest Cyanide process?", o: ["Silver (Ag)", "Copper (Cu)", "Iron (Fe)", "Zinc (Zn)"], a: 0 },
-                { q: "Which of the following hydrohalic acids is the strongest acid in aqueous solution?", o: ["HF", "HCl", "HBr", "HI"], a: 3 },
-                { q: "How many unpaired electrons are present in a gaseous Fe²⁺ ion (Atomic number of Fe = 26)?", o: ["2", "3", "4", "5"], a: 2 },
-                { q: "Which of the following aldehydes does NOT undergo the Cannizzaro reaction?", o: ["Formaldehyde", "Benzaldehyde", "Acetaldehyde", "Trichloroacetaldehyde"], a: 2 },
-                { q: "What is the primary repeating monomer unit found in natural rubber?", o: ["Isoprene", "Chloroprene", "Neoprene", "Styrene"], a: 0 },
-                { q: "Which of the following essential vitamins contains a transition metal (Cobalt) in its center?", o: ["Vitamin A", "Vitamin B₁₂", "Vitamin C", "Vitamin D"], a: 1 },
-                { q: "What is the coordination number of the central Cobalt ion in the complex [Co(en)₃]³⁺?", o: ["3", "4", "5", "6"], a: 3 },
-                { q: "What is the correct IUPAC name for allyl chloride?", o: ["1-Chloro-2-propene", "3-Chloro-1-propene", "1-Chloropropene", "2-Chloropropene"], a: 1 },
-                { q: "The Lucas test (using ZnCl₂ and conc. HCl) is used to distinguish between different types of?", o: ["Alcohols", "Aldehydes", "Phenols", "Amines"], a: 0 },
-                { q: "According to Molecular Orbital Theory, what is the bond order of the N₂ molecule?", o: ["1", "2", "2.5", "3"], a: 3 },
-                { q: "Which of the following molecules acts as a strong Lewis acid?", o: ["NH₃", "H₂O", "BF₃", "CH₄"], a: 2 },
-                { q: "What is the molecular geometry of sulfur hexafluoride (SF₆)?", o: ["Octahedral", "Square planar", "Tetrahedral", "Hexagonal"], a: 0 },
-                { q: "What is the maximum number of electrons that can be accommodated in a subshell where the azimuthal quantum number (l) is 3?", o: ["2", "6", "10", "14"], a: 3 },
-                { q: "Assuming complete dissociation, which 0.1 M aqueous solution will have the lowest freezing point?", o: ["0.1 M NaCl", "0.1 M BaCl₂", "0.1 M Glucose", "0.1 M AlCl₃"], a: 3 },
-                { q: "Which of the following minerals is the primary commercial ore of Aluminium?", o: ["Hematite", "Bauxite", "Chalcopyrite", "Galena"], a: 1 },
-                { q: "What is the spin-only magnetic moment of a transition metal ion with 3 unpaired electrons?", o: ["1.73 BM", "2.83 BM", "3.87 BM", "4.90 BM"], a: 2 },
-                { q: "Which of the following elements exhibits the strongest tendency for catenation?", o: ["Silicon (Si)", "Carbon (C)", "Sulfur (S)", "Phosphorus (P)"], a: 1 },
-                { q: "The reaction of phenol with chloroform in the presence of aqueous NaOH to yield salicylaldehyde is known as?", o: ["Kolbe's reaction", "Reimer-Tiemann reaction", "Wurtz reaction", "Gattermann reaction"], a: 1 },
-                { q: "Which type of amine yields a foul-smelling isocyanide compound when heated with chloroform and alcoholic KOH?", o: ["Primary amines only", "Secondary amines only", "Tertiary amines only", "Quaternary ammonium salts"], a: 0 },
-                { q: "What is the percentage of s-character in an sp³ hybridized orbital?", o: ["25%", "33.3%", "50%", "75%"], a: 0 },
-                { q: "What is the common name for the chemical compound CaOCl₂?", o: ["Baking soda", "Washing soda", "Bleaching powder", "Plaster of Paris"], a: 2 },
-                { q: "Which radioactive isotope of carbon is utilized in radiocarbon dating of archaeological artifacts?", o: ["Carbon-11", "Carbon-12", "Carbon-13", "Carbon-14"], a: 3 },
-                { q: "The enthalpy of neutralization of a strong acid by a strong base in dilute solution is approximately?", o: ["-13.7 kcal/mol", "-57.1 kJ/mol", "Both A and B", "None of the above"], a: 2 },
-                { q: "According to Boyle's law, for a fixed mass of gas at constant temperature:", o: ["Volume ∝ Temperature", "Volume ∝ 1/Pressure", "Pressure ∝ Temperature", "Volume ∝ moles"], a: 1 },
-                { q: "What is the molecular geometry of Iodine heptafluoride (IF₇)?", o: ["Pentagonal bipyramidal", "Octahedral", "Square pyramidal", "Trigonal bipyramidal"], a: 0 },
-                { q: "For a first-order chemical reaction, the half-life period (t₁/₂) is independent of:", o: ["Initial concentration of reactant", "Rate constant", "Temperature", "Activation energy"], a: 0 },
-                { q: "Which of the following alkenes can exhibit cis-trans (geometrical) isomerism?", o: ["1-Butene", "2-Butene", "Propene", "Isobutylene"], a: 1 },
-                { q: "The conversion of an alkyl halide to an alkene by heating with alcoholic KOH is a classic example of:", o: ["Nucleophilic Substitution", "Electrophilic Addition", "β-Elimination", "Molecular Rearrangement"], a: 2 },
-                { q: "The Clemmensen reduction of aldehydes and ketones is typically carried out using which reagent?", o: ["Zn-Hg amalgam and conc. HCl", "LiAlH₄ in ether", "NaBH₄ in ethanol", "H₂ gas over Pd catalyst"], a: 0 },
-                { q: "Which of the following is classified as a d-block transition element?", o: ["Cerium (Ce)", "Europium (Eu)", "Uranium (U)", "Iron (Fe)"], a: 3 },
-                { q: "Which of the following is an example of a covalent network solid?", o: ["Ice (H₂O)", "Dry ice (solid CO₂)", "Diamond (C)", "Solid Iodine (I₂)"], a: 2 },
-                { q: "When an ideal gas undergoes free expansion into a vacuum, the external pressure (P_ext) is:", o: ["1 atm", "0 atm", "10 atm", "Infinite"], a: 1 },
-                { q: "In a standard galvanic (voltaic) cell, what is the direction of electron flow in the external circuit?", o: ["Anode to Cathode", "Cathode to Anode", "It constantly alternates", "Electrons do not flow"], a: 0 },
-                { q: "For any process to be spontaneous at constant temperature and pressure, the change in Gibbs free energy (ΔG) must be:", o: ["Positive", "Zero", "Negative", "Infinite"], a: 2 },
-                { q: "A mixture of concentrated HNO₃ and concentrated HCl in a 1:3 molar ratio is known as:", o: ["Oleum", "Aqua regia", "Fuming nitric acid", "Tollen's reagent"], a: 1 },
-                { q: "Which of the following transition metal ions is diamagnetic (has no unpaired electrons)?", o: ["Cu²⁺", "Ni²⁺", "Ti³⁺", "Zn²⁺"], a: 3 },
-                { q: "The acid-catalyzed hydration of alkynes in the presence of HgSO₄/H₂SO₄ yields which class of organic compounds?", o: ["Alcohols", "Aldehydes or Ketones", "Carboxylic acids", "Alkenes"], a: 1 },
-                { q: "Benzene reacts with methyl chloride in the presence of anhydrous AlCl₃ to form Toluene. This is called:", o: ["Friedel-Crafts alkylation", "Friedel-Crafts acylation", "Rosenmund reduction", "Sandmeyer reaction"], a: 0 },
-                { q: "Scurvy is a disease caused by the severe deficiency of which essential vitamin?", o: ["Vitamin A", "Vitamin B₁", "Vitamin C (Ascorbic acid)", "Vitamin D"], a: 2 }
+                { react: "Primary Alcohol", prod: "Aldehyde", reagent: "PCC" },
+                { react: "Benzene", prod: "Nitrobenzene", reagent: "Conc. HNO₃ + Conc. H₂SO₄" },
+                { react: "Alkyne", prod: "Cis-Alkene", reagent: "Lindlar's Catalyst" },
+                { react: "Amide", prod: "Primary Amine", reagent: "Br₂ + KOH (Hoffmann)" },
+                { react: "Ketone", prod: "Alkane", reagent: "Zn(Hg) / HCl (Clemmensen)" },
+                { react: "Phenol", prod: "Salicylaldehyde", reagent: "CHCl₃ + aq. NaOH (Reimer-Tiemann)" },
+                { react: "Benzene", prod: "toluene", reagent: "CH3Cl + alhy. AlCl3"},
             ],
-            init: function(id) { window.arcGames.instances[id] = { q: 0, score: 0 }; this.render(id); },
-            render: function(id) {
+            init: function(id) {
+                window.arcGames.instances[id] = { score: 0, qIndex: 0 };
+                // Shuffle the questions
+                this.data.sort(() => 0.5 - Math.random());
+                this.next(id);
+            },
+            next: function(id) {
                 const state = window.arcGames.instances[id];
-                if(state.q >= this.data.length) {
-                    document.getElementById(`game-bg-${id}`).innerHTML = `<h2 style="color:var(--gold);">Quiz Complete!</h2><p style="font-size:1.5rem;">Score: ${state.score} / ${this.data.length}</p><button class="btn btn-gold" onclick="ArcGameEngine.quiz.init('${id}')">Play Again</button>`;
+                if(state.qIndex >= this.data.length) {
+                    document.getElementById(`game-bg-${id}`).innerHTML = `<h2 style="color:var(--gold);">Reaction Master! 🏆</h2><p>You completed all conversions flawlessly.</p><button class="btn btn-gold" onclick="ArcGameEngine.reaction.init('${id}')">Play Again</button>`;
                     return;
                 }
-                const question = this.data[state.q];
-                let html = `<h3 style="padding:0 20px; text-align:center;">${question.q}</h3><div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; padding:20px; width:100%; box-sizing:border-box;">`;
-                question.o.forEach((opt, i) => {
-                    html += `<button class="btn" style="background:#334155; color:white; border:1px solid #475569; padding:15px;" onclick="ArcGameEngine.quiz.guess('${id}', ${i})">${opt}</button>`;
-                });
-                html += `</div><p style="color:#64748b;">Question ${state.q + 1} of ${this.data.length}</p>`;
-                document.getElementById(`game-bg-${id}`).innerHTML = html;
+                const q = this.data[state.qIndex];
+                
+                // Get 3 random wrong reagents + the correct one
+                let options = this.data.map(d => d.reagent).filter(r => r !== q.reagent);
+                options.sort(() => 0.5 - Math.random());
+                options = options.slice(0, 3);
+                options.push(q.reagent);
+                options.sort(() => 0.5 - Math.random()); // shuffle final 4
+
+                document.getElementById(`game-bg-${id}`).innerHTML = `
+                    <h3 style="color:white; margin-top:0;">Complete the Conversion</h3>
+                    <div style="background:#1e293b; padding:15px; border-radius:8px; border:2px dashed #475569; margin-bottom:20px; font-size:1.1rem; font-weight:bold; color:var(--gold);">
+                        ${q.react} &nbsp; ➡ &nbsp; ${q.prod}
+                    </div>
+                    <p style="color:#cbd5e1; font-size:0.9rem; margin-top:-10px; margin-bottom: 10px;">Select the correct reagent:</p>
+                    <div style="display:flex; flex-direction:column; gap:8px; width:100%;">
+                        ${options.map(opt => `<button class="btn" style="background:#334155; color:white; border:1px solid #475569; padding: 10px; font-size:0.9rem;" onclick="ArcGameEngine.reaction.check('${id}', '${opt}', '${q.reagent}')">${opt}</button>`).join('')}
+                    </div>
+                `;
             },
-            guess: function(id, ans) {
+            check: function(id, selected, correct) {
                 const state = window.arcGames.instances[id];
-                if(ans === this.data[state.q].a) state.score++;
-                state.q++; this.render(id);
+                if(selected === correct) {
+                    state.score++;
+                    state.qIndex++;
+                    this.next(id);
+                } else {
+                    document.getElementById(`game-bg-${id}`).innerHTML += `<div style="position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:10;"><h2 style="color:var(--red);">Wrong Reagent 💥</h2><p style="color: white; padding: 0 20px; text-align:center;">The correct reagent to convert to the target product is:<br><br><b style="color:var(--gold); font-size:1.2rem;">${correct}</b></p><button class="btn btn-gold" style="margin-top: 15px;" onclick="ArcGameEngine.reaction.next('${id}')">Continue</button></div>`;
+                    state.qIndex++;
+                }
             }
         },
 
-        // 8. ATOM BUILDER (121 ELEMENTS)
-        shell: {
-            elements: ["Hydrogen","Helium","Lithium","Beryllium","Boron","Carbon","Nitrogen","Oxygen","Fluorine","Neon","Sodium","Magnesium","Aluminum","Silicon","Phosphorus","Sulfur","Chlorine","Argon","Potassium","Calcium","Scandium","Titanium","Vanadium","Chromium","Manganese","Iron","Cobalt","Nickel","Copper","Zinc","Gallium","Germanium","Arsenic","Selenium","Bromine","Krypton","Rubidium","Strontium","Yttrium","Zirconium","Niobium","Molybdenum","Technetium","Ruthenium","Rhodium","Palladium","Silver","Cadmium","Indium","Tin","Antimony","Tellurium","Iodine","Xenon","Cesium","Barium","Lanthanum","Cerium","Praseodymium","Neodymium","Promethium","Samarium","Europium","Gadolinium","Terbium","Dysprosium","Holmium","Erbium","Thulium","Ytterbium","Lutetium","Hafnium","Tantalum","Tungsten","Rhenium","Osmium","Iridium","Platinum","Gold","Mercury","Thallium","Lead","Bismuth","Polonium","Astatine","Radon","Francium","Radium","Actinium","Thorium","Protactinium","Uranium","Neptunium","Plutonium","Americium","Curium","Berkelium","Californium","Einsteinium","Fermium","Mendelevium","Nobelium","Lawrencium","Rutherfordium","Dubnium","Seaborgium","Bohrium","Hassium","Meitnerium","Darmstadtium","Roentgenium","Copernicium","Nihonium","Flerovium","Moscovium","Livermorium","Tennessine","Oganesson","Ununennium","Unbinilium","Unbiunium"],
-            
+        // --- 3. PERIODIC TABLE EXCEPTIONS ---
+        periodic: {
+            data: [
+                { el: 'Cr', name: 'Chromium', fact: 'Anomalous Electron Configuration: [Ar] 4s¹ 3d⁵ (due to half-filled stability).' },
+                { el: 'Cu', name: 'Copper', fact: 'Anomalous Electron Configuration: [Ar] 4s¹ 3d¹⁰ (due to fully-filled stability).' },
+                { el: 'Pd', name: 'Palladium', fact: 'Has NO s-electrons in its valence shell! It is [Kr] 4d¹⁰ 5s⁰.' },
+                { el: 'N', name: 'Nitrogen', fact: 'Cannot expand its octet to form NCl₅ because it lacks d-orbitals.' },
+                { el: 'F', name: 'Fluorine', fact: 'Highest electronegativity, but lower electron gain enthalpy than Chlorine (due to small size and electron repulsion).' },
+                { el: 'B', name: 'Boron', fact: 'Forms electron-deficient compounds like Diborane (B₂H₆) which contains 3-center-2-electron "banana bonds".' },
+                { el: 'Al', name: 'Aluminum', fact: 'Becomes passive in concentrated HNO₃ due to the formation of a protective oxide layer.' },
+                { el: 'Pb', name: 'Lead', fact: 'Shows the Inert Pair Effect strongly; its +2 oxidation state is much more stable than +4.' }
+            ],
             init: function(id) {
-                // Pick a random element from 1 to 121
-                const targetNum = Math.floor(Math.random() * 121) + 1; 
-                window.arcGames.instances[id] = { target: targetNum, name: this.elements[targetNum - 1], current: 0 };
-                this.render(id);
+                let html = `<h3 style="color:var(--gold); margin-top:0;">Tricky Elements Cheat Sheet</h3><p style="color:#cbd5e1; font-size:0.85rem; margin-top:-10px;">Click an element to reveal its famous JEE/NEET exception!</p><div style="display:flex; flex-wrap: wrap; gap:10px; justify-content:center; width:100%; max-height: 180px; overflow-y:auto;">`;
+                
+                this.data.forEach((item, i) => {
+                    html += `<button class="btn" style="background:#1e293b; color:white; border:2px solid #475569; width: 60px; height: 60px; font-size:1.4rem; font-weight:bold; transition: 0.2s;" onmouseover="this.style.background='var(--gold)'; this.style.color='var(--primary)';" onmouseout="this.style.background='#1e293b'; this.style.color='white';" onclick="ArcGameEngine.periodic.showFact('${id}', ${i})">${item.el}</button>`;
+                });
+                
+                html += `</div><div id="fact-box-${id}" style="margin-top:20px; background:rgba(251, 191, 36, 0.1); border:1px solid var(--gold); padding:15px; border-radius:8px; display:none; color:white; font-size:0.95rem; text-align:left; line-height: 1.5;"></div>`;
+                document.getElementById(`game-bg-${id}`).innerHTML = html;
             },
-            render: function(id) {
+            showFact: function(id, index) {
+                const item = this.data[index];
+                const box = document.getElementById(`fact-box-${id}`);
+                box.innerHTML = `<strong style="color:var(--gold); font-size:1.1rem;">${item.name} (${item.el}):</strong><br>${item.fact}`;
+                box.style.display = 'block';
+            }
+        },
+
+        // --- 4. GUESS THE COMPOUND (CHEM WORDLE) ---
+        guess: {
+            data: [
+                { clues: ["I give a positive silver mirror test (Tollen's).", "I do not undergo Aldol condensation.", "I am an aromatic compound."], ans: "Benzaldehyde" },
+                { clues: ["I am a yellow precipitate.", "I form when methyl ketones react with I₂ / NaOH.", "I have strong antiseptic properties."], ans: "Iodoform" },
+                { clues: ["I am an orange-red gas.", "I form when a chloride salt is heated with K₂Cr₂O₇ and conc. H₂SO₄.", "I am used to confirm Cl⁻ ions."], ans: "Chromyl Chloride" },
+                { clues: ["I am a primary alcohol.", "Heating me with Copper at 573K gives an aldehyde.", "My formula is C₂H₆O."], ans: "Ethanol" },
+                { clues: ["I am a cyclic ether.", "I am highly strained.", "I open my ring easily when attacked by a nucleophile."], ans: "Epoxide" }
+            ],
+            init: function(id) {
+                window.arcGames.instances[id] = { qIndex: 0 };
+                // Shuffle mysteries
+                this.data.sort(() => 0.5 - Math.random());
+                this.next(id);
+            },
+            next: function(id) {
                 const state = window.arcGames.instances[id];
-                // Calculate shell configuration for fun visualization (K, L, M, N...)
-                let c = state.current;
-                const shells = [0,0,0,0,0,0,0];
-                const limits = [2,8,18,32,32,18,8]; // Simplified Bohr model
-                for(let i=0; i<7; i++) { if(c > limits[i]) { shells[i] = limits[i]; c -= limits[i]; } else { shells[i] = c; break; } }
+                if(state.qIndex >= this.data.length) {
+                    document.getElementById(`game-bg-${id}`).innerHTML = `<h2 style="color:var(--green);">Sherlock of Chemistry! 🕵️‍♂️</h2><button class="btn btn-gold" onclick="ArcGameEngine.guess.init('${id}')">Play Again</button>`;
+                    return;
+                }
+                
+                const q = this.data[state.qIndex];
+                let cluesHtml = q.clues.map((c, i) => `<li style="margin-bottom:8px; font-size:0.95rem; line-height: 1.4;">${c}</li>`).join('');
                 
                 document.getElementById(`game-bg-${id}`).innerHTML = `
-                    <h3 style="margin-top:0; color:var(--gold);">Build: ${state.name}</h3>
-                    <p style="font-size:0.8rem; margin-top:-10px; margin-bottom:15px; color:#cbd5e1;">Target Atomic Number: ${state.target}</p>
-                    
-                    <div style="background:#1e293b; padding:15px; border-radius:50%; border:4px dashed #475569; margin-bottom:20px; text-align:center; width: 140px; height: 140px; display:flex; flex-direction:column; justify-content:center;">
-                        <div style="font-size:3rem; font-weight:bold; color:white;">${state.current}</div>
-                        <div style="font-size:0.8rem; color:var(--gold);">Electrons</div>
-                    </div>
-                    
-                    <div style="font-size:0.7rem; color:#94a3b8; font-family:monospace; margin-bottom:15px;">
-                        K:${shells[0]} | L:${shells[1]} | M:${shells[2]} | N:${shells[3]} | O:${shells[4]} | P:${shells[5]} | Q:${shells[6]}
-                    </div>
-                    
-                    <div style="display:flex; gap:10px; margin-bottom: 15px;">
-                        <button class="btn" style="background:#ef4444; color:white; padding:5px 10px;" onclick="ArcGameEngine.shell.add('${id}', -1)">-1</button>
-                        <button class="btn" style="background:#3b82f6; color:white; padding:5px 10px;" onclick="ArcGameEngine.shell.add('${id}', 1)">+1</button>
-                        <button class="btn" style="background:#3b82f6; color:white; padding:5px 10px;" onclick="ArcGameEngine.shell.add('${id}', 10)">+10</button>
-                    </div>
-                    <button class="btn btn-gold" style="width: 200px;" onclick="ArcGameEngine.shell.check('${id}')">Check Answer</button>
+                    <h3 style="color:var(--gold); margin-top:0;">Guess the Compound</h3>
+                    <ul style="text-align:left; color:#e2e8f0; background:#1e293b; padding:15px 15px 15px 35px; border-radius:8px; border:1px solid #475569; margin-bottom: 20px;">${cluesHtml}</ul>
+                    <input type="text" id="guess-input-${id}" placeholder="Type the compound name..." style="width:100%; padding:12px; border-radius:6px; border:2px solid var(--gold); background:white; color:black; font-weight:bold; margin-bottom:10px; text-align: center; box-sizing: border-box;">
+                    <button class="btn btn-gold" style="width:100%;" onclick="ArcGameEngine.guess.check('${id}')">Submit Guess</button>
                 `;
-            },
-            add: function(id, amount) {
-                const state = window.arcGames.instances[id];
-                state.current += amount;
-                if(state.current < 0) state.current = 0;
-                if(state.current > 121) state.current = 121;
-                this.render(id);
             },
             check: function(id) {
                 const state = window.arcGames.instances[id];
-                if(state.current === state.target) {
-                    document.getElementById(`game-bg-${id}`).innerHTML += `<div style="position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); display:flex; flex-direction:column; align-items:center; justify-content:center;"><h2 style="color:var(--green);">Correct Element! ✅</h2><button class="btn btn-gold" onclick="ArcGameEngine.shell.init('${id}')">Play Again</button></div>`;
+                const q = this.data[state.qIndex];
+                const input = document.getElementById(`guess-input-${id}`).value.trim().toLowerCase();
+                
+                // Allow generous matching (if they get a partial keyword right)
+                if(input.length > 3 && q.ans.toLowerCase().includes(input)) {
+                    document.getElementById(`game-bg-${id}`).innerHTML += `<div style="position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(34, 197, 94, 0.95); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:10;"><h2 style="color:white; font-size:2.5rem; margin-bottom:10px;">Spot On! ✅</h2><p style="color:white; font-size:1.2rem;">It was <b>${q.ans}</b></p><button class="btn" style="background:white; color:var(--green); margin-top:15px;" onclick="ArcGameEngine.guess.next('${id}')">Next Mystery</button></div>`;
+                    state.qIndex++;
                 } else {
-                    document.getElementById(`game-bg-${id}`).innerHTML += `<div style="position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); display:flex; flex-direction:column; align-items:center; justify-content:center;"><h2 style="color:var(--red);">Unstable Isotope! 💥</h2><p>You set ${state.current}e⁻. Target was ${state.target}.</p><button class="btn btn-gold" onclick="ArcGameEngine.shell.init('${id}')">Try Again</button></div>`;
-                }
-            }
-        },
-
-        // 9. WHACK-A-MOLECULE
-        whack: {
-            init: function(id) {
-                window.arcGames.instances[id] = { score: 0, active: -1, interval: null, timeLeft: 15 };
-                document.getElementById(`game-bg-${id}`).innerHTML = `
-                    <div style="display:flex; justify-content:space-between; width:250px; margin-bottom:10px; font-weight:bold;">
-                        <span style="color:var(--gold)">Score: <span id="whack-score-${id}">0</span></span>
-                        <span style="color:var(--red)">Time: <span id="whack-time-${id}">15</span>s</span>
-                    </div>
-                    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px; width:250px; height:250px;">
-                        ${[0,1,2,3,4,5,6,7,8].map(i => `<div style="background:#334155; border-radius:50%; border:4px solid #1e293b; position:relative; overflow:hidden; cursor:pointer;" onclick="ArcGameEngine.whack.hit('${id}', ${i})"><div id="mole-${id}-${i}" style="position:absolute; bottom:-100%; left:10%; width:80%; height:80%; background:var(--green); border-radius:50% 50% 10% 10%; transition:bottom 0.2s; display:flex; align-items:center; justify-content:center; font-size:2rem; user-select:none;">⚛️</div></div>`).join('')}
-                    </div>
-                `;
-                
-                window.arcGames.instances[id].interval = setInterval(() => {
-                    let state = window.arcGames.instances[id]; if(!state) return;
-                    if(state.active > -1) document.getElementById(`mole-${id}-${state.active}`).style.bottom = '-100%';
-                    state.timeLeft--; document.getElementById(`whack-time-${id}`).innerText = state.timeLeft;
-                    if(state.timeLeft <= 0) {
-                        clearInterval(state.interval);
-                        document.getElementById(`game-bg-${id}`).innerHTML = `<h2 style="color:var(--gold);">Time's Up!</h2><p style="font-size:1.5rem;">Score: ${state.score}</p><button class="btn btn-gold" onclick="ArcGameEngine.whack.init('${id}')">Play Again</button>`;
-                        return;
-                    }
-                    state.active = Math.floor(Math.random() * 9);
-                    document.getElementById(`mole-${id}-${state.active}`).style.bottom = '10%';
-                }, 800);
-            },
-            hit: function(id, index) {
-                const state = window.arcGames.instances[id];
-                if(state.active === index) {
-                    state.score++; document.getElementById(`whack-score-${id}`).innerText = state.score;
-                    document.getElementById(`mole-${id}-${index}`).style.bottom = '-100%'; 
-                    document.getElementById(`mole-${id}-${index}`).innerText = "💥"; 
-                    setTimeout(() => { document.getElementById(`mole-${id}-${index}`).innerText = "⚛️"; }, 300);
-                    state.active = -1;
-                }
-            }
-        },
-
-        // 10. REACTION TYPER
-        typer: {
-            init: function(id) {
-                const words = ["photosynthesis", "stoichiometry", "thermodynamics", "electronegativity", 
-                "crystallization", "organic chemistry", "NEET", "JEE", "titration", 
-                "catalyst", "equilibrium", "molarity", "avogadro", "isotope", "periodic table", "valence electrons", 
-                "oxidation", "reduction", "polymerization", "sublimation", "distillation", 
-                "alkane", "alkene", "alkyne", "aromatic", "nucleophile", "electrophile", "resonance", "hybridization",];
-                const target = words[Math.floor(Math.random() * words.length)];
-                window.arcGames.instances[id] = { target: target, startTime: Date.now() };
-                
-                document.getElementById(`game-bg-${id}`).innerHTML = `
-                    <h3 style="color:var(--gold); margin-top:0;">Speed Typing Test</h3>
-                    <p style="color:#cbd5e1; font-size:0.9rem; margin-bottom:20px;">Type the chemical term below as fast as possible!</p>
-                    <div style="background:#334155; padding:15px 30px; border-radius:8px; font-size:1.8rem; font-weight:bold; letter-spacing:2px; margin-bottom:20px; border:1px solid #475569; color:white;">
-                        ${target}
-                    </div>
-                    <input type="text" id="typer-input-${id}" placeholder="Type here..." autocomplete="off" style="width:200px; padding:12px; font-size:1.2rem; text-align:center; border-radius:8px; border:2px solid var(--gold); outline:none;" oninput="ArcGameEngine.typer.check('${id}', this.value)">
-                `;
-            },
-            check: function(id, val) {
-                const state = window.arcGames.instances[id];
-                if(val.toLowerCase() === state.target) {
-                    const timeTaken = ((Date.now() - state.startTime) / 1000).toFixed(2);
-                    document.getElementById(`game-bg-${id}`).innerHTML = `
-                        <h2 style="color:var(--green);">⚡ Fast Reflexes!</h2>
-                        <p style="font-size:1.2rem;">You typed it in <b>${timeTaken} seconds</b>.</p>
-                        <button class="btn btn-gold" style="margin-top:15px;" onclick="ArcGameEngine.typer.init('${id}')">Try Another Word</button>
-                    `;
+                    document.getElementById(`guess-input-${id}`).value = "";
+                    document.getElementById(`guess-input-${id}`).placeholder = "❌ Incorrect, try again!";
+                    document.getElementById(`guess-input-${id}`).style.borderColor = "var(--red)";
+                    // Shake animation
+                    const inputEl = document.getElementById(`guess-input-${id}`);
+                    inputEl.style.transform = 'translate(-5px, 0)';
+                    setTimeout(() => inputEl.style.transform = 'translate(5px, 0)', 50);
+                    setTimeout(() => inputEl.style.transform = 'translate(-5px, 0)', 100);
+                    setTimeout(() => inputEl.style.transform = 'translate(0, 0)', 150);
                 }
             }
         }
     };
     // ==========================================
+
 
     const toolbarHTML = `
         <div class="toolbar" style="background:#e2e8f0; padding:10px; border-radius:6px 6px 0 0; display:flex; gap:8px; flex-wrap:wrap; align-items:center; border:1px solid #ccc; border-bottom:none;">
@@ -2610,6 +2109,27 @@ if (savedTheme === 'dark') {
             editingBlogId = null;
             c.innerHTML = `<h3>Post Blog</h3><input id="b-title" placeholder="Blog Title"><div style="margin:10px 0;"><b>Cover:</b> <input type="file" onchange="encodeImg(this, 'b-cover-prev')"><img id="b-cover-prev" style="height:100px; display:none;"></div>${toolbarHTML}<div id="b-content" class="editor" contenteditable="true" style="min-height:300px; margin-top:0; border-radius:0 0 6px 6px;"></div><button class="btn btn-gold" style="width:100%; margin-top:15px;" onclick="postBlog()">PUBLISH BLOG</button>`;
         }
+        else if (tab === 'wheel') {
+            c.innerHTML = `<h3>Manage Fortune Wheel Offers</h3>
+            <div style="background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #ddd; margin-bottom: 20px;">
+                <input id="w-label" placeholder="Slice Label (e.g., 50 Coins, Try Again)">
+                <div style="display:flex; gap:10px; margin-top:10px;">
+                    <select id="w-type" style="flex:1; padding:10px; border-radius:6px; border:1px solid #ccc;">
+                        <option value="coins">Reward: ARC Coins</option>
+                        <option value="discount">Reward: Custom Discount</option>
+                        <option value="none">Reward: Nothing (Try Again)</option>
+                    </select>
+                    <input id="w-val" type="number" placeholder="Value (e.g. 50)" style="flex:1; padding:10px; border-radius:6px; border:1px solid #ccc;">
+                    <input id="w-color" type="color" value="#fbbf24" style="flex:0.5; height:42px; padding:0; border:1px solid #ccc; cursor:pointer;" title="Slice Color">
+                </div>
+                <button class="btn btn-gold" style="width:100%; margin-top:15px;" onclick="addWheelPrize()">➕ Add to Wheel</button>
+            </div>
+            <hr>
+            <h4>Current Wheel Slices</h4>
+            <div id="admin-wheel-list" class="table-container">Loading...</div>`;
+            loadAdminWheelList();
+        }
+
         else if (tab === 'offline') {
             if(!editingOfflineId) offlineDraft = []; 
             c.innerHTML = `<h3>Offline Result</h3><input id="off-title" placeholder="Test Title"><div class="input-group" style="grid-template-columns: 2fr 1fr 1fr 2fr auto;"><input id="off-name" placeholder="Name"><input id="off-total" placeholder="Total"><input id="off-obt" placeholder="Obt"><input id="off-link" placeholder="Drive Link"><button class="btn btn-gold" onclick="addOfflineStudent()">Add</button></div><div class="table-container"><table style="margin:0;"><thead><tr><th>Name</th><th>Mks</th><th>Link</th><th>Del</th></tr></thead><tbody id="off-preview-body"></tbody></table></div><button class="btn btn-red" style="width:100%" onclick="postOffline()">${editingOfflineId ? 'UPDATE' : 'UPLOAD'}</button>`;
@@ -2634,15 +2154,7 @@ if (savedTheme === 'dark') {
                  <input type="file" onchange="encodeImg(this, 'm-prev')" style="margin-top:5px;">
                  <img id="m-prev" style="height:100px; margin-top:10px; display:none; object-fit:contain; border:1px solid #ddd;">
             </div>
-            <select id="m-cat">
-                <option>11th Class</option>
-                <option>12th Class</option>
-                <option>Organic</option>
-                <option>Physical</option>
-                <option>Inorganic</option>
-                <option>Notes</option>
-                <option>Test Series</option>
-            </select>
+            <select id="m-cat"><option>11th Class</option><option>12th Class</option><option>Notes</option><option>Test Series</option></select>
             <input id="m-code" placeholder="Pass (Opt)">
             <button class="btn btn-gold" style="width:100%; margin-top:10px;" onclick="uploadMat()">${editingMaterialId ? 'UPDATE' : 'UPLOAD'}</button>`;
         }
@@ -2823,31 +2335,28 @@ if (savedTheme === 'dark') {
             loadAdminMechList();
         }
             else if (tab === 'store') {
-            c.innerHTML = `<h3>Manage Store Items</h3>
-            <div style="background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #ddd; margin-bottom: 20px;">
-                <input id="store-title" placeholder="Item Title (e.g., Ultimate Organic Cheat Sheet)">
-                <div style="display:flex; gap:10px;">
-                    <select id="store-type" style="flex:1; padding:10px; border-radius:6px; border:1px solid #ccc;" onchange="updateStoreInputUI()">
-                        <option value="pdf">📄 Premium PDF (Link from Library)</option>
-                        <option value="test">🔒 Mock Test (Link from Practice Tests)</option>
-                        <option value="video">📹 Secret Video Link</option>
-                        <option value="discount">💸 Offline Fee Discount</option>
-                    </select>
-                    <input id="store-cost" type="number" placeholder="Coin Cost" style="flex:1; padding:10px; border-radius:6px; border:1px solid #ccc;">
+                c.innerHTML = `<h3>Manage Store Items</h3>
+                <div style="background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #ddd; margin-bottom: 20px;">
+                    <input id="store-title" placeholder="Item Title (e.g., Ultimate Organic Cheat Sheet)">
+                    <div style="display:flex; gap:10px;">
+                        <select id="store-type" style="flex:1; padding:10px; border-radius:6px; border:1px solid #ccc;" onchange="updateStoreInputUI()">
+                            <option value="pdf">📄 Premium PDF (Link from Library)</option>
+                            <option value="test">🔒 Mock Test (Link from Practice Tests)</option>
+                            <option value="video">📹 Secret Video Link</option>
+                            <option value="discount">💸 Offline Fee Discount</option>
+                        </select>
+                        <input id="store-cost" type="number" placeholder="Coin Cost" style="flex:1; padding:10px; border-radius:6px; border:1px solid #ccc;">
+                    </div>
+                    <div id="store-link-container" style="margin-top:10px;"></div>
+                    <button class="btn btn-gold" style="width:100%; margin-top:15px; font-size:1.1rem;" onclick="uploadStoreItem()">➕ Add to Store</button>
                 </div>
-                <div id="store-link-container" style="margin-top:10px;"></div>
-                <button class="btn btn-gold" style="width:100%; margin-top:15px; font-size:1.1rem;" onclick="uploadStoreItem()">➕ Add to Store</button>
-            </div>
-            <hr>
-            <h4>Current Store Items</h4>
-            <div id="admin-store-list" class="table-container">Loading...</div>`;
-            
-            // Fix: Wait for the HTML to render before trying to find the select element
-            setTimeout(() => {
-                updateStoreInputUI(); 
+                <hr>
+                <h4>Current Store Items</h4>
+                <div id="admin-store-list" class="table-container">Loading...</div>`;
+                
+                updateStoreInputUI(); // Initialize dynamic dropdown
                 loadAdminStoreList();
-            }, 0);
-        }
+            }
         else if (tab === 'discounts') {
             c.innerHTML = `<h3>Offline Discount Verifications</h3>
             <p style="color:#666;">Cross-check the verification codes presented by students here.</p>
@@ -2875,20 +2384,11 @@ if (savedTheme === 'dark') {
     async function editStudent(id) { 
         const res = await fetch(`/api/admin/student/${id}`); 
         const s = await res.json(); 
-        const newName = prompt("Enter new name for student:", s.name); 
-        const newPass = prompt("Enter NEW password (leave blank to keep current):", ""); 
-        
-        if(newName !== null) { 
-            const updateBody = { name: newName };
-            if(newPass) updateBody.password = newPass; // Only send password to backend if changed
-
-            await fetch(`/api/admin/student/${id}`, { 
-                method: 'PUT', 
-                headers: {'Content-Type':'application/json'}, 
-                body: JSON.stringify(updateBody) 
-            }); 
-            alert("Student Profile Updated!"); 
-            showAdm('students'); 
+        const newName = prompt("Name:", s.name); 
+        const newPass = prompt("Pass:", s.password); 
+        if(newName && newPass) { 
+            await fetch(`/api/admin/student/${id}`, { method: 'PUT', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ name: newName, password: newPass }) }); 
+            alert("Updated!"); showAdm('students'); 
         } 
     }
 
@@ -2916,6 +2416,7 @@ if (savedTheme === 'dark') {
         else if(type === 'store') { loadAdminStoreList(); loadDynamicStore(); }
         else if(type === 'discount-log') { loadAdminDiscounts(); }
         else if(type === 'doubt') { showAdm('doubts'); }
+        else if(type === 'wheel') loadAdminWheelList();
     }
 
     function initCreateTest() { editingTestId = null; draftQ = []; showAdm('create-test'); renderCreatePalette(); }
@@ -2990,50 +2491,40 @@ if (savedTheme === 'dark') {
         if(loginMode === 'student' && !email.includes('@')) email += '@arcstudent.com';
         
         try {
-            // Change button text to show it's working (Render might take 30s to wake up)
-            const submitBtn = document.querySelector('#login form button[type="submit"]');
-            const originalBtnText = submitBtn.innerText;
-            submitBtn.innerText = "Connecting to Server...";
-            submitBtn.disabled = true;
-
             const res = await fetch('/api/login', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ email, password, role: loginMode }) });
-            
-            // Check if Render returned a 502/503 Gateway error while waking up
-            if (!res.ok) {
-                throw new Error(`Server is waking up (Status: ${res.status}).`);
-            }
-
             const data = await res.json();
-            
-            // Reset button
-            submitBtn.innerText = originalBtnText;
-            submitBtn.disabled = false;
-
             if(data.success) {
                 const userData = {name: data.name, email: data.email, role: data.role};
                 localStorage.setItem('arc_user', JSON.stringify(userData)); user = userData;
-                
-                // Play welcome voice
-                if(typeof playWelcomeVoice === 'function') playWelcomeVoice(userData.name);
-                if(typeof showWelcomePopup === 'function') showWelcomePopup(userData.name);
+                // 👉 PLAY WELCOME VOICE HERE
+                playWelcomeVoice(userData.name);
+                showWelcomePopup(userData.name);
 
                 document.getElementById('nav-login').style.display = 'none';
-                document.getElementById('nav-logout').style.display = 'block'; 
-                document.getElementById('nav-doubts').style.display = 'block'; 
+                // Show welcome popup
+        // FEATURE: VISUAL WELCOME POPUP
+    function showWelcomePopup(name) {
+        const popup = document.getElementById('welcome-popup');
+        const textEl = document.getElementById('welcome-popup-text');
+        
+        // Grab just the first name
+        const firstName = name.split(' ')[0]; 
+        textEl.innerText = `Welcome back, ${firstName}`;
+        
+        // Slide it up
+        popup.classList.add('show');
+        
+        // Hide it automatically after 4 seconds
+        setTimeout(() => {
+            popup.classList.remove('show');
+        }, 4000);
+    }
+
+                document.getElementById('nav-login').style.display = 'none'; document.getElementById('nav-logout').style.display = 'block'; document.getElementById('nav-doubts').style.display = 'block'; 
                 if(user.role === 'admin') document.getElementById('nav-admin').style.display = 'block';
-                
                 show('home'); 
-            } else { 
-                alert(data.message || "Invalid Email or Password"); 
-            }
-        } catch(e) { 
-            console.error("Login Error:", e);
-            const submitBtn = document.querySelector('#login form button[type="submit"]');
-            submitBtn.innerText = "Submit";
-            submitBtn.disabled = false;
-            
-            alert("Server connection error.\n\nIf the server was asleep, it may take 30-50 seconds to wake up. Please wait a moment and click Submit again."); 
-        } 
+            } else { alert(data.message || "Invalid Email or Password"); }
+        } catch(e) { alert("Server connection error. Please try again."); } 
     }
 
     function logout() { localStorage.removeItem('arc_user'); localStorage.removeItem('arc_last_section'); clearSession(); location.reload(); }
@@ -3119,13 +2610,33 @@ if (savedTheme === 'dark') {
     
     async function loadAnnouncements() { try { const res = await fetch('/api/announcement'); const data = await res.json(); document.getElementById('anno-marquee').innerHTML = (data.list && data.list.length > 0) ? data.list.join(' &nbsp;|&nbsp; ') : "Welcome"; } catch(e) {} }
     
-    async function loadBlogs() { 
-        try {
-            const res = await fetch('/api/blogs'); const blogs = await res.json(); allBlogs = blogs; 
-            if (blogs.length === 0) { document.getElementById('blog-grid').innerHTML = getEmptyStateGame("No Blogs Published Yet"); } 
-            else { document.getElementById('blog-grid').innerHTML = blogs.map(b => `<div class="card blog-card" onclick="viewBlog('${b._id}')"><img src="${b.image || 'https://via.placeholder.com/300'}" alt="cover"><div class="blog-content-preview"><h3 class="blog-title">${b.title}</h3><small>${new Date(b.date).toLocaleDateString()}</small></div></div>`).join(''); }
-        } catch(e) { console.error("Could not load blogs"); }
+    async function loadBlogs() {
+    try {
+        const res = await fetch('/api/blogs');
+        const blogsRaw = await res.json();
+        
+        // Ensure it's treated as an array even if the API sends something weird
+        allBlogs = Array.isArray(blogsRaw) ? blogsRaw : []; 
+
+        if (allBlogs.length === 0) {
+            document.getElementById('blog-grid').innerHTML = getEmptyStateGame("No Blogs Published Yet");
+        } else {
+            document.getElementById('blog-grid').innerHTML = allBlogs.map(b => 
+                `<div class="card blog-card" onclick="viewBlog('${b._id}')">
+                    <img src="${b.image || 'https://via.placeholder.com/300'}" alt="cover">
+                    <div class="blog-content-preview">
+                        <h3 class="blog-title">${b.title}</h3>
+                        <small>${new Date(b.date).toLocaleDateString()}</small>
+                    </div>
+                </div>`
+            ).join('');
+        }
+    } catch(e) {
+        console.error("Could not load blogs", e);
+        // FIX: Inject the empty state game if the network request fails!
+        document.getElementById('blog-grid').innerHTML = getEmptyStateGame("No Blogs Published Yet");
     }
+}
     
     let blogPages = []; let currentBPage = 0;
     function viewBlog(id) { 
@@ -3143,61 +2654,47 @@ if (savedTheme === 'dark') {
     }
     function changeBlogPage(dir) { currentBPage += dir; renderBlogPage(); document.getElementById('blog-modal').scrollTo(0, 0); }
     
-    // 🔄 UPDATE: Cool Premium Badges & Ongoing Test Highlighter
 
-    // 🔄 UPDATE: Neumorphic Theme for Practice Tests
+    // 🔄 UPDATE: Cool Premium Badges & Ongoing Test Highlighter
 async function loadTests(isLive) { 
     try {
         const res = await fetch('/api/tests'); const tests = await res.json(); const now = new Date(); 
         const filteredTests = tests.filter(t => { const tEnd = t.endTime ? new Date(t.endTime) : null; if (isLive) { return t.isLive && tEnd && tEnd > now; } else { return !t.isLive || (t.isLive && tEnd && tEnd <= now); } }); 
         const container = document.getElementById(isLive?'live-list':'test-list');
         
+        // Check if there is an active session running right now
         const session = JSON.parse(localStorage.getItem('arc_test_session'));
         const ongoingTestId = (session && session.endTime > Date.now()) ? session.test._id : null;
-        const isAdmin = user && user.role === 'admin';
 
         if (filteredTests.length === 0) { container.innerHTML = getEmptyStateGame(`No ${isLive ? 'Live' : 'Practice'} Tests Available`); } 
         else { 
             container.innerHTML = filteredTests.map(t => {
+                // Store/Premium check
                 const storeItem = dynamicStoreData.find(si => si.type === 'test' && si.link === t._id);
-                const isOwned = user && user.unlockedItems && user.unlockedItems.includes(t._id);
                 
-                // Logic: Is it Premium AND the student doesn't own it?
-                const isLockedPremium = storeItem && !isOwned && !isAdmin;
+                // Holographic Premium Badge
+                const premiumBadge = storeItem ? `<div class="premium-badge-cool">💎 PREMIUM <span style="background:white; color:#0f172a; padding:2px 8px; border-radius:12px; margin-left:3px; font-size:0.75rem;">${storeItem.cost} <div class="arc-coin" style="width:1.1em; height:1.1em; vertical-align:-0.2em; margin:0;"></div></span></div>` : '';
+                
+                // Floating Lock Icon
+                const lockIcon = t.accessCode && !storeItem ? '<span class="premium-lock-cool" title="Password Protected">🔒</span>' : ''; 
+
+                // Ongoing Check
                 const isOngoing = (t._id === ongoingTestId);
+                const cardClass = isOngoing ? "card ongoing-test-card" : "card";
+                const ongoingBanner = isOngoing ? `<div class="ongoing-label">ONGOING</div>` : '';
                 
-                // Neumorphic classes
-                const neuClass = isLockedPremium ? 'neu-locked' : 'neu-unlocked';
-                const glowClass = isOngoing ? 'ongoing-test-card' : '';
-
-                // Embossed Badge
-                let badgeHtml = '';
-                if (storeItem) {
-                    if (isOwned || isAdmin) {
-                        badgeHtml = `<div class="neu-badge unlocked">✅ Owned</div>`;
-                    } else {
-                        badgeHtml = `<div class="neu-badge">💎 ${storeItem.cost} <div class="arc-coin" style="width:1.1em; height:1.1em; vertical-align:-0.15em; margin:0;"></div></div>`;
-                    }
-                }
-
-                // Lock Icon updates if owned
-                const lockIcon = (t.accessCode && isLockedPremium) ? '<span title="Password Protected" style="margin-left:8px; opacity:0.6;">🔒</span>' : 
-                                 (t.accessCode && !isLockedPremium) ? '<span title="Password Unlocked" style="margin-left:8px; color:var(--green);">🔓</span>' : ''; 
-
-                // 3D Button Logic
+                // Change Button if Ongoing
                 let btnHtml = "";
                 if (isOngoing) {
-                    btnHtml = `<button class="neu-btn green" style="width:100%; box-shadow: inset 2px 2px 5px rgba(0,0,0,0.1);" onclick="startTest('${t._id}', ${(t.accessCode) ? true : false}, '${t.startTime}')">Resume Test ➡</button>`;
-                } else if (isLockedPremium) {
-                    btnHtml = `<button class="neu-btn gold" style="width:100%;" onclick="startTest('${t._id}', ${(t.accessCode) ? true : false}, '${t.startTime}')">Unlock Required</button>`;
+                    btnHtml = `<button class="btn" style="background:var(--green); color:white; width:100%; font-size:1.1rem; box-shadow:0 4px 15px rgba(34, 197, 94, 0.4);" onclick="startTest('${t._id}', ${(t.accessCode || storeItem) ? true : false}, '${t.startTime}')">Resume Test ➡</button>`;
                 } else {
-                    btnHtml = `<button class="neu-btn" style="width:100%;" onclick="startTest('${t._id}', ${(t.accessCode) ? true : false}, '${t.startTime}')">Start Test</button>`;
+                    btnHtml = `<button class="btn btn-gold" style="width:100%;" onclick="startTest('${t._id}', ${(t.accessCode || storeItem) ? true : false}, '${t.startTime}')">Start</button>`;
                 }
 
-                return `<div class="neu-card ${neuClass} ${glowClass}">
-                    ${isOngoing ? `<div class="ongoing-label">ONGOING</div>` : ''}
-                    ${badgeHtml}
-                    <h3 style="display:flex; align-items:center; margin-top:${isOngoing || badgeHtml ? '25px' : '0'}; line-height:1.3; color:${isLockedPremium ? '#94a3b8' : 'inherit'};">${t.title} ${lockIcon}</h3>
+                return `<div class="${cardClass}" style="border-left: 5px solid ${isLive ? 'red' : 'gold'}; position:relative; overflow:hidden; display:flex; flex-direction:column;">
+                    ${ongoingBanner}
+                    ${premiumBadge}
+                    <h3 style="display:flex; align-items:center; margin-top:${isOngoing ? '25px' : '0'}; line-height:1.3;">${t.title} ${lockIcon}</h3>
                     <p style="color:#64748b; font-weight:600; margin-top:-5px;">⏱️ ${t.duration} Mins</p>
                     ${isLive ? `<p style="color:var(--red); font-weight:bold;">Start: ${new Date(t.startTime).toLocaleString()}</p>` : ''}
                     <div style="margin-top: auto; padding-top: 15px;">
@@ -3208,8 +2705,7 @@ async function loadTests(isLive) {
         }
     } catch(e) { console.error("Could not load tests"); }
 }
-
-
+    
     function startTimer(durationOrTimestamp) { 
         clearInterval(timer); const now = Date.now();
         if (durationOrTimestamp < 1000000) { testEndTime = now + (durationOrTimestamp * 60 * 1000); } else { testEndTime = durationOrTimestamp; }
@@ -3223,14 +2719,15 @@ async function loadTests(isLive) {
         }, 1000); 
     }
 
-    // 1. UPDATED START TEST FUNCTION (Fixes Password Bypass & Cool Alerts)
+    // 1. UPDATED START TEST FUNCTION
+// 1. UPDATED START TEST FUNCTION (Blocks overrides & Instant Loads Premium)
 async function startTest(id, hasCode, startTimeStr) {
     // 🛑 ONGOING TEST BLOCKER
     const session = JSON.parse(localStorage.getItem('arc_test_session'));
     if (session && session.endTime > Date.now()) {
         if (session.test._id !== id) {
-            openStoreAlert('error', 'Test in Progress', "You have an ongoing test! Please submit it before starting a new one.");
-            show('exam');
+            alert("⚠️ You have an ongoing test! Please submit it before starting a new one.");
+            show('exam'); // Force them back into their running test
             return;
         }
     }
@@ -3239,7 +2736,8 @@ async function startTest(id, hasCode, startTimeStr) {
         const now = new Date();
         const start = new Date(startTimeStr);
         if (now < start) {
-            openStoreAlert('error', 'Test Locked', "This test hasn't started yet!");
+            document.getElementById('alert-msg').innerText = "Test Locked";
+            openModal('alert-modal');
             return;
         }
     }
@@ -3275,29 +2773,28 @@ async function startTest(id, hasCode, startTimeStr) {
                 if(typeof toggleWatermark === 'function') toggleWatermark(true);
             };
 
-            // ⚡ Play animation only if they actually typed a password
-            if (hasCode && !isAdmin && code !== "") {
+            // ⚡ INSTANT LOAD: Only play animation if they ACTUALLY typed a password
+            const usedPassword = hasCode && !isUnlocked && !isAdmin;
+            if (usedPassword) {
                 triggerUnlockSuccessAnimation(finalizeStart);
             } else {
                 finalizeStart(); 
             }
         } else {
-            // SHOW THE COOL RED ERROR MODAL INSTEAD OF A BORING ALERT
-            if (hasCode && code !== "") triggerPassError();
-            else openStoreAlert('error', 'Access Denied', data.message || "Wrong Password");
+            if (hasCode) triggerPassError();
+            else { alert(data.message || "Access Denied"); }
         }
     };
 
-    // 🔒 BUG FIX: Always ask for password if test has one, even if unlocked!
-    const needsPassword = hasCode && !isAdmin;
+    const needsPassword = hasCode && !isUnlocked && !isAdmin;
     if (needsPassword) {
-        openCoolModal("Unlock Test", "This premium test is password protected.", processStart);
+        openCoolModal("Unlock Test", "This test is password protected.", processStart);
     } else {
         processStart(""); 
     }
 }
 
-// 2. UPDATED OPEN MATERIAL FUNCTION (Fixes Password Bypass)
+// 2. UPDATED OPEN MATERIAL FUNCTION
 async function openMat(id) {
     const mat = allMats.find(m => m._id === id);
     if(!mat) return;
@@ -3326,19 +2823,19 @@ async function openMat(id) {
                 openPdfViewer(mat.title, data.link);
             };
 
-            if (mat.accessCode && !isAdmin && code !== "") {
+            // ⚡ INSTANT LOAD check
+            const usedPassword = mat.accessCode && !isUnlocked && !isAdmin;
+            if (usedPassword) {
                 triggerUnlockSuccessAnimation(finalizeUnlock);
             } else {
                 finalizeUnlock();
             }
         } else {
-            if (mat.accessCode && code !== "") triggerPassError();
-            else openStoreAlert('error', 'Access Denied', data.message || "Wrong Password");
+            triggerPassError();
         }
     };
 
-    // 🔒 BUG FIX: Always ask for password if file has one, even if unlocked!
-    const needsPassword = mat.accessCode && !isAdmin;
+    const needsPassword = mat.accessCode && !isUnlocked && !isAdmin;
     if (needsPassword) {
         openCoolModal("Unlock Library", `Enter password for ${mat.title}`, processUnlock);
     } else {
@@ -3475,48 +2972,27 @@ function executeStoreConfirm() {
     async function loadMaterials() { try { const res = await fetch('/api/materials'); allMats = await res.json(); } catch(e) {} }
     function loadLib(cat) { document.getElementById('lib-cats').style.display = 'none'; document.getElementById('lib-back').style.display = 'block'; renderLib(cat); }
     
-
-// 🔄 UPDATE: Neumorphic Theme for Library
-    function renderLib(cat) { 
+    // 🔄 UPDATE: Cool Premium Badges for Library Files
+function renderLib(cat) { 
     const items = allMats.filter(m => m.category === cat || (cat === '11th Class' && m.category.includes('11'))); 
-    const isAdmin = user && user.role === 'admin';
-
     if (items.length === 0) { document.getElementById('lib-content').innerHTML = getEmptyStateGame(`No items available in ${cat}`); } 
     else { 
         document.getElementById('lib-content').innerHTML = items.map(m => {
+            // Check if this material is in the store!
             const storeItem = dynamicStoreData.find(si => si.type === 'pdf' && si.link === m._id);
-            const isOwned = user && user.unlockedItems && user.unlockedItems.includes(m._id);
-            const isLockedPremium = storeItem && !isOwned && !isAdmin;
+            
+            // Holographic Premium Badge
+            const premiumBadge = storeItem ? `<div class="premium-badge-cool">💎 PREMIUM <span style="background:white; color:#0f172a; padding:2px 8px; border-radius:12px; margin-left:3px; font-size:0.75rem;">${storeItem.cost} <div class="arc-coin" style="width:1.1em; height:1.1em; vertical-align:-0.2em; margin:0;"></div></span></div>` : '';
+            
+            // Floating Lock Icon
+            const lockIcon = m.accessCode && !storeItem ? '<span class="premium-lock-cool" title="Password Protected">🔒</span>' : '';
 
-            const neuClass = isLockedPremium ? 'neu-locked' : 'neu-unlocked';
-
-            let badgeHtml = '';
-            if (storeItem) {
-                if (isOwned || isAdmin) {
-                    badgeHtml = `<div class="neu-badge unlocked">✅ Owned</div>`;
-                } else {
-                    badgeHtml = `<div class="neu-badge">💎 ${storeItem.cost} <div class="arc-coin" style="width:1.1em; height:1.1em; vertical-align:-0.15em; margin:0;"></div></div>`;
-                }
-            }
-
-            const lockIcon = (m.accessCode && isLockedPremium) ? '<span title="Password Protected" style="margin-left:8px; opacity:0.6;">🔒</span>' : 
-                             (m.accessCode && !isLockedPremium) ? '<span title="Password Unlocked" style="margin-left:8px; color:var(--green);">🔓</span>' : '';
-
-            let btnHtml = "";
-            if (isLockedPremium) {
-                btnHtml = `<button class="neu-btn gold" style="width:100%;" onclick="openMat('${m._id}')">Unlock Required</button>`;
-            } else {
-                btnHtml = `<button class="neu-btn" style="width:100%;" onclick="openMat('${m._id}')">Open File</button>`;
-            }
-
-            return `<div class="neu-card ${neuClass}">
-                ${badgeHtml}
-                <div class="neu-img-container">
-                    <img src="${m.image||''}" style="max-height:85%; max-width:85%; object-fit:contain; opacity:${isLockedPremium ? '0.4' : '1'}; filter:${isLockedPremium ? 'grayscale(100%) blur(2px)' : 'none'}; transition: all 0.3s ease;">
-                </div>
-                <h4 style="margin: 15px 0; display:flex; align-items:center; line-height:1.3; color:${isLockedPremium ? '#94a3b8' : 'inherit'};">${m.title} ${lockIcon}</h4>
+            return `<div class="card" style="position:relative; overflow:hidden; display:flex; flex-direction:column;">
+                ${premiumBadge}
+                <img src="${m.image||''}" style="height:180px; width: 100%; background:#f8fafc; object-fit:contain; border-radius: 8px; border: 1px solid #eee;">
+                <h4 style="margin: 15px 0 15px 0; display:flex; align-items:center; line-height:1.3;">${m.title} ${lockIcon}</h4>
                 <div style="margin-top:auto;">
-                    ${btnHtml}
+                    <button class="btn btn-gold" style="width:100%;" onclick="openMat('${m._id}')">Open File</button>
                 </div>
             </div>`;
         }).join(''); 
@@ -3564,20 +3040,42 @@ function executeStoreConfirm() {
 
     async function loadStories() {
     try {
-        const res = await fetch('/api/stories'); 
-        const data = await res.json(); 
+        const res = await fetch('/api/stories');
+        const dataRaw = await res.json();
+        const data = Array.isArray(dataRaw) ? dataRaw : [];
         const bookContainer = document.getElementById('story-book');
-        
-        if(!bookContainer || data.length === 0) return;
+
+        if(!bookContainer) return;
+
+        // FIX: Inject a beautiful default page if there are no stories yet
+        if (data.length === 0) {
+            bookContainer.innerHTML = `
+            <div class="book-sheet" style="z-index: 1">
+                <div class="page-face page-front" style="background: var(--primary); color: white; justify-content: center; align-items: center; text-align: center;">
+                    <div class="content-wrapper">
+                        <h2 style="font-size: 2.5rem; margin:0 0 10px 0; color: var(--gold);">HALL OF FAME</h2>
+                        <p style="font-size: 1.1rem; opacity: 0.8; text-transform:uppercase;">ARC CLASSES SUCCESS STORIES</p>
+                        <div style="font-size: 5rem; margin-top: 30px; filter: drop-shadow(0 5px 10px rgba(0,0,0,0.3));">🏆</div>
+                    </div>
+                </div>
+                <div class="page-face page-back" style="justify-content: center; align-items: center; text-align: center; background: #f8fafc;">
+                    <div class="content-wrapper" style="display:flex; flex-direction:column; justify-content:center; align-items:center; height:100%;">
+                        <div style="font-size: 4rem; margin-bottom: 20px;">🌟</div>
+                        <h3 style="color:var(--primary); margin:0;">No Stories Yet!</h3>
+                        <p style="color:#666; font-size: 1.1rem;">Be the first student to make it to the Hall of Fame.</p>
+                        <button class="btn btn-gold" style="margin-top: 20px;" onclick="openModal('story-modal')">Add Your Story</button>
+                    </div>
+                </div>
+            </div>`;
+            return;
+        }
 
         let html = '';
         
         // --- 1. Create the Cover Sheet ---
-        // Cover Front: Book Title, Cover Back (becomes page 1): Story 1 Photo
         const firstStory = data[0];
         const firstFallbackImg = `https://ui-avatars.com/api/?name=${encodeURIComponent(firstStory.name)}&background=0f172a&color=fbbf24&bold=true&size=180`;
         
-        // Dynamic Z-index so pages stack correctly (cover has highest base + data.length)
         html += `
         <div class="book-sheet" style="z-index: ${data.length + 1}">
             <div class="page-face page-front" style="background: var(--primary); color: white; justify-content: center; align-items: center; text-align: center;">
@@ -3596,14 +3094,10 @@ function executeStoreConfirm() {
         </div>`;
 
         // --- 2. Create Content Sheets ---
-        // Each intermediate sheet handles the RIGHT page of current story (Text) 
-        // AND the LEFT page of next story (Photo)
         for (let i = 0; i < data.length - 1; i++) {
             const currentStoryText = data[i];
             const nextStoryPhoto = data[i+1];
             const fallbackImgNext = `https://ui-avatars.com/api/?name=${encodeURIComponent(nextStoryPhoto.name)}&background=0f172a&color=fbbf24&bold=true&size=180`;
-            
-            // Descending z-index so sheets layer correctly on the right stack
             const zIndexRight = data.length - i; 
 
             html += `
@@ -3629,9 +3123,7 @@ function executeStoreConfirm() {
         }
 
         // --- 3. Create Last Sheet ---
-        // Last Story Text (Right page), Back Cover
         const lastStoryText = data[data.length - 1];
-        
         html += `
         <div class="book-sheet" style="z-index: 1">
             <div class="page-face page-front">
@@ -3652,7 +3144,7 @@ function executeStoreConfirm() {
 
         bookContainer.innerHTML = html;
 
-        // --- 4. Animation and Pause-on-Hover Logic ---
+        // --- 4. Animation Logic ---
         const sheets = document.querySelectorAll('.book-sheet');
         let currentSheetIdx = 0;
         let isPaused = false;
@@ -3662,27 +3154,18 @@ function executeStoreConfirm() {
 
         const flipNext = () => {
             if (isPaused) return;
-
             if (currentSheetIdx < totalSheets) {
-                // Flip the current sheet to the left
                 sheets[currentSheetIdx].classList.add('flipped');
-                
-                // Dynamically adjust Z-index during the flip so pages stack correctly on the left side.
-                // Sheets flipped later go 'on top' of the left stack.
-                const flipDuration = 1800; // Matching CSS transition
+                const flipDuration = 1800; 
                 const indexOnLeftStack = currentSheetIdx; 
                 setTimeout((idx) => { 
                     if(sheets[idx]) sheets[idx].style.zIndex = idx + 1; 
-                }, flipDuration * 0.45, currentSheetIdx); // Time the z-index shift for halfway through flip
-                
+                }, flipDuration * 0.45, currentSheetIdx);
                 currentSheetIdx++;
             } else {
-                // Return to Cover: Close the book
                 currentSheetIdx = 0;
-                // Reset z-indices to original right-stack stacking order (ascending top/right)
                 sheets.forEach((s, i) => {
                     s.classList.remove('flipped');
-                    // Stagger the stacking reset slightly for smoothness
                     setTimeout((sheet, idx) => {
                         sheet.style.zIndex = totalSheets - idx + 1;
                     }, i * 30, s, i);
@@ -3690,10 +3173,7 @@ function executeStoreConfirm() {
             }
         };
 
-        // Auto-turn timer (increased to 7 seconds to allow reading)
         window.bookInterval = setInterval(flipNext, 7000);
-
-        // Pause on Hover Logic attached to the shadow container area
         const interactionArea = document.querySelector('#book-shadow-container');
         interactionArea.addEventListener('mouseenter', () => { isPaused = true; });
         interactionArea.addEventListener('mouseleave', () => { isPaused = false; });
@@ -3755,6 +3235,12 @@ function executeStoreConfirm() {
                 document.getElementById('potd-opts').innerHTML = currentPOTD.options.map((opt, i) => `<button class="btn" style="background:rgba(255,255,255,0.1); color:white; border:1px solid rgba(255,255,255,0.3); text-align:left;" onclick="checkPOTD(${i})">${opt}</button>`).join('');
             }
         } catch(e) { console.error(e); }
+    }
+
+    function checkPOTD(sel) {
+        const resDiv = document.getElementById('potd-result'); resDiv.style.display = 'block';
+        if(sel === currentPOTD.correct) { resDiv.innerHTML = `✅ Correct!<br><br><b>Solution:</b><br>${currentPOTD.solution} ${currentPOTD.solutionImage ? `<br><img src="${currentPOTD.solutionImage}" style="max-height:100px; margin-top:5px;">` : ''}`; resDiv.style.background = 'rgba(34, 197, 94, 0.2)'; } 
+        else { resDiv.innerHTML = `❌ Incorrect. Try again or check later!`; resDiv.style.background = 'rgba(239, 68, 68, 0.2)'; }
     }
 
     async function uploadPOTD() {
@@ -3913,62 +3399,35 @@ async function loadAdminMechList() {
         let finalLink = link;
         const lowerLink = link.toLowerCase();
 
-        // Detect link types
+        // 1. Define what is "safe" to embed inside your website's iframe
         const isBase64 = link.startsWith('data:'); 
         const isGoogleDrive = lowerLink.includes('drive.google.com');
-        const isSharePoint = lowerLink.includes('sharepoint.com');
-        const isOneDriveLive = lowerLink.includes('onedrive.live.com');
-        const isOneDriveShort = lowerLink.includes('1drv.ms');
+        const isOneDrive = lowerLink.includes('onedrive.live.com') || lowerLink.includes('1drv.ms') || lowerLink.includes('sharepoint.com');
         const isDirectPdf = lowerLink.endsWith('.pdf');
         const isDirectImage = lowerLink.match(/\.(jpeg|jpg|gif|png|webp)$/) != null;
 
-        // 1drv.ms shortlinks completely block iframes. Open directly in a new tab.
-        if (isOneDriveShort) {
-            window.open(link, '_blank');
-            return;
-        }
-
-        if (isBase64 || isGoogleDrive || isSharePoint || isOneDriveLive || isDirectPdf || isDirectImage) {
+        // 2. Check if the link is safe to open in the modal
+        if (isBase64 || isGoogleDrive || isOneDrive || isDirectPdf || isDirectImage) {
             document.getElementById('pdf-title').innerText = title || "Document Viewer";
-            
-            // Set the external fallback link for the new "Open in New Tab" button
-            const extLinkBtn = document.getElementById('pdf-ext-link');
-            if(extLinkBtn) extLinkBtn.href = link;
-            
-            // Format Google Drive
+            // Format Google Drive links for embedding
             if (isGoogleDrive && lowerLink.includes('/view')) {
                 finalLink = link.replace(/\/view.*$/, '/preview');
             } 
-            // Format SharePoint Links (Force embed mode)
-            else if (isSharePoint) {
-                if (!lowerLink.includes('action=embedview')) {
-                    finalLink = link + (link.includes('?') ? '&' : '?') + 'action=embedview';
-                }
-            }
-            // Format standard OneDrive Live Links
-            else if (isOneDriveLive) {
-                finalLink = link.replace('view.aspx', 'embed').replace('redir', 'embed');
-                if (!finalLink.includes('embed')) {
-                    finalLink = finalLink.replace('onedrive.live.com/?', 'onedrive.live.com/embed?');
-                }
-            }
-            // Format direct PDFs using Google Docs Viewer
+            // Format direct external PDFs using Google Docs Viewer for better mobile support
             else if (isDirectPdf && !isBase64) {
                 finalLink = `https://docs.google.com/gview?url=${encodeURIComponent(link)}&embedded=true`;
             }
-            
+            // Open in the modal
             document.getElementById('pdf-frame').src = finalLink;
             toggleWatermark(true);
             openModal('pdf-modal');
-            
-            // Save state so it reopens if the user refreshes the page
+            // 💾 SAVE PDF STATE FOR REFRESH
             localStorage.setItem('arc_open_pdf', JSON.stringify({ title: title, link: link }));
         } else {
-            // For unhandled external websites, just open in a new tab
+            // 3. If it's an external website (like NCERT), open it in a new tab
             window.open(link, '_blank');
         }
     }
-
 
 let coolModalCallback = null; // Stores what to do after password entry
 
@@ -4580,20 +4039,20 @@ function checkPOTD(sel) {
     }
 
     const resDiv = document.getElementById('potd-result'); 
-    if(!resDiv) return;
     resDiv.style.display = 'block';
     
     if(sel === currentPOTD.correct) { 
         resDiv.innerHTML = `✅ Correct!<br><br><b>Solution:</b><br>${currentPOTD.solution}`; 
         resDiv.style.background = 'rgba(34, 197, 94, 0.2)'; 
         
-        // Lock locally and sync with DB
+        // Lock it for today and award coins!
         user.lastPotdDate = todayDate;
         localStorage.setItem('arc_user', JSON.stringify(user));
         updateCoins(10, "Solved the Problem of the Day!");
     } else { 
         resDiv.innerHTML = `❌ Incorrect. Try again or check the solution!`; 
         resDiv.style.background = 'rgba(239, 68, 68, 0.2)'; 
+        // We do NOT lock it, so they can keep trying until they learn it!
     }
 }
 
@@ -4771,6 +4230,53 @@ async function fetchGlobalStoreData() {
         // 👇 ADDED THIS LINE: Now it will only draw the store AFTER the data arrives!
         loadDynamicStore(); 
     } catch(e){}
+}
+
+// 🔄 UPDATE: Check for Premium status in Test List
+async function loadTests(isLive) { 
+    try {
+        const res = await fetch('/api/tests'); const tests = await res.json(); const now = new Date(); 
+        const filteredTests = tests.filter(t => { const tEnd = t.endTime ? new Date(t.endTime) : null; if (isLive) { return t.isLive && tEnd && tEnd > now; } else { return !t.isLive || (t.isLive && tEnd && tEnd <= now); } }); 
+        const container = document.getElementById(isLive?'live-list':'test-list');
+        if (filteredTests.length === 0) { container.innerHTML = getEmptyStateGame(`No ${isLive ? 'Live' : 'Practice'} Tests Available`); } 
+        else { 
+            container.innerHTML = filteredTests.map(t => {
+                // Check if this test is in the store!
+                const storeItem = dynamicStoreData.find(si => si.type === 'test' && si.link === t._id);
+                const premiumBadge = storeItem ? `<span class="badge bg-gold" style="margin-left:10px;">💎 Premium (${storeItem.cost} 🪙)</span>` : '';
+                const lockIcon = t.accessCode && !storeItem ? '🔒' : ''; // Don't double-show lock if premium
+
+                return `<div class="card" style="border-left: 5px solid ${isLive ? 'red' : 'gold'}; position:relative;">
+                    <h3>${t.title} ${lockIcon}</h3>
+                    ${premiumBadge ? `<div style="position:absolute; top:10px; right:10px;">${premiumBadge}</div>` : ''}
+                    <p>${t.duration} Mins</p>
+                    ${isLive ? `<p style="color:red">Start: ${new Date(t.startTime).toLocaleString()}</p>` : ''}
+                    <button class="btn btn-gold" onclick="startTest('${t._id}', ${(t.accessCode || storeItem) ? true : false}, '${t.startTime}')">Start</button>
+                </div>`;
+            }).join(''); 
+        }
+    } catch(e) { console.error("Could not load tests"); }
+}
+
+// 🔄 UPDATE: Check for Premium status in Library List
+function renderLib(cat) { 
+    const items = allMats.filter(m => m.category === cat || (cat === '11th Class' && m.category.includes('11'))); 
+    if (items.length === 0) { document.getElementById('lib-content').innerHTML = getEmptyStateGame(`No items available in ${cat}`); } 
+    else { 
+        document.getElementById('lib-content').innerHTML = items.map(m => {
+            // Check if this material is in the store!
+            const storeItem = dynamicStoreData.find(si => si.type === 'pdf' && si.link === m._id);
+            const premiumBadge = storeItem ? `<div style="position:absolute; top:10px; right:10px; background:var(--gold); color:var(--primary); padding:5px; border-radius:4px; font-weight:bold; font-size:0.8rem; box-shadow:0 2px 5px rgba(0,0,0,0.3);">💎 Premium (${storeItem.cost} 🪙)</div>` : '';
+            const lockIcon = m.accessCode && !storeItem ? '🔒' : '';
+
+            return `<div class="card" style="position:relative;">
+                ${premiumBadge}
+                <img src="${m.image||''}" style="height:180px; width: 100%; background:#f8fafc; object-fit:contain; border-radius: 8px; border: 1px solid #eee;">
+                <h4 style="margin: 15px 0 10px 0;">${m.title} ${lockIcon}</h4>
+                <button class="btn btn-gold" onclick="openMat('${m._id}')">Open</button>
+            </div>`;
+        }).join(''); 
+    }
 }
 
 // ==========================================
@@ -4994,160 +4500,32 @@ async function toggleDiscountStatus(id) {
 }
 
 
-// --- 👤 PROFILE MANAGEMENT LOGIC ---
-    let tempProfileImg = "";
+async function loadAdminWheelList() {
+    const res = await fetch('/api/wheel');
+    const data = await res.json();
+    document.getElementById('admin-wheel-list').innerHTML = `<table><tr><th>Color</th><th>Label</th><th>Type</th><th>Value</th><th>Action</th></tr>` + 
+    data.map(w => `<tr>
+        <td><div style="width:20px; height:20px; background:${w.color}; border-radius:50%; border:1px solid #333;"></div></td>
+        <td>${w.label}</td><td>${w.type}</td><td>${w.value}</td>
+        <td>${w._id ? `<button class="btn-red btn-small" onclick="deleteItem('wheel', '${w._id}')">Del</button>` : 'Default'}</td>
+    </tr>`).join('') + `</table>`;
+}
 
-    // Toggle dropdown
-    function toggleProfileDropdown(e) {
-        e.stopPropagation();
-        document.getElementById('nav-profile-dropdown').classList.toggle('active');
-    }
-
-    // Close dropdown when clicking anywhere else on the page
-    document.addEventListener('click', function() {
-        const dropdown = document.getElementById('nav-profile-dropdown');
-        if(dropdown && dropdown.classList.contains('active')) {
-            dropdown.classList.remove('active');
-        }
-    });
-
-    // Update the UI of the Navbar (Called on load and on login)
-    function updateNavProfileUI() {
-        if(user) {
-            document.getElementById('nav-login').style.display = 'none';
-            document.getElementById('nav-profile-container').style.display = 'flex';
-            
-            // Generate initials avatar if no custom image is uploaded
-            const fallbackAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=0f172a&color=fbbf24&bold=true`;
-            document.getElementById('nav-avatar-img').src = user.profileImage || fallbackAvatar;
-        } else {
-            document.getElementById('nav-login').style.display = 'block';
-            document.getElementById('nav-profile-container').style.display = 'none';
-        }
-    }
-
-    // Open the Profile Modal
-    function openProfileModal() {
-        if(!user) return;
-        
-        // Populate locked fields
-        document.getElementById('prof-name').value = user.name;
-        document.getElementById('prof-email').value = user.email;
-        
-        // Populate image
-        const fallbackAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=0f172a&color=fbbf24&bold=true`;
-        document.getElementById('prof-img-preview').src = user.profileImage || fallbackAvatar;
-        tempProfileImg = user.profileImage || "";
-
-        // Hide editable fields if it's the Teacher (Admin)
-        if(user.role === 'admin') {
-            document.getElementById('prof-student-fields').style.display = 'none';
-        } else {
-            document.getElementById('prof-student-fields').style.display = 'block';
-            document.getElementById('prof-phone').value = user.phone || "";
-            document.getElementById('prof-pass').value = ""; // Always blank for security
-        }
-        
-        openModal('profile-modal');
-    }
-
-    // Encode Image to Base64
-    function encodeProfileImg(input) {
-        if (input.files && input.files[0]) {
-            if(input.files[0].size > 2 * 1024 * 1024) return alert("Image is too large! Max size is 2MB.");
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                tempProfileImg = e.target.result;
-                document.getElementById('prof-img-preview').src = tempProfileImg;
-            };
-            reader.readAsDataURL(input.files[0]);
-        }
-    }
-
-    // Save Profile to Backend
-    async function saveProfileChanges() {
-        if(!user) return;
-        
-        const body = {
-            email: user.email,
-            profileImage: tempProfileImg
-        };
-
-        if(user.role !== 'admin') {
-            const phone = document.getElementById('prof-phone').value;
-            const pass = document.getElementById('prof-pass').value;
-            
-            if(phone && phone.length !== 10) return alert("Phone number must be exactly 10 digits.");
-            
-            body.phone = phone;
-            if(pass) body.password = pass; // Only send password if they typed a new one
-        }
-
-        try {
-            // Hit the backend to update the database
-            const res = await fetch('/api/user/update-profile', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(body)
-            });
-            const data = await res.json();
-            
-            if(data.success) {
-                alert("Profile updated successfully!");
-                
-                // Update LocalStorage to reflect immediate changes
-                user.profileImage = tempProfileImg;
-                if(body.phone) user.phone = body.phone;
-                localStorage.setItem('arc_user', JSON.stringify(user));
-                
-                updateNavProfileUI(); // Refresh top right avatar
-                closeModal('profile-modal');
-            } else {
-                alert(data.message || "Failed to update profile.");
-            }
-        } catch(e) {
-            alert("Error updating profile. Please check your connection.");
-        }
-    }
+async function addWheelPrize() {
+    const body = {
+        label: document.getElementById('w-label').value,
+        type: document.getElementById('w-type').value,
+        value: parseInt(document.getElementById('w-val').value) || 0,
+        color: document.getElementById('w-color').value
+    };
+    if(!body.label) return alert("Label is required!");
+    await fetch('/api/admin/wheel', { method: 'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
+    alert("Slice added to wheel!");
+    document.getElementById('w-label').value = "";
+    loadAdminWheelList();
+}
 
 </script>
-
-<div id="profile-modal" class="modal">
-    <div class="modal-content" style="max-width: 450px; text-align: center;">
-        <div class="close-corner" onclick="closeModal('profile-modal')">&times;</div>
-        <h2 style="color: var(--primary); margin-top: 0;">My Profile</h2>
-        
-        <div style="position: relative; width: 120px; height: 120px; margin: 0 auto 20px;">
-            <img id="prof-img-preview" src="" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 4px solid var(--gold); box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
-            <label style="position: absolute; bottom: 0; right: 0; background: var(--primary); color: white; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 2px solid white; transition: 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
-                📷
-                <input type="file" accept="image/*" onchange="encodeProfileImg(this)" style="display:none;">
-            </label>
-        </div>
-
-        <div style="text-align: left; background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0;">
-            <label><b>Full Name:</b> <span style="color:#ef4444; font-size:0.75rem; float:right;">🔒 Locked</span></label>
-            <input id="prof-name" disabled style="background: #e2e8f0; color: #64748b; cursor: not-allowed; font-weight: bold;">
-            
-            <label><b>Email / Username:</b> <span style="color:#ef4444; font-size:0.75rem; float:right;">🔒 Locked</span></label>
-            <input id="prof-email" disabled style="background: #e2e8f0; color: #64748b; cursor: not-allowed; font-weight: bold;">
-
-            <div id="prof-student-fields">
-                <hr style="border: none; border-top: 1px solid #cbd5e1; margin: 15px 0;">
-                
-                <label><b>Phone Number:</b></label>
-                <input id="prof-phone" type="text" maxlength="10" placeholder="Update your 10-digit number" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
-                
-                <label><b>Change Password:</b> <span style="color:#3b82f6; font-size:0.75rem; float:right;">Leave blank to keep current</span></label>
-                <input id="prof-pass" type="password" placeholder="Enter new password">
-            </div>
-        </div>
-
-        <button class="btn btn-gold" style="width: 100%; margin-top: 20px; font-size: 1.1rem;" onclick="saveProfileChanges()">💾 Save Changes</button>
-    </div>
-</div>
-
-
 <div id="coolPassModal" class="modal" style="background:rgba(15, 23, 42, 0.9); backdrop-filter: blur(8px); align-items: center;">
     <div class="modal-content" style="max-width: 350px; text-align: center; border: 2px solid var(--gold); transform: scale(0.8); transition: transform 0.3s ease;">
         
