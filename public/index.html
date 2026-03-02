@@ -1718,7 +1718,12 @@ if (savedTheme === 'dark') {
         if (savedPdf && user) {
             setTimeout(() => openPdfViewer(savedPdf.title, savedPdf.link), 500); 
         }
-        if(user) show(lastSection); else show('home');
+        // If user is logged in but the last saved section was 'login', force them to 'home'
+        if(user) {
+            show(lastSection === 'login' ? 'home' : lastSection);
+        } else {
+            show('home');
+        }
     };
 
     let user = JSON.parse(localStorage.getItem('arc_user'));
@@ -1786,6 +1791,10 @@ if (savedTheme === 'dark') {
     }
 
     function show(id) {
+        // PREVENT LOGGED-IN USERS FROM ACCESSING THE LOGIN PAGE
+        if (id === 'login' && user) {
+            return show('home'); 
+        }
         if((id==='tests' || id==='live' || id==='results' || id==='doubts') && !user) return show('login');
         if(id === 'schedule') loadSchedule();
         if(id === 'doubts') loadStudentDoubts(); 
@@ -2961,43 +2970,50 @@ if (savedTheme === 'dark') {
         if(loginMode === 'student' && !email.includes('@')) email += '@arcstudent.com';
         
         try {
+            // Change button text to show it's working (Render might take 30s to wake up)
+            const submitBtn = document.querySelector('#login form button[type="submit"]');
+            const originalBtnText = submitBtn.innerText;
+            submitBtn.innerText = "Connecting to Server...";
+            submitBtn.disabled = true;
+
             const res = await fetch('/api/login', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ email, password, role: loginMode }) });
+            
+            // Check if Render returned a 502/503 Gateway error while waking up
+            if (!res.ok) {
+                throw new Error(`Server is waking up (Status: ${res.status}).`);
+            }
+
             const data = await res.json();
+            
+            // Reset button
+            submitBtn.innerText = originalBtnText;
+            submitBtn.disabled = false;
+
             if(data.success) {
                 const userData = {name: data.name, email: data.email, role: data.role};
                 localStorage.setItem('arc_user', JSON.stringify(userData)); user = userData;
-                // 👉 PLAY WELCOME VOICE HERE
-                playWelcomeVoice(userData.name);
-                showWelcomePopup(userData.name);
+                
+                // Play welcome voice
+                if(typeof playWelcomeVoice === 'function') playWelcomeVoice(userData.name);
+                if(typeof showWelcomePopup === 'function') showWelcomePopup(userData.name);
 
                 document.getElementById('nav-login').style.display = 'none';
-                updateNavProfileUI();
-                
-                
-                // Show welcome popup
-        // FEATURE: VISUAL WELCOME POPUP
-    function showWelcomePopup(name) {
-        const popup = document.getElementById('welcome-popup');
-        const textEl = document.getElementById('welcome-popup-text');
-        
-        // Grab just the first name
-        const firstName = name.split(' ')[0]; 
-        textEl.innerText = `Welcome back, ${firstName}`;
-        
-        // Slide it up
-        popup.classList.add('show');
-        
-        // Hide it automatically after 4 seconds
-        setTimeout(() => {
-            popup.classList.remove('show');
-        }, 4000);
-    }
-
-                document.getElementById('nav-login').style.display = 'none'; document.getElementById('nav-logout').style.display = 'block'; document.getElementById('nav-doubts').style.display = 'block'; 
+                document.getElementById('nav-logout').style.display = 'block'; 
+                document.getElementById('nav-doubts').style.display = 'block'; 
                 if(user.role === 'admin') document.getElementById('nav-admin').style.display = 'block';
+                
                 show('home'); 
-            } else { alert(data.message || "Invalid Email or Password"); }
-        } catch(e) { alert("Server connection error. Please try again."); } 
+            } else { 
+                alert(data.message || "Invalid Email or Password"); 
+            }
+        } catch(e) { 
+            console.error("Login Error:", e);
+            const submitBtn = document.querySelector('#login form button[type="submit"]');
+            submitBtn.innerText = "Submit";
+            submitBtn.disabled = false;
+            
+            alert("Server connection error.\n\nIf the server was asleep, it may take 30-50 seconds to wake up. Please wait a moment and click Submit again."); 
+        } 
     }
 
     function logout() { localStorage.removeItem('arc_user'); localStorage.removeItem('arc_last_section'); clearSession(); location.reload(); }
