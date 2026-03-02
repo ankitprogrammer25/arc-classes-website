@@ -244,7 +244,12 @@ app.put('/api/admin/schedule/:id', async (req, res) => { await Schedule.findById
 app.delete('/api/admin/schedule/:id', async (req, res) => { await Schedule.findByIdAndDelete(req.params.id); res.json({ success: true }); });
 
 app.get('/api/stories', async (req, res) => {
-    try { res.json(await SuccessStory.find().sort({ date: -1 })); } catch(e) { res.json([]); }
+    try { 
+        res.json(await SuccessStory.find().sort({ date: -1 })); 
+    } catch(e) { 
+        console.error("🚨 STORY FETCH ERROR:", e); // This will print the exact error to Render!
+        res.json([]); 
+    }
 });
 
 app.post('/api/story', async (req, res) => { try { await new SuccessStory(req.body).save(); res.json({ success: true }); } catch(e) { res.json({ success: false }); } });
