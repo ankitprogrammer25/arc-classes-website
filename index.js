@@ -3,14 +3,14 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const path = require('path');
-const fetch = require('node-fetch');
+const bcrypt = require('bcryptjs'); // 🔒 NEW: For secure passwords
 
 // --- 0. GLOBAL ERROR CATCHERS ---
 process.on('uncaughtException', (err) => console.error('Uncaught Exception:', err));
 process.on('unhandledRejection', (err) => console.error('Unhandled Rejection:', err));
 
 const app = express();
-app.use(express.json({ limit: '100mb' })); // Allows large SVG/Image uploads
+app.use(express.json({ limit: '100mb' }));
 app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -19,6 +19,7 @@ const dbLink = process.env.MONGO_URI;
 
 if (!dbLink) {
     console.error("❌ CRITICAL ERROR: MONGO_URI is missing from your .env file!");
+    process.exit(1); // 🛑 Fix: Kills the server before it crashes Mongoose
 }
 
 mongoose.connect(dbLink, { 
@@ -176,30 +177,48 @@ app.post('/api/register', async (req, res) => {
     try {
         const { name, emailPart, password, phone } = req.body; 
         const fullEmail = emailPart + "@arcstudent.com";
-        if(await Student.findOne({ email: fullEmail })) return res.json({ success: false, message: "Username Taken" });
-        await new Student({ name, email: fullEmail, password, phone, status: 'Pending' }).save(); 
+        
+        if(await Student.findOne({ email: fullEmail })) {
+            return res.json({ success: false, message: "Username Taken" });
+        }
+
+        // 🔒 Fix: Hash the password before saving
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+
+        await new Student({ name, email: fullEmail, password: hashedPassword, phone, status: 'Pending' }).save(); 
         res.json({ success: true });
-    } catch (e) { res.json({ success: false, message: "Error" }); }
+    } catch (e) { 
+        res.json({ success: false, message: "Error registering user." }); 
+    }
 });
 
 app.post('/api/login', async (req, res) => {
     try {
         const { email, password } = req.body; 
         
-        // 🔒 SECURE ADMIN CHECK using .env variables
-        if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
-            return res.json({ success: true, name: "ARC Admin", email: process.env.ADMIN_EMAIL, role: 'admin' });
+        // 🔒 Fix: Ensure .env variables actually exist before checking to prevent bypass
+        const adminEmail = process.env.ADMIN_EMAIL;
+        const adminPass = process.env.ADMIN_PASSWORD;
+
+        if (adminEmail && adminPass && email === adminEmail && password === adminPass) {
+            return res.json({ success: true, name: "ARC Admin", email: adminEmail, role: 'admin' });
         }
         
         const student = await Student.findOne({ email });
-        // ... rest of the login code stays the same
-        if (!student || student.password !== password) return res.json({ success: false, message: "Invalid Email or Password" });
+        if (!student) return res.json({ success: false, message: "Invalid Email or Password" });
+        
+        // 🔒 Fix: Compare hashed passwords properly. 
+        // Note: For existing plaintext passwords in your DB, this will fail. You'll need to reset them!
+        const isMatch = await bcrypt.compare(password, student.password || "");
+        if (!isMatch && password !== student.password) { // Temporary fallback if you still have plaintext DB entries
+            return res.json({ success: false, message: "Invalid Email or Password" });
+        }
         
         if (student.status === 'Pending') {
             return res.json({ success: false, message: "Your registration is under review." });
         }
         
-        // Return coins and tracked dates alongside login info
         res.json({ 
             success: true, 
             name: student.name, 
@@ -210,13 +229,29 @@ app.post('/api/login', async (req, res) => {
             lastPotdDate: student.lastPotdDate || "",
             unlockedItems: student.unlockedItems || []
         });
-    } catch (e) { res.json({ success: false, message: "Server Error" }); }
+    } catch (e) { 
+        res.json({ success: false, message: "Server Error" }); 
+    }
 });
 
 // --- ADMIN API ---
 app.get('/api/admin/students', async (req, res) => res.json(await Student.find().sort({ joinedAt: -1 })));
 app.get('/api/admin/student/:id', async (req, res) => res.json(await Student.findById(req.params.id)));
-app.put('/api/admin/student/:id', async (req, res) => { await Student.findByIdAndUpdate(req.params.id, req.body); res.json({ success: true }); });
+
+app.put('/api/admin/student/:id', async (req, res) => { 
+    try {
+        // If the admin is updating the password, hash it first
+        if (req.body.password) {
+            const salt = await bcrypt.genSalt(10);
+            req.body.password = await bcrypt.hash(req.body.password, salt);
+        }
+        await Student.findByIdAndUpdate(req.params.id, req.body); 
+        res.json({ success: true }); 
+    } catch(e) {
+        res.json({ success: false, message: "Update failed" });
+    }
+});
+
 app.delete('/api/admin/student/:id', async (req, res) => { await Student.findByIdAndDelete(req.params.id); res.json({ success: true }); });
 
 app.get('/api/admin/results/online', async (req, res) => res.json(await Result.find().sort({ date: -1 })));
@@ -567,37 +602,51 @@ app.post('/api/student/coin-history', async (req, res) => {
 // 🔄 UPDATE: Material Unlock to check for Premium Purchases
 // 🔒 SECURE MATERIAL UNLOCK
 app.post('/api/material/unlock', async (req, res) => {
-    const { id, code, studentEmail } = req.body;
-    const f = await Material.findById(id);
-    const s = await Student.findOne({ email: studentEmail });
-    
-    if (studentEmail !== process.env.ADMIN_EMAIL) {
-        // Double check the Store to prevent bypassing
-        const storeItem = await StoreItem.findOne({ type: 'pdf', link: id });
-        const isUnlocked = s && s.unlockedItems && s.unlockedItems.includes(id);
-        if (storeItem && !isUnlocked) {
-            return res.json({ success: false, message: "Premium File: Please unlock this in the ARC Store." });
+    try {
+        const { id, code, studentEmail } = req.body;
+        const f = await Material.findById(id);
+        const s = await Student.findOne({ email: studentEmail });
+        
+        if (studentEmail !== process.env.ADMIN_EMAIL) {
+            const storeItem = await StoreItem.findOne({ type: 'pdf', link: id });
+            const isUnlocked = s && s.unlockedItems && s.unlockedItems.includes(id);
+            if (storeItem && !isUnlocked) {
+                return res.json({ success: false, message: "Premium File: Please unlock this in the ARC Store." });
+            }
         }
-    }
 
-    const isUnlocked = s && s.unlockedItems && s.unlockedItems.includes(id);
+        const isUnlocked = s && s.unlockedItems && s.unlockedItems.includes(id);
 
-    if(f && (!f.accessCode || f.accessCode === code || isUnlocked)) {
-        res.json({ success: true, link: f.link });
-    } else { 
-        res.json({ success: false }); 
+        if(f && (!f.accessCode || f.accessCode === code || isUnlocked)) {
+            res.json({ success: true, link: f.link });
+        } else { 
+            res.json({ success: false }); 
+        }
+    } catch (e) {
+        // Catches bad IDs and prevents the request from hanging
+        res.json({ success: false, message: "Error unlocking material." });
     }
 });
+
 
 app.post('/api/result-details', async (req, res) => {
     try {
         const result = await Result.findById(req.body.resultId);
         if(!result) return res.json({ success: false, message: "Result Not Found" });
         
-        const allResults = await Result.find({ testId: result.testId }).sort({ score: -1 });
-        const rank = allResults.findIndex(r => r._id.toString() === result._id.toString()) + 1;
+        // 🚀 Fix: Let the DB calculate rank (Count how many scores are strictly greater)
+        const higherScoresCount = await Result.countDocuments({ 
+            testId: result.testId, 
+            score: { $gt: result.score } 
+        });
+        const rank = higherScoresCount + 1;
 
-        const leaderboard = allResults.map((r, i) => ({ rank: i + 1, name: r.studentName, score: r.score, total: r.totalMarks }));
+        // Fetch top 10 for leaderboard, not the whole database!
+        const topResults = await Result.find({ testId: result.testId })
+            .sort({ score: -1 })
+            .limit(10);
+            
+        const leaderboard = topResults.map((r, i) => ({ rank: i + 1, name: r.studentName, score: r.score, total: r.totalMarks }));
 
         const test = await Test.findById(result.testId);
         if(!test) return res.json({ success: true, result, rank, leaderboard, questions: [], message: "Test was deleted by teacher." });
@@ -614,44 +663,56 @@ app.post('/api/result-details', async (req, res) => {
 });
 
 // 🔒 SECURE TEST START
+// 🔒 SECURE TEST START
 app.post('/api/test/start', async (req, res) => {
-    const { id, code, studentEmail } = req.body; 
-    if (studentEmail !== process.env.ADMIN_EMAIL) {
-        const s = await Student.findOne({ email: studentEmail });
-        if(!s) return res.json({ success: false, message: "Login first" });
-        
-        // Double check the Store to prevent bypassing
-        const storeItem = await StoreItem.findOne({ type: 'test', link: id });
-        const isUnlocked = s && s.unlockedItems && s.unlockedItems.includes(id);
-        if (storeItem && !isUnlocked) {
-            return res.json({ success: false, message: "Premium Test: Please unlock this in the ARC Store." });
+    try {
+        const { id, code, studentEmail } = req.body; 
+        if (studentEmail !== process.env.ADMIN_EMAIL) {
+            const s = await Student.findOne({ email: studentEmail });
+            if(!s) return res.json({ success: false, message: "Login first" });
+            
+            const storeItem = await StoreItem.findOne({ type: 'test', link: id });
+            const isUnlocked = s && s.unlockedItems && s.unlockedItems.includes(id);
+            if (storeItem && !isUnlocked) {
+                return res.json({ success: false, message: "Premium Test: Please unlock this in the ARC Store." });
+            }
         }
-    }
-    const t = await Test.findById(id);
-    
-    if(t.isLive && studentEmail !== 'admin@arc.com') {
-        const now = new Date();
-        if(now < new Date(t.startTime)) return res.json({ success: false, message: "Not Started" });
-        if(now > new Date(t.endTime)) return res.json({ success: false, message: "Expired" });
-    }
-    if(!t.accessCode || t.accessCode === "" || t.accessCode === code) {
-        const safeQ = t.questions.map(q => ({ text: q.text, image: q.image, options: q.options, marks: q.marks || 4, negative: q.negative !== undefined ? q.negative : 0 }));
-        res.json({ success: true, test: {...t._doc, questions: safeQ} });
-    } else res.json({ success: false, message: "Wrong Password" });
+        const t = await Test.findById(id);
+        if (!t) return res.json({ success: false, message: "Test not found." }); // 🐛 Fix: Prevents crashing if test deleted
+        
+        // 🐛 Fix: Use environment variable instead of hardcoded 'admin@arc.com'
+        if(t.isLive && studentEmail !== process.env.ADMIN_EMAIL) {
+            const now = new Date();
+            if(now < new Date(t.startTime)) return res.json({ success: false, message: "Not Started" });
+            if(now > new Date(t.endTime)) return res.json({ success: false, message: "Expired" });
+        }
+        if(!t.accessCode || t.accessCode === "" || t.accessCode === code) {
+            const safeQ = t.questions.map(q => ({ text: q.text, image: q.image, options: q.options, marks: q.marks || 4, negative: q.negative !== undefined ? q.negative : 0 }));
+            res.json({ success: true, test: {...t._doc, questions: safeQ} });
+        } else res.json({ success: false, message: "Wrong Password" });
+    } catch (e) { res.json({ success: false, message: "Server Error" }); }
 });
 
 app.post('/api/test/submit', async (req, res) => {
     try {
         const { testId, answers, timeTaken, studentName, studentEmail } = req.body; 
         const t = await Test.findById(testId);
+        
+        if (!t) return res.json({ success: false, message: "Test was deleted before submission." }); // 🐛 Fix: Crash prevention
+
         let score = 0, total = 0;
         t.questions.forEach((q, i) => {
-            const marks = q.marks || 4;
-            const neg = q.negative !== undefined ? q.negative : 0;
-            total += marks;
-            if (answers[i] === q.correct) score += marks;
-            else if (answers[i] !== null && answers[i] !== -1) score -= neg; 
-        });
+    const marks = q.marks || 4;
+    const neg = q.negative !== undefined ? q.negative : 0;
+    total += marks;
+    
+    if (answers[i] === q.correct) {
+        score += marks;
+    } else if (answers[i] !== null && answers[i] !== undefined && answers[i] !== -1) {
+        // Only deduct if an actual wrong answer was explicitly chosen
+        score -= neg; 
+    }
+});
         
         const pct = (score / total) * 100;
         const r = new Result({ 
@@ -661,7 +722,7 @@ app.post('/api/test/submit', async (req, res) => {
         });
         await r.save();
         res.json({ success: true, score, resultId: r._id });
-    } catch(e) { res.json({ success: false }); }
+    } catch(e) { res.json({ success: false, message: "Submission failed" }); }
 });
 
 app.post('/api/doubt', async (req, res) => { await new Doubt(req.body).save(); res.json({ success: true }); });

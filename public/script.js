@@ -93,7 +93,7 @@ if (savedTheme === 'dark') {
 
         loadSiteLogo(); // FEATURE: FETCH DYNAMIC LOGO ON STARTUP
         loadMaterials(); loadAnnouncements(); loadBlogs(); loadStories(); 
-        loadPOTD(); loadVideosList(); loadRefToolsStudent(); loadDynamicStore();
+        loadPOTD(); loadVideosList(); loadRefToolsStudent();
         
         const lastSection = localStorage.getItem('arc_last_section') || 'home';
         
@@ -3195,7 +3195,7 @@ async function loadAdminDiscounts() {
                     ? `<span class="badge bg-green">Used</span>` 
                     : `<span class="badge bg-gold">Pending</span>`}
             </td>
-            <td>
+            <td>F
                 <button class="btn btn-small ${d.isVerified ? 'btn-red' : 'btn-gold'}" style="margin-bottom:5px; width:100%;" onclick="toggleDiscountStatus('${d._id}')">
                     ${d.isVerified ? 'Undo' : 'Verify & Claim'}
                 </button>
