@@ -1311,23 +1311,31 @@ if (savedTheme === 'dark') {
     
     async function loadAnnouncements() { try { const res = await fetch('/api/announcement'); const data = await res.json(); document.getElementById('anno-marquee').innerHTML = (data.list && data.list.length > 0) ? data.list.join(' &nbsp;|&nbsp; ') : "Welcome"; } catch(e) {} }
     
-    async function loadBlogs() { 
+    // -----------------------------------------
+// 1. BULLETPROOF BLOGS LOADER
+// -----------------------------------------
+async function loadBlogs() { 
+    const container = document.getElementById('blog-grid');
+    if(!container) return;
+    
     try {
         const res = await fetch('/api/blogs'); 
+        if (!res.ok) throw new Error(`Server Error: ${res.status}`);
+        
         const blogsRaw = await res.json(); 
         allBlogs = Array.isArray(blogsRaw) ? blogsRaw : []; 
         
         if (allBlogs.length === 0) { 
-            document.getElementById('blog-grid').innerHTML = getEmptyStateGame("No Blogs Published Yet"); 
+            container.innerHTML = getEmptyStateGame("No Blogs Published Yet"); 
         } else { 
-            document.getElementById('blog-grid').innerHTML = allBlogs.map(b => `<div class="card blog-card" onclick="viewBlog('${b._id}')"><img src="${b.image || 'https://via.placeholder.com/300'}" alt="cover"><div class="blog-content-preview"><h3 class="blog-title">${b.title}</h3><small>${new Date(b.date).toLocaleDateString()}</small></div></div>`).join(''); 
+            container.innerHTML = allBlogs.map(b => `<div class="card blog-card" onclick="viewBlog('${b._id}')"><img src="${b.image || 'https://via.placeholder.com/300'}" alt="cover" onerror="this.style.display='none'"><div class="blog-content-preview"><h3 class="blog-title">${b.title || 'Untitled'}</h3><small>${b.date ? new Date(b.date).toLocaleDateString() : 'Recent'}</small></div></div>`).join(''); 
         }
     } catch(e) { 
-        console.error("Could not load blogs", e); 
-        // FIX: Inject the empty state dial if the network request fails!
-        document.getElementById('blog-grid').innerHTML = getEmptyStateGame("No Blogs Published Yet"); 
+        console.error("Blog Load Error:", e);
+        container.innerHTML = `<div style="padding:20px; border:2px dashed #ef4444; color:#ef4444; background:#fef2f2; border-radius:8px; text-align:center;"><b>🚨 Error Loading Blogs:</b> ${e.message}</div>`;
     }
 }
+//=================================================================================================
     
     let blogPages = []; let currentBPage = 0;
     function viewBlog(id) { 
@@ -1664,29 +1672,42 @@ function executeStoreConfirm() {
     function loadLib(cat) { document.getElementById('lib-cats').style.display = 'none'; document.getElementById('lib-back').style.display = 'block'; renderLib(cat); }
     
     // 🔄 UPDATE: Cool Premium Badges for Library Files
+// 2. BULLETPROOF LIBRARY RENDERER
+// -----------------------------------------
 function renderLib(cat) { 
-    const items = allMats.filter(m => m.category === cat || (cat === '11th Class' && m.category && m.category.includes('11')));
-    if (items.length === 0) { document.getElementById('lib-content').innerHTML = getEmptyStateGame(`No items available in ${cat}`); } 
-    else { 
-        document.getElementById('lib-content').innerHTML = items.map(m => {
-            // Check if this material is in the store!
-            const storeItem = dynamicStoreData.find(si => si.type === 'pdf' && si.link === m._id);
-            
-            // Holographic Premium Badge
-            const premiumBadge = storeItem ? `<div class="premium-badge-cool">💎 PREMIUM <span style="background:white; color:#0f172a; padding:2px 8px; border-radius:12px; margin-left:3px; font-size:0.75rem;">${storeItem.cost} <div class="arc-coin" style="width:1.1em; height:1.1em; vertical-align:-0.2em; margin:0;"></div></span></div>` : '';
-            
-            // Floating Lock Icon
-            const lockIcon = m.accessCode && !storeItem ? '<span class="premium-lock-cool" title="Password Protected">🔒</span>' : '';
+    const container = document.getElementById('lib-content');
+    if(!container) return;
 
-            return `<div class="card" style="position:relative; overflow:hidden; display:flex; flex-direction:column;">
-                ${premiumBadge}
-                <img src="${m.image||''}" style="height:180px; width: 100%; background:#f8fafc; object-fit:contain; border-radius: 8px; border: 1px solid #eee;">
-                <h4 style="margin: 15px 0 15px 0; display:flex; align-items:center; line-height:1.3;">${m.title} ${lockIcon}</h4>
-                <div style="margin-top:auto;">
-                    <button class="btn btn-gold" style="width:100%;" onclick="openMat('${m._id}')">Open File</button>
-                </div>
-            </div>`;
-        }).join(''); 
+    try {
+        // Safe filtering: Checks if category exists BEFORE checking what's inside it
+        const items = allMats.filter(m => {
+            if (!m.category) return false; 
+            return m.category === cat || (cat.includes('11') && m.category.includes('11'));
+        });
+
+        if (items.length === 0) { 
+            container.innerHTML = getEmptyStateGame(`No items available in ${cat}`); 
+        } else { 
+            container.innerHTML = items.map(m => {
+                // Safe check for the Premium Store
+                const storeItem = (typeof dynamicStoreData !== 'undefined' && dynamicStoreData) 
+                    ? dynamicStoreData.find(si => si.type === 'pdf' && si.link === m._id) 
+                    : null;
+                    
+                const premiumBadge = storeItem ? `<div style="position:absolute; top:10px; right:10px; background:var(--gold); color:var(--primary); padding:5px; border-radius:4px; font-weight:bold; font-size:0.8rem; box-shadow:0 2px 5px rgba(0,0,0,0.3);">💎 Premium (${storeItem.cost} 🪙)</div>` : '';
+                const lockIcon = m.accessCode && !storeItem ? '🔒' : '';
+
+                return `<div class="card" style="position:relative;">
+                    ${premiumBadge}
+                    <img src="${m.image||''}" style="height:180px; width: 100%; background:#f8fafc; object-fit:contain; border-radius: 8px; border: 1px solid #eee;" onerror="this.style.display='none'">
+                    <h4 style="margin: 15px 0 10px 0;">${m.title || 'Untitled'} ${lockIcon}</h4>
+                    <button class="btn btn-gold" onclick="openMat('${m._id}')">Open File</button>
+                </div>`;
+            }).join(''); 
+        }
+    } catch (e) {
+        console.error("Library Render Error:", e);
+        container.innerHTML = `<div style="padding:20px; border:2px dashed #ef4444; color:#ef4444; background:#fef2f2; border-radius:8px; text-align:center;"><b>🚨 Error Loading Library:</b> ${e.message}</div>`;
     }
 }
     
@@ -2945,27 +2966,6 @@ async function loadTests(isLive) {
             }).join(''); 
         }
     } catch(e) { console.error("Could not load tests"); }
-}
-
-// 🔄 UPDATE: Check for Premium status in Library List
-function renderLib(cat) { 
-    const items = allMats.filter(m => m.category === cat || (cat === '11th Class' && m.category.includes('11'))); 
-    if (items.length === 0) { document.getElementById('lib-content').innerHTML = getEmptyStateGame(`No items available in ${cat}`); } 
-    else { 
-        document.getElementById('lib-content').innerHTML = items.map(m => {
-            // Check if this material is in the store!
-            const storeItem = dynamicStoreData.find(si => si.type === 'pdf' && si.link === m._id);
-            const premiumBadge = storeItem ? `<div style="position:absolute; top:10px; right:10px; background:var(--gold); color:var(--primary); padding:5px; border-radius:4px; font-weight:bold; font-size:0.8rem; box-shadow:0 2px 5px rgba(0,0,0,0.3);">💎 Premium (${storeItem.cost} 🪙)</div>` : '';
-            const lockIcon = m.accessCode && !storeItem ? '🔒' : '';
-
-            return `<div class="card" style="position:relative;">
-                ${premiumBadge}
-                <img src="${m.image||''}" style="height:180px; width: 100%; background:#f8fafc; object-fit:contain; border-radius: 8px; border: 1px solid #eee;">
-                <h4 style="margin: 15px 0 10px 0;">${m.title} ${lockIcon}</h4>
-                <button class="btn btn-gold" onclick="openMat('${m._id}')">Open</button>
-            </div>`;
-        }).join(''); 
-    }
 }
 
 // ==========================================
