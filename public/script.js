@@ -1701,47 +1701,20 @@ function renderLib(cat) {
 
     let editingScheduleId = null;
 
-    async function loadSchedule() {
-        try {
-            const res = await fetch('/api/schedule'); const data = await res.json(); const list = document.getElementById('schedule-list');
-            if(list) {
-                if (data.length === 0) { list.innerHTML = `<tr><td colspan="4" style="border:none; padding:0;">${getEmptyStateGame("No Upcoming Schedule")}</td></tr>`; } 
-                else {
-                    const now = new Date();
-                    list.innerHTML = data.map(s => {
-                        const time = new Date(s.time); const diff = (now - time) / 1000 / 60; let status = "", colorClass = "";
-                        if (diff < 0) { status = "Upcoming"; colorClass = "color: blue;"; } else if (diff >= 0 && diff <= 10) { status = "Live"; colorClass = "color: var(--green);"; } else { status = "Expired"; colorClass = "color: var(--red);"; }
-                        return `<tr><td><span class="badge bg-green">${s.cls}</span></td><td><b>${s.topic}</b></td><td>${time.toLocaleString()}</td><td style="font-weight:bold; ${colorClass}" class="blink">${status}</td></tr>`;
-                    }).join('');
-                }
-            }
-        } catch(e) { console.error(e); }
-    }
-
-    async function loadManageSchedule() { const res = await fetch('/api/schedule'); const data = await res.json(); document.getElementById('manage-area').innerHTML = `<button class="btn btn-gold btn-small" style="margin-bottom:10px;" onclick="initAddSchedule()">+ Add New Schedule</button><table><tr><th>Topic</th><th>Time</th><th>Action</th></tr>${data.map(s => `<tr><td>${s.topic} (${s.cls})</td><td>${new Date(s.time).toLocaleString()}</td><td><button class="btn-small" onclick="editSchedule('${s._id}')">Edit</button> <button class="btn-small btn-red" onclick="deleteItem('schedule','${s._id}')">Del</button></td></tr>`).join('')}</table>`; }
-    function initAddSchedule() { editingScheduleId = null; showAdm('add-schedule'); }
-    
-    async function editSchedule(id) { const res = await fetch('/api/schedule'); const data = await res.json(); const s = data.find(item => item._id === id); if(s) { editingScheduleId = id; showAdm('add-schedule'); document.getElementById('s-cls').value = s.cls; document.getElementById('s-topic').value = s.topic; document.getElementById('s-pass').value = s.password || ""; const d = new Date(s.time); d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); document.getElementById('s-time').value = d.toISOString().slice(0, 16); } }
-
-    async function saveSchedule() {
-        const body = { cls: document.getElementById('s-cls').value, topic: document.getElementById('s-topic').value, password: document.getElementById('s-pass').value, time: new Date(document.getElementById('s-time').value) };
-        const method = editingScheduleId ? 'PUT' : 'POST'; const url = editingScheduleId ? `/api/admin/schedule/${editingScheduleId}` : '/api/admin/schedule';
-        await fetch(url, { method, headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) }); alert("Saved!"); showAdm('manage'); loadManageSchedule();
-    }
-
-
-
-    // --- FIXED: HALL OF FAME BOOKLET LOGIC ---
 async function loadStories() {
+    const bookContainer = document.getElementById('story-book');
+    if(!bookContainer) return;
+
     try {
-        const res = await fetch('/api/stories'); 
+        const res = await fetch('/api/stories');
+        
+        // Check if the backend sent an error page (like a 404 or 500) instead of data
+        if (!res.ok) throw new Error(`Server returned status: ${res.status}`);
+        
         const dataRaw = await res.json(); 
         const data = Array.isArray(dataRaw) ? dataRaw : [];
-        const bookContainer = document.getElementById('story-book');
-        
-        if(!bookContainer) return;
 
-        // FIX 1: Empty state now renders as a beautiful, fully OPEN book
+        // --- EMPTY STATE ---
         if (data.length === 0) {
             bookContainer.innerHTML = `
             <div class="book-sheet flipped" style="z-index: 2;">
@@ -1848,7 +1821,8 @@ async function loadStories() {
         bookContainer.innerHTML = html;
 
         // --- 4. Animation and Pause-on-Hover Logic ---
-        const sheets = document.querySelectorAll('.book-sheet');
+        // BUG FIX: Ensure we only select sheets inside the book container to prevent scope issues!
+        const sheets = bookContainer.querySelectorAll('.book-sheet');
         let currentSheetIdx = 0;
         let isPaused = false;
         const totalSheets = sheets.length;
@@ -1873,24 +1847,28 @@ async function loadStories() {
             }
         };
 
-        // FIX 2: Open the book almost immediately so users know it's a dynamic template
         setTimeout(() => {
             if(currentSheetIdx === 0 && !isPaused) flipNext();
         }, 1000);
 
-        // Continue flipping every 4 seconds
         window.bookInterval = setInterval(flipNext, 4000); 
 
-        // FIX 3: Cleanly bind mouse events to prevent stacked listeners
         const interactionArea = document.getElementById('book-shadow-container');
         if(interactionArea) {
             interactionArea.onmouseenter = () => { isPaused = true; };
             interactionArea.onmouseleave = () => { isPaused = false; };
         }
-    } catch(e) { console.error("Error loading Hall of Fame:", e); }
+    } catch(e) { 
+        console.error("Error loading Hall of Fame:", e); 
+        // BUG FIX: Stop swallowing the error. Print it on the screen so we can see why it failed!
+        bookContainer.innerHTML = `
+        <div style="text-align:center; padding: 40px; color: var(--red); background: #fef2f2; border: 1px dashed #f87171; border-radius: 8px; position:relative; z-index:10;">
+            <h3>🚨 Connection Error</h3>
+            <p style="color: #444;">Could not load the Hall of Fame.</p>
+            <p style="font-family: monospace; font-size: 0.9rem;">${e.message}</p>
+        </div>`;
+    }
 }
-
-
 
     async function submitStory() {
         const body = { name: document.getElementById('st-name').value, status: document.getElementById('st-status').value, experience: document.getElementById('st-exp').value, image: tempImg };
