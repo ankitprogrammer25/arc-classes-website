@@ -1328,7 +1328,8 @@ async function loadBlogs() {
         if (allBlogs.length === 0) { 
             container.innerHTML = getEmptyStateGame("No Blogs Published Yet"); 
         } else { 
-            container.innerHTML = allBlogs.map(b => `<div class="card blog-card" onclick="viewBlog('${b._id}')"><img src="${b.image || 'https://via.placeholder.com/300'}" alt="cover" onerror="this.style.display='none'"><div class="blog-content-preview"><h3 class="blog-title">${b.title || 'Untitled'}</h3><small>${b.date ? new Date(b.date).toLocaleDateString() : 'Recent'}</small></div></div>`).join(''); 
+            const placeholderSvg = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='180' viewBox='0 0 300 180'%3E%3Crect width='300' height='180' fill='%23e2e8f0'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-size='40' fill='%2394a3b8'%3E✍️%3C/text%3E%3C/svg%3E";
+            container.innerHTML = allBlogs.map(b => `<div class="card blog-card" onclick="viewBlog('${b._id}')"><img src="${b.image || placeholderSvg}" alt="cover" onerror="this.src='${placeholderSvg}'"><div class="blog-content-preview"><h3 class="blog-title">${b.title || 'Untitled'}</h3><small>${b.date ? new Date(b.date).toLocaleDateString() : 'Recent'}</small></div></div>`).join(''); 
         }
     } catch(e) { 
         console.error("Blog Load Error:", e);
@@ -1668,8 +1669,24 @@ function executeStoreConfirm() {
         } catch(e) { console.error(e); }
     }
     
-    async function loadMaterials() { try { const res = await fetch('/api/materials'); allMats = await res.json(); } catch(e) {} }
-    function loadLib(cat) { document.getElementById('lib-cats').style.display = 'none'; document.getElementById('lib-back').style.display = 'block'; renderLib(cat); }
+    async function loadMaterials() { 
+        try { 
+            const res = await fetch('/api/materials'); 
+            if (!res.ok) throw new Error(`Server Error: ${res.status}`);
+            const data = await res.json(); 
+            allMats = Array.isArray(data) ? data : [];
+        } catch(e) { 
+            console.error("Materials Load Error:", e);
+            allMats = [];
+        } 
+    }
+    async function loadLib(cat) { 
+        document.getElementById('lib-cats').style.display = 'none'; 
+        document.getElementById('lib-back').style.display = 'block'; 
+        // Re-fetch if allMats is empty (e.g., initial load failed or not yet complete)
+        if (!allMats || allMats.length === 0) await loadMaterials();
+        renderLib(cat); 
+    }
     
     // 🔄 UPDATE: Cool Premium Badges for Library Files
 // 2. BULLETPROOF LIBRARY RENDERER
@@ -2446,93 +2463,11 @@ function toggleZenMode() {
     }
 }
 
-// ==========================================
-// ⚙️ REACTION MECHANISM LOGIC (ADMIN + VIEWER)
-// ==========================================
 
-// --- 1. TEACHER ADMIN LOGIC ---
+// NOTE: addMechStepToDraft, renderMechDraft, uploadMechanism, and loadAdminMechList
+// are defined above. The duplicate definitions below have been removed.
 
-function addMechStepToDraft() {
-    const title = document.getElementById('mech-step-title').value;
-    const text = document.getElementById('mech-step-text').value;
-    const visual = tempImg; // Grabs the Base64 image/SVG encoded by your existing function
-
-    if(!title || !text || !visual) return alert("Please fill step title, text, and upload an image/SVG.");
-
-    window.mechDraftSteps.push({ title, text, visual });
-    
-    document.getElementById('mech-step-title').value = "";
-    document.getElementById('mech-step-text').value = "";
-    document.getElementById('mech-step-img').style.display = "none";
-    document.getElementById('mech-step-img').src = "";
-    tempImg = "";
-
-    renderMechDraft();
-}
-
-function renderMechDraft() {
-    document.getElementById('mech-draft-steps').innerHTML = window.mechDraftSteps.map((s, i) => 
-        `<div style="padding: 10px; background: white; border: 1px solid #eee; margin-bottom: 5px; border-radius: 4px; display:flex; justify-content:space-between; align-items: center;">
-            <div>
-                <strong>Step ${i+1}:</strong> ${s.title}<br>
-                <small style="color: #666;">${s.text.substring(0, 50)}...</small>
-            </div>
-            <div style="display: flex; align-items: center; gap: 10px;">
-                <img src="${s.visual}" style="height: 40px; background: #f8fafc; border: 1px solid #ccc; border-radius: 4px;">
-                <button class="btn-small btn-red" onclick="window.mechDraftSteps.splice(${i}, 1); renderMechDraft();">X</button>
-            </div>
-        </div>`
-    ).join('');
-}
-
-async function uploadMechanism() {
-    const mechId = document.getElementById('mech-id').value.toLowerCase().replace(/\s+/g, '');
-    const title = document.getElementById('mech-title').value;
-    const desc = document.getElementById('mech-desc').value;
-
-    if(!mechId || !title || window.mechDraftSteps.length === 0) {
-        return alert("Please fill ID, Title, and add at least one step!");
-    }
-
-    const body = { id: mechId, title: title, desc: desc, steps: window.mechDraftSteps };
-
-    try {
-        await fetch('/api/admin/mechanism', { 
-            method: 'POST', 
-            headers: {'Content-Type':'application/json'}, 
-            body: JSON.stringify(body) 
-        });
-        alert("Mechanism Saved!");
-        showAdm('mech'); 
-    } catch(e) {
-        alert("Error saving mechanism.");
-    }
-}
-
-async function loadAdminMechList() {
-    try {
-        const res = await fetch('/api/mechanisms');
-        const data = await res.json();
-        
-        if (data.length === 0) {
-            document.getElementById('admin-mech-list').innerHTML = "<p>No mechanisms uploaded yet.</p>";
-            return;
-        }
-
-        document.getElementById('admin-mech-list').innerHTML = `<table><tr><th>ID</th><th>Title</th><th>Steps</th><th>Action</th></tr>` + 
-        data.map(m => `<tr>
-            <td>${m.id}</td>
-            <td>${m.title}</td>
-            <td>${m.steps.length}</td>
-            <td><button class="btn-red btn-small" onclick="deleteItem('mechanism', '${m._id}')">Del</button></td>
-        </tr>`).join('') + `</table>`;
-    } catch(e) {
-        document.getElementById('admin-mech-list').innerHTML = "Could not load mechanisms.";
-    }
-}
-
-
-// --- 2. STUDENT VIEWER LOGIC ---
+// --- STUDENT VIEWER LOGIC ---
 
 // Default mechanisms so the viewer is never empty!
 const defaultMechanisms = [
@@ -2935,38 +2870,19 @@ let dynamicStoreData = [];
 async function fetchGlobalStoreData() {
     try {
         const res = await fetch('/api/store');
-        dynamicStoreData = await res.json();
+        if (!res.ok) throw new Error(`Server Error: ${res.status}`);
+        const data = await res.json();
+        dynamicStoreData = Array.isArray(data) ? data : [];
         
-        // 👇 ADDED THIS LINE: Now it will only draw the store AFTER the data arrives!
+        // Only draw the store AFTER the data arrives!
         loadDynamicStore(); 
-    } catch(e){}
+    } catch(e) {
+        console.error("Store data load error:", e);
+        dynamicStoreData = []; // Always keep it a safe empty array
+    }
 }
 
-// 🔄 UPDATE: Check for Premium status in Test List
-async function loadTests(isLive) { 
-    try {
-        const res = await fetch('/api/tests'); const tests = await res.json(); const now = new Date(); 
-        const filteredTests = tests.filter(t => { const tEnd = t.endTime ? new Date(t.endTime) : null; if (isLive) { return t.isLive && tEnd && tEnd > now; } else { return !t.isLive || (t.isLive && tEnd && tEnd <= now); } }); 
-        const container = document.getElementById(isLive?'live-list':'test-list');
-        if (filteredTests.length === 0) { container.innerHTML = getEmptyStateGame(`No ${isLive ? 'Live' : 'Practice'} Tests Available`); } 
-        else { 
-            container.innerHTML = filteredTests.map(t => {
-                // Check if this test is in the store!
-                const storeItem = dynamicStoreData.find(si => si.type === 'test' && si.link === t._id);
-                const premiumBadge = storeItem ? `<span class="badge bg-gold" style="margin-left:10px;">💎 Premium (${storeItem.cost} 🪙)</span>` : '';
-                const lockIcon = t.accessCode && !storeItem ? '🔒' : ''; // Don't double-show lock if premium
-
-                return `<div class="card" style="border-left: 5px solid ${isLive ? 'red' : 'gold'}; position:relative;">
-                    <h3>${t.title} ${lockIcon}</h3>
-                    ${premiumBadge ? `<div style="position:absolute; top:10px; right:10px;">${premiumBadge}</div>` : ''}
-                    <p>${t.duration} Mins</p>
-                    ${isLive ? `<p style="color:red">Start: ${new Date(t.startTime).toLocaleString()}</p>` : ''}
-                    <button class="btn btn-gold" onclick="startTest('${t._id}', ${(t.accessCode || storeItem) ? true : false}, '${t.startTime}')">Start</button>
-                </div>`;
-            }).join(''); 
-        }
-    } catch(e) { console.error("Could not load tests"); }
-}
+// NOTE: loadTests is defined above (full-featured version with ongoing test banner, resume button, and holographic badges)
 
 // ==========================================
 // 🛡️ ANTI-PIRACY & SECURITY GUARD
